@@ -14,7 +14,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=compose-postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     volumes:
-      - ./src
+      - /src
   quantum-trust-db:
     image: 'postgres:latest'
     container_name: quantum-trust-db
