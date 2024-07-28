@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.mat-mdc-tab-label-container {
+  border-bottom-width: 0px !important;
+}
+
+.mat-mdc-tab .mdc-tab__text-label {
+  font-family: 'Roboto' !important;
+  font-size: 20px !important;
+  font-weight: 100 !important; 
+  border-bottom-width: 0px !important;
+}
+
+.font-roboto {
+  font-family: 'Roboto';
+}
+
+.font-salsa {
+  font-family: 'Salsa';
+}
+
+.text-own-gray {
+  color: #747d82;
+}
