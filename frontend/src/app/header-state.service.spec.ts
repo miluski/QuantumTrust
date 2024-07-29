@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TabStateService } from './tab-state.service';
+import { HeaderStateService } from './header-state.service';
 
-describe('TabStateService', () => {
-  let service: TabStateService;
+describe('HeaderStateService', () => {
+  let service: HeaderStateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(TabStateService);
+    service = TestBed.inject(HeaderStateService);
   });
 
   it('should be created', () => {

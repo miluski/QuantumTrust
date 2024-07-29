@@ -1,4 +1,10 @@
-<app-header></app-header>
-<div>
-    <p>Current Tab: {{ tabName }}</p>
+<div class="flex flex-col h-screen m-0 p-0">
+    <app-header />
+    <div [ngClass]="{'!hidden': isDrawerOpened==false}" class="w-full h-full flex flex-col bg-black"></div>
+    <div [ngClass]="{'!hidden': isDrawerOpened==true}" class="w-full h-full flex flex-col bg-black">
+        <main class="flex-grow flex justify-center text-center bg-black text-white h-screen w-full">
+            <p>Current Tab: {{ tabName }}</p>
+        </main>
+        <app-footer />
+    </div>
 </div>
