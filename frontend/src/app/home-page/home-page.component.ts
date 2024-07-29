@@ -1,20 +1,26 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FooterComponent } from '../footer/footer.component';
+import { HeaderStateService } from '../header-state.service';
 import { HeaderComponent } from '../header/header.component';
-import { TabStateService } from '../tab-state.service';
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
-  imports: [HeaderComponent],
+  imports: [HeaderComponent, FooterComponent, CommonModule],
   standalone: true,
 })
 export class HomePageComponent implements OnInit {
   tabName: string = 'Konta';
-  constructor(private tabStateService: TabStateService) {}
+  isDrawerOpened: boolean = false;
+  constructor(private headerStateService: HeaderStateService) {}
   ngOnInit(): void {
-    this.tabStateService.currentTabName.subscribe(
+    this.headerStateService.currentTabName.subscribe(
       (tabName) => (this.tabName = tabName)
+    );
+    this.headerStateService.currentIsDrawerOpened.subscribe(
+      (isDrawerOpened) => (this.isDrawerOpened = isDrawerOpened)
     );
   }
 }
