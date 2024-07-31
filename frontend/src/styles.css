@@ -3,19 +3,35 @@
 @tailwind utilities;
 
 @media (min-width: 768px) {
-    .md\:\!mt-15 {
-        margin-top: 3.75rem !important;
-    }
+  .md\:\!mt-15 {
+    margin-top: 3.75rem !important;
+  }
 }
 
 .font-roboto {
-  font-family: 'Roboto';
+  font-family: "Roboto";
 }
 
 .font-salsa {
-  font-family: 'Salsa';
+  font-family: "Salsa";
+}
+
+.font-walter {
+  font-family: "Walter Turncoat";
 }
 
 .text-own-gray {
-  color: #747d82;
+  color: rgb(116, 125, 130);
+}
+
+.border-own-gray {
+  border-color: rgb(116, 125, 130);
+}
+
+.bg-own-gray {
+  background-color: rgb(116, 125, 130);
+}
+
+.icon-3x {
+  transform: scale(3);
 }

@@ -2,8 +2,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterModule } from '@angular/router';
+import { AccountListComponent } from './account-list/account-list.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CardListComponent } from './card-list/card-list.component';
+import { DepositListComponent } from './deposit-list/deposit-list.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { HomePageComponent } from './home-page/home-page.component';
@@ -22,14 +25,17 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     FooterComponent,
     HeaderComponent,
     HomePageComponent,
+    NotFoundComponent,
+    UnauthorizedComponent,
+    AccountListComponent,
+    DepositListComponent,
+    CardListComponent,
     RouterModule,
   ],
   declarations: [
     AppComponent,
     OpenAccountComponent,
     LoginComponent,
-    NotFoundComponent,
-    UnauthorizedComponent,
     SingleAccountComponent,
     SingleDepositComponent,
     SingleCardComponent,
