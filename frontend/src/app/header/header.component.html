@@ -4,7 +4,8 @@
         <img class="w-10 h-10" src="icon.png" alt="Quantum Trust Logo" />
         <p class="font-salsa text-xl leading-none flex end-5 !mt-5 items-center">Quantum Trust</p>
     </a>
-    <div class="hidden md:block self-center items-center text-center justify-center space-x-5 mt-5">
+    <div
+        class="hidden md:block self-center items-center text-center justify-center space-x-10 mt-5">
         <p class="hover:text-white font-roboto text-xl font-extralight cursor-pointer inline-block transition-colors duration-1000"
             [ngClass]="{'text-white': tabName === 'Konta', 'text-own-gray': tabName !== 'Konta'}"
             (click)="changeTabName('Konta')">Konta</p>
@@ -39,17 +40,17 @@
         <div class="flex flex-col w-full h-full items-center justify-center bg-black">
             <p class="hover:text-white font-roboto text-xl font-extralight transition-colors duration-300 cursor-pointer"
                 [ngClass]="{'text-white': tabName === 'Konta', 'text-own-gray': tabName !== 'Konta'}"
-                (click)="changeTabName('Konta')">
+                (click)="changeTabName('Konta'); toggleDrawer();">
                 Konta
             </p>
             <p class="mt-5 hover:text-white font-roboto text-xl font-extralight transition-colors duration-300 cursor-pointer"
                 [ngClass]="{'text-white': tabName === 'Lokaty', 'text-own-gray': tabName !== 'Lokaty'}"
-                (click)="changeTabName('Lokaty')">
+                (click)="changeTabName('Lokaty'); toggleDrawer();">
                 Lokaty
             </p>
             <p class="mt-5 hover:text-white font-roboto text-xl font-extralight transition-colors duration-300 cursor-pointer"
                 [ngClass]="{'text-white': tabName === 'Karty', 'text-own-gray': tabName !== 'Karty'}"
-                (click)="changeTabName('Karty')">
+                (click)="changeTabName('Karty'); toggleDrawer();">
                 Karty
             </p>
             <button class="mt-5 border border-white text-white font-salsa rounded-md py-2 px-1 hover:bg-gray-500"
