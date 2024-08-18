@@ -1,5 +1,5 @@
 <footer
-    class="flex max-md:items-center max-md:!py-10 max-md:space-y-5 flex-col md:flex-row z-50 w-full bg-black bottom-0 py-5 md:space-x-2 xl:space-x-32">
+    class="flex max-md:items-center max-md:!py-10 max-md:space-y-5 flex-col md:flex-row z-50 w-full bg-black bottom-0 py-5 md:space-x-2 xl:space-x-[10%] 2xl:space-x-[15%] shadow-none border-none overflow-hidden">
     <div class="flex flex-col space-x-5 px-5">
         <div class="flex flex-col items-start space-y-5">
             <div class="flex flex-row items-center space-x-5">
@@ -8,13 +8,13 @@
                     <p class="font-salsa text-xl leading-none text-white !mt-1">Quantum Trust</p>
                     <div class="flex flex-row space-x-10"> <a href="https://facebook.com" target="_blank"
                             rel="noopener noreferrer">
-                            <i class="fab fa-facebook text-white text-xl cursor-pointer"></i>
+                            <i class="fab fa-facebook text-white text-xl cursor-pointer hover:text-gray-500"></i>
                         </a>
                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-instagram text-white text-xl cursor-pointer"></i>
+                            <i class="fab fa-instagram text-white text-xl cursor-pointer hover:text-gray-500"></i>
                         </a>
                         <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-twitter text-white text-xl cursor-pointer"></i>
+                            <i class="fab fa-twitter text-white text-xl cursor-pointer hover:text-gray-500"></i>
                         </a>
                     </div>
                 </div>
@@ -24,7 +24,8 @@
                     <div class="flex flex-row">
                         <p class="text-own-gray font-roboto font-normal text-md text-nowrap">Contact us:&nbsp;</p>
                         <p class="text-white font-roboto font-normal text-md">
-                            <a href="mailto:quantum@trust.com" class="text-white">quantum&#64;trust.com</a>
+                            <a href="mailto:quantum@trust.com"
+                                class="text-white hover:text-gray-500">quantum&#64;trust.com</a>
                         </p>
                     </div>
                     <p class="text-own-gray font-roboto font-normal text-md">© Quantum Trust, 2024</p>
@@ -34,37 +35,60 @@
     </div>
     <div class="flex flex-col items-start px-10">
         <p class="text-white font-roboto font-medium text-xl">Konta</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-account"
-            routerLinkActive="active" (click)="changeAccountType('personal')">Konto osobiste</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-account"
-            routerLinkActive="active" (click)="changeAccountType('young')">Konto dla młodych</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-account"
-            routerLinkActive="active" (click)="changeAccountType('multiCurrency')">Konto wielowalutowe</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-account"
-            routerLinkActive="active" (click)="changeAccountType('family')">Konto rodzinne</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-account"
-            routerLinkActive="active" (click)="changeAccountType('oldPeople')">Konto senior</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
+            (click)="changeAccountType('personal')">Konto
+            osobiste</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
+            (click)="changeAccountType('young')">Konto dla
+            młodych</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
+            (click)="changeAccountType('multiCurrency')">Konto
+            wielowalutowe</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
+            (click)="changeAccountType('family')">Konto rodzinne
+        </p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
+            (click)="changeAccountType('oldPeople')">Konto senior
+        </p>
     </div>
     <div class="flex flex-col items-start px-10">
         <p class="text-white font-roboto font-medium text-xl">Lokaty</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-deposit"
-            routerLinkActive="active" (click)="changeDepositType('timely')">Lokata terminowa</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-deposit"
-            routerLinkActive="active" (click)="changeDepositType('mobile')">Lokata mobilna</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-deposit"
-            routerLinkActive="active" (click)="changeDepositType('family')">Lokata rodzinna</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-deposit"
-            routerLinkActive="active" (click)="changeDepositType('progressive')">Lokata progresywna</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-deposit" routerLinkActive="active"
+            (click)="changeDepositType('timely')">Lokata
+            terminowa</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-deposit" routerLinkActive="active"
+            (click)="changeDepositType('mobile')">Lokata mobilna
+        </p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-deposit" routerLinkActive="active"
+            (click)="changeDepositType('family')">Lokata rodzinna
+        </p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-deposit" routerLinkActive="active"
+            (click)="changeDepositType('progressive')">Lokata
+            progresywna</p>
     </div>
     <div class="flex flex-col items-start px-10">
         <p class="text-white font-roboto font-medium text-xl">Karty</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-card"
-            routerLinkActive="active" (click)="changeCardType('standard')">Karta standard</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-card"
-            routerLinkActive="active" (click)="changeCardType('student')">Karta student</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-card"
-            routerLinkActive="active" (click)="changeCardType('business')">Karta biznes</p>
-        <p class="cursor-pointer text-white font-roboto font-extralight text-md" routerLink="/single-card"
-            routerLinkActive="active" (click)="changeCardType('traveler')">Karta podróżnika</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-card" routerLinkActive="active"
+            (click)="changeCardType('standard')">Karta standard</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-card" routerLinkActive="active"
+            (click)="changeCardType('student')">Karta student</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-card" routerLinkActive="active"
+            (click)="changeCardType('business')">Karta biznes</p>
+        <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
+            (click)="onScrollToTop()" routerLink="/single-card" routerLinkActive="active"
+            (click)="changeCardType('traveler')">Karta podróżnika
+        </p>
     </div>
 </footer>
