@@ -7,9 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { HeaderStateService } from '../header-state.service';
 import { HomePageComponent } from '../home-page/home-page.component';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -32,11 +32,15 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('drawer') drawer?: MatDrawer;
   tabName: string = 'Konta';
   isDrawerOpened: boolean = false;
+  currentRoute: string = '';
 
   constructor(
     private headerStateService: HeaderStateService,
-    private breakpointObserver: BreakpointObserver
-  ) {}
+    private breakpointObserver: BreakpointObserver,
+    router: Router
+  ) {
+    this.currentRoute = router.url;
+  }
 
   ngOnInit(): void {
     this.headerStateService.currentTabName.subscribe(

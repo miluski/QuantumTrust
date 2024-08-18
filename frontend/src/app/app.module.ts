@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterModule } from '@angular/router';
 import { AccountListComponent } from './account-list/account-list.component';
@@ -21,6 +22,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FooterComponent,
     HeaderComponent,
@@ -30,13 +32,13 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     AccountListComponent,
     DepositListComponent,
     CardListComponent,
+    SingleAccountComponent,
     RouterModule,
   ],
   declarations: [
     AppComponent,
     OpenAccountComponent,
     LoginComponent,
-    SingleAccountComponent,
     SingleDepositComponent,
     SingleCardComponent,
   ],

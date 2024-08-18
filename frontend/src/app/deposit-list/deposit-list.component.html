@@ -28,7 +28,7 @@
                     <p class="font-walter font-normal text-2xl text-black">Lokata {{deposit.type === 'timely' ?
                         "Terminowa" : "Mobilna"}}</p>
                     <p class="font-walter font-normal text-2xl text-white">{{deposit.percent}}%</p>
-                    <p class="font-roboto font-extralight text-md text-black max-md:py-5">{{deposit.description}}</p>
+                    <p class="font-roboto font-light text-md text-black max-md:py-5">{{deposit.description}}</p>
                 </div>
                 }
             </div>
@@ -41,8 +41,9 @@
                     <mat-icon class="my-10 icon-3x">{{deposit.id === 3 ? "savings" : "bar_chart"}}</mat-icon>
                     <p class="font-walter font-normal text-2xl text-black">Lokata {{deposit.type === 'family' ?
                         "Rodzinna" : "Progresywna"}}</p>
-                    <p class="font-walter font-normal text-2xl text-white">{{deposit.percent}}%</p>
-                    <p class="font-roboto font-extralight text-md text-black max-md:py-5">{{deposit.description}}</p>
+                    <p class="font-walter font-normal text-2xl text-white">{{deposit.id === 4?"DO " :
+                        ""}}{{deposit.percent}}%</p>
+                    <p class="font-roboto font-light text-md text-black max-md:py-5">{{deposit.description}}</p>
                 </div>
                 }
             </div>

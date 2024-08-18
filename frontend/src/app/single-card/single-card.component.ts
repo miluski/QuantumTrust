@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductTypesService } from '../product-types.service';
+import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-single-card',
@@ -8,7 +9,10 @@ import { ProductTypesService } from '../product-types.service';
 })
 export class SingleCardComponent implements OnInit {
   private cardType: string = 'standard';
-  constructor(private productTypesService: ProductTypesService) {}
+  constructor(
+    private productTypesService: ProductTypesService,
+    private windowEventsService: WindowEventsService
+  ) {}
   ngOnInit(): void {
     this.productTypesService.currentCardType.subscribe(
       (cardType) => (this.cardType = cardType)
@@ -16,5 +20,8 @@ export class SingleCardComponent implements OnInit {
   }
   changeCardType(cardType: string): void {
     this.productTypesService.changeCardType(cardType);
+  }
+  onScrollToTop(): void {
+    this.windowEventsService.scrollToTop();
   }
 }

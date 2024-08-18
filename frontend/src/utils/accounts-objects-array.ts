@@ -1,4 +1,4 @@
-import { Account } from '../../types/account';
+import { Account } from '../types/account';
 
 export const accountsObjectsArray: Account[] = [
   {
@@ -8,6 +8,11 @@ export const accountsObjectsArray: Account[] = [
       'Konto osobiste, które daje Ci pełną kontrolę nad swoimi finansami. Z łatwym dostępem online i zaawansowanymi funkcjami bezpieczeństwa, możesz zarządzać swoimi pieniędzmi szybko i bez problemów, gdziekolwiek jesteś.',
     image: 'first-account.png',
     type: 'personal',
+    benefits: [
+      '<b>0 PLN</b> jakichkolwiek opłat',
+      '<b>Szybkie</b> i bezpieczne przelewy',
+      '<b>Korzystne</b> programy lojalnościowe',
+    ],
   },
   {
     id: 2,
@@ -16,6 +21,11 @@ export const accountsObjectsArray: Account[] = [
       'Konto dla młodych zostało stworzone z myślą o młodych ludziach. Z atrakcyjnymi warunkami, dostępem do nowoczesnych technologii i dodatkowymi korzyściami, możesz rozpocząć swoją finansową przygodę z nami.',
     image: 'second-account.png',
     type: 'young',
+    benefits: [
+      '<b>Brak opłat</b> za prowadzenie konta',
+      '<b>Dostęp</b> do nowoczesnych technologii',
+      '<b>Atrakcyjne</b> warunki dla młodych',
+    ],
   },
   {
     id: 3,
@@ -24,6 +34,11 @@ export const accountsObjectsArray: Account[] = [
       'Konto wielowalutowe to Idealne rozwiązanie dla osób często podróżujących lub dokonujących transakcji międzynarodowych. Konto umożliwia zarządzanie środkami w różnych walutach bez dodatkowych opłat za przewalutowanie.',
     image: 'third-account.png',
     type: 'multiCurrency',
+    benefits: [
+      '<b>Brak opłat</b> za przewalutowanie',
+      '<b>Łatwe</b> zarządzanie wieloma walutami',
+      '<b>Bezpieczne</b> transakcje międzynarodowe',
+    ],
   },
   {
     id: 4,
@@ -32,6 +47,11 @@ export const accountsObjectsArray: Account[] = [
       'Konto rodzinne posiada atrakcyjne warunki, programy oszczędnościowe i dodatkowe ubezpieczenie dzięki czemu cała rodzina może cieszyć się bezpieczeństwem finansowym.',
     image: 'fourth-account.png',
     type: 'family',
+    benefits: [
+      '<b>Atrakcyjne</b> warunki dla rodzin',
+      '<b>Programy</b> oszczędnościowe',
+      '<b>Dodatkowe</b> ubezpieczenie',
+    ],
   },
   {
     id: 5,
@@ -40,5 +60,10 @@ export const accountsObjectsArray: Account[] = [
       'Konto dedykowane seniorom, oferujące preferencyjne warunki, brak opłat za podstawowe operacje i dodatkowe korzyści, takie jak ubezpieczenia zdrowotne. Zapewnia spokojną przyszłość i łatwy dostęp do finansów.',
     image: 'fifth-account.png',
     type: 'oldPeople',
+    benefits: [
+      '<b>Preferencyjne</b> warunki dla seniorów',
+      '<b>Brak opłat</b> za podstawowe operacje',
+      '<b>Dodatkowe</b> ubezpieczenia zdrowotne',
+    ],
   },
 ];

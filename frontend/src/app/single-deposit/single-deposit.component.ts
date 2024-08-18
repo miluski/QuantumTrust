@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductTypesService } from '../product-types.service';
+import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-single-deposit',
@@ -8,7 +9,10 @@ import { ProductTypesService } from '../product-types.service';
 })
 export class SingleDepositComponent implements OnInit {
   private depositType: string = 'timely';
-  constructor(private productTypesService: ProductTypesService) {}
+  constructor(
+    private productTypesService: ProductTypesService,
+    private windowEventsService: WindowEventsService
+  ) {}
   ngOnInit(): void {
     this.productTypesService.currentDepositType.subscribe(
       (depositType) => (this.depositType = depositType)
@@ -16,5 +20,8 @@ export class SingleDepositComponent implements OnInit {
   }
   changeDepositType(depositType: string): void {
     this.productTypesService.changeDepositType(depositType);
+  }
+  onScrollToTop(): void {
+    this.windowEventsService.scrollToTop();
   }
 }

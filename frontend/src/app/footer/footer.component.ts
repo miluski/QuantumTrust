@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ProductTypesService } from '../product-types.service';
+import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-footer',
@@ -14,7 +15,10 @@ export class FooterComponent {
   private accountType: string = 'personal';
   private cardType: string = 'standard';
   private depositType: string = 'timely';
-  constructor(private productTypesService: ProductTypesService) {}
+  constructor(
+    private productTypesService: ProductTypesService,
+    private windowEventsService: WindowEventsService
+  ) {}
   ngOnInit(): void {
     this.productTypesService.currentAccountType.subscribe(
       (accountType) => (this.accountType = accountType)
@@ -34,5 +38,8 @@ export class FooterComponent {
   }
   changeDepositType(depositType: string): void {
     this.productTypesService.changeDepositType(depositType);
+  }
+  onScrollToTop(): void {
+    this.windowEventsService.scrollToTop();
   }
 }

@@ -1,4 +1,4 @@
-import { Deposit } from '../../types/deposit';
+import { Deposit } from "../types/deposit";
 
 export const depositsObjectArray: Deposit[] = [
   {

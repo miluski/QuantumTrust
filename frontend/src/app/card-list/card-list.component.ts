@@ -3,9 +3,9 @@ import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { Card } from '../../types/card';
+import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
+import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 import { ProductTypesService } from '../product-types.service';
-import { mastercardCardsObjectsArray } from './mastercard-cards-objects-array';
-import { visaCardsObjectsArray } from './visa-cards-objects-array';
 
 @Component({
   selector: 'app-card-list',

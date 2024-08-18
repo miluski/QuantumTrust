@@ -1,12 +1,9 @@
-<div class="flex flex-col m-0 p-0 overflow-auto">
-    <app-header />
-    <div [ngClass]="{'!hidden': isDrawerOpened==false}" class="w-full h-full flex flex-col bg-black"></div>
-    <div [ngClass]="{'!hidden': isDrawerOpened==true}" class="w-full h-full flex flex-col bg-black">
-        <main class="flex-grow flex justify-center text-center bg-black text-white w-full">
-            <app-account-list tabName={{tabName}} />
-            <app-deposit-list tabName={{tabName}} />
-            <app-card-list tabName={{tabName}} />
-        </main>
-        <app-footer />
-    </div>
+<app-header />
+<div class="flex flex-col m-0 p-0 overflow-auto scroll-smooth">
+    <main class="flex-grow flex justify-center text-center bg-black text-white w-full">
+        <app-account-list tabName={{tabName}} />
+        <app-deposit-list tabName={{tabName}} />
+        <app-card-list tabName={{tabName}} />
+    </main>
 </div>
+<app-footer />
