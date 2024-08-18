@@ -13,7 +13,6 @@ import { Account } from '../../types/account';
 import { Step } from '../../types/step';
 import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 import { singleAccountStepsArray } from '../../utils/steps-objects-arrays';
-import { AppComponent } from '../app.component';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { ProductTypesService } from '../product-types.service';
@@ -84,10 +83,11 @@ export class SingleAccountComponent implements OnInit {
   getPolishAccountType(accountType?: string): string {
     return this.ACCOUNT_TYPE_MAP[accountType ?? this.accountType] || 'osobiste';
   }
-
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
+      const lastItem = this.accountsArray.pop();
+      this.accountsArray.unshift(<Account>lastItem);
     }
   }
   nextPage() {
