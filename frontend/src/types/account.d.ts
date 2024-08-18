@@ -4,4 +4,5 @@ export type Account = {
   advertismentContent: string;
   image: string;
   type: string;
+  benefits: string[];
 };

@@ -1,11 +1,11 @@
-<div class="flex flex-col h-screen m-0 p-0">
-    <app-header />
+<app-header />
+<div class="flex flex-col h-screen m-0 p-0 scroll-smooth">
     <div [ngClass]="{'!hidden': isDrawerOpened==false}" class="w-full h-full flex flex-col bg-black"></div>
     <div [ngClass]="{'!hidden': isDrawerOpened==true}" class="w-full h-full flex flex-col bg-black">
         <main class="flex-grow flex flex-col space-y-5 justify-center text-center bg-black text-white h-screen w-full">
             <p class="text-white font-roboto font-normal text-3xl">404</p>
-            <p class="text-white font-roboto font-extralight text-xl">Site which you try to enter was not found.</p>
+            <p class="text-white font-roboto font-light text-xl">Site which you try to enter was not found.</p>
         </main>
-        <app-footer />
     </div>
 </div>
+<app-footer />

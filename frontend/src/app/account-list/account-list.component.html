@@ -3,8 +3,8 @@
         @for (account of accountsObjectsArray; track account.id) {
         <div class="max-md:w-[85%]">
             <div class="flex flex-row max-xl:flex-col items-center">
-                <img src={{account.image}} class="h-auto hidden max-xl:block" />
-                <img *ngIf="account.id%2 === 0" src={{account.image}} class="md:m-10 w-[45%] h-auto max-xl:hidden" />
+                <img src={{account.image}} class="h-auto hidden max-xl:block rounded-xl border border-gray-500 p-1" />
+                <img *ngIf="account.id%2 === 0" src={{account.image}} class="md:m-10 w-[45%] h-auto max-xl:hidden rounded-xl border border-gray-500 p-1" />
                 <div class="flex flex-col m-10 w-full">
                     <p [ngClass]="{'text-own-gray' : account.id%2 === 0, 'text-white' : account.id%2 !== 0}"
                         class="font-walter max-md:text-5xl text-7xl text-wrap text-left">{{account.advertismentText}}</p>
@@ -14,7 +14,7 @@
                             {{account.advertismentContent}}</p>
                         <div class="flex flex-row w-full">
                             <button
-                                class="border border-white text-white font-salsa rounded-md py-2 px-1 hover:bg-gray-500 mx-5 max-md:w-[30%] w-[35%]"
+                                class="border border-white text-white font-salsa rounded-lg py-2 px-1 hover:bg-gray-500 mx-5 max-md:w-[30%] w-[35%]"
                                 routerLink="/open-account" routerLinkActive="active">
                                 Otwórz konto
                             </button>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 </div>
-                <img *ngIf="account.id%2 !== 0" src={{account.image}} class="m-10 w-[45%] h-auto max-xl:hidden" />
+                <img *ngIf="account.id%2 !== 0" src={{account.image}} class="m-10 w-[45%] h-auto max-xl:hidden rounded-xl border border-gray-500 p-1" />
             </div>
         </div>
         }

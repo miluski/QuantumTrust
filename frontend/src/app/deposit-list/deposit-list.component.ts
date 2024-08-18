@@ -3,8 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { Deposit } from '../../types/deposit';
+import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { ProductTypesService } from '../product-types.service';
-import { depositsObjectArray } from './deposits-objects-array';
 
 @Component({
   selector: 'app-deposit-list',
