@@ -3,7 +3,7 @@ import {
   keyframes,
   style,
   transition,
-  trigger
+  trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
