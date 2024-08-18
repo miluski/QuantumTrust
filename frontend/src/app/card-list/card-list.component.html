@@ -1,14 +1,14 @@
-<div class="flex-grow flex justify-center text-center bg-black text-white w-full mb-12">
+<div class="flex-grow flex justify-center text-center bg-black text-white w-full mb-12 overflow-hidden">
     <div *ngIf='tabName == "Karty"' class="flex flex-col h-full space-y-10 mt-12 justify-center items-center w-[85%]">
         <p class="font-walter font-normal text-own-gray text-6xl max-md:text-3xl">KARTY VISA</p>
         <div class="w-screen flex flex-col items-center relative mb-12">
             <div class="absolute inset-y-1/2 flex items-center w-full px-4 z-10">
-                <button class="font-bold py-2 px-4 rounded-l text-white" (click)="previousVisaPage()"
+                <button class="font-bold py-2 px-4 rounded-l text-white 2xl:mx-[5%]" (click)="previousVisaPage()"
                     [hidden]="currentVisaPage === 1">
                     <mat-icon>arrow_back</mat-icon>
                 </button>
                 <div class="flex-grow"></div>
-                <button class="font-bold py-2 px-4 rounded-r text-white" (click)="nextVisaPage()"
+                <button class="font-bold py-2 px-4 rounded-r text-white 2xl:mx-[5%]" (click)="nextVisaPage()"
                     [hidden]="currentVisaPage === visaTotalPages">
                     <mat-icon>arrow_forward</mat-icon>
                 </button>
