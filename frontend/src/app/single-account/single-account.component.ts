@@ -75,11 +75,9 @@ export class SingleAccountComponent implements OnInit {
   };
   changeAccountType(accountType: string): void {
     this.productTypesService.changeAccountType(accountType);
-    this.accountObject = this.getAccountObject();
     this.updateItemsPerPage(window.innerWidth);
     this.setAccountsArray();
   }
-
   getPolishAccountType(accountType?: string): string {
     return this.ACCOUNT_TYPE_MAP[accountType ?? this.accountType] || 'osobiste';
   }

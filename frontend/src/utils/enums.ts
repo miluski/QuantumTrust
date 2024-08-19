@@ -1,0 +1,6 @@
+enum SingleDepositActionTypes {
+  BOTTOM_INFORMATION = 'BOTTOM_INFORMATION',
+  TOP_INFORMATION = 'TOP_INFORMATION',
+}
+
+export const { BOTTOM_INFORMATION, TOP_INFORMATION } = SingleDepositActionTypes;
