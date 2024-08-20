@@ -7,6 +7,13 @@ export const visaCardsObjectsArray: Card[] = [
     description:
       'Idealna karta do zakupów z programem lojalnościowym i ubezpieczeniami.',
     image: 'visa-standard.png',
+    benefits: [
+      'Możliwość wygodnych płatności w ponad 200 krajach',
+      'Wygodne płatności zbliżeniowe',
+      'Dodatkowy poziom zabezpieczeń przy płatnościach online za pomocą technologii Verified by VISA',
+      'Możliwość szybkiej wymiany i zastrzeżenia starej karty w przypadku jej zgubienia',
+    ],
+    limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
   },
   {
     id: 2,
@@ -14,6 +21,15 @@ export const visaCardsObjectsArray: Card[] = [
     description:
       'Bezpieczne i wygodne płatności dla studentów z ofertami specjalnymi i zniżkami.',
     image: 'visa-student.png',
+    benefits: [
+      'Zniżki na zakupy w wybranych sklepach',
+      'Dostęp do specjalnych ofert dla studentów',
+      'Możliwość płatności zbliżeniowych',
+      'Dodatkowe zabezpieczenia przy płatnościach online',
+    ],
+    limits: [
+      { internetTransactions: [15000, 10], cashTransactions: [7000, 5] },
+    ],
   },
   {
     id: 3,
@@ -21,12 +37,30 @@ export const visaCardsObjectsArray: Card[] = [
     description:
       'Wygodne płatności bez prowizji wraz z korzystną ofertą ubezpieczeń na całym świecie.',
     image: 'visa-travel.png',
+    benefits: [
+      'Brak prowizji za płatności zagraniczne',
+      'Ubezpieczenie podróżne w pakiecie',
+      'Dostęp do saloników lotniskowych',
+      'Całodobowa pomoc w przypadku zgubienia karty',
+    ],
+    limits: [
+      { internetTransactions: [20000, 15], cashTransactions: [10000, 8] },
+    ],
   },
   {
     id: 4,
     type: 'BIZNES',
     description:
-      'Karta biznesowa Visa oferująca korzyści i nagrody dostosowane do wydatków firmowych.',
+      'Ekskluzywna karta z dodatkowymi korzyściami i usługami premium.',
     image: 'visa-business.png',
+    benefits: [
+      'Dostęp do ekskluzywnych ofert i zniżek',
+      'Ubezpieczenie zakupów i podróży',
+      'Całodobowa pomoc concierge',
+      'Wyższe limity płatności',
+    ],
+    limits: [
+      { internetTransactions: [100000, 5], cashTransactions: [50000, 3] },
+    ],
   },
 ];
