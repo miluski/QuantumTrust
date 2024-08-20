@@ -16,9 +16,9 @@
             <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch mb-12">
                 @for(visaCard of visaPaginatedItems; track visaCard.id) {
                 <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-[25%] lg:w-[20%] max-md:w-[55%] py-5 hover:bg-gray-200 cursor-pointer"
-                    routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(visaCard.type)">
+                    routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(visaCard.type)" (click)="onScrollToTop()">
                     <img class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10"
-                        src={{visaCard.image}} />
+                        src={{visaCard.image}} alt="singleVisaCard"/>
                     <p class="font-salsa font-normal text-black text-3xl">VISA {{visaCard.type}}</p>
                     <p class="font-roboto font-light text-black text-2xl w-[80%]">{{visaCard.description}}</p>
                 </div>
@@ -41,9 +41,9 @@
             <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch my-12">
                 @for(masterCard of masterCardPaginatedItems; track masterCard.id) {
                 <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-[25%] lg:w-[20%] max-md:w-[55%] py-5 hover:bg-gray-200 cursor-pointer"
-                    routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(masterCard.type)">
+                    routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(masterCard.type)" (click)="onScrollToTop()">
                     <img class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10"
-                        src={{masterCard.image}} />
+                        src={{masterCard.image}} alt="singleMasterCard"/>
                     <p class="font-salsa font-normal text-black text-3xl">MASTERCARD {{masterCard.type}}</p>
                     <p class="font-roboto font-light text-black text-2xl w-[80%]">{{masterCard.description}}</p>
                 </div>

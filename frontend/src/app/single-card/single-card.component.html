@@ -1,3 +1,63 @@
 <app-header />
-<p>single-card works!</p>
-<app-footer (scrollToTopEvent)="onScrollToTop()" />
+<div class="flex flex-col m-0 p-0 overflow-hidden scroll-smooth">
+    <main class="flex-col flex justify-center bg-black text-white w-screen">
+        <p class="font-walter text-7xl max-md:text-4xl self-center py-12">KARTA {{visaCardObject.type}}</p>
+        <div class="flex flex-row items-center justify-center w-screen mb-12">
+            <div class="flex flex-col justify-center w-full">
+                <div class="flex flex-row max-md:flex-col w-full md:space-x-20 mb-12">
+                    <div class="flex flex-col items-center md:w-[50%] max-md:mb-12">
+                        <p class="font-roboto font-normal text-3xl">VISA {{visaCardObject.type}}</p>
+                        <img class="object-cover w-auto h-44 rounded-md my-10" src={{visaCardObject.image}}
+                            alt="visaCardImage" />
+                        <ul class="md:w-[60%] w-3/4 space-y-5 font-roboto font-light text-xl list-disc">
+                            @for(benefit of visaCardObject.benefits; track benefit) {
+                            <li>{{benefit}}</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="flex flex-col items-center md:w-[50%]">
+                        <p class="font-roboto font-normal text-3xl">MASTERCARD {{mastercardObject.type}}</p>
+                        <img class="object-cover w-auto h-44 rounded-md my-10" src={{mastercardObject.image}}
+                            alt="mastercardImage" />
+                        <ul class="md:w-[60%] w-3/4 space-y-5 font-roboto font-light text-xl list-disc">
+                            @for(benefit of mastercardObject.benefits; track benefit) {
+                            <li>{{benefit}}</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <button
+                    class="border border-white text-white font-salsa rounded-3xl py-2 px-10 max-md:px-5 max-md:py-1 hover:bg-gray-600 bg-own-gray mx-5 self-center xl:w-[15%]"
+                    routerLink="/open-account" routerLinkActive="active">
+                    Zamów kartę
+                </button>
+            </div>
+        </div>
+        <mat-divider class="shadow-inner shadow-gray-500" />
+        <div class="flex flex-col w-screen justify-center items-center my-12">
+            <p class="font-roboto font-extrabold text-4xl max-md:text-2xl text-center max-md:pb-6">NAJCZĘŚCIEJ ZADAWANE
+                PYTANIA (FAQ)</p>
+            @for(qaPair of questionsAndAnswersPairs; track qaPair) {
+            <mat-divider class="shadow-inner shadow-gray-500 w-[85%] max-sm:w-[95%]" />
+            <div class="flex flex-row justify-center items-center space-x-5 mt-5 w-[85%] max-sm:w-[95%] pt-3 relative">
+                <div class="flex flex-col w-screen h-auto md:items-center justify-center">
+                    <p [ngClass]="{'text-gray-500': qaPair.isOpened}"
+                        class="font-roboto font-semibold text-xl max-sm:text-base pb-2 max-md:self-center">
+                        {{qaPair.content}}</p>
+                    @if(qaPair.isOpened) {
+                    <p class="font-roboto font-light text-xl max-sm:text-base pb-2 w-[70%] max-md:pl-5"
+                        [innerHTML]="qaPair.answer"></p>
+                    }
+                </div>
+                <p class="font-roboto font-light text-4xl text-white border rounded-full px-3 py-1 cursor-pointer right-0 absolute hover:text-gray-400 hover:border-gray-400 min-w-12 h-auto text-center"
+                    [ngClass]="{'text-gray-500 border-gray-500 hover:text-white hover:border-white':qaPair.isOpened}"
+                    (click)='changeStateOfQuestionAnswer(qaPair.id)'>
+                    {{qaPair.isOpened ? "-" : "+"}}
+                </p>
+            </div>
+            <mat-divider class="shadow-inner shadow-gray-500 w-[85%] max-sm:w-[95%]" />
+            }
+        </div>
+    </main>
+</div>
+<app-footer />

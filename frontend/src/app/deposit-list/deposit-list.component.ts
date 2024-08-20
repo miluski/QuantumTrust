@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { Deposit } from '../../types/deposit';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { ProductTypesService } from '../product-types.service';
+import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-deposit-list',
@@ -17,7 +18,10 @@ export class DepositListComponent implements OnInit {
   @Input() tabName: string = 'Lokaty';
   depositType: string = 'timely';
   depositsObjectArray: Deposit[] = depositsObjectArray;
-  constructor(private productTypesService: ProductTypesService) {}
+  constructor(
+    private productTypesService: ProductTypesService,
+    private windowEventsService: WindowEventsService
+  ) {}
   ngOnInit(): void {
     this.productTypesService.currentDepositType.subscribe(
       (depositType) => (this.depositType = depositType)
@@ -25,5 +29,8 @@ export class DepositListComponent implements OnInit {
   }
   changeDepositType(depositType: string): void {
     this.productTypesService.changeDepositType(depositType);
+  }
+  onScrollToTop(): void {
+    this.windowEventsService.scrollToTop();
   }
 }
