@@ -6,6 +6,7 @@ import { Card } from '../../types/card';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 import { ProductTypesService } from '../product-types.service';
+import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-card-list',
@@ -22,7 +23,10 @@ export class CardListComponent implements OnInit {
   itemsPerPage: number = 3;
   visaCardsObjectsArray: Card[] = visaCardsObjectsArray;
   mastercardCardsObjectsArray: Card[] = mastercardCardsObjectsArray;
-  constructor(private productTypesService: ProductTypesService) {}
+  constructor(
+    private productTypesService: ProductTypesService,
+    private windowEventsService: WindowEventsService
+  ) {}
   ngOnInit(): void {
     this.productTypesService.currentCardType.subscribe(
       (cardType) => (this.cardType = cardType)
@@ -86,5 +90,8 @@ export class CardListComponent implements OnInit {
   }
   get visaTotalPages() {
     return Math.ceil(this.visaCardsObjectsArray.length / this.itemsPerPage);
+  }
+  onScrollToTop(): void {
+    this.windowEventsService.scrollToTop();
   }
 }

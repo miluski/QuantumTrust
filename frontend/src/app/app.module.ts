@@ -21,9 +21,6 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 @NgModule({
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
     FooterComponent,
     HeaderComponent,
     HomePageComponent,
@@ -33,15 +30,14 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     DepositListComponent,
     CardListComponent,
     SingleAccountComponent,
-    RouterModule,
-  ],
-  declarations: [
-    AppComponent,
-    OpenAccountComponent,
-    LoginComponent,
     SingleDepositComponent,
     SingleCardComponent,
+    RouterModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
   ],
+  declarations: [AppComponent, OpenAccountComponent, LoginComponent],
   providers: [provideAnimationsAsync()],
   bootstrap: [AppComponent],
 })
