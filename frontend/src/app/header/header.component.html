@@ -20,11 +20,12 @@
     <div class="flex space-x-5">
         <div class="hidden md:flex space-x-5">
             <button class="border border-white text-white font-salsa rounded-md py-2 px-1 hover:bg-gray-500"
-                routerLink="/open-account" routerLinkActive="active">
+                [ngClass]="{'!hidden' : currentRoute === '/open-account'}" routerLink="/open-account"
+                routerLinkActive="active">
                 Otwórz konto
             </button>
             <button class="border border-gray-500 text-gray-500 font-salsa rounded-md py-2 px-4 hover:bg-white"
-                routerLink="/login" routerLinkActive="active">
+                [ngClass]="{'!hidden' : currentRoute === '/login'}" routerLink="/login" routerLinkActive="active">
                 Zaloguj się
             </button>
         </div>
@@ -64,11 +65,12 @@
                 Karty
             </p>
             <button class="mt-5 border border-white text-white font-salsa rounded-md py-2 px-1 hover:bg-gray-500"
-                routerLink="/open-account" routerLinkActive="active">
+                [ngClass]="{'!hidden' : currentRoute === '/open-account'}" routerLink="/open-account"
+                routerLinkActive="active">
                 Otwórz konto
             </button>
             <button class="mt-5 border border-gray-500 text-gray-500 font-salsa rounded-md py-2 px-4 hover:bg-white"
-                routerLink="/login" routerLinkActive="active">
+                [ngClass]="{'!hidden' : currentRoute === '/login'}" routerLink="/login" routerLinkActive="active">
                 Zaloguj się
             </button>
         </div>
