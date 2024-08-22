@@ -44,7 +44,7 @@
                 }
                 <button
                     class="lg:w-[75%] w-[80%] lg:mb-10 mb-10 border text-3xl border-white text-white font-salsa rounded-full py-5 hover:bg-gray-600 bg-own-gray mx-5 self-center z-20"
-                    [ngClass]="{'shake': isIdentifierValid === false || isPasswordValid === false || (currentSite === 2 && isVerificationCodeValid === false)}"
+                    [ngClass]="{'shake': canShake}"
                     (click)="verifyData()"
                     (click)="currentSite === 1 ? isIdentifierValid && isPasswordValid ? changeCurrentSite() : null : isVerificationCodeValid ? null : null">
                     {{currentSite === 1 ? "Dalej" : "Zaloguj się"}}
