@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
   identifier!: number;
   password!: string;
   verificationCode!: number;
+  canShake: boolean = false;
   constructor(
     private windowEventsService: WindowEventsService,
     private verificationService: VerificationService
@@ -46,15 +47,6 @@ export class LoginComponent implements OnInit {
   }
   changeCurrentSite(): void {
     this.currentSite = 2;
-  }
-  changeIdentifier(identifier: number): void {
-    this.identifier = identifier;
-  }
-  changePassword(password: string): void {
-    this.password = password;
-  }
-  changeVerificationCode(verificationCode: number): void {
-    this.verificationCode = verificationCode;
   }
   verifyData(): void {
     if (this.currentSite === 1) {
@@ -70,5 +62,12 @@ export class LoginComponent implements OnInit {
           this.verificationCode
         );
     }
+    this.setCanShake();
+  }
+  private setCanShake(): void {
+    this.canShake =
+      this.isIdentifierValid === false ||
+      this.isPasswordValid === false ||
+      (this.currentSite === 2 && this.isVerificationCodeValid === false);
   }
 }
