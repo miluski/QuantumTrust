@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 import { Account } from '../../types/account';
 import { Step } from '../../types/step';
 import { accountsObjectsArray } from '../../utils/accounts-objects-array';
@@ -28,6 +29,7 @@ import { WindowEventsService } from '../window-events.service';
     MatDividerModule,
     MatIconModule,
     CommonModule,
+    RouterModule,
   ],
   standalone: true,
 })

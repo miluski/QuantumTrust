@@ -33,6 +33,8 @@ export class OpenAccountComponent {
   isAddressValid!: boolean;
   isPasswordValid!: boolean;
   isRepeatedPasswordValid!: boolean;
+  isAccountTypeValid!: boolean;
+  isAccountCurrencyValid!: boolean;
   canShake: boolean = false;
   email!: string;
   phoneNumber!: string;
@@ -40,6 +42,8 @@ export class OpenAccountComponent {
   surname!: string;
   pesel!: number;
   identifyDocumentType: string = 'Dowód Osobisty';
+  accountType: string = 'Konto osobiste';
+  accountCurrency: string = 'PLN';
   identifyDocumentSerie!: string;
   address!: string;
   password!: string;
@@ -78,6 +82,11 @@ export class OpenAccountComponent {
         this.repeatedPassword,
         this.password
       );
+    this.isAccountCurrencyValid =
+      this.verificationService.validateAccountCurrency(this.accountCurrency);
+    this.isAccountTypeValid = this.verificationService.validateAccountType(
+      this.accountType
+    );
     this.setCanShake();
   }
   private setCanShake(): void {
@@ -91,6 +100,8 @@ export class OpenAccountComponent {
       this.isIdentifyDocumentSerieValid === false ||
       this.isAddressValid === false ||
       this.isRepeatedPasswordValid === false ||
-      this.isPasswordValid === false;
+      this.isPasswordValid === false ||
+      this.isAccountCurrencyValid === false ||
+      this.isAccountTypeValid === false;
   }
 }
