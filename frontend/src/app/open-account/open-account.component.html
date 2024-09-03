@@ -7,6 +7,49 @@
             <div class="open-account-mobile flex flex-col justify-center items-center lg:w-[50%] w-full rounded-3xl">
                 <p class="font-roboto font-extrabold text-5xl text-black pt-24 z-20">Otwieranie konta</p>
                 <div class="flex flex-col lg:w-[75%] w-[80%] z-20"
+                    [ngClass]="{'mb-6': isAccountTypeValid === true || isAccountTypeValid === undefined}">
+                    <p class="text-left font-roboto font-light text-sm text-black w-full">Rodzaj konta
+                    </p>
+                    <select
+                        class="!font-roboto !font-light !text-sm !text-black !rounded-lg !px-5 !py-2 !w-full !border !border-gray-200 max-lg:!border-gray-400 !bg-transparent"
+                        [(ngModel)]="accountType">
+                        <option class="py-2" value="Konto osobiste">Konto osobiste</option>
+                        <option class="py-2" value="Konto dla młodych">Konto dla młodych</option>
+                        <option class="py-2" value="Konto wielowalutowe">Konto wielowalutowe</option>
+                        <option class="py-2" value="Konto rodzinne">Konto rodzinne</option>
+                        <option class="py-2" value="Konto senior">Konto senior</option>
+                    </select>
+                    @if(isAccountTypeValid === false) {
+                    <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wybrany typ konta jest
+                        nieprawidłowy.
+                    </p>
+                    }
+                </div>
+                @if(accountType === "Konto wielowalutowe") {
+                <div class="flex flex-col lg:w-[75%] w-[80%] z-20"
+                    [ngClass]="{'mb-6': isAccountCurrencyValid === true || isAccountCurrencyValid === undefined}">
+                    <p class="text-left font-roboto font-light text-sm text-black w-full">Waluta konta
+                    </p>
+                    <select
+                        class="!font-roboto !font-light !text-sm !text-black !rounded-lg !px-5 !py-2 !w-full !border !border-gray-200 max-lg:!border-gray-400 !bg-transparent"
+                        [(ngModel)]="accountCurrency">
+                        <option class="py-2" value="PLN">Polski złoty</option>
+                        <option class="py-2" value="EUR">Euro</option>
+                        <option class="py-2" value="USD">Dolar</option>
+                        <option class="py-2" value="GBP">Funt</option>
+                        <option class="py-2" value="CHF">Frank szwajcarski</option>
+                        <option class="py-2" value="JPY">Jen</option>
+                        <option class="py-2" value="AUD">Dolar australijski</option>
+                        <option class="py-2" value="CAD">Dolar kanadyjski</option>
+                    </select>
+                    @if(isAccountCurrencyValid === false) {
+                    <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wybrana waluta konta jest
+                        nieprawidłowa.
+                    </p>
+                    }
+                </div>
+                }
+                <div class="flex flex-col lg:w-[75%] w-[80%] z-20"
                     [ngClass]="{'mb-6': isEmailValid === true || isEmailValid === undefined}">
                     <p class="text-left font-roboto font-light text-sm text-black w-full">Adres email</p>
                     <input

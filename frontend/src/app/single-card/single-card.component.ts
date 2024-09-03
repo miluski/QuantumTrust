@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
+import { RouterModule } from '@angular/router';
 import { Card } from '../../types/card';
 import { Question } from '../../types/question';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
@@ -14,7 +15,13 @@ import { WindowEventsService } from '../window-events.service';
   selector: 'app-single-card',
   templateUrl: './single-card.component.html',
   styleUrl: './single-card.component.css',
-  imports: [HeaderComponent, FooterComponent, MatDividerModule, CommonModule],
+  imports: [
+    HeaderComponent,
+    FooterComponent,
+    MatDividerModule,
+    CommonModule,
+    RouterModule,
+  ],
   standalone: true,
 })
 export class SingleCardComponent implements OnInit {

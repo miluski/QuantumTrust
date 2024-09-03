@@ -87,4 +87,28 @@ export class VerificationService {
       /^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż\s\-]+(?:\s[0-9]{1,4}[A-Za-z]?(?:\/[0-9]{1,4})?)?$/;
     return address !== undefined && addressPattern.test(address);
   }
+
+  validateAccountType(accountType: string): boolean {
+    return (
+      accountType === 'Konto osobiste' ||
+      accountType === 'Konto dla młodych' ||
+      accountType === 'Konto wielowalutowe' ||
+      accountType === 'Konto rodzinne' ||
+      accountType === 'Konto senior'
+    );
+  }
+
+  validateAccountCurrency(accountCurrency: string): boolean {
+    const validCurrencies = [
+      'PLN',
+      'EUR',
+      'USD',
+      'GBP',
+      'CHF',
+      'JPY',
+      'AUD',
+      'CAD',
+    ];
+    return validCurrencies.includes(accountCurrency);
+  }
 }

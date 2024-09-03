@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
+import { RouterModule } from '@angular/router';
 import { Deposit } from '../../types/deposit';
 import { Step } from '../../types/step';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
@@ -22,6 +23,7 @@ import { WindowEventsService } from '../window-events.service';
     FooterComponent,
     FormsModule,
     CommonModule,
+    RouterModule,
   ],
   standalone: true,
 })
