@@ -63,8 +63,7 @@
             <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch mt-12">
                 @for(account of accountsPaginatedItems; track account.id) {
                 <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-[25%] lg:w-[25%] max-md:w-[70%] hover:bg-gray-200 cursor-pointer p-5"
-                    routerLink="/single-card" routerLinkActive="active" (click)="changeAccountType(account.type)"
-                    (click)="onScrollToTop()">
+                    (click)="changeAccountType(account.type)" (click)="onScrollToTop()">
                     <img class="object-cover h-52 w-auto border rounded-md my-10" src={{account.image}} />
                     <p class="font-salsa font-normal text-black max-sm:text-3xl max-md:text-lg lg:text-3xl max-md:px-5">
                         KONTO
