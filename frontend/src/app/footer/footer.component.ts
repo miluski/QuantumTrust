@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { ProductTypesService } from '../product-types.service';
-import { WindowEventsService } from '../window-events.service';
+import { HeaderStateService } from '../../services/header-state.service';
+import { ProductTypesService } from '../../services/product-types.service';
+import { WindowEventsService } from '../../services/window-events.service';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  styleUrl: './footer.component.css',
   imports: [MatIconModule, RouterModule],
   standalone: true,
 })
@@ -17,17 +17,18 @@ export class FooterComponent {
   private depositType: string = 'timely';
   constructor(
     private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService
+    private windowEventsService: WindowEventsService,
+    private headerStateService: HeaderStateService
   ) {}
   ngOnInit(): void {
     this.productTypesService.currentAccountType.subscribe(
-      (accountType) => (this.accountType = accountType)
+      (accountType: string) => (this.accountType = accountType)
     );
     this.productTypesService.currentCardType.subscribe(
-      (cardType) => (this.cardType = cardType)
+      (cardType: string) => (this.cardType = cardType)
     );
     this.productTypesService.currentDepositType.subscribe(
-      (depositType) => (this.depositType = depositType)
+      (depositType: string) => (this.depositType = depositType)
     );
   }
   changeAccountType(accountType: string): void {
@@ -38,6 +39,9 @@ export class FooterComponent {
   }
   changeDepositType(depositType: string): void {
     this.productTypesService.changeDepositType(depositType);
+  }
+  changeTabName(tabName: string): void {
+    this.headerStateService.changeTabName(tabName);
   }
   onScrollToTop(): void {
     this.windowEventsService.scrollToTop();

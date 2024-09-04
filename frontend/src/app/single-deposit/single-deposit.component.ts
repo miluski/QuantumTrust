@@ -3,6 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
+import { ProductTypesService } from '../../services/product-types.service';
+import { WindowEventsService } from '../../services/window-events.service';
 import { Deposit } from '../../types/deposit';
 import { Step } from '../../types/step';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
@@ -10,8 +12,6 @@ import { BOTTOM_INFORMATION, TOP_INFORMATION } from '../../utils/enums';
 import { singleDepositStepsArray } from '../../utils/steps-objects-arrays';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { ProductTypesService } from '../product-types.service';
-import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-single-deposit',
@@ -41,11 +41,13 @@ export class SingleDepositComponent implements OnInit {
     private windowEventsService: WindowEventsService
   ) {}
   ngOnInit(): void {
-    this.productTypesService.currentDepositType.subscribe((depositType) => {
-      this.depositType = depositType;
-      this.depositObject = this.getDepositObject();
-      this.calculateProfit();
-    });
+    this.productTypesService.currentDepositType.subscribe(
+      (depositType: string) => {
+        this.depositType = depositType;
+        this.depositObject = this.getDepositObject();
+        this.calculateProfit();
+      }
+    );
     this.depositObject = this.getDepositObject();
     this.calculateProfit();
   }

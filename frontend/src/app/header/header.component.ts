@@ -1,15 +1,18 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
-import { HeaderStateService } from '../header-state.service';
+import { HeaderStateService } from '../../services/header-state.service';
+import { GuestHeaderComponent } from '../guest-header/guest-header.component';
+import { GuestMobileHeaderComponent } from '../guest-mobile-header/guest-mobile-header.component';
 import { HomePageComponent } from '../home-page/home-page.component';
+import { UserHeaderComponent } from '../user-header/user-header.component';
+import { UserMobileHeaderComponent } from '../user-mobile-header/user-mobile-header.component';
 
 @Component({
   selector: 'app-header',
@@ -25,61 +28,39 @@ import { HomePageComponent } from '../home-page/home-page.component';
     CommonModule,
     RouterModule,
     HomePageComponent,
+    GuestMobileHeaderComponent,
+    GuestHeaderComponent,
+    UserMobileHeaderComponent,
+    UserHeaderComponent,
   ],
   standalone: true,
 })
-export class HeaderComponent implements OnInit, AfterViewInit {
-  @ViewChild('drawer') drawer?: MatDrawer;
-  tabName: string = 'Konta';
-  isDrawerOpened: boolean = false;
-  currentRoute: string = '';
+export class HeaderComponent implements OnInit {
+  tabName!: string;
+  currentRoute!: string;
 
-  constructor(
-    private headerStateService: HeaderStateService,
-    private breakpointObserver: BreakpointObserver,
-    router: Router
-  ) {
+  constructor(router: Router, private headerStateService: HeaderStateService) {
     this.currentRoute = router.url;
   }
 
   ngOnInit(): void {
     this.headerStateService.currentTabName.subscribe(
-      (tabName) => (this.tabName = tabName)
+      (tabName: string) => (this.tabName = tabName)
     );
-    this.headerStateService.currentIsDrawerOpened.subscribe(
-      (isDrawerOpened) => {
-        this.isDrawerOpened = isDrawerOpened;
-      }
-    );
-    this.breakpointObserver
-      .observe([Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
-      .subscribe((result) => {
-        if (result.matches && this.drawer) {
-          this.drawer.close();
-        }
-      });
-  }
-
-  ngAfterViewInit(): void {
-    if (this.drawer) {
-      this.drawer.openedChange.subscribe((opened) => {
-        this.isDrawerOpened = opened;
-        this.headerStateService.changeIsDrawerOpened(opened);
-      });
-    }
   }
 
   changeTabName(tabName: string): void {
     this.headerStateService.changeTabName(tabName);
   }
 
-  toggleDrawer(): void {
-    if (this.drawer) {
-      this.drawer.toggle();
-    }
-  }
-
-  isDrawerOpen(): boolean {
-    return this.drawer ? this.drawer.opened : false;
+  isGuestPart(): boolean {
+    return (
+      this.currentRoute === '/home-page' ||
+      this.currentRoute === '/login' ||
+      this.currentRoute === '/open-account' ||
+      this.currentRoute === '/single-account' ||
+      this.currentRoute === '/single-deposit' ||
+      this.currentRoute === '/single-card'
+    );
   }
 }

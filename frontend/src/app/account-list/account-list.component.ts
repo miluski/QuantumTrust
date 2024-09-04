@@ -1,22 +1,14 @@
-import {
-  animate,
-  keyframes,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ProductTypesService } from '../../services/product-types.service';
+import { WindowEventsService } from '../../services/window-events.service';
 import { Account } from '../../types/account';
 import { accountsObjectsArray } from '../../utils/accounts-objects-array';
-import { ProductTypesService } from '../product-types.service';
-import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-account-list',
   templateUrl: './account-list.component.html',
-  styleUrl: './account-list.component.css',
   imports: [CommonModule, RouterModule],
   standalone: true,
 })
@@ -31,7 +23,7 @@ export class AccountListComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.productTypeService.currentAccountType.subscribe(
-      (accountType) => (this.accountType = accountType)
+      (accountType: string) => (this.accountType = accountType)
     );
   }
   changeAccountType(accountType: string): void {
