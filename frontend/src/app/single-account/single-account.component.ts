@@ -10,19 +10,18 @@ import {
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { ProductTypesService } from '../../services/product-types.service';
+import { WindowEventsService } from '../../services/window-events.service';
 import { Account } from '../../types/account';
 import { Step } from '../../types/step';
 import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 import { singleAccountStepsArray } from '../../utils/steps-objects-arrays';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { ProductTypesService } from '../product-types.service';
-import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-single-account',
   templateUrl: './single-account.component.html',
-  styleUrl: './single-account.component.css',
   imports: [
     HeaderComponent,
     FooterComponent,
@@ -48,10 +47,12 @@ export class SingleAccountComponent implements OnInit {
     this.setAccountsArray();
   }
   ngOnInit(): void {
-    this.productTypesService.currentAccountType.subscribe((accountType) => {
-      this.accountType = accountType;
-      this.setAccountsArray();
-    });
+    this.productTypesService.currentAccountType.subscribe(
+      (accountType: string) => {
+        this.accountType = accountType;
+        this.setAccountsArray();
+      }
+    );
     this.accountObject = this.getAccountObject();
     this.updateItemsPerPage(window.innerWidth);
     this.setAccountsArray();

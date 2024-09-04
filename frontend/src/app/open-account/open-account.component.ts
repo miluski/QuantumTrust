@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
+import { VerificationService } from '../../services/verification.service';
+import { WindowEventsService } from '../../services/window-events.service';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { VerificationService } from '../services/verification.service';
-import { WindowEventsService } from '../services/window-events.service';
 
 @Component({
   selector: 'app-open-account',

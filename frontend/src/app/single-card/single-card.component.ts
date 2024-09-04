@@ -2,19 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
+import { ProductTypesService } from '../../services/product-types.service';
+import { WindowEventsService } from '../../services/window-events.service';
 import { Card } from '../../types/card';
 import { Question } from '../../types/question';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { ProductTypesService } from '../product-types.service';
-import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-single-card',
   templateUrl: './single-card.component.html',
-  styleUrl: './single-card.component.css',
   imports: [
     HeaderComponent,
     FooterComponent,
@@ -34,7 +33,7 @@ export class SingleCardComponent implements OnInit {
     private windowEventsService: WindowEventsService
   ) {}
   ngOnInit(): void {
-    this.productTypesService.currentCardType.subscribe((cardType) => {
+    this.productTypesService.currentCardType.subscribe((cardType: string) => {
       this.cardType = cardType;
       this.initializeFields();
     });
