@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { VerificationService } from '../../services/verification.service';
+import { WindowEventsService } from '../../services/window-events.service';
+import { UserAccount } from '../../types/user-account';
+import { UserAccountFlags } from '../../types/user-account-flags';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { VerificationService } from '../verification.service';
-import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-login',
@@ -28,16 +30,13 @@ import { WindowEventsService } from '../window-events.service';
 })
 export class LoginComponent implements OnInit {
   currentSite: number = 1;
-  isIdentifierValid!: boolean;
-  isPasswordValid!: boolean;
-  isVerificationCodeValid!: boolean;
-  identifier!: number;
-  password!: string;
-  verificationCode!: number;
   canShake: boolean = false;
+  userAccountFlags: UserAccountFlags = new UserAccountFlags();
+  userAccount: UserAccount = new UserAccount();
   constructor(
     private windowEventsService: WindowEventsService,
-    private verificationService: VerificationService
+    private verificationService: VerificationService,
+    private router: Router
   ) {}
   ngOnInit(): void {
     this.currentSite = 1;
@@ -50,24 +49,28 @@ export class LoginComponent implements OnInit {
   }
   verifyData(): void {
     if (this.currentSite === 1) {
-      this.isIdentifierValid = this.verificationService.validateIdentifier(
-        this.identifier
-      );
-      this.isPasswordValid = this.verificationService.validatePassword(
-        this.password
-      );
+      this.userAccountFlags.isIdentifierValid =
+        this.verificationService.validateIdentifier(
+          this.userAccount.identifier
+        );
+      this.userAccountFlags.isPasswordValid =
+        this.verificationService.validatePassword(this.userAccount.password);
     } else {
-      this.isVerificationCodeValid =
+      this.userAccountFlags.isVerificationCodeValid =
         this.verificationService.validateVerificationCode(
-          this.verificationCode
+          this.userAccount.verificationCode
         );
     }
     this.setCanShake();
   }
+  redirectToMainPage(): void {
+    this.router.navigate(['/main-page']);
+  }
   private setCanShake(): void {
     this.canShake =
-      this.isIdentifierValid === false ||
-      this.isPasswordValid === false ||
-      (this.currentSite === 2 && this.isVerificationCodeValid === false);
+      this.userAccountFlags.isIdentifierValid === false ||
+      this.userAccountFlags.isPasswordValid === false ||
+      (this.currentSite === 2 &&
+        this.userAccountFlags.isVerificationCodeValid === false);
   }
 }

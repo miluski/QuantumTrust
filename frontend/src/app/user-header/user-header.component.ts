@@ -1,0 +1,48 @@
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, RouterModule } from '@angular/router';
+import { HeaderStateService } from '../../services/header-state.service';
+import { UserAccount } from '../../types/user-account';
+
+@Component({
+  selector: 'app-user-header',
+  templateUrl: './user-header.component.html',
+  imports: [CommonModule, RouterModule, MatIconModule],
+  standalone: true,
+})
+export class UserHeaderComponent implements OnInit {
+  currentRoute: string = '/main-page';
+  tabName: string = 'Finanse';
+  isMenuVisible: boolean = false;
+  avatarError: boolean = false;
+  user: UserAccount = new UserAccount();
+  constructor(router: Router, private headerStateService: HeaderStateService) {
+    this.currentRoute = router.url;
+    this.user.name = 'Maksymilian';
+    this.user.surname = 'Sowula';
+  }
+  ngOnInit(): void {
+    this.headerStateService.changeTabName('Finanse');
+    this.headerStateService.currentTabName.subscribe(
+      (currentTabName: string) => (this.tabName = currentTabName)
+    );
+  }
+  changeTabName(tabName: string) {
+    this.headerStateService.changeTabName(tabName);
+  }
+  toggleDrawer(): void {
+    this.headerStateService.toggleDrawer();
+  }
+  toggleMenuVisible(): void {
+    this.isMenuVisible = !this.isMenuVisible;
+  }
+  getInitials(): string {
+    const initials = this.user.name.charAt(0) + this.user.surname.charAt(0);
+    return initials.toUpperCase();
+  }
+  getRandomColor(): string {
+    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8C33'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+}

@@ -3,10 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
+import { VerificationService } from '../../services/verification.service';
+import { WindowEventsService } from '../../services/window-events.service';
+import { UserAccount } from '../../types/user-account';
+import { UserAccountFlags } from '../../types/user-account-flags';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { VerificationService } from '../verification.service';
-import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-open-account',
@@ -23,74 +25,73 @@ import { WindowEventsService } from '../window-events.service';
   standalone: true,
 })
 export class OpenAccountComponent {
-  isEmailValid!: boolean;
-  isPhoneNumberValid!: boolean;
-  isNameValid!: boolean;
-  isSurnameValid!: boolean;
-  isPeselValid!: boolean;
-  isIdentifyDocumentTypeValid!: boolean;
-  isIdentifyDocumentSerieValid!: boolean;
-  isAddressValid!: boolean;
-  isPasswordValid!: boolean;
-  isRepeatedPasswordValid!: boolean;
   canShake: boolean = false;
-  email!: string;
-  phoneNumber!: string;
-  name!: string;
-  surname!: string;
-  pesel!: number;
-  identifyDocumentType: string = 'Dowód Osobisty';
-  identifyDocumentSerie!: string;
-  address!: string;
-  password!: string;
-  repeatedPassword!: string;
+  userAccountFlags: UserAccountFlags = new UserAccountFlags();
+  userAccount: UserAccount = new UserAccount();
   constructor(
     private windowEventsService: WindowEventsService,
     private verificationService: VerificationService
-  ) {}
+  ) {
+    this.userAccount.identityDocumentType = 'Dowód Osobisty';
+    this.userAccount.type = 'Konto osobiste';
+    this.userAccount.currency = 'PLN';
+  }
   onScrollToTop(): void {
     this.windowEventsService.scrollToTop();
   }
   verifyData(): void {
-    this.isEmailValid = this.verificationService.validateEmail(this.email);
-    this.isPhoneNumberValid = this.verificationService.validatePhoneNumber(
-      this.phoneNumber
+    this.userAccountFlags.isEmailValid = this.verificationService.validateEmail(
+      this.userAccount.email
     );
-    this.isNameValid = this.verificationService.validateFirstName(this.name);
-    this.isSurnameValid = this.verificationService.validateLastName(
-      this.surname
+    this.userAccountFlags.isPhoneNumberValid =
+      this.verificationService.validatePhoneNumber(
+        String(this.userAccount.phoneNumber)
+      );
+    this.userAccountFlags.isNameValid =
+      this.verificationService.validateFirstName(this.userAccount.name);
+    this.userAccountFlags.isSurnameValid =
+      this.verificationService.validateLastName(this.userAccount.surname);
+    this.userAccountFlags.isPeselValid = this.verificationService.validatePESEL(
+      this.userAccount.pesel
     );
-    this.isPeselValid = this.verificationService.validatePESEL(this.pesel);
-    this.isIdentifyDocumentTypeValid =
+    this.userAccountFlags.isIdentityDocumentTypeValid =
       this.verificationService.validateIdentityDocumentType(
-        this.identifyDocumentType
+        this.userAccount.identityDocumentType
       );
-    this.isIdentifyDocumentSerieValid =
-      this.verificationService.validateDocument(this.identifyDocumentSerie);
-    this.isAddressValid = this.verificationService.validateAddress(
-      this.address
-    );
-    this.isPasswordValid = this.verificationService.validatePassword(
-      this.password
-    );
-    this.isRepeatedPasswordValid =
+    this.userAccountFlags.isIdentityDocumentSerieValid =
+      this.verificationService.validateDocument(
+        this.userAccount.identityDocumentSerie
+      );
+    this.userAccountFlags.isAddressValid =
+      this.verificationService.validateAddress(this.userAccount.address);
+    this.userAccountFlags.isPasswordValid =
+      this.verificationService.validatePassword(this.userAccount.password);
+    this.userAccountFlags.isRepeatedPasswordValid =
       this.verificationService.validateRepeatedPassword(
-        this.repeatedPassword,
-        this.password
+        this.userAccount.repeatedPassword,
+        this.userAccount.password
       );
+    this.userAccountFlags.isAccountCurrencyValid =
+      this.verificationService.validateAccountCurrency(
+        this.userAccount.currency
+      );
+    this.userAccountFlags.isAccountTypeValid =
+      this.verificationService.validateAccountType(this.userAccount.type);
     this.setCanShake();
   }
   private setCanShake(): void {
     this.canShake =
-      this.isEmailValid === false ||
-      this.isPhoneNumberValid === false ||
-      this.isNameValid === false ||
-      this.isSurnameValid === false ||
-      this.isPeselValid === false ||
-      this.isIdentifyDocumentTypeValid === false ||
-      this.isIdentifyDocumentSerieValid === false ||
-      this.isAddressValid === false ||
-      this.isRepeatedPasswordValid === false ||
-      this.isPasswordValid === false;
+      this.userAccountFlags.isEmailValid === false ||
+      this.userAccountFlags.isPhoneNumberValid === false ||
+      this.userAccountFlags.isNameValid === false ||
+      this.userAccountFlags.isSurnameValid === false ||
+      this.userAccountFlags.isPeselValid === false ||
+      this.userAccountFlags.isIdentityDocumentTypeValid === false ||
+      this.userAccountFlags.isIdentityDocumentSerieValid === false ||
+      this.userAccountFlags.isAddressValid === false ||
+      this.userAccountFlags.isRepeatedPasswordValid === false ||
+      this.userAccountFlags.isPasswordValid === false ||
+      this.userAccountFlags.isAccountCurrencyValid === false ||
+      this.userAccountFlags.isAccountTypeValid === false;
   }
 }

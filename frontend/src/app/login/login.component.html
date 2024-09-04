@@ -9,8 +9,9 @@
                     <p class="text-left font-roboto font-light text-sm text-black w-full">Identyfikator</p>
                     <input
                         class="no-arrows font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
-                        type="number" min="9999999" max="99999999" placeholder="12345678" [(ngModel)]="identifier" />
-                    @if(isIdentifierValid === false) {
+                        type="number" min="9999999" max="99999999" placeholder="12345678"
+                        [(ngModel)]="userAccount.identifier" />
+                    @if(userAccountFlags.isIdentifierValid === false) {
                     <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wprowadzony identyfikator jest
                         nieprawidłowy.
                     </p>
@@ -20,8 +21,8 @@
                     <p class="text-left font-roboto font-light text-sm text-black w-full">Hasło</p>
                     <input
                         class="font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
-                        type="password" placeholder="********" [(ngModel)]="password" />
-                    @if(isPasswordValid === false) {
+                        type="password" placeholder="********" [(ngModel)]="userAccount.password" />
+                    @if(userAccountFlags.isPasswordValid === false) {
                     <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wprowadzone hasło jest
                         nieprawidłowe.</p>
                     }
@@ -35,8 +36,9 @@
                     <p class="text-left font-roboto font-light text-sm text-black w-full">Kod uwierzytelniający</p>
                     <input
                         class="no-arrows font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
-                        type="number" min="99999" max="999999" placeholder="123456" [(ngModel)]="verificationCode" />
-                    @if(isVerificationCodeValid === false) {
+                        type="number" min="99999" max="999999" placeholder="123456"
+                        [(ngModel)]="userAccount.verificationCode" />
+                    @if(userAccountFlags.isVerificationCodeValid === false) {
                     <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wprowadzony kod weryfikacyjny jest
                         nieprawidłowy.</p>
                     }
@@ -44,9 +46,8 @@
                 }
                 <button
                     class="lg:w-[75%] w-[80%] lg:mb-10 mb-10 border text-3xl border-white text-white font-salsa rounded-full py-5 hover:bg-gray-600 bg-own-gray mx-5 self-center z-20"
-                    [ngClass]="{'shake': canShake}"
-                    (click)="verifyData()"
-                    (click)="currentSite === 1 ? isIdentifierValid && isPasswordValid ? changeCurrentSite() : null : isVerificationCodeValid ? null : null">
+                    [ngClass]="{'shake': canShake}" (click)="verifyData()"
+                    (click)="currentSite === 1 ? userAccountFlags.isIdentifierValid && userAccountFlags.isPasswordValid ? changeCurrentSite() : null : userAccountFlags.isVerificationCodeValid ? redirectToMainPage() : null">
                     {{currentSite === 1 ? "Dalej" : "Zaloguj się"}}
                 </button>
                 <mat-divider class="lg:w-[75%] w-[80%] !border-t-gray-300 my-5 z-20 max-lg:!border-t-gray-400" />
