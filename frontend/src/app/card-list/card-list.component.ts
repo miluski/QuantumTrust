@@ -2,16 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { ProductTypesService } from '../../services/product-types.service';
+import { WindowEventsService } from '../../services/window-events.service';
 import { Card } from '../../types/card';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
-import { ProductTypesService } from '../product-types.service';
-import { WindowEventsService } from '../window-events.service';
 
 @Component({
   selector: 'app-card-list',
   templateUrl: './card-list.component.html',
-  styleUrl: './card-list.component.css',
   imports: [MatIconModule, CommonModule, RouterModule],
   standalone: true,
 })
@@ -29,7 +28,7 @@ export class CardListComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.productTypesService.currentCardType.subscribe(
-      (cardType) => (this.cardType = cardType)
+      (cardType: string) => (this.cardType = cardType)
     );
     this.updateItemsPerPage(window.innerWidth);
   }

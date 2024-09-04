@@ -1,0 +1,49 @@
+<mat-drawer-container class="!fixed !right-0 !h-[100%] !w-full !z-[1000] !bg-black"
+    [ngClass]="{'!hidden': drawer.opened === false, '!block': drawer.opened === true}">
+    <mat-drawer #drawer mode="over" class="!bg-black !w-full !h-[100%] !rounded-none" position="end">
+        <div class="flex flex-col w-full h-screen items-center justify-center bg-black pb-32">
+            <div class="flex flex-col p-10 space-y-5">
+                @if(!avatarError) {
+                <img class="rounded-full min-w-12 w-12 h-12 self-center" alt="user-avatar" [src]="user.avatarUrl"
+                    (error)="avatarError = true" />
+                }
+                @else {
+                <div class="rounded-full min-w-12 w-12 h-12 flex items-center justify-center text-white self-center"
+                    [style.background-color]="getRandomColor()">
+                    {{ getInitials() }}
+                </div>
+                }
+                <p class="font-roboto font-light text-xl text-white text-nowrap">{{user.name}} {{user.surname}}</p>
+            </div>
+            <p class="hover:text-white font-roboto text-xl font-light transition-colors duration-300 cursor-pointer"
+                [ngClass]="{
+                    'text-white': tabName === 'Finanse', 
+                    'text-own-gray': tabName !== 'Finanse',
+                    'hidden' : currentRoute !== '/main-page'
+                }" (click)="changeTabName('Finanse'); toggleDrawer();">
+                Finanse
+            </p>
+            <p class="mt-5 hover:text-white font-roboto text-xl font-light transition-colors duration-300 cursor-pointer"
+                [ngClass]="{
+                    'text-white': tabName === 'Transakcje', 
+                    'text-own-gray': tabName !== 'Transakcje',
+                    'hidden' : currentRoute !== '/main-page'
+                }" (click)="changeTabName('Transakcje'); toggleDrawer();">
+                Transakcje
+            </p>
+            <p class="mt-5 hover:text-white font-roboto text-xl font-light transition-colors duration-300 cursor-pointer"
+                [ngClass]="{
+                    'text-white': tabName === 'Ustawienia', 
+                    'text-own-gray': tabName !== 'Ustawienia', 
+                    'hidden' : currentRoute !== '/main-page'
+                }" (click)="changeTabName('Ustawienia'); toggleDrawer();">
+                Ustawienia
+            </p>
+            <button class="mt-5 border border-own-gray text-own-gray font-salsa rounded-md py-2 px-1 hover:bg-gray-500"
+                [ngClass]="{'!hidden' : currentRoute !== '/main-page'}" routerLink="/home-page"
+                routerLinkActive="active" (click)="changeTabName('Konta')">
+                Wyloguj się
+            </button>
+        </div>
+    </mat-drawer>
+</mat-drawer-container>

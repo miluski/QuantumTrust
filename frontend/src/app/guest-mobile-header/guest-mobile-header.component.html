@@ -1,0 +1,40 @@
+<mat-drawer-container class="!fixed !right-0 !h-[100%] !w-full !z-[1000] !bg-black"
+    [ngClass]="{'!hidden': drawer.opened === false, '!block': drawer.opened === true}">
+    <mat-drawer #drawer mode="over" class="!bg-black !w-full !h-[100%] !rounded-none" position="end">
+        <div class="flex flex-col w-full h-screen items-center justify-center bg-black">
+            <p class="hover:text-white font-roboto text-xl font-light transition-colors duration-300 cursor-pointer"
+                [ngClass]="{
+                    'text-white': tabName === 'Konta', 
+                    'text-own-gray': tabName !== 'Konta',
+                    'hidden' : currentRoute !== '/home-page'
+                }" (click)="changeTabName('Konta'); toggleDrawer();">
+                Konta
+            </p>
+            <p class="mt-5 hover:text-white font-roboto text-xl font-light transition-colors duration-300 cursor-pointer"
+                [ngClass]="{
+                    'text-white': tabName === 'Lokaty', 
+                    'text-own-gray': tabName !== 'Lokaty',
+                    'hidden' : currentRoute !== '/home-page'
+                }" (click)="changeTabName('Lokaty'); toggleDrawer();">
+                Lokaty
+            </p>
+            <p class="mt-5 hover:text-white font-roboto text-xl font-light transition-colors duration-300 cursor-pointer"
+                [ngClass]="{
+                    'text-white': tabName === 'Karty', 
+                    'text-own-gray': tabName !== 'Karty', 
+                    'hidden' : currentRoute !== '/home-page'
+                }" (click)="changeTabName('Karty'); toggleDrawer();">
+                Karty
+            </p>
+            <button class="mt-5 border border-white text-white font-salsa rounded-md py-2 px-1 hover:bg-gray-500"
+                [ngClass]="{'!hidden' : currentRoute === '/open-account'}" routerLink="/open-account"
+                routerLinkActive="active">
+                Otwórz konto
+            </button>
+            <button class="mt-5 border border-gray-500 text-gray-500 font-salsa rounded-md py-2 px-4 hover:bg-white"
+                [ngClass]="{'!hidden' : currentRoute === '/login'}" routerLink="/login" routerLinkActive="active">
+                Zaloguj się
+            </button>
+        </div>
+    </mat-drawer>
+</mat-drawer-container>

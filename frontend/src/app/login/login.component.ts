@@ -5,12 +5,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
+import { VerificationService } from '../../services/verification.service';
+import { WindowEventsService } from '../../services/window-events.service';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { VerificationService } from '../services/verification.service';
-import { WindowEventsService } from '../services/window-events.service';
 
 @Component({
   selector: 'app-login',
