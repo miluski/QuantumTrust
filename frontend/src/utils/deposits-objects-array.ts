@@ -2,7 +2,7 @@ import { Deposit } from "../types/deposit";
 
 export const depositsObjectArray: Deposit[] = [
   {
-    id: 1,
+    id: "1",
     type: 'timely',
     percent: 3,
     image: 'timely-deposit.png',
@@ -11,7 +11,7 @@ export const depositsObjectArray: Deposit[] = [
     shortDescription: 'Oszczędzaj i żyj lepiej!'
   },
   {
-    id: 2,
+    id: "2",
     type: 'mobile',
     percent: 5,
     image: 'mobile-deposit.png',
@@ -20,7 +20,7 @@ export const depositsObjectArray: Deposit[] = [
     shortDescription: 'Zyskaj więcej z lokatą mobilną!'
   },
   {
-    id: 3,
+    id: "3",
     type: 'family',
     percent: 2.5,
     image: 'family-deposit.png',
@@ -29,7 +29,7 @@ export const depositsObjectArray: Deposit[] = [
     shortDescription: 'Oszczędzaj dla całej rodziny!'
   },
   {
-    id: 4,
+    id: "4",
     type: 'progressive',
     percent: 4,
     image: 'progressive-deposit.png',

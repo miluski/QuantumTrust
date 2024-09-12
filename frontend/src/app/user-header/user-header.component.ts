@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderStateService } from '../../services/header-state.service';
+import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 
 @Component({
@@ -16,11 +17,16 @@ export class UserHeaderComponent implements OnInit {
   tabName: string = 'Finanse';
   isMenuVisible: boolean = false;
   avatarError: boolean = false;
-  user: UserAccount = new UserAccount();
-  constructor(router: Router, private headerStateService: HeaderStateService) {
+  user: UserAccount;
+  avatarColor: string;
+  constructor(
+    router: Router,
+    private headerStateService: HeaderStateService,
+    private userService: UserService
+  ) {
     this.currentRoute = router.url;
-    this.user.name = 'Maksymilian';
-    this.user.surname = 'Sowula';
+    this.user = userService.userAccount;
+    this.avatarColor = this.getRandomColor();
   }
   ngOnInit(): void {
     this.headerStateService.changeTabName('Finanse');

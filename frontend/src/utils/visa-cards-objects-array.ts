@@ -14,6 +14,8 @@ export const visaCardsObjectsArray: Card[] = [
       'Możliwość szybkiej wymiany i zastrzeżenia starej karty w przypadku jej zgubienia',
     ],
     limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
+    backImage: 'visa-back.png',
+    showingCardSite: 'front',
   },
   {
     id: 2,
@@ -30,6 +32,8 @@ export const visaCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [15000, 10], cashTransactions: [7000, 5] },
     ],
+    backImage: 'visa-back.png',
+    showingCardSite: 'front',
   },
   {
     id: 3,
@@ -46,6 +50,8 @@ export const visaCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [20000, 15], cashTransactions: [10000, 8] },
     ],
+    backImage: 'visa-back.png',
+    showingCardSite: 'front',
   },
   {
     id: 4,
@@ -62,5 +68,7 @@ export const visaCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [100000, 5], cashTransactions: [50000, 3] },
     ],
+    backImage: 'visa-back.png',
+    showingCardSite: 'front',
   },
 ];
