@@ -1,3 +1,10 @@
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
@@ -20,6 +27,14 @@ import { HeaderComponent } from '../header/header.component';
     MatDividerModule,
     CommonModule,
     RouterModule,
+  ],
+  animations: [
+    trigger('rotateCard', [
+      state('front', style({ transform: 'rotateY(0)' })),
+      state('back', style({ transform: 'rotateY(180deg)' })),
+      transition('front => back', [animate('0.6s')]),
+      transition('back => front', [animate('0.6s')]),
+    ]),
   ],
   standalone: true,
 })

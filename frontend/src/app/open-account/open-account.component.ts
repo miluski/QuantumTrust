@@ -9,6 +9,7 @@ import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
+import { Account } from '../../types/account';
 
 @Component({
   selector: 'app-open-account',
@@ -28,13 +29,14 @@ export class OpenAccountComponent {
   canShake: boolean = false;
   userAccountFlags: UserAccountFlags = new UserAccountFlags();
   userAccount: UserAccount = new UserAccount();
+  account: Account = new Account();
   constructor(
     private windowEventsService: WindowEventsService,
     private verificationService: VerificationService
   ) {
     this.userAccount.identityDocumentType = 'Dowód Osobisty';
-    this.userAccount.type = 'Konto osobiste';
-    this.userAccount.currency = 'PLN';
+    this.account.type = 'Konto osobiste';
+    this.account.currency = 'PLN';
   }
   onScrollToTop(): void {
     this.windowEventsService.scrollToTop();
@@ -73,10 +75,10 @@ export class OpenAccountComponent {
       );
     this.userAccountFlags.isAccountCurrencyValid =
       this.verificationService.validateAccountCurrency(
-        this.userAccount.currency
+        this.account.currency as string
       );
     this.userAccountFlags.isAccountTypeValid =
-      this.verificationService.validateAccountType(this.userAccount.type);
+      this.verificationService.validateAccountType(this.account.type);
     this.setCanShake();
   }
   private setCanShake(): void {

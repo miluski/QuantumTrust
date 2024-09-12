@@ -12,7 +12,7 @@
                     </p>
                     <select
                         class="!font-roboto !font-light !text-sm !text-black !rounded-lg !px-5 !py-2 !w-full !border !border-gray-200 max-lg:!border-gray-400 !bg-transparent"
-                        [(ngModel)]="userAccount.type">
+                        [(ngModel)]="account.type">
                         <option class="py-2" value="Konto osobiste">Konto osobiste</option>
                         <option class="py-2" value="Konto dla młodych">Konto dla młodych</option>
                         <option class="py-2" value="Konto wielowalutowe">Konto wielowalutowe</option>
@@ -25,14 +25,14 @@
                     </p>
                     }
                 </div>
-                @if(userAccount.type === "Konto wielowalutowe") {
+                @if(account.type === "Konto wielowalutowe") {
                 <div class="flex flex-col lg:w-[75%] w-[80%] z-20"
                     [ngClass]="{'mb-6': userAccountFlags.isAccountCurrencyValid === true || userAccountFlags.isAccountCurrencyValid === undefined}">
                     <p class="text-left font-roboto font-light text-sm text-black w-full">Waluta konta
                     </p>
                     <select
                         class="!font-roboto !font-light !text-sm !text-black !rounded-lg !px-5 !py-2 !w-full !border !border-gray-200 max-lg:!border-gray-400 !bg-transparent"
-                        [(ngModel)]="userAccount.currency">
+                        [(ngModel)]="account.currency">
                         <option class="py-2" value="PLN">Polski złoty</option>
                         <option class="py-2" value="EUR">Euro</option>
                         <option class="py-2" value="USD">Dolar</option>

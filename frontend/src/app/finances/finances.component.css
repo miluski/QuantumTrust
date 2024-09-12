@@ -1,0 +1,31 @@
+@media (min-width: 1400px) {
+  .xxl\:flex-row {
+    flex-direction: row;
+  }
+  .xxl\:w-full {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1400px) {
+  .max-xxl\:w-\[85\%\] {
+    width: 85%;
+  }
+}
+
+.inset-t-30-b-50 {
+  top: 30%;
+  bottom: 50%;
+}
+
+.text-brown {
+  color: rgba(162, 132, 94, 255);
+}
+
+.hover\:text-light-brown:hover {
+  color: rgba(216, 118, 7, 255);
+}
+
+.left-31 {
+  left: 7.75rem;
+}

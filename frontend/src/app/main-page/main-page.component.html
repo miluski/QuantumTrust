@@ -1,3 +1,9 @@
 <app-header />
-<p class="h-screen">main-page works!</p>
+<div class="flex flex-col m-0 p-0 overflow-hidden scroll-smooth">
+    <main class="flex-grow flex justify-center text-center bg-black text-white w-full">
+        @if(tabName==='Finanse') {
+        <app-finances />
+        }
+    </main>
+</div>
 <app-footer />

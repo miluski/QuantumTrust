@@ -32,4 +32,7 @@ export class AccountListComponent implements OnInit {
   onScrollToTop(): void {
     this.windowEventsService.scrollToTop();
   }
+  isAccountIdEven(accountId: string): boolean {
+    return Number(accountId) % Number(2) === Number(0);
+  }
 }

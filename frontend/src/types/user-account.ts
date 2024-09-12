@@ -1,7 +1,5 @@
 export class UserAccount {
   identifier!: number;
-  type!: string;
-  currency!: string;
   email!: string;
   phoneNumber!: number;
   name!: string;

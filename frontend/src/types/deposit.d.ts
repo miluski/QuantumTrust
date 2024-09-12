@@ -1,7 +1,5 @@
-import { NumberLiteralType } from "typescript";
-
 export type Deposit = {
-  id: number;
+  id: string;
   type: string;
   percent: number;
   image: string;
@@ -9,4 +7,6 @@ export type Deposit = {
   shortDescription: string;
   percentFrom?: number;
   percentTo?: number;
+  balance?: number;
+  currency?: string;
 };

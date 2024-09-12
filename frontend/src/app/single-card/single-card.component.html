@@ -7,8 +7,36 @@
                 <div class="flex flex-row max-md:flex-col w-full md:space-x-20 mb-12">
                     <div class="flex flex-col items-center md:w-[50%] max-md:mb-12">
                         <p class="font-roboto font-normal text-3xl">VISA {{visaCardObject.type}}</p>
-                        <img class="object-cover w-auto h-44 rounded-md my-10" src={{visaCardObject.image}}
-                            alt="visaCardImage" />
+                        <div class="flex flex-col relative items-center cursor-pointer z-30"
+                            [@rotateCard]="visaCardObject.showingCardSite"
+                            (click)="visaCardObject.showingCardSite = visaCardObject.showingCardSite === 'front' ? 'back' : 'front'">
+                            <img class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm"
+                                [src]="visaCardObject.showingCardSite === 'front' ? visaCardObject.image : visaCardObject.backImage"
+                                alt="single-card">
+                            @if(visaCardObject.showingCardSite === 'front') {
+                            <div
+                                class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
+                                <img class="w-4 h-4" src="icon.png" alt="Quantum Trust Logo" />
+                                <p class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
+                            </div>
+                            <p
+                                class="font-courier text-silver text-lg self-start text-shadow absolute z-20 bottom-16 pb-2.5 left-8">
+                                1234 5678 9012 3456</p>
+                            <p
+                                class="font-courier text-silver self-start text-shadow absolute z-20 bottom-12 pb-1 left-28">
+                                01/24
+                            </p>
+                            <p
+                                class="font-courier text-silver self-start text-sm text-shadow absolute z-20 bottom-6 pb-2.5 left-8">
+                                A.MILLER
+                            </p>
+                            }
+                            @if(visaCardObject.showingCardSite === 'back') {
+                            <p
+                                class="absolute font-roboto font-normal text-xs text-black top-20 pt-5 z-30 counter-rotate left-24 pr-2.5">
+                                123</p>
+                            }
+                        </div>
                         <ul class="md:w-[60%] w-3/4 space-y-5 font-roboto font-light text-xl list-disc">
                             @for(benefit of visaCardObject.benefits; track benefit) {
                             <li>{{benefit}}</li>
@@ -17,8 +45,38 @@
                     </div>
                     <div class="flex flex-col items-center md:w-[50%]">
                         <p class="font-roboto font-normal text-3xl">MASTERCARD {{mastercardObject.type}}</p>
-                        <img class="object-cover w-auto h-44 rounded-md my-10" src={{mastercardObject.image}}
-                            alt="mastercardImage" />
+                        <div class="flex flex-col relative items-center cursor-pointer z-30"
+                            [@rotateCard]="mastercardObject.showingCardSite"
+                            (click)="mastercardObject.showingCardSite = mastercardObject.showingCardSite === 'front' ? 'back' : 'front'">
+                            <img class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm"
+                                [src]="mastercardObject.showingCardSite === 'front' ? mastercardObject.image : mastercardObject.backImage"
+                                alt="single-card">
+                            @if(mastercardObject.showingCardSite === 'front') {
+                            <div
+                                class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
+                                <img class="w-4 h-4" src="icon.png" alt="Quantum Trust Logo" />
+                                <p class="font-salsa text-xxs leading-none pt-2 pl-2" [ngClass]="{
+                                    'text-black': mastercardObject.image === 'mastercard-standard.png'}">Quantum Trust
+                                </p>
+                            </div>
+                            <p
+                                class="font-courier text-silver text-lg self-start text-shadow absolute z-20 bottom-16 pb-2.5 left-3">
+                                1234 5678 9012 3456</p>
+                            <p
+                                class="font-courier text-silver self-start text-shadow absolute z-20 bottom-8 pb-2.5 left-3">
+                                01/24
+                            </p>
+                            <p
+                                class="font-courier text-silver self-start text-sm text-shadow absolute z-20 bottom-5 pb-2.5 left-3">
+                                A.MILLER
+                            </p>
+                            }
+                            @if(mastercardObject.showingCardSite === 'back') {
+                            <p
+                                class="absolute font-roboto font-normal text-xs text-black top-20 pt-6 z-30 counter-rotate left-24 pr-2">
+                                123</p>
+                            }
+                        </div>
                         <ul class="md:w-[60%] w-3/4 space-y-5 font-roboto font-light text-xl list-disc">
                             @for(benefit of mastercardObject.benefits; track benefit) {
                             <li>{{benefit}}</li>
