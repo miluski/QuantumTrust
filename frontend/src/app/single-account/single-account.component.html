@@ -52,12 +52,12 @@
             <div class="absolute inset-y-[60%] flex items-center w-full px-1 z-10">
                 <button class="font-bold py-5 px-4 max-md:px-2 rounded-l text-white 2xl:mx-[5%]"
                     (click)="previousPage()" [hidden]="currentPage === 1">
-                    <mat-icon>arrow_back</mat-icon>
+                    <mat-icon class="cursor-pointer">arrow_back</mat-icon>
                 </button>
                 <div class="flex-grow"></div>
                 <button class="font-bold py-5 px-4 max-md:px-2 rounded-r text-white 2xl:mx-[5%]" (click)="nextPage()"
                     [hidden]="currentPage === totalPages">
-                    <mat-icon>arrow_forward</mat-icon>
+                    <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
                 </button>
             </div>
             <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch mt-12">

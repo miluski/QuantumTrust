@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { CardIdFormatPipe } from '../../pipes/card-id-format.pipe';
 import { ProductTypesService } from '../../services/product-types.service';
 import { WindowEventsService } from '../../services/window-events.service';
 import { Card } from '../../types/card';
@@ -11,7 +12,8 @@ import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 @Component({
   selector: 'app-card-list',
   templateUrl: './card-list.component.html',
-  imports: [MatIconModule, CommonModule, RouterModule],
+  styleUrl: './card-list.component.css',
+  imports: [MatIconModule, CommonModule, RouterModule, CardIdFormatPipe],
   standalone: true,
 })
 export class CardListComponent implements OnInit {

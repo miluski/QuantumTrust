@@ -14,6 +14,8 @@ export const mastercardCardsObjectsArray: Card[] = [
       'Bezpieczeństwo transakcji online zapewnione za pomocą technologii Mastercard secure code',
     ],
     limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
+    backImage: 'mastercard-standard-back.png',
+    showingCardSite: 'front',
   },
   {
     id: 2,
@@ -27,7 +29,11 @@ export const mastercardCardsObjectsArray: Card[] = [
       'Możliwość uczestnictwa w programach lojalnościowych',
       'Bezpłatne wypłaty z bankomatów na terenie kraju',
     ],
-    limits: [{ internetTransactions: [15000, 10], cashTransactions: [7000, 5] }],
+    limits: [
+      { internetTransactions: [15000, 10], cashTransactions: [7000, 5] },
+    ],
+    backImage: 'mastercard-student-back.png',
+    showingCardSite: 'front',
   },
   {
     id: 3,
@@ -41,7 +47,11 @@ export const mastercardCardsObjectsArray: Card[] = [
       'Zniżki na wynajem samochodów',
       'Całodobowa pomoc w nagłych wypadkach za granicą',
     ],
-    limits: [{ internetTransactions: [20000, 15], cashTransactions: [10000, 8] }],
+    limits: [
+      { internetTransactions: [20000, 15], cashTransactions: [10000, 8] },
+    ],
+    backImage: 'mastercard-travel-back.png',
+    showingCardSite: 'front',
   },
   {
     id: 4,
@@ -55,6 +65,10 @@ export const mastercardCardsObjectsArray: Card[] = [
       'Programy lojalnościowe dla firm',
       'Wsparcie dedykowanego opiekuna klienta',
     ],
-    limits: [{ internetTransactions: [100000, 5], cashTransactions: [50000, 3] }],
+    limits: [
+      { internetTransactions: [100000, 5], cashTransactions: [50000, 3] },
+    ],
+    backImage: 'mastercard-business-back.png',
+    showingCardSite: 'front',
   },
 ];

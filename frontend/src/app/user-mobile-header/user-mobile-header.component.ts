@@ -17,10 +17,12 @@ export class UserMobileHeaderComponent {
   tabName: string = 'Konta';
   avatarError: boolean = false;
   user: UserAccount = new UserAccount();
+  avatarColor: string;
   constructor(router: Router, private headerStateService: HeaderStateService) {
     this.currentRoute = router.url;
     this.user.name = 'Maksymilian';
     this.user.surname = 'Sowula';
+    this.avatarColor = this.getRandomColor();
   }
   ngOnInit(): void {
     this.headerStateService.currentTabName.subscribe(

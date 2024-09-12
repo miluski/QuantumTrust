@@ -32,4 +32,7 @@ export class DepositListComponent implements OnInit {
   onScrollToTop(): void {
     this.windowEventsService.scrollToTop();
   }
+  isDepositIdHigherThanTwo(depositId: string): boolean {
+    return Number(depositId) > Number(2);
+  }
 }
