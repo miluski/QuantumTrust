@@ -118,6 +118,7 @@ export class FinancesComponent implements AfterContentChecked, OnInit {
       this.accountsPerPage = 3;
     } else if(windowWidth >= 2100) {
       this.accountsPerPage = 4;
+      this.cardsPerPage = 4;
     } else {
       this.accountsPerPage = 2;
       this.cardsPerPage = 2;
