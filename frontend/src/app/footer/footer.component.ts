@@ -12,9 +12,9 @@ import { WindowEventsService } from '../../services/window-events.service';
   standalone: true,
 })
 export class FooterComponent {
-  private accountType: string = 'personal';
-  private cardType: string = 'standard';
-  private depositType: string = 'timely';
+  accountType: string = 'personal';
+  cardType: string = 'standard';
+  depositType: string = 'timely';
   constructor(
     private productTypesService: ProductTypesService,
     private windowEventsService: WindowEventsService,

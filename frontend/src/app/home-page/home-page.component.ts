@@ -8,6 +8,7 @@ import { CardListComponent } from '../card-list/card-list.component';
 import { DepositListComponent } from '../deposit-list/deposit-list.component';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
+import { GuestMobileHeaderComponent } from "../guest-mobile-header/guest-mobile-header.component";
 
 @Component({
   selector: 'app-home-page',
@@ -20,7 +21,8 @@ import { HeaderComponent } from '../header/header.component';
     RouterModule,
     DepositListComponent,
     CardListComponent,
-  ],
+    GuestMobileHeaderComponent
+],
   standalone: true,
 })
 export class HomePageComponent implements OnInit {

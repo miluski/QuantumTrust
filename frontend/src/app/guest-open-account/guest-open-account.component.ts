@@ -5,16 +5,15 @@ import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { VerificationService } from '../../services/verification.service';
 import { WindowEventsService } from '../../services/window-events.service';
+import { Account } from '../../types/account';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { Account } from '../../types/account';
 
 @Component({
-  selector: 'app-open-account',
-  templateUrl: './open-account.component.html',
-  styleUrl: './open-account.component.css',
+  selector: 'app-guest-open-account',
+  templateUrl: './guest-open-account.component.html',
   imports: [
     HeaderComponent,
     FooterComponent,
@@ -25,7 +24,7 @@ import { Account } from '../../types/account';
   ],
   standalone: true,
 })
-export class OpenAccountComponent {
+export class GuestOpenAccountComponent {
   canShake: boolean = false;
   userAccountFlags: UserAccountFlags = new UserAccountFlags();
   userAccount: UserAccount = new UserAccount();

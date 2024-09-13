@@ -12,18 +12,19 @@ import { FinancesComponent } from './finances/finances.component';
 import { FooterComponent } from './footer/footer.component';
 import { GuestHeaderComponent } from './guest-header/guest-header.component';
 import { GuestMobileHeaderComponent } from './guest-mobile-header/guest-mobile-header.component';
+import { GuestOpenAccountComponent } from './guest-open-account/guest-open-account.component';
 import { HeaderComponent } from './header/header.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { LoginComponent } from './login/login.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { OpenAccountComponent } from './open-account/open-account.component';
 import { SingleAccountComponent } from './single-account/single-account.component';
 import { SingleCardComponent } from './single-card/single-card.component';
 import { SingleDepositComponent } from './single-deposit/single-deposit.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { UserHeaderComponent } from './user-header/user-header.component';
 import { UserMobileHeaderComponent } from './user-mobile-header/user-mobile-header.component';
+import { UserOpenAccountComponent } from './user-open-account/user-open-account.component';
 
 @NgModule({
   imports: [
@@ -39,13 +40,14 @@ import { UserMobileHeaderComponent } from './user-mobile-header/user-mobile-head
     SingleDepositComponent,
     SingleCardComponent,
     LoginComponent,
-    OpenAccountComponent,
     MainPageComponent,
     FinancesComponent,
     GuestHeaderComponent,
     GuestMobileHeaderComponent,
     UserHeaderComponent,
     UserMobileHeaderComponent,
+    UserOpenAccountComponent,
+    GuestOpenAccountComponent,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,
