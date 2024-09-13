@@ -12,18 +12,18 @@
             @if(totalAccountsPagesCount > 1) {
             <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
                 <button [ngClass]="{'hidden': currentAccountsPage <= 1}"
-                    class="sm:ml-10 font-bold py-2 px-4 rounded-l text-white" (click)="previousAccountsPage()">
+                    class="sm:ml-10 font-bold py-2 px-4 rounded-l text-white max-sm:px-2" (click)="previousAccountsPage()">
                     <mat-icon class="cursor-pointer">arrow_back</mat-icon>
                 </button>
                 <div class="flex-grow"></div>
                 <button [ngClass]="{'hidden': currentAccountsPage === totalAccountsPagesCount}"
-                    class="font-bold py-2 rounded-r text-white sm:mr-2 px-4" (click)="nextAccountsPage()">
+                    class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2" (click)="nextAccountsPage()">
                     <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
                 </button>
             </div>
             }
             @for(account of paginatedUserAccounts; track account.id) {
-            <div class="flex flex-col bg-gray-500 hover:bg-gray-400 rounded-3xl cursor-pointer p-3">
+            <div class="flex flex-col bg-gray-500 hover:bg-gray-400 rounded-3xl cursor-pointer p-3 max-sm:p-1">
                 <div class="relative justify-between flex flex-row w-full h-full items-center space-x-5 mb-5">
                     <p class="font-roboto font-medium max-sm:text-lg text-2xl text-white pt-5">Konto
                         {{getPolishAccountType(account.type)}}
@@ -154,12 +154,12 @@
             @if(totalCardsPagesCount > 1) {
             <div class="absolute inset-t-30-b-50 flex items-center z-10 w-screen">
                 <button [ngClass]="{'hidden': currentCardsPage <= 1}"
-                    class="sm:ml-10 font-bold px-4 py-20 rounded-l text-white" (click)="previousCardsPage()">
+                    class="sm:ml-10 font-bold px-4 py-20 rounded-l text-white max-sm:px-2" (click)="previousCardsPage()">
                     <mat-icon class="cursor-pointer">arrow_back</mat-icon>
                 </button>
                 <div class="flex-grow"></div>
                 <button [ngClass]="{'hidden': currentCardsPage === totalCardsPagesCount}"
-                    class="font-bold py-2 rounded-r text-white sm:mr-2 px-4" (click)="nextCardsPage()">
+                    class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2" (click)="nextCardsPage()">
                     <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
                 </button>
             </div>
@@ -167,9 +167,9 @@
             @for(card of paginatedUserCards; track card.id) {
             <div class="flex flex-col relative mb-5 z-30"
                 (click)="card.showingCardSite = card.showingCardSite === 'front' ? 'back' : 'front'">
-                <div class="flex flex-col relative cursor-pointer z-30 w-full h-full"
+                <div class="flex flex-col relative cursor-pointer z-30 w-full h-full max-sm:w-[85%] max-sm:self-center"
                     [@rotateCard]="card.showingCardSite">
-                    <img class="object-cover max-sm:w-72 max-sm:h-44 w-80 h-48 shadow-gray-400 shadow-sm rounded-2xl my-10 z-10"
+                    <img class="object-cover max-sm:h-44 w-80 h-48 shadow-gray-400 shadow-sm rounded-2xl my-10 z-10"
                         [src]="card.showingCardSite==='front' ? card.image : card.backImage" alt="user-single-card">
                     @if(card.showingCardSite === 'front') {
                     <div class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">

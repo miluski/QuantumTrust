@@ -157,7 +157,7 @@
                     <p class="text-left font-roboto font-light text-sm text-black w-full">Hasło</p>
                     <input
                         class="font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
-                        type="password" placeholder="********" [(ngModel)]="userAccount.password" />
+                        type="password" placeholder="************" [(ngModel)]="userAccount.password" />
                     @if(userAccountFlags.isPasswordValid === false) {
                     <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wprowadzone hasło jest
                         nieprawidłowe.</p>
@@ -168,7 +168,7 @@
                     <p class="text-left font-roboto font-light text-sm text-black w-full">Powtórz hasło</p>
                     <input
                         class="font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
-                        type="password" placeholder="********" [(ngModel)]="userAccount.repeatedPassword" />
+                        type="password" placeholder="************" [(ngModel)]="userAccount.repeatedPassword" />
                     @if(userAccountFlags.isRepeatedPasswordValid === false) {
                     <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wprowadzone hasła różnią się.</p>
                     }
