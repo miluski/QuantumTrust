@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { GuestOpenAccountComponent } from './guest-open-account/guest-open-account.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { LoginComponent } from './login/login.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { OpenAccountComponent } from './open-account/open-account.component';
 import { SingleAccountComponent } from './single-account/single-account.component';
 import { SingleCardComponent } from './single-card/single-card.component';
 import { SingleDepositComponent } from './single-deposit/single-deposit.component';
@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'single-account', component: SingleAccountComponent },
   { path: 'single-deposit', component: SingleDepositComponent },
   { path: 'single-card', component: SingleCardComponent },
-  { path: 'open-account', component: OpenAccountComponent },
+  { path: 'open-account', component: GuestOpenAccountComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', component: NotFoundComponent },
 ];

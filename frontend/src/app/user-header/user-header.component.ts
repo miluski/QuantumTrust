@@ -21,15 +21,14 @@ export class UserHeaderComponent implements OnInit {
   avatarColor: string;
   constructor(
     router: Router,
-    private headerStateService: HeaderStateService,
-    private userService: UserService
+    userService: UserService,
+    private headerStateService: HeaderStateService
   ) {
     this.currentRoute = router.url;
     this.user = userService.userAccount;
     this.avatarColor = this.getRandomColor();
   }
   ngOnInit(): void {
-    this.headerStateService.changeTabName('Finanse');
     this.headerStateService.currentTabName.subscribe(
       (currentTabName: string) => (this.tabName = currentTabName)
     );

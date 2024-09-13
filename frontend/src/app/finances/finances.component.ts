@@ -7,11 +7,9 @@ import {
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
-  AfterContentChecked,
-  ChangeDetectorRef,
   Component,
   HostListener,
-  OnInit,
+  OnInit
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -39,7 +37,7 @@ import { UserAccount } from '../../types/user-account';
   ],
   standalone: true,
 })
-export class FinancesComponent implements AfterContentChecked, OnInit {
+export class FinancesComponent implements OnInit {
   userAccount: UserAccount;
   userAccounts!: Account[];
   userDeposits!: Deposit[];
@@ -54,13 +52,9 @@ export class FinancesComponent implements AfterContentChecked, OnInit {
   totalCardsPagesCount: number = 1;
   constructor(
     private headerStateService: HeaderStateService,
-    private userService: UserService,
-    private changeDetectorRef: ChangeDetectorRef
+    private userService: UserService
   ) {
     this.userAccount = userService.userAccount;
-  }
-  ngAfterContentChecked(): void {
-    this.changeDetectorRef.detectChanges();
   }
   ngOnInit(): void {
     this.initializeUserData();
@@ -116,7 +110,7 @@ export class FinancesComponent implements AfterContentChecked, OnInit {
     } else if (windowWidth >= 1600 && windowWidth < 2100) {
       this.cardsPerPage = 4;
       this.accountsPerPage = 3;
-    } else if(windowWidth >= 2100) {
+    } else if (windowWidth >= 2100) {
       this.accountsPerPage = 4;
       this.cardsPerPage = 4;
     } else {

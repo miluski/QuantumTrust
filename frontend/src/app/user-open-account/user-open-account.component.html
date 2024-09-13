@@ -1,0 +1,65 @@
+<div class="flex flex-col m-0 p-0 overflow-hidden scroll-smooth">
+    <main class="flex-col flex text-center bg-black text-white w-screen h-screen items-center">
+        <div class="flex flex-row my-12 bg-white rounded-3xl shadow-gray-500 shadow-lg 2xl:w-[65%] lg:h-[80%] xl:w-[70%] w-[75%] max-sm:w-[95%]">
+            <img class="max-lg:hidden block rounded-l-3xl opacity-50 w-96" src="open-account-background.png"
+                alt="open-account-background" />
+            <div class="open-account-mobile flex flex-col justify-center items-center w-full rounded-3xl self-center space-y-10">
+                <p class="font-roboto font-extrabold text-5xl text-black pt-24 z-20">Otwieranie konta</p>
+                <div class="flex flex-col lg:w-[75%] w-[80%] z-20"
+                    [ngClass]="{'mb-6': userAccountFlags.isAccountTypeValid === true || userAccountFlags.isAccountTypeValid === undefined}">
+                    <p class="text-left font-roboto font-light text-sm text-black w-full">Rodzaj konta
+                    </p>
+                    <select
+                        class="!font-roboto !font-light !text-sm !text-black !rounded-lg !px-5 !py-2 !w-full !border !border-gray-200 max-lg:!border-gray-400 !bg-transparent"
+                        [(ngModel)]="account.type">
+                        <option class="py-2" value="Konto osobiste">Konto osobiste</option>
+                        <option class="py-2" value="Konto dla młodych">Konto dla młodych</option>
+                        <option class="py-2" value="Konto wielowalutowe">Konto wielowalutowe</option>
+                        <option class="py-2" value="Konto rodzinne">Konto rodzinne</option>
+                        <option class="py-2" value="Konto senior">Konto senior</option>
+                    </select>
+                    @if(userAccountFlags.isAccountTypeValid === false) {
+                    <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wybrany typ konta jest
+                        nieprawidłowy.
+                    </p>
+                    }
+                </div>
+                @if(account.type === "Konto wielowalutowe") {
+                <div class="flex flex-col lg:w-[75%] w-[80%] z-20"
+                    [ngClass]="{'mb-6': userAccountFlags.isAccountCurrencyValid === true || userAccountFlags.isAccountCurrencyValid === undefined}">
+                    <p class="text-left font-roboto font-light text-sm text-black w-full">Waluta konta
+                    </p>
+                    <select
+                        class="!font-roboto !font-light !text-sm !text-black !rounded-lg !px-5 !py-2 !w-full !border !border-gray-200 max-lg:!border-gray-400 !bg-transparent"
+                        [(ngModel)]="account.currency">
+                        <option class="py-2" value="PLN">Polski złoty</option>
+                        <option class="py-2" value="EUR">Euro</option>
+                        <option class="py-2" value="USD">Dolar</option>
+                        <option class="py-2" value="GBP">Funt</option>
+                        <option class="py-2" value="CHF">Frank szwajcarski</option>
+                        <option class="py-2" value="JPY">Jen</option>
+                        <option class="py-2" value="AUD">Dolar australijski</option>
+                        <option class="py-2" value="CAD">Dolar kanadyjski</option>
+                    </select>
+                    @if(userAccountFlags.isAccountCurrencyValid === false) {
+                    <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wybrana waluta konta jest
+                        nieprawidłowa.
+                    </p>
+                    }
+                </div>
+                }
+                <button
+                    class="lg:w-[75%] w-[80%] lg:mb-10 mb-10 border text-3xl border-white text-white font-salsa rounded-full py-5 hover:bg-gray-600 bg-own-gray mx-5 self-center z-20"
+                    [ngClass]="{'shake': canShake === true}" (click)="verifyData()">
+                    Zatwierdź
+                </button>
+                <mat-divider class="lg:w-[75%] w-[80%] !border-t-gray-300 my-5 z-20 max-lg:!border-t-gray-400" />
+                <div class="flex flex-row py-10 space-x-2 z-20">
+                    <p class="font-roboto font-normal lg:text-2xl text-xl text-black">Zabłądziłeś?</p>
+                    <a class="font-roboto font-bold lg:text-2xl text-xl text-gray-400 hover:text-gray-200 cursor-pointer"
+                        (click)="changeTabName('Finanse')">Powrót do finansów!</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
