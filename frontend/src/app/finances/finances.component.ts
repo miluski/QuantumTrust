@@ -46,7 +46,8 @@ export class FinancesComponent implements AfterContentChecked, OnInit {
   userTransactions!: Transaction[];
   userCards!: Card[];
   dailyTransactions!: Transaction[][];
-  itemsPerPage: number = 3;
+  accountsPerPage: number = 3;
+  cardsPerPage: number = 3;
   currentAccountsPage: number = 1;
   currentCardsPage: number = 1;
   totalAccountsPagesCount: number = 1;
@@ -80,13 +81,13 @@ export class FinancesComponent implements AfterContentChecked, OnInit {
     this.updatePagesCount();
   }
   get paginatedUserAccounts(): Account[] {
-    const startIndex = (this.currentAccountsPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
+    const startIndex = (this.currentAccountsPage - 1) * this.accountsPerPage;
+    const endIndex = startIndex + this.accountsPerPage;
     return this.userAccounts.slice(startIndex, endIndex);
   }
   get paginatedUserCards(): Card[] {
-    const startIndex = (this.currentCardsPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
+    const startIndex = (this.currentCardsPage - 1) * this.cardsPerPage;
+    const endIndex = startIndex + this.cardsPerPage;
     return this.userCards.slice(startIndex, endIndex);
   }
   groupUserTransactions(): void {
@@ -107,11 +108,19 @@ export class FinancesComponent implements AfterContentChecked, OnInit {
   }
   setItemsPerPage(windowWidth: number): void {
     if (windowWidth < 1024) {
-      this.itemsPerPage = 1;
-    } else if (windowWidth > 1400) {
-      this.itemsPerPage = 3;
+      this.accountsPerPage = 1;
+      this.cardsPerPage = 1;
+    } else if (windowWidth > 1400 && windowWidth < 1600) {
+      this.accountsPerPage = 3;
+      this.cardsPerPage = 3;
+    } else if (windowWidth >= 1600 && windowWidth < 2100) {
+      this.cardsPerPage = 4;
+      this.accountsPerPage = 3;
+    } else if(windowWidth >= 2100) {
+      this.accountsPerPage = 4;
     } else {
-      this.itemsPerPage = 2;
+      this.accountsPerPage = 2;
+      this.cardsPerPage = 2;
     }
   }
   nextAccountsPage(): void {
@@ -195,10 +204,10 @@ export class FinancesComponent implements AfterContentChecked, OnInit {
   }
   private updatePagesCount(): void {
     this.totalAccountsPagesCount = Math.ceil(
-      this.userAccounts.length / this.itemsPerPage
+      this.userAccounts.length / this.accountsPerPage
     );
     this.totalCardsPagesCount = Math.ceil(
-      this.userCards.length / this.itemsPerPage
+      this.userCards.length / this.cardsPerPage
     );
     if (this.currentAccountsPage > this.totalAccountsPagesCount) {
       this.currentAccountsPage = 1;
