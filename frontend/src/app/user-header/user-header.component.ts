@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
-import { HeaderStateService } from '../../services/header-state.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 
@@ -22,22 +22,22 @@ export class UserHeaderComponent implements OnInit {
   constructor(
     router: Router,
     userService: UserService,
-    private headerStateService: HeaderStateService
+    private appInformationStatesService: AppInformationStatesService
   ) {
     this.currentRoute = router.url;
     this.user = userService.userAccount;
     this.avatarColor = this.getRandomColor();
   }
   ngOnInit(): void {
-    this.headerStateService.currentTabName.subscribe(
+    this.appInformationStatesService.currentTabName.subscribe(
       (currentTabName: string) => (this.tabName = currentTabName)
     );
   }
   changeTabName(tabName: string) {
-    this.headerStateService.changeTabName(tabName);
+    this.appInformationStatesService.changeTabName(tabName);
   }
   toggleDrawer(): void {
-    this.headerStateService.toggleDrawer();
+    this.appInformationStatesService.toggleDrawer();
   }
   toggleMenuVisible(): void {
     this.isMenuVisible = !this.isMenuVisible;

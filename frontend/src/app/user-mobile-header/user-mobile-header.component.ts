@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
-import { HeaderStateService } from '../../services/header-state.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { UserAccount } from '../../types/user-account';
 
 @Component({
@@ -18,26 +18,29 @@ export class UserMobileHeaderComponent {
   avatarError: boolean = false;
   user: UserAccount = new UserAccount();
   avatarColor: string;
-  constructor(router: Router, private headerStateService: HeaderStateService) {
+  constructor(
+    router: Router,
+    private appInformationStatesService: AppInformationStatesService
+  ) {
     this.currentRoute = router.url;
     this.user.name = 'Maksymilian';
     this.user.surname = 'Sowula';
     this.avatarColor = this.getRandomColor();
   }
   ngOnInit(): void {
-    this.headerStateService.currentTabName.subscribe(
+    this.appInformationStatesService.currentTabName.subscribe(
       (currentTabName: string) => (this.tabName = currentTabName)
     );
-    this.headerStateService.observeBreakpoints();
+    this.appInformationStatesService.observeBreakpoints();
   }
   ngAfterViewInit(): void {
-    this.headerStateService.changeDrawer(this.drawer);
+    this.appInformationStatesService.changeDrawer(this.drawer);
   }
   changeTabName(tabName: string) {
-    this.headerStateService.changeTabName(tabName);
+    this.appInformationStatesService.changeTabName(tabName);
   }
   toggleDrawer(): void {
-    this.headerStateService.toggleDrawer();
+    this.appInformationStatesService.toggleDrawer();
   }
   getInitials(): string {
     const initials = this.user.name.charAt(0) + this.user.surname.charAt(0);

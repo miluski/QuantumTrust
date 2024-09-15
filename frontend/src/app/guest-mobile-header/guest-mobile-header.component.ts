@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
-import { HeaderStateService } from '../../services/header-state.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
 
 @Component({
   selector: 'app-guest-mobile-header',
@@ -14,22 +14,25 @@ export class GuestMobileHeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('drawer') drawer!: MatDrawer;
   currentRoute: string = '/home-page';
   tabName: string = 'Konta';
-  constructor(router: Router, private headerStateService: HeaderStateService) {
+  constructor(
+    router: Router,
+    private appInformationStatesService: AppInformationStatesService
+  ) {
     this.currentRoute = router.url;
   }
   ngOnInit(): void {
-    this.headerStateService.currentTabName.subscribe(
+    this.appInformationStatesService.currentTabName.subscribe(
       (currentTabName: string) => (this.tabName = currentTabName)
     );
-    this.headerStateService.observeBreakpoints();
+    this.appInformationStatesService.observeBreakpoints();
   }
   ngAfterViewInit(): void {
-    this.headerStateService.changeDrawer(this.drawer);
+    this.appInformationStatesService.changeDrawer(this.drawer);
   }
   changeTabName(tabName: string) {
-    this.headerStateService.changeTabName(tabName);
+    this.appInformationStatesService.changeTabName(tabName);
   }
   toggleDrawer(): void {
-    this.headerStateService.toggleDrawer();
+    this.appInformationStatesService.toggleDrawer();
   }
 }

@@ -10,6 +10,7 @@ import {
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { ConvertService } from '../../services/convert.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { WindowEventsService } from '../../services/window-events.service';
 import { Account } from '../../types/account';
@@ -35,14 +36,15 @@ import { HeaderComponent } from '../header/header.component';
 export class SingleAccountComponent implements OnInit {
   @Input() steps: Step[] = singleAccountStepsArray;
   @Output() scrollToTopEvent = new EventEmitter<void>();
-  private accountType: string = 'personal';
+  protected accountType: string = 'personal';
   protected accountsArray: Account[] = [];
   protected accountObject!: Account;
   currentPage: number = 1;
   itemsPerPage: number = 3;
   constructor(
     private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService
+    private windowEventsService: WindowEventsService,
+    public convertService: ConvertService
   ) {
     this.setAccountsArray();
   }
@@ -69,20 +71,10 @@ export class SingleAccountComponent implements OnInit {
       this.itemsPerPage = 3;
     }
   }
-  ACCOUNT_TYPE_MAP: { [key: string]: string } = {
-    personal: 'osobiste',
-    young: 'dla młodych',
-    multiCurrency: 'wielowalutowe',
-    family: 'rodzinne',
-    oldPeople: 'senior',
-  };
   changeAccountType(accountType: string): void {
     this.productTypesService.changeAccountType(accountType);
     this.updateItemsPerPage(window.innerWidth);
     this.setAccountsArray();
-  }
-  getPolishAccountType(accountType?: string): string {
-    return this.ACCOUNT_TYPE_MAP[accountType ?? this.accountType] || 'osobiste';
   }
   previousPage(): void {
     if (this.currentPage > 1) {

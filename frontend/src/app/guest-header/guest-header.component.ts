@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
-import { HeaderStateService } from '../../services/header-state.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
 
 @Component({
   selector: 'app-guest-header',
@@ -13,18 +13,21 @@ import { HeaderStateService } from '../../services/header-state.service';
 export class GuestHeaderComponent implements OnInit {
   currentRoute: string = '/home-page';
   tabName: string = 'Konta';
-  constructor(router: Router, private headerStateService: HeaderStateService) {
+  constructor(
+    router: Router,
+    private appInformationStatesService: AppInformationStatesService
+  ) {
     this.currentRoute = router.url;
   }
   ngOnInit(): void {
-    this.headerStateService.currentTabName.subscribe(
+    this.appInformationStatesService.currentTabName.subscribe(
       (currentTabName: string) => (this.tabName = currentTabName)
     );
   }
   changeTabName(tabName: string) {
-    this.headerStateService.changeTabName(tabName);
+    this.appInformationStatesService.changeTabName(tabName);
   }
   toggleDrawer(): void {
-    this.headerStateService.toggleDrawer();
+    this.appInformationStatesService.toggleDrawer();
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { HeaderStateService } from '../../services/header-state.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { GuestHeaderComponent } from '../guest-header/guest-header.component';
 import { GuestMobileHeaderComponent } from '../guest-mobile-header/guest-mobile-header.component';
 import { UserHeaderComponent } from '../user-header/user-header.component';
@@ -22,21 +22,20 @@ import { UserMobileHeaderComponent } from '../user-mobile-header/user-mobile-hea
 export class HeaderComponent implements OnInit {
   tabName!: string;
   currentRoute!: string;
-
-  constructor(router: Router, private headerStateService: HeaderStateService) {
+  constructor(
+    router: Router,
+    private appInformationStatesService: AppInformationStatesService
+  ) {
     this.currentRoute = router.url;
   }
-
   ngOnInit(): void {
-    this.headerStateService.currentTabName.subscribe(
+    this.appInformationStatesService.currentTabName.subscribe(
       (tabName: string) => (this.tabName = tabName)
     );
   }
-
   changeTabName(tabName: string): void {
-    this.headerStateService.changeTabName(tabName);
+    this.appInformationStatesService.changeTabName(tabName);
   }
-
   isGuestPart(): boolean {
     return (
       this.currentRoute === '' ||
