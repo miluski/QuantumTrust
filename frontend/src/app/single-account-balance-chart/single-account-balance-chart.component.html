@@ -2,5 +2,5 @@
 <p class="font-roboto text-2xl text-white font-light">Suma wpływów i wydatków wynosi 0 {{accountCurrency}}</p>
 }
 @else {
-<canvas baseChart [type]="'pie'" [datasets]="chartDataset" [options]="chartOptions" [labels]="chartLabels"></canvas>
+<canvas class="max-sm:w-[65%]" baseChart [type]="'pie'" [datasets]="chartDataset" [options]="chartOptions" [labels]="chartLabels"></canvas>
 }
