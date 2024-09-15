@@ -99,7 +99,16 @@
 }
 
 @media (min-width: 1024px) {
-    .open-account-mobile::before {
-        z-index: -1;
-    }
+  .open-account-mobile::before {
+    z-index: -1;
+  }
+}
+
+.mat-expansion-indicator svg {
+  fill: #ffffff !important;
+}
+
+.mdc-radio__outer-circle,
+.mdc-radio__inner-circle {
+  border-color: white !important;
 }

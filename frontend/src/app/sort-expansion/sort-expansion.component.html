@@ -1,0 +1,23 @@
+<div class="relative select-none max-lg:w-screen py-5 z-30">
+    <div class="flex justify-center">
+        <div class="flex flex-row md:space-x-24 lg:space-x-32 cursor-pointer w-full max-lg:w-[85%] group"
+            (click)="filtersService.changeMenuState(isExpanded, 0)">
+            <p class="font-roboto text-xl text-white group-hover:text-gray-400">SORTUJ</p>
+            <div class="flex flex-grow lg:hidden"></div>
+            <i class="fa-solid text-xl text-white group-hover:text-gray-400"
+                [ngClass]="{'fa-chevron-up': isExpanded, 'fa-chevron-down': !isExpanded}"></i>
+        </div>
+    </div>
+    <div *ngIf="isExpanded === true" class="w-full lg:border border-b-white border-t-white bg-black rounded-2xl"
+        [ngClass]="{'lg:absolute lg:top-full': appInformationStatesService.canSetAbsoluteStyle(transactionsArray)}">
+        @for(option of options; track option) {
+        <div class="flex flex-row">
+            <mat-radio-button checked={{isChecked(option)}} (click)="changeCheckedOption(option)" />
+            <p class="text-left font-roboto text-xs max-lg:text-xl font-light text-white pt-3 px-5">{{option}}</p>
+        </div>
+        }
+        <button class="text-white hover:text-gray-400 py-3 px-5"
+            (click)="filtersService.applyFilters(isExpanded, transactionsArray)">Zatwierdź</button>
+    </div>
+</div>
+<div class="lg:hidden w-screen h-0.5 bg-gray-700"></div>

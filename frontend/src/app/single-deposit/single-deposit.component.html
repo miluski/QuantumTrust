@@ -5,7 +5,8 @@
             style="background-image: url({{depositObject.image}});">
             <div class="absolute inset-0 bg-black opacity-40 z-10 h-full"></div>
             <div class="w-[35%] max-lg:w-[75%] flex flex-col self-start items-center space-y-8 max-lg:self-center z-20">
-                <p class="font-walter max-lg:text-2xl text-3xl">Lokata {{getPolishDepositType(TOP_INFORMATION)}}</p>
+                <p class="font-walter max-lg:text-2xl text-3xl">Lokata
+                    {{convertService.getPolishDepositType(depositType, TOP_INFORMATION)}}</p>
                 <p class="font-roboto font-light text-xl">{{depositObject.shortDescription}}</p>
                 <button
                     class="border border-white text-white font-salsa rounded-full py-6 max-lg:p-5 px-1 hover:bg-gray-500 my-15 lg:w-[50%]"
@@ -64,7 +65,7 @@
         <mat-divider class="shadow-inner shadow-gray-500" />
         <div class="w-screen flex flex-col items-center my-12">
             <p class="font-roboto font-extrabold text-white text-2xl max-md:text-lg px-12 pb-12">Jak otworzyć lokatę
-                {{getPolishDepositType(BOTTOM_INFORMATION)}}?</p>
+                {{convertService.getPolishDepositType(depositType, BOTTOM_INFORMATION)}}?</p>
             <div
                 class="flex flex-col md:flex-row md:w-[85%] max-md:w-[80%] max-sm:w-screen items-center md:space-x-5 max-sm:p-0 max-md:p-5 max-md:space-y-10">
                 @for(step of steps; track step.id) {

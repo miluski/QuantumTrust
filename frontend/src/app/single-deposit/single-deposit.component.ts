@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
+import { ConvertService } from '../../services/convert.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { WindowEventsService } from '../../services/window-events.service';
 import { Deposit } from '../../types/deposit';
@@ -35,10 +36,11 @@ export class SingleDepositComponent implements OnInit {
   initialCapital: number = 100;
   interval: number = 1;
   profit: number = 0;
-  private depositType: string = 'timely';
+  protected depositType: string = 'timely';
   constructor(
     private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService
+    private windowEventsService: WindowEventsService,
+    public convertService: ConvertService
   ) {}
   ngOnInit(): void {
     this.productTypesService.currentDepositType.subscribe(
@@ -59,7 +61,7 @@ export class SingleDepositComponent implements OnInit {
     this.windowEventsService.scrollToTop();
     this.depositObject = this.getDepositObject();
   }
-  calculateProfit() {
+  calculateProfit(): void {
     if (this.depositObject.type !== 'progressive') {
       this.profit = Math.round(
         ((this.initialCapital * this.depositObject.percent) / 100) *
@@ -77,20 +79,6 @@ export class SingleDepositComponent implements OnInit {
       this.profit = Math.round(totalProfit);
     }
     this.profit = Math.round(this.profit * 0.83);
-  }
-  getPolishDepositType(usageType: string): string {
-    switch (this.depositType) {
-      case 'timely':
-        return usageType === BOTTOM_INFORMATION ? 'terminową' : 'terminowa';
-      case 'mobile':
-        return usageType === BOTTOM_INFORMATION ? 'mobilną' : 'mobilna';
-      case 'family':
-        return usageType === BOTTOM_INFORMATION ? 'rodzinną' : 'rodzinna';
-      case 'progressive':
-        return usageType === BOTTOM_INFORMATION ? 'progresywną' : 'progresywna';
-      default:
-        return usageType === BOTTOM_INFORMATION ? 'terminową' : 'terminowa';
-    }
   }
   private getMonths(): number {
     switch (this.interval) {

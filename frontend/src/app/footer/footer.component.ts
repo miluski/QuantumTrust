@@ -1,24 +1,27 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { HeaderStateService } from '../../services/header-state.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { WindowEventsService } from '../../services/window-events.service';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  imports: [MatIconModule, RouterModule],
+  imports: [MatIconModule, RouterModule, CommonModule],
   standalone: true,
 })
 export class FooterComponent {
   accountType: string = 'personal';
   cardType: string = 'standard';
   depositType: string = 'timely';
+  protected currentTabName!: string;
+  protected currentTransactionsArrayLength!: number;
   constructor(
     private productTypesService: ProductTypesService,
     private windowEventsService: WindowEventsService,
-    private headerStateService: HeaderStateService
+    private appInformationStatesService: AppInformationStatesService
   ) {}
   ngOnInit(): void {
     this.productTypesService.currentAccountType.subscribe(
@@ -29,6 +32,13 @@ export class FooterComponent {
     );
     this.productTypesService.currentDepositType.subscribe(
       (depositType: string) => (this.depositType = depositType)
+    );
+    this.appInformationStatesService.currentTabName.subscribe(
+      (tabName: string) => (this.currentTabName = tabName)
+    );
+    this.appInformationStatesService.currentTransactionsArrayLength.subscribe(
+      (arrayLength: number) =>
+        (this.currentTransactionsArrayLength = arrayLength)
     );
   }
   changeAccountType(accountType: string): void {
@@ -41,9 +51,16 @@ export class FooterComponent {
     this.productTypesService.changeDepositType(depositType);
   }
   changeTabName(tabName: string): void {
-    this.headerStateService.changeTabName(tabName);
+    this.appInformationStatesService.changeTabName(tabName);
   }
   onScrollToTop(): void {
     this.windowEventsService.scrollToTop();
+  }
+  get canBeSticky(): boolean {
+    return (
+      this.currentTransactionsArrayLength > 20 &&
+      (this.currentTabName === 'SingleAccountTransactions' ||
+        this.currentTabName === 'ChangeCardSettings')
+    );
   }
 }

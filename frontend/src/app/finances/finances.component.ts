@@ -6,15 +6,13 @@ import {
   trigger,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  HostListener,
-  OnInit
-} from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { CardIdFormatPipe } from '../../pipes/card-id-format.pipe';
-import { HeaderStateService } from '../../services/header-state.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
+import { ConvertService } from '../../services/convert.service';
+import { ItemSelectionService } from '../../services/item-selection.service';
 import { UserService } from '../../services/user.service';
 import { Account } from '../../types/account';
 import { Card } from '../../types/card';
@@ -43,7 +41,7 @@ export class FinancesComponent implements OnInit {
   userDeposits!: Deposit[];
   userTransactions!: Transaction[];
   userCards!: Card[];
-  dailyTransactions!: Transaction[][];
+  dailyTransactions: Transaction[][] = [[]];
   accountsPerPage: number = 3;
   cardsPerPage: number = 3;
   currentAccountsPage: number = 1;
@@ -51,8 +49,10 @@ export class FinancesComponent implements OnInit {
   totalAccountsPagesCount: number = 1;
   totalCardsPagesCount: number = 1;
   constructor(
-    private headerStateService: HeaderStateService,
-    private userService: UserService
+    private appInformationStatesService: AppInformationStatesService,
+    private userService: UserService,
+    private itemSelectionService: ItemSelectionService,
+    public convertService: ConvertService
   ) {
     this.userAccount = userService.userAccount;
   }
@@ -77,25 +77,17 @@ export class FinancesComponent implements OnInit {
   get paginatedUserAccounts(): Account[] {
     const startIndex = (this.currentAccountsPage - 1) * this.accountsPerPage;
     const endIndex = startIndex + this.accountsPerPage;
-    return this.userAccounts.slice(startIndex, endIndex);
+    return this.userAccounts && this.userAccounts.slice(startIndex, endIndex);
   }
   get paginatedUserCards(): Card[] {
     const startIndex = (this.currentCardsPage - 1) * this.cardsPerPage;
     const endIndex = startIndex + this.cardsPerPage;
-    return this.userCards.slice(startIndex, endIndex);
+    return this.userCards && this.userCards.slice(startIndex, endIndex);
   }
   groupUserTransactions(): void {
-    const dailyTransactionsMap: Map<String, Transaction[]> = new Map<
-      String,
-      Transaction[]
-    >();
-    this.userTransactions.forEach((transaction: Transaction) => {
-      const actualTransactionDate = transaction.date;
-      dailyTransactionsMap.has(actualTransactionDate)
-        ? dailyTransactionsMap.get(actualTransactionDate)?.push(transaction)
-        : dailyTransactionsMap.set(actualTransactionDate, [transaction]);
-    });
-    this.dailyTransactions = Array.from(dailyTransactionsMap.values()).sort();
+    this.dailyTransactions = this.convertService.getGroupedUserTransactions(
+      this.userTransactions
+    );
     this.dailyTransactions.forEach((transactionArray: Transaction[]) =>
       transactionArray.splice(2)
     );
@@ -139,38 +131,7 @@ export class FinancesComponent implements OnInit {
     }
   }
   changeTabName(tabName: string): void {
-    this.headerStateService.changeTabName(tabName);
-  }
-  getPolishAccountType(accountType: string): string {
-    switch (accountType) {
-      case 'multiCurrency':
-        return 'wielowalutowe';
-      case 'young':
-        return 'dla młodych';
-      case 'family':
-        return 'rodzinne';
-      case 'oldPeople':
-        return 'senior';
-      default:
-        return 'osobiste';
-    }
-  }
-  getPolishDepositType(depositType: string): string {
-    switch (depositType) {
-      case 'timely':
-        return 'terminowa';
-      case 'mobile':
-        return 'mobilna';
-      case 'family':
-        return 'rodzinna';
-      default:
-        return 'progresywna';
-    }
-  }
-  getNumberWithSpacesBetweenThousands(number: number): string {
-    const parts = number.toString().split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    return parts.join('.');
+    this.appInformationStatesService.changeTabName(tabName);
   }
   getDayAndMonthFromDate(date: string): string {
     const today: Date = new Date();
@@ -185,17 +146,11 @@ export class FinancesComponent implements OnInit {
       originalMonth < 10 ? '0' + originalMonth : originalMonth.toString();
     return period + day + '.' + month;
   }
-  getIconClassFromTransactionCategory(transactionCategory: string): string {
-    switch (transactionCategory) {
-      case 'Artykuły spożywcze':
-        return 'fa-cart-shopping';
-      case 'Rachunki':
-        return 'fa-money-bill';
-      case 'Rozrywka':
-        return 'fa-film ';
-      default:
-        return 'fa-question';
-    }
+  setSelectedAccount(account: Account): void {
+    this.itemSelectionService.setSelectedAccount(account);
+  }
+  setSelectedCard(card: Card): void {
+    this.itemSelectionService.setSelectedCard(card);
   }
   private updatePagesCount(): void {
     this.totalAccountsPagesCount = Math.ceil(

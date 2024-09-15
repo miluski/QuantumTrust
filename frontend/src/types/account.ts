@@ -6,5 +6,5 @@ export class Account {
   type!: string;
   benefits!: string[];
   balance?: number;
-  currency?: string;
+  currency?: 'PLN' | 'EUR' | 'USD' | 'GBP' | 'CHF' | 'JPY' | 'AUD' | 'CAD';
 }

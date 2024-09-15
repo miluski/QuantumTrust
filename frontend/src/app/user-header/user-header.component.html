@@ -21,7 +21,8 @@
         <div class="flex flex-row space-x-5">
             <div class="relative hidden md:flex md:flex-row space-x-5 w-full cursor-pointer"
                 (click)="toggleMenuVisible()">
-                <p class="pt-5 font-roboto font-light text-xl text-nowrap hover:text-gray-300">{{user.name}} {{user.surname}}</p>
+                <p class="pt-5 font-roboto font-light text-xl text-nowrap hover:text-gray-300">{{user.name}}
+                    {{user.surname}}</p>
                 <button class="w-full">
                     @if(!avatarError) {
                     <img class="rounded-full min-w-12 w-12 h-12" alt="user-avatar" [src]="user.avatarUrl"
@@ -37,8 +38,10 @@
                 @if(isMenuVisible) {
                 <div class="space-x-5 px-14 right-0 absolute text-center flex flex-row top-full mt-2 bg-black border-b-2 border-gray-400 shadow-white w-auto z-50 cursor-pointer group/logout rounded-b-lg"
                     routerLink="/home-page" routerLinkActive="active" (click)="changeTabName('Konta')">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-white text-xl group-hover/logout:text-gray-500"></i>
-                    <p class="text-nowrap font-roboto text-xl text-white font-light group-hover/logout:text-gray-500">Wyloguj
+                    <i
+                        class="fa-solid fa-arrow-right-from-bracket text-white text-xl group-hover/logout:text-gray-500"></i>
+                    <p class="text-nowrap font-roboto text-xl text-white font-light group-hover/logout:text-gray-500">
+                        Wyloguj
                         się</p>
                 </div>
                 }
