@@ -17,7 +17,7 @@
             </div>
             <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch mb-12">
                 @for(visaCard of visaCardsPaginationService.paginatedItems; track visaCard.id) {
-                <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-64 lg:w-72 max-md:w-60 py-5 hover:bg-gray-200 cursor-pointer"
+                <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-64 lg:w-72 2xl:w-80 max-md:w-60 py-5 hover:bg-gray-200 cursor-pointer"
                     routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(visaCard.type)"
                     (click)="onScrollToTop()">
                     <div class="flex flex-col relative items-center">
@@ -29,10 +29,10 @@
                             <p class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
                         </div>
                         <p
-                            class="font-courier text-silver self-start text-shadow absolute z-20 max-sm:!text-xs text-lg md:text-xs xl:text-base top-[52%] max-sm:left-[12%] left-[17%] 2xl:!text-xl">
+                            class="font-courier text-silver self-start text-shadow absolute z-20 max-md:!text-xs xl:text-base top-[52%] max-sm:left-[12%] left-[17%] 2xl:!text-xl">
                             1234 5678 9012 3456</p>
                         <p
-                            class="font-courier text-silver self-start text-shadow absolute z-20 max-sm:!text-xs top-[60%] max-md:top-[65%] max-sm:top-[62%] md:top-[63%] left-[43%] 2xl:!text-xl 2xl:top-[65%]">
+                            class="font-courier text-silver self-start text-shadow absolute z-20 max-sm:!text-xs top-[60%] max-md:top-[62%] md:top-[63%] left-[43%] 2xl:!text-xl 2xl:top-[65%]">
                             01/24
                         </p>
                         <p
@@ -64,7 +64,7 @@
             </div>
             <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch my-12">
                 @for(masterCard of masterCardsPaginationService.paginatedItems; track masterCard.id) {
-                <div class="flex flex-col bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-64 lg:w-72 max-md:w-60 py-5 hover:bg-gray-200 cursor-pointer"
+                <div class="flex flex-col bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-64 lg:w-72 2xl:w-80 max-md:w-60 py-5 hover:bg-gray-200 cursor-pointer"
                     routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(masterCard.type)"
                     (click)="onScrollToTop()">
                     <div class="flex flex-col relative items-center">
@@ -77,14 +77,14 @@
                                 class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
                         </div>
                         <p
-                            class="font-courier text-xs text-silver self-start text-shadow absolute z-20 top-[56%] max-md:text-xl max-sm:text-xs max-sm:top-[55%] left-[11%] 2xl:text-xl">
+                            class="font-courier text-xs text-silver self-start text-shadow absolute z-20 top-[56%] md:text-base max-sm:!text-xs max-md:top-[55%] left-[11%] 2xl:text-xl">
                             1234 5678 9012 3456</p>
                         <p
-                            class="font-courier text-xxs text-silver self-start text-shadow absolute z-20 top-[64%] max-md:top-[70%] max-sm:!text-xxs max-sm:top-[65.5%] xl:top-[67%] left-[11%] 2xl:!text-xl 2xl:top-[69%]">
+                            class="font-courier text-xxs text-silver self-start text-shadow absolute z-20 top-[64%] max-sm:!text-xxs max-md:top-[65.5%] xl:top-[67%] left-[11%] 2xl:!text-xl 2xl:top-[69%]">
                             01/24
                         </p>
                         <p
-                            class="font-courier text-xxs text-silver self-start text-shadow absolute z-20 top-[69%] max-md:top-[75%] max-sm:!text-xxs max-sm:top-[69%] xl:top-[72%] left-[11%] 2xl:!text-xl 2xl:top-[75%]">
+                            class="font-courier text-xxs text-silver self-start text-shadow absolute z-20 top-[69%] max-sm:!text-xxs max-md:top-[69%] xl:top-[72%] left-[11%] 2xl:!text-xl 2xl:top-[75%]">
                             A.MILLER
                         </p>
                     </div>
