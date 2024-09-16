@@ -51,18 +51,19 @@
             </p>
             <div class="absolute inset-y-[60%] flex items-center w-full px-1 z-10">
                 <button class="font-bold py-5 px-4 max-md:px-2 rounded-l text-white 2xl:mx-[5%]"
-                    (click)="previousPage()" [hidden]="currentPage === 1">
+                    (click)="paginationService.previousPage()" [hidden]="paginationService.currentPage === 1">
                     <mat-icon class="cursor-pointer">arrow_back</mat-icon>
                 </button>
                 <div class="flex-grow"></div>
-                <button class="font-bold py-5 px-4 max-md:px-2 rounded-r text-white 2xl:mx-[5%]" (click)="nextPage()"
-                    [hidden]="currentPage === totalPages">
+                <button class="font-bold py-5 px-4 max-md:px-2 rounded-r text-white 2xl:mx-[5%]"
+                    (click)="paginationService.nextPage()"
+                    [hidden]="paginationService.currentPage === paginationService.totalPages">
                     <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
                 </button>
             </div>
             <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch mt-12">
-                @for(account of accountsPaginatedItems; track account.id) {
-                <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-[25%] lg:w-[25%] max-md:w-[70%] hover:bg-gray-200 cursor-pointer p-5"
+                @for(account of paginationService.paginatedItems; track account.id) {
+                <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-72 max-md:w-64 hover:bg-gray-200 cursor-pointer p-5"
                     (click)="changeAccountType(account.type)" (click)="onScrollToTop()">
                     <img class="object-cover h-52 w-auto border rounded-md my-10" src={{account.image}} />
                     <p class="font-salsa font-normal text-black max-sm:text-3xl max-md:text-lg lg:text-3xl max-md:px-5">

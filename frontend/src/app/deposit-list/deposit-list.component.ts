@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { ConvertService } from '../../services/convert.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { WindowEventsService } from '../../services/window-events.service';
 import { Deposit } from '../../types/deposit';
@@ -19,7 +20,8 @@ export class DepositListComponent implements OnInit {
   depositsObjectArray: Deposit[] = depositsObjectArray;
   constructor(
     private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService
+    private windowEventsService: WindowEventsService,
+    protected convertService: ConvertService
   ) {}
   ngOnInit(): void {
     this.productTypesService.currentDepositType.subscribe(

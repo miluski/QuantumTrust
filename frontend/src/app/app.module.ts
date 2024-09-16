@@ -21,6 +21,7 @@ import { LoginComponent } from './login/login.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { MobileFiltersComponent } from './mobile-filters/mobile-filters.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { OpenDepositComponent } from './open-deposit/open-deposit.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { SingleAccountBalanceChartComponent } from './single-account-balance-chart/single-account-balance-chart.component';
 import { SingleAccountTransactionsComponent } from './single-account-transactions/single-account-transactions.component';
@@ -63,6 +64,7 @@ import { UserOpenAccountComponent } from './user-open-account/user-open-account.
     StatusExpansionComponent,
     SearchBarComponent,
     MobileFiltersComponent,
+    OpenDepositComponent,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,

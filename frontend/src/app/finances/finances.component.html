@@ -9,21 +9,23 @@
             </div>
         </div>
         <div class="flex flex-row w-screen sm:space-x-10 relative justify-center">
-            @if(totalAccountsPagesCount > 1) {
+            @if(accountsPaginationService.totalPages > 1) {
             <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
-                <button [ngClass]="{'hidden': currentAccountsPage <= 1}"
+                <button [ngClass]="{'hidden': accountsPaginationService.currentPage <= 1}"
                     class="sm:ml-10 font-bold py-2 px-4 rounded-l text-white max-sm:px-2"
-                    (click)="previousAccountsPage()">
+                    (click)="accountsPaginationService.previousPage()">
                     <mat-icon class="cursor-pointer">arrow_back</mat-icon>
                 </button>
                 <div class="flex-grow"></div>
-                <button [ngClass]="{'hidden': currentAccountsPage === totalAccountsPagesCount}"
-                    class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2" (click)="nextAccountsPage()">
+                <button
+                    [ngClass]="{'hidden': accountsPaginationService.currentPage === accountsPaginationService.totalPages}"
+                    class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2"
+                    (click)="accountsPaginationService.nextPage()">
                     <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
                 </button>
             </div>
             }
-            @for(account of paginatedUserAccounts; track account.id) {
+            @for(account of accountsPaginationService.paginatedItems; track account.id) {
             <div class="flex flex-col bg-gray-500 hover:bg-gray-400 rounded-3xl cursor-pointer p-3 max-sm:p-2"
                 (click)="changeTabName('SingleAccountTransactions'); setSelectedAccount(account);">
                 <div class="relative justify-between flex flex-row w-full h-full items-center space-x-5 mb-5">
@@ -43,7 +45,8 @@
                 </div>
             </div>
             }
-            @if(paginatedUserAccounts === undefined || paginatedUserAccounts.length === 0) {
+            @if(accountsPaginationService.paginatedArray === undefined ||
+            accountsPaginationService.paginatedArray.length === 0) {
             <div class="flex flex-col bg-gray-500 w-[80%] rounded-3xl cursor-pointer p-5">
                 <p class="font-roboto font-normal max-sm:text-lg text-2xl text-black text-nowrap">Nie posiadasz żadnego
                     konta!</p>
@@ -83,7 +86,8 @@
                         </div>
                         }
                         <button
-                            class="border border-white text-white font-salsa rounded-lg py-2 px-1 hover:text-black hover:border-black self-center mb-10 text-nowrap sm:mt-5">
+                            class="border border-white text-white font-salsa rounded-lg py-2 px-1 hover:text-black hover:border-black self-center mb-10 text-nowrap sm:mt-5"
+                            (click)="changeTabName('OpenDeposit')">
                             Otwórz lokatę
                         </button>
                     </div>
@@ -155,21 +159,22 @@
             </div>
         </div>
         <div class="flex flex-row w-screen h-full lg:space-x-14 relative justify-center">
-            @if(totalCardsPagesCount > 1) {
+            @if(cardPaginationService.totalPages > 1) {
             <div class="absolute inset-t-30-b-50 flex items-center z-10 w-screen">
-                <button [ngClass]="{'hidden': currentCardsPage <= 1}"
+                <button [ngClass]="{'hidden': cardPaginationService.currentPage <= 1}"
                     class="sm:ml-10 font-bold px-4 py-20 rounded-l text-white max-sm:px-2"
-                    (click)="previousCardsPage()">
+                    (click)="cardPaginationService.previousPage()">
                     <mat-icon class="cursor-pointer">arrow_back</mat-icon>
                 </button>
                 <div class="flex-grow"></div>
-                <button [ngClass]="{'hidden': currentCardsPage === totalCardsPagesCount}"
-                    class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2" (click)="nextCardsPage()">
+                <button [ngClass]="{'hidden': cardPaginationService.currentPage === cardPaginationService.totalPages}"
+                    class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2"
+                    (click)="cardPaginationService.nextPage()">
                     <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
                 </button>
             </div>
             }
-            @for(card of paginatedUserCards; track card.id) {
+            @for(card of cardPaginationService.paginatedItems; track card.id) {
             <div class="flex flex-col relative mb-5 z-30"
                 (click)="card.showingCardSite = card.showingCardSite === 'front' ? 'back' : 'front'">
                 <div class="flex flex-col relative cursor-pointer z-30 w-full h-full max-sm:w-[85%] max-sm:self-center"
@@ -214,7 +219,8 @@
                     {{card.type.toLocaleLowerCase()}}</p>
             </div>
             }
-            @if(paginatedUserCards === undefined || paginatedUserCards.length === 0) {
+            @if(cardPaginationService.paginatedArray === undefined || cardPaginationService.paginatedArray.length === 0)
+            {
             <div
                 class="flex flex-col bg-gray-500 w-[80%] rounded-3xl cursor-pointer p-5 mb-5 items-center justify-center text-center">
                 <p class="font-roboto font-normal max-sm:text-lg text-2xl text-black text-nowrap">Nie posiadasz

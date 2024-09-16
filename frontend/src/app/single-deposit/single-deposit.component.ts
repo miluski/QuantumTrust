@@ -17,7 +17,6 @@ import { HeaderComponent } from '../header/header.component';
 @Component({
   selector: 'app-single-deposit',
   templateUrl: './single-deposit.component.html',
-  styleUrl: './single-deposit.component.css',
   imports: [
     MatDividerModule,
     HeaderComponent,
@@ -62,15 +61,16 @@ export class SingleDepositComponent implements OnInit {
     this.depositObject = this.getDepositObject();
   }
   calculateProfit(): void {
+    const monthsCount: number = this.convertService.getMonths(this.interval);
     if (this.depositObject.type !== 'progressive') {
       this.profit = Math.round(
         ((this.initialCapital * this.depositObject.percent) / 100) *
-          (this.getMonths() / 12)
+          (monthsCount / 12)
       );
     } else {
       let rate = this.depositObject.percent;
       let totalProfit = 0;
-      for (let i = 1; i <= this.getMonths(); i++) {
+      for (let i = 1; i <= monthsCount; i++) {
         if (i > 3) {
           rate += 1;
         }
@@ -79,18 +79,6 @@ export class SingleDepositComponent implements OnInit {
       this.profit = Math.round(totalProfit);
     }
     this.profit = Math.round(this.profit * 0.83);
-  }
-  private getMonths(): number {
-    switch (this.interval) {
-      case 2:
-        return 3;
-      case 3:
-        return 6;
-      case 4:
-        return 12;
-      default:
-        return 1;
-    }
   }
   private getDepositObject(): Deposit {
     return depositsObjectArray.find(

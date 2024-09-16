@@ -11,6 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ConvertService } from '../../services/convert.service';
+import { PaginationService } from '../../services/pagination.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { WindowEventsService } from '../../services/window-events.service';
 import { Account } from '../../types/account';
@@ -37,13 +38,11 @@ export class SingleAccountComponent implements OnInit {
   @Input() steps: Step[] = singleAccountStepsArray;
   @Output() scrollToTopEvent = new EventEmitter<void>();
   protected accountType: string = 'personal';
-  protected accountsArray: Account[] = [];
   protected accountObject!: Account;
-  currentPage: number = 1;
-  itemsPerPage: number = 3;
   constructor(
     private productTypesService: ProductTypesService,
     private windowEventsService: WindowEventsService,
+    protected paginationService: PaginationService,
     public convertService: ConvertService
   ) {
     this.setAccountsArray();
@@ -56,62 +55,35 @@ export class SingleAccountComponent implements OnInit {
       }
     );
     this.accountObject = this.getAccountObject();
-    this.updateItemsPerPage(window.innerWidth);
     this.setAccountsArray();
   }
   @HostListener('window:resize', ['$event'])
-  onResize(event: any): void {
-    this.updateItemsPerPage(event.target.innerWidth);
-  }
-  updateItemsPerPage(width: number) {
-    if (width <= 768) {
-      this.itemsPerPage = 1;
-    } else {
-      this.currentPage = 1;
-      this.itemsPerPage = 3;
-    }
+  onResize(event: UIEvent): void {
+    this.paginationService.onResize(event);
   }
   changeAccountType(accountType: string): void {
     this.productTypesService.changeAccountType(accountType);
-    this.updateItemsPerPage(window.innerWidth);
     this.setAccountsArray();
-  }
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      const lastItem = this.accountsArray.pop();
-      this.accountsArray.unshift(<Account>lastItem);
-    }
-  }
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      const firstItem = this.accountsArray.shift();
-      this.accountsArray.push(<Account>firstItem);
-    }
   }
   onScrollToTop(): void {
     this.windowEventsService.scrollToTop();
-    this.currentPage = 1;
+    this.paginationService.setCurrentPage(1);
   }
   trackById(step: Step): number {
     return step.id;
   }
   private setAccountsArray(): void {
     this.accountObject = this.getAccountObject();
-    this.accountsArray = accountsObjectsArray.filter(
-      (account: Account, _: number) => account.id !== this.accountObject.id
+    this.paginationService.setPaginatedArray(
+      accountsObjectsArray.filter(
+        (account: Account, _: number) => account.id !== this.accountObject.id
+      )
     );
+    this.paginationService.handleWidthChange(window.innerWidth);
   }
   private getAccountObject(): Account {
     return accountsObjectsArray.find(
       (account: Account) => account.type === this.accountType
     ) as Account;
-  }
-  get accountsPaginatedItems() {
-    return this.accountsArray.slice(0, this.itemsPerPage);
-  }
-  get totalPages() {
-    return Math.ceil(this.accountsArray.length / this.itemsPerPage);
   }
 }
