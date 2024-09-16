@@ -21,11 +21,11 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser-esbuild",
           "options": {
+            "main": "src/main.ts",
             "outputPath": "dist/frontend",
             "index": "src/index.html",
-            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -44,51 +44,56 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "512kb",
+                  "maximumError": "1mb"
                 }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
+              ]
             }
-          },
-          "defaultConfiguration": "production"
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "buildTarget": "frontend:build"
+          },
           "configurations": {
             "production": {
               "buildTarget": "frontend:build:production"
-            },
-            "development": {
-              "buildTarget": "frontend:build:development"
             }
-          },
-          "defaultConfiguration": "development"
+          }
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "frontend:build"
+          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "main": "src/test.ts",
             "polyfills": [
-              "zone.js",
-              "zone.js/testing"
+              "zone.js"
             ],
             "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
             "assets": [
               {
                 "glob": "**/*",
@@ -101,11 +106,21 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "tsconfig.app.json",
+              "tsconfig.spec.json",
+              "e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "6acee212-d3c0-46eb-9833-727f7f8c6bb3"
   }
 }

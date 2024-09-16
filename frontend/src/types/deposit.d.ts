@@ -5,6 +5,7 @@ export type Deposit = {
   image: string;
   description: string;
   shortDescription: string;
+  benefits?: string[]
   percentFrom?: number;
   percentTo?: number;
   balance?: number;

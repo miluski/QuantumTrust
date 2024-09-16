@@ -13,6 +13,7 @@ import { CardIdFormatPipe } from '../../pipes/card-id-format.pipe';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
 import { ItemSelectionService } from '../../services/item-selection.service';
+import { PaginationService } from '../../services/pagination.service';
 import { UserService } from '../../services/user.service';
 import { Account } from '../../types/account';
 import { Card } from '../../types/card';
@@ -42,12 +43,8 @@ export class FinancesComponent implements OnInit {
   userTransactions!: Transaction[];
   userCards!: Card[];
   dailyTransactions: Transaction[][] = [[]];
-  accountsPerPage: number = 3;
-  cardsPerPage: number = 3;
-  currentAccountsPage: number = 1;
-  currentCardsPage: number = 1;
-  totalAccountsPagesCount: number = 1;
-  totalCardsPagesCount: number = 1;
+  accountsPaginationService: PaginationService = new PaginationService();
+  cardPaginationService: PaginationService = new PaginationService();
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private userService: UserService,
@@ -64,25 +61,24 @@ export class FinancesComponent implements OnInit {
     this.userDeposits = await this.userService.getUserDepositsArray();
     this.userTransactions = await this.userService.getUserTransactionsArray();
     this.userCards = await this.userService.getUserCardsArray();
-    this.setItemsPerPage(window.innerWidth);
-    this.updatePagesCount();
+    this.setPaginatedArrays();
+    this.handleWidthChange();
     this.filterTransactions();
     this.groupUserTransactions();
   }
+  setPaginatedArrays(): void {
+    this.accountsPaginationService.setPaginatedArray(this.userAccounts);
+    this.cardPaginationService.setPaginatedArray(this.userCards);
+    this.cardPaginationService.setLargeBreakpointItemsPerPage(4);
+  }
+  handleWidthChange(): void {
+    this.accountsPaginationService.handleWidthChange(window.innerWidth);
+    this.cardPaginationService.handleWidthChange(window.innerWidth);
+  }
   @HostListener('window:resize', ['$event'])
-  onResize(event: any): void {
-    this.setItemsPerPage(event.target.innerWidth);
-    this.updatePagesCount();
-  }
-  get paginatedUserAccounts(): Account[] {
-    const startIndex = (this.currentAccountsPage - 1) * this.accountsPerPage;
-    const endIndex = startIndex + this.accountsPerPage;
-    return this.userAccounts && this.userAccounts.slice(startIndex, endIndex);
-  }
-  get paginatedUserCards(): Card[] {
-    const startIndex = (this.currentCardsPage - 1) * this.cardsPerPage;
-    const endIndex = startIndex + this.cardsPerPage;
-    return this.userCards && this.userCards.slice(startIndex, endIndex);
+  onResize(event: UIEvent): void {
+    this.accountsPaginationService.onResize(event);
+    this.cardPaginationService.onResize(event);
   }
   groupUserTransactions(): void {
     this.dailyTransactions = this.convertService.getGroupedUserTransactions(
@@ -91,44 +87,6 @@ export class FinancesComponent implements OnInit {
     this.dailyTransactions.forEach((transactionArray: Transaction[]) =>
       transactionArray.splice(2)
     );
-  }
-  setItemsPerPage(windowWidth: number): void {
-    if (windowWidth < 1024) {
-      this.accountsPerPage = 1;
-      this.cardsPerPage = 1;
-    } else if (windowWidth > 1400 && windowWidth < 1600) {
-      this.accountsPerPage = 3;
-      this.cardsPerPage = 3;
-    } else if (windowWidth >= 1600 && windowWidth < 2100) {
-      this.cardsPerPage = 4;
-      this.accountsPerPage = 3;
-    } else if (windowWidth >= 2100) {
-      this.accountsPerPage = 4;
-      this.cardsPerPage = 4;
-    } else {
-      this.accountsPerPage = 2;
-      this.cardsPerPage = 2;
-    }
-  }
-  nextAccountsPage(): void {
-    if (this.currentAccountsPage < this.totalAccountsPagesCount) {
-      this.currentAccountsPage++;
-    }
-  }
-  previousAccountsPage(): void {
-    if (this.currentAccountsPage > 1) {
-      this.currentAccountsPage--;
-    }
-  }
-  nextCardsPage(): void {
-    if (this.currentCardsPage < this.totalCardsPagesCount) {
-      this.currentCardsPage++;
-    }
-  }
-  previousCardsPage(): void {
-    if (this.currentCardsPage > 1) {
-      this.currentCardsPage--;
-    }
   }
   changeTabName(tabName: string): void {
     this.appInformationStatesService.changeTabName(tabName);
@@ -151,20 +109,6 @@ export class FinancesComponent implements OnInit {
   }
   setSelectedCard(card: Card): void {
     this.itemSelectionService.setSelectedCard(card);
-  }
-  private updatePagesCount(): void {
-    this.totalAccountsPagesCount = Math.ceil(
-      this.userAccounts.length / this.accountsPerPage
-    );
-    this.totalCardsPagesCount = Math.ceil(
-      this.userCards.length / this.cardsPerPage
-    );
-    if (this.currentAccountsPage > this.totalAccountsPagesCount) {
-      this.currentAccountsPage = 1;
-    }
-    if (this.currentCardsPage > this.totalCardsPagesCount) {
-      this.currentCardsPage = 1;
-    }
   }
   private filterTransactions(): void {
     this.userTransactions = this.userTransactions.filter(

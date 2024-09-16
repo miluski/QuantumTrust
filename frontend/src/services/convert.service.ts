@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Transaction } from '../types/transaction';
-import { BOTTOM_INFORMATION } from '../utils/enums';
+import {
+  BOTTOM_INFORMATION,
+  ONE_MONTH,
+  SIX_MONTHS,
+  THREE_MONTHS,
+  TWELVE_MONTHS,
+} from '../utils/enums';
+import { exchangeRates } from '../utils/exchange-rates';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +30,7 @@ export class ConvertService {
   getPolishDepositType(depositType: string, usageType?: string): string {
     switch (depositType) {
       case 'timely':
+      default:
         return usageType === BOTTOM_INFORMATION ? 'terminową' : 'terminowa';
       case 'mobile':
         return usageType === BOTTOM_INFORMATION ? 'mobilną' : 'mobilna';
@@ -30,8 +38,19 @@ export class ConvertService {
         return usageType === BOTTOM_INFORMATION ? 'rodzinną' : 'rodzinna';
       case 'progressive':
         return usageType === BOTTOM_INFORMATION ? 'progresywną' : 'progresywna';
+    }
+  }
+  getDepositIcon(depositType: string): string {
+    switch (depositType) {
+      case 'timely':
       default:
-        return usageType === BOTTOM_INFORMATION ? 'terminową' : 'terminowa';
+        return 'calendar_month';
+      case 'mobile':
+        return 'phone_iphone';
+      case 'family':
+        return 'savings';
+      case 'progressive':
+        return 'bar_chart';
     }
   }
   getIconClassFromTransactionCategory(transactionCategory: string): string {
@@ -84,5 +103,35 @@ export class ConvertService {
       default:
         return 'Niedziela';
     }
+  }
+  getMonths(interval: number): number {
+    switch (interval) {
+      case ONE_MONTH:
+      default:
+        return 1;
+      case THREE_MONTHS:
+        return 3;
+      case SIX_MONTHS:
+        return 6;
+      case TWELVE_MONTHS:
+        return 12;
+    }
+  }
+  getMonthForm(interval: number): string {
+    switch (interval) {
+      case ONE_MONTH:
+      default:
+        return 'miesiąc';
+      case THREE_MONTHS:
+        return 'miesiące';
+      case SIX_MONTHS:
+      case TWELVE_MONTHS:
+        return 'miesięcy';
+    }
+  }
+  getConversionRate(fromCurrency: string, toCurrency: string): number {
+    const fromRate: number = exchangeRates.get(fromCurrency) as number;
+    const toRate: number = exchangeRates.get(toCurrency) as number;
+    return fromRate / toRate;
   }
 }

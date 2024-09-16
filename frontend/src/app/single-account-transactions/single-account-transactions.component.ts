@@ -8,7 +8,6 @@ import { FiltersService } from '../../services/filters.service';
 import { ItemSelectionService } from '../../services/item-selection.service';
 import { Account } from '../../types/account';
 import { Transaction } from '../../types/transaction';
-import { exchangeRates } from '../../utils/exchange-rates';
 import { DurationExpansionComponent } from '../duration-expansion/duration-expansion.component';
 import { MobileFiltersComponent } from '../mobile-filters/mobile-filters.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
@@ -102,12 +101,10 @@ export class SingleAccountTransactionsComponent implements OnInit {
     fromCurrency: string,
     toCurrency: string
   ): number {
-    const conversionRate = this.getConversionRate(fromCurrency, toCurrency);
+    const conversionRate = this.convertService.getConversionRate(
+      fromCurrency,
+      toCurrency
+    );
     return parseFloat((amount * conversionRate).toFixed(2));
-  }
-  private getConversionRate(fromCurrency: string, toCurrency: string): number {
-    const fromRate: number = exchangeRates.get(fromCurrency) as number;
-    const toRate: number = exchangeRates.get(toCurrency) as number;
-    return fromRate / toRate;
   }
 }
