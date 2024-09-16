@@ -7,8 +7,7 @@
     </div>
     <div class="w-screen bg-white h-[1px]"></div>
     <div class="flex flex-col justify-center items-center pt-5">
-        <div class="flex flex-row w-screen h-full lg:space-x-14 relative justify-center border-none">
-            @if(paginationService.totalPages > 1) {
+        <div class="flex flex-row w-screen h-full lg:space-x-14 2xl:space-x-40 relative justify-center border-none">
             <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
                 <button class="sm:ml-10 font-bold px-4 rounded-l text-white max-sm:px-2"
                     (click)="paginationService.previousPage()">
@@ -20,9 +19,8 @@
                     <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
                 </button>
             </div>
-            }
             @for(deposit of paginationService.paginatedItems; track deposit.id) {
-            <div class="bg-own-gray rounded-xl justify-center items-center text-center cursor-pointer hover:bg-gray-400 w-80 h-96 md:w-64 xl:w-72 p-5 max-sm:w-72 max-sm:my-2"
+            <div class="bg-own-gray rounded-xl justify-center items-center text-cente w-80 h-96 md:w-64 xl:w-72 p-5 max-sm:w-64 max-sm:my-2"
                 [ngClass]="{'blur-xxs': deposit.type !== currentSelectedDepositType}">
                 <mat-icon class="my-5 icon-3x">{{convertService.getDepositIcon(deposit.type)}}</mat-icon>
                 <p class="font-walter font-normal text-2xl text-black max-md:text-lg">Lokata
@@ -37,7 +35,7 @@
             </div>
             }
         </div>
-        <p class="font-roboto font-normal text-2xl text-white py-5 text-center lg:pl-12">Wybrano lokatę
+        <p class="font-roboto font-normal text-2xl text-white py-5 text-center lg:pl-12 2xl:pl-36">Wybrano lokatę
             {{convertService.getPolishDepositType(currentSelectedDepositType, BOTTOM_INFORMATION)}}</p>
         <div class="w-screen bg-white h-[1px]"></div>
         <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">

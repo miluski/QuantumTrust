@@ -10,14 +10,14 @@ export class PaginationService {
   public totalPages: number = 1;
   public largeBreakpointItemsPerPage: number = 3;
   public paginationMethod: string = 'default';
-  onResize(event: UIEvent, mediumBreakpointItems: number = 2): void {
+  onResize(event: UIEvent, mediumBreakpointItems: number = 2, maximumBreakpointItems: number = 4): void {
     const target = event.target as Window | null;
     if (target) {
-      this.handleWidthChange(target.innerWidth, mediumBreakpointItems);
+      this.handleWidthChange(target.innerWidth, mediumBreakpointItems, maximumBreakpointItems);
     }
   }
-  handleWidthChange(width: number, mediumBreakpointItems: number = 2): void {
-    this.updateItemsPerPage(width, mediumBreakpointItems);
+  handleWidthChange(width: number, mediumBreakpointItems: number = 2, maximumBreakpointItems: number = 4): void {
+    this.updateItemsPerPage(width, mediumBreakpointItems, maximumBreakpointItems);
     this.updatePagesCount();
   }
   setPaginatedArray(paginatedArray: any[]): void {
@@ -65,7 +65,7 @@ export class PaginationService {
       this.paginatedArray.push(firstElement);
     }
   }
-  private updateItemsPerPage(width: number, mediumBreakpointItems: number) {
+  private updateItemsPerPage(width: number, mediumBreakpointItems: number, maximumBreakpointItems: number) {
     if (width < 1024) {
       this.itemsPerPage = 1;
     } else if (width > 1400 && width < 1600) {
@@ -73,7 +73,7 @@ export class PaginationService {
     } else if (width >= 1600 && width < 2100) {
       this.itemsPerPage = this.largeBreakpointItemsPerPage;
     } else if (width >= 2100) {
-      this.itemsPerPage = 4;
+      this.itemsPerPage = maximumBreakpointItems;
     } else {
       this.itemsPerPage = mediumBreakpointItems;
     }

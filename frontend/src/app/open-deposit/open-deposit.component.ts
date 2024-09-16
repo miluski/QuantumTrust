@@ -31,7 +31,7 @@ export class OpenDepositComponent implements OnInit {
   }
   ngOnInit(): void {
     this.paginationService.setPaginatedArray(depositsObjectArray);
-    this.paginationService.handleWidthChange(window.innerWidth, 3);
+    this.paginationService.handleWidthChange(window.innerWidth, 3, 3);
     this.setUserAccounts();
   }
   async setUserAccounts(): Promise<void> {
@@ -40,7 +40,7 @@ export class OpenDepositComponent implements OnInit {
   }
   @HostListener('window:resize', ['$event'])
   onResize(event: UIEvent): void {
-    this.paginationService.onResize(event, 3);
+    this.paginationService.onResize(event, 3, 3);
   }
   get monthsDescription(): string {
     const monthsCount: number = this.convertService.getMonths(
