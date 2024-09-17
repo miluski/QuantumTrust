@@ -20,7 +20,7 @@
                 </button>
             </div>
             @for(deposit of paginationService.paginatedItems; track deposit.id) {
-            <div class="bg-own-gray rounded-xl justify-center items-center text-cente w-80 h-96 md:w-64 xl:w-72 p-5 max-sm:w-64 max-sm:my-2"
+            <div class="bg-own-gray rounded-xl justify-center items-center text-center w-80 h-96 md:w-64 xl:w-72 p-5 max-sm:w-64 max-sm:my-2"
                 [ngClass]="{'blur-xxs': deposit.type !== currentSelectedDepositType}">
                 <mat-icon class="my-5 icon-3x">{{convertService.getDepositIcon(deposit.type)}}</mat-icon>
                 <p class="font-walter font-normal text-2xl text-black max-md:text-lg">Lokata

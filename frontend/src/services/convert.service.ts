@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Account } from '../types/account';
 import { Transaction } from '../types/transaction';
 import {
   BOTTOM_INFORMATION,
@@ -133,5 +134,12 @@ export class ConvertService {
     const fromRate: number = exchangeRates.get(fromCurrency) as number;
     const toRate: number = exchangeRates.get(toCurrency) as number;
     return fromRate / toRate;
+  }
+  getShortenedAccountId(account: Account): string {
+    return (
+      account.id.substring(0, 5) +
+      ' **** ' +
+      account.id.substring(account.id.length - 4, account.id.length)
+    );
   }
 }

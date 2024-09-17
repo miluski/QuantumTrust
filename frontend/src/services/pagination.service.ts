@@ -50,7 +50,6 @@ export class PaginationService {
   get paginatedItems(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    console.log(startIndex, endIndex, this.paginatedArray);
     return this.paginatedArray.slice(startIndex, endIndex);
   }
   private moveArrayBackward(): void {

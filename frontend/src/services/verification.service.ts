@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Account } from '../types/account';
+import { Deposit } from '../types/deposit';
+import { depositsObjectArray } from '../utils/deposits-objects-array';
 
 @Injectable({
   providedIn: 'root',
@@ -110,5 +113,51 @@ export class VerificationService {
       'CAD',
     ];
     return validCurrencies.includes(accountCurrency);
+  }
+
+  validateSelectedDeposit(selectedDeposit: Deposit): boolean {
+    return depositsObjectArray.some((deposit: Deposit) => {
+      deposit.image === selectedDeposit.image &&
+        deposit.type === selectedDeposit.type;
+    });
+  }
+
+  validateDepositDuration(depositDuration: number): boolean {
+    return (
+      !isNaN(depositDuration) &&
+      (depositDuration === 1 ||
+        depositDuration === 3 ||
+        depositDuration === 6 ||
+        depositDuration === 12)
+    );
+  }
+
+  validateSelectedAccount(
+    validAccountsArray: Account[],
+    selectedAccount: Account
+  ): boolean {
+    return validAccountsArray.some(
+      (account: Account) =>
+        account.id === selectedAccount.id &&
+        account.type === selectedAccount.type &&
+        account.currency === selectedAccount.currency
+    );
+  }
+
+  validateTransferTitle(title: string): boolean {
+    return title.length >= 10 && title.length <= 50;
+  }
+
+  validateReceiverAccountId(accountId: string): boolean {
+    const accountNumberRegex = /^PL\d{2}(\s\d{4}){6}$/;
+    return accountNumberRegex.test(accountId);
+  }
+
+  validateOperationAmount(operationAmount: number, account: Account): boolean {
+    return (
+      !isNaN(operationAmount) &&
+      operationAmount >= 1 &&
+      operationAmount <= (account.balance ?? 0)
+    );
   }
 }
