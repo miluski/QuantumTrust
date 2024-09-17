@@ -126,7 +126,6 @@ export class FiltersService {
     isExpanded: boolean,
     transactionsArray: Transaction[][]
   ): void {
-    console.log(this.actualSelectedFilters[1]);
     switch (this.actualSelectedFilters[1]) {
       case 'Ostatni dzień':
         this.filterByDate(transactionsArray, 'day');

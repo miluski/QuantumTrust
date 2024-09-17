@@ -54,10 +54,7 @@ export class OpenDepositComponent implements OnInit {
   getAccountOptionString(account: Account): string {
     const polishAccountType: string =
       'Konto ' + this.convertService.getPolishAccountType(account.type);
-    const shortenedAccountId: string =
-      account.id.substring(0, 5) +
-      ' **** ' +
-      account.id.substring(account.id.length - 4, account.id.length);
+    const shortenedAccountId: string = this.convertService.getShortenedAccountId(account);
     const avalaibleBalance: string =
       this.convertService.getNumberWithSpacesBetweenThousands(account.balance) +
       ' ' +

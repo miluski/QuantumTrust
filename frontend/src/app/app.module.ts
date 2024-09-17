@@ -20,6 +20,7 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { LoginComponent } from './login/login.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { MobileFiltersComponent } from './mobile-filters/mobile-filters.component';
+import { NewTransferComponent } from './new-transfer/new-transfer.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { OpenDepositComponent } from './open-deposit/open-deposit.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
@@ -65,6 +66,7 @@ import { UserOpenAccountComponent } from './user-open-account/user-open-account.
     SearchBarComponent,
     MobileFiltersComponent,
     OpenDepositComponent,
+    NewTransferComponent,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,
