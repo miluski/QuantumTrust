@@ -51,37 +51,16 @@ export class OpenDepositComponent implements OnInit {
     );
     return monthsCount.toString() + ' ' + monthsForm;
   }
-  getAccountOptionString(account: Account): string {
-    const polishAccountType: string =
-      'Konto ' + this.convertService.getPolishAccountType(account.type);
-    const shortenedAccountId: string = this.convertService.getShortenedAccountId(account);
-    const avalaibleBalance: string =
-      this.convertService.getNumberWithSpacesBetweenThousands(account.balance) +
-      ' ' +
-      account.currency;
-    return (
-      polishAccountType + ', ' + shortenedAccountId + ', ' + avalaibleBalance
-    );
+  getValueWithCurrency(multiplier: number): string {
+    return this.getLimit(multiplier) + ' ' + this.accountCurrency;
   }
-  getValueWithCurrency(type: 'max' | 'min'): string {
-    return this.getValue(type) + ' ' + this.accountCurrency;
-  }
-  getValue(type: 'max' | 'min'): number {
-    const conversionRate: number = this.convertService.getConversionRate(
-      'PLN',
-      this.accountCurrency
+  getLimit(multiplier: number): number {
+    const limit: number = this.convertService.getCalculatedAmount(
+      this.accountCurrency,
+      multiplier
     );
-    const maximumValue: number = conversionRate * 10000;
-    const minimumValue: number = conversionRate * 100;
-    const finalValue: number = Number(
-      parseFloat(
-        type === 'max'
-          ? Number(maximumValue).toString()
-          : Number(minimumValue).toString()
-      ).toPrecision(2)
-    );
-    this.startCapital = type === 'min' ? finalValue : this.startCapital;
-    return finalValue;
+    this.startCapital = multiplier === 100 ? limit : this.startCapital;
+    return limit;
   }
   get currentCurrency(): string {
     const actualAccount: Account | undefined = this.getActualAccount();
@@ -92,7 +71,7 @@ export class OpenDepositComponent implements OnInit {
       ? this.paginationService.paginatedItems[1].type
       : this.paginationService.paginatedItems[0].type;
   }
-  private get accountCurrency(): string {
+  get accountCurrency(): string {
     const actualAccount: Account | undefined = this.getActualAccount();
     return actualAccount ? actualAccount.currency ?? 'PLN' : 'PLN';
   }

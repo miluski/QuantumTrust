@@ -35,6 +35,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { UserHeaderComponent } from './user-header/user-header.component';
 import { UserMobileHeaderComponent } from './user-mobile-header/user-mobile-header.component';
 import { UserOpenAccountComponent } from './user-open-account/user-open-account.component';
+import { OrderCardComponent } from './order-card/order-card.component';
 
 @NgModule({
   imports: [
@@ -67,6 +68,7 @@ import { UserOpenAccountComponent } from './user-open-account/user-open-account.
     MobileFiltersComponent,
     OpenDepositComponent,
     NewTransferComponent,
+    OrderCardComponent,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,

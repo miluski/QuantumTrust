@@ -8,6 +8,7 @@ export class Card {
   backImage!: string;
   benefits!: string[];
   limits!: limit[];
+  fees!: { release: number; monthly: number };
   pin?: number;
   expirationDate?: string;
   publisher?: 'Visa' | 'Mastercard';

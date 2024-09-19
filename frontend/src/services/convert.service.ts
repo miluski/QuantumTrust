@@ -130,16 +130,39 @@ export class ConvertService {
         return 'miesięcy';
     }
   }
-  getConversionRate(fromCurrency: string, toCurrency: string): number {
-    const fromRate: number = exchangeRates.get(fromCurrency) as number;
-    const toRate: number = exchangeRates.get(toCurrency) as number;
-    return fromRate / toRate;
-  }
   getShortenedAccountId(account: Account): string {
     return (
       account.id.substring(0, 5) +
       ' **** ' +
       account.id.substring(account.id.length - 4, account.id.length)
     );
+  }
+  getAccountOptionString(account: Account): string {
+    const polishAccountType: string =
+      'Konto ' + this.getPolishAccountType(account.type);
+    const shortenedAccountId: string = this.getShortenedAccountId(account);
+    const avalaibleBalance: string =
+      this.getNumberWithSpacesBetweenThousands(account.balance) +
+      ' ' +
+      account.currency;
+    return (
+      polishAccountType + ', ' + shortenedAccountId + ', ' + avalaibleBalance
+    );
+  }
+  getCalculatedAmount(accountCurrency: string, multiplier: number): number {
+    const conversionRate: number = this.getConversionRate(
+      'PLN',
+      accountCurrency
+    );
+    const value: number = conversionRate * multiplier;
+    const calculatedAmount: number = Number(
+      parseFloat(value.toString()).toPrecision(2)
+    );
+    return calculatedAmount;
+  }
+  getConversionRate(fromCurrency: string, toCurrency: string): number {
+    const fromRate: number = exchangeRates.get(fromCurrency) as number;
+    const toRate: number = exchangeRates.get(toCurrency) as number;
+    return fromRate / toRate;
   }
 }

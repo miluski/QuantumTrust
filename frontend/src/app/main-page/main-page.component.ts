@@ -6,6 +6,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { NewTransferComponent } from '../new-transfer/new-transfer.component';
 import { OpenDepositComponent } from '../open-deposit/open-deposit.component';
+import { OrderCardComponent } from '../order-card/order-card.component';
 import { SingleAccountTransactionsComponent } from '../single-account-transactions/single-account-transactions.component';
 import { UserOpenAccountComponent } from '../user-open-account/user-open-account.component';
 
@@ -21,6 +22,7 @@ import { UserOpenAccountComponent } from '../user-open-account/user-open-account
     SingleAccountTransactionsComponent,
     OpenDepositComponent,
     NewTransferComponent,
+    OrderCardComponent,
   ],
   standalone: true,
 })
