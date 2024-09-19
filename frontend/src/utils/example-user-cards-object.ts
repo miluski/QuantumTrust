@@ -14,6 +14,10 @@ export const userCards: Card[] = [
     expirationDate: '12/25',
     showingCardSite: 'front',
     backImage: 'visa-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
   {
     id: 7890123456789012,
@@ -30,6 +34,10 @@ export const userCards: Card[] = [
     expirationDate: '05/27',
     showingCardSite: 'front',
     backImage: 'mastercard-travel-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
   {
     id: 3456789012345678,
@@ -46,6 +54,10 @@ export const userCards: Card[] = [
     expirationDate: '10/29',
     showingCardSite: 'front',
     backImage: 'visa-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
   {
     id: 2345678901234567,
@@ -62,6 +74,10 @@ export const userCards: Card[] = [
     expirationDate: '08/26',
     showingCardSite: 'front',
     backImage: 'mastercard-standard-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
   {
     id: 4567890123456789,
@@ -78,6 +94,10 @@ export const userCards: Card[] = [
     expirationDate: '11/28',
     showingCardSite: 'front',
     backImage: 'visa-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
   {
     id: 5678901234567890,
@@ -94,6 +114,10 @@ export const userCards: Card[] = [
     expirationDate: '03/30',
     showingCardSite: 'front',
     backImage: 'mastercard-business-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
   {
     id: 6789012345678901,
@@ -108,6 +132,10 @@ export const userCards: Card[] = [
     expirationDate: '07/24',
     showingCardSite: 'front',
     backImage: 'visa-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
   {
     id: 7890123456789013,
@@ -122,5 +150,9 @@ export const userCards: Card[] = [
     expirationDate: '09/25',
     showingCardSite: 'front',
     backImage: 'mastercard-student-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
 ];

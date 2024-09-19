@@ -42,7 +42,7 @@ export class NewTransferComponent implements OnInit {
       ? this.paginationService.paginatedItems[1]
       : this.paginationService.paginatedItems[0];
   }
-  get currentTransformAmount(): number {
+  get currentTransferAmount(): number {
     this.transferAmount =
       this.currentSelectedAccount.balance &&
       this.transferAmount > this.currentSelectedAccount.balance

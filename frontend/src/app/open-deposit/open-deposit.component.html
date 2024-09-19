@@ -28,7 +28,8 @@
                 <p class="font-walter font-normal text-2xl text-white max-md:text-lg">{{deposit.percent}}%</p>
                 <ul class="flex flex-col self-center list-disc space-y-5 px-5">
                     @for(benefit of deposit.benefits; track benefit) {
-                    <li class="items-center font-roboto font-light text-xl text-black text-left max-md:text-base">{{benefit}}
+                    <li class="items-center font-roboto font-light text-xl text-black text-left max-md:text-base">
+                        {{benefit}}
                     </li>
                     }
                 </ul>
@@ -72,7 +73,7 @@
                 <div class="relative w-full">
                     <p class="font-roboto font-light text-md text-left">Kapitał początkowy</p>
                     <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
-                        type="number" min="{{getValue('min')}}" max="{{getValue('max')}}" value={{startCapital}}
+                        type="number" min="{{getLimit(100)}}" max="{{getLimit(10000)}}" value={{startCapital}}
                         [(ngModel)]="startCapital" #initialCapitalInput="ngModel" required />
                     <span
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-black pt-9">{{currentCurrency}}</span>
@@ -81,9 +82,9 @@
                     class="text-red-500 pt-2">
                     <div *ngIf="initialCapitalInput.errors?.['required']">Kapitał początkowy jest wymagany.</div>
                     <div *ngIf="initialCapitalInput.errors?.['min']">Minimalna wartość to
-                        {{getValueWithCurrency('min')}}</div>
+                        {{getValueWithCurrency(100)}}</div>
                     <div *ngIf="initialCapitalInput.errors?.['max']">Maksymalna wartość to
-                        {{getValueWithCurrency('max')}}</div>
+                        {{getValueWithCurrency(10000)}}</div>
                 </div>
             </div>
             <div class="flex flex-col z-20">
@@ -93,7 +94,7 @@
                     [(ngModel)]="currentSelectedAccountId">
                     @for(userAccount of userAccounts; track userAccount.id) {
                     <option class="py-2" value={{userAccount.id}}>
-                        {{getAccountOptionString(userAccount)}}
+                        {{convertService.getAccountOptionString(userAccount)}}
                     </option>
                     }
                 </select>

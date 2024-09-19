@@ -2,16 +2,6 @@ import { Account } from '../types/account';
 
 export const userAccounts: Account[] = [
   {
-    id: 'PL 49 1020 2892 2276 3005 0000 0000',
-    advertismentText: '',
-    advertismentContent: '',
-    image: 'first-account.png',
-    type: 'personal',
-    benefits: [],
-    balance: 123456789.12,
-    currency: 'PLN',
-  },
-  {
     id: 'PL 49 1020 2892 2276 3005 0000 0001',
     advertismentText: '',
     advertismentContent: '',
@@ -20,6 +10,16 @@ export const userAccounts: Account[] = [
     benefits: [],
     balance: 12345.89,
     currency: 'EUR',
+  },
+  {
+    id: 'PL 49 1020 2892 2276 3005 0000 0000',
+    advertismentText: '',
+    advertismentContent: '',
+    image: 'first-account.png',
+    type: 'personal',
+    benefits: [],
+    balance: 123456789.12,
+    currency: 'PLN',
   },
   {
     id: 'PL 49 1020 2892 2276 3005 0000 0002',

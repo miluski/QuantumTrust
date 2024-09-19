@@ -60,7 +60,7 @@
             <div class="w-full flex flex-col items-center space-y-5">
                 <div class="relative max-sm:w-1/2 w-1/4 self-center">
                     <input class="bg-own-gray text-green-400 p-2 w-full rounded-md no-arrows font-roboto font-light"
-                        type="number" min="1" max="{{currentSelectedAccount.balance}}" [value]="currentTransformAmount"
+                        type="number" min="1" max="{{currentSelectedAccount.balance}}" [value]="currentTransferAmount"
                         [(ngModel)]="transferAmount" #initialCapitalInput="ngModel" required />
                     <span
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-green-400">
@@ -68,7 +68,7 @@
                     </span>
                 </div>
                 <input type="range" min={{1}} max="{{currentSelectedAccount.balance}}" step={{0.1}}
-                    [value]="currentTransformAmount" [(ngModel)]="transferAmount"
+                    [value]="currentTransferAmount" [(ngModel)]="transferAmount"
                     class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb select-none">
                 <div class="flex justify-between w-full mt-2">
                     <span class="text-white">min. 1 {{currentSelectedAccount.currency}}</span>
