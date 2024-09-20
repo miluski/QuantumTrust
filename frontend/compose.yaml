@@ -1,0 +1,17 @@
+services:
+  quantum-trust-frontend:
+    image: quantum-trust-frontend:latest
+    container_name: quantum-trust-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./:/quantum-trust-frontend
+    environment:
+      - NODE_ENV=development
+      - STYLE=css
+    restart: always
+volumes:
+  app:
