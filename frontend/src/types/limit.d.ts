@@ -1,4 +1,4 @@
-export type limit = {
-  internetTransactions: number[];
-  cashTransactions: number[];
+export type Limit = {
+  internetTransactionsLimit: number;
+  cashTransactionsLimit: number;
 };

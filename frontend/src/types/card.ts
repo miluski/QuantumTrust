@@ -1,4 +1,4 @@
-import { limit } from './limit';
+import { limits } from './limits';
 
 export class Card {
   id!: number;
@@ -7,11 +7,13 @@ export class Card {
   image!: string;
   backImage!: string;
   benefits!: string[];
-  limits!: limit[];
+  limits!: limits[];
   fees!: { release: number; monthly: number };
+  assignedAccountId?: string;
   pin?: number;
   expirationDate?: string;
   publisher?: 'Visa' | 'Mastercard';
   cvcCode?: number;
   showingCardSite?: 'front' | 'back';
+  status?: 'suspended' | 'unsuspended';
 }

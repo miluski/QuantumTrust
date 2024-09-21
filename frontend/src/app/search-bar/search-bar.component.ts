@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FiltersService } from '../../services/filters.service';
 import { Transaction } from '../../types/transaction';
 
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
-  imports: [FormsModule],
+  imports: [FormsModule, MatTooltipModule],
   standalone: true,
 })
 export class SearchBarComponent {

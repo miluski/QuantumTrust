@@ -6,7 +6,7 @@
                 <p
                     class="max-lg:self-center max-lg:text-center font-walter text-5xl max-sm:text-3xl text-white font-normal">
                     KONTO {{convertService.getPolishAccountType(accountType).toUpperCase()}}</p>
-                <img class="md:hidden block my-12 h-64 w-[75%] max-sm:w-full self-center rounded-lg"
+                <img class="md:hidden block my-12 h-64 w-[75%] max-sm:w-full self-center rounded-lg pointer-events-none"
                     src={{accountObject.image}} />
                 <ul class="list-disc text-left self-center space-y-5">
                     @for(benefit of accountObject.benefits; track accountObject.id) {
@@ -19,7 +19,7 @@
                     Otwórz konto
                 </button>
             </div>
-            <img class="max-md:hidden w-auto md:h-52 md:w-auto lg:h-64 xl:h-80 rounded-lg"
+            <img class="max-md:hidden w-auto md:h-52 md:w-auto lg:h-64 xl:h-80 rounded-lg pointer-events-none"
                 src={{accountObject.image}} />
         </div>
         <mat-divider class="shadow-inner shadow-gray-500" />
@@ -65,7 +65,7 @@
                 @for(account of paginationService.paginatedItems; track account.id) {
                 <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-72 max-md:w-64 hover:bg-gray-200 cursor-pointer p-5"
                     (click)="changeAccountType(account.type)" (click)="onScrollToTop()">
-                    <img class="object-cover h-52 w-auto border rounded-md my-10" src={{account.image}} />
+                    <img class="object-cover h-52 w-auto border rounded-md my-10 pointer-events-none" src={{account.image}} />
                     <p class="font-salsa font-normal text-black max-sm:text-3xl max-md:text-lg lg:text-3xl max-md:px-5">
                         KONTO
                         {{convertService.getPolishAccountType(account.type).toUpperCase()}}

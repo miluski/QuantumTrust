@@ -2,7 +2,7 @@
     class="sticky z-50 w-full bg-black top-0 flex flex-row justify-between items-center text-white p-4 shadow-none border-none">
     <button class="relative flex flex-row items-center space-x-3 h-full cursor-pointer" routerLink="/home-page"
         routerLinkActive="active" (click)="changeTabName('Konta')">
-        <img class="w-10 h-10" src="icon.png" alt="Quantum Trust Logo" />
+        <img class="w-10 h-10 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
         <p class="font-salsa text-xl leading-none flex end-5 !mt-5 items-center">Quantum Trust</p>
     </button>
     <div [ngClass]="{'!hidden' : currentRoute !== '/home-page', 'hidden md:block' : currentRoute === '/home-page'}"
