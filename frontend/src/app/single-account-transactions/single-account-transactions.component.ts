@@ -49,15 +49,13 @@ export class SingleAccountTransactionsComponent implements OnInit {
     this.initializeAccountTransactions();
     this.changeDetectorRef.detectChanges();
   }
-  getDayFromDate(date: string): string {
-    return this.convertService.getWeekDayFromNumber(new Date(date).getDay());
-  }
+
   async initializeAccountTransactions(): Promise<void> {
     this.itemSelectionService.currentAccount.subscribe(
       (account: Account) => (this.account = account)
     );
     this.accountTransactions =
-      await this.itemSelectionService.getUserTransactions();
+      await this.itemSelectionService.getUserTransactions('account');
     this.dailyTransactions = this.convertService.getGroupedUserTransactions(
       this.accountTransactions
     );

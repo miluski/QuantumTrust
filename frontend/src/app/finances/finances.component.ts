@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { CardIdFormatPipe } from '../../pipes/card-id-format.pipe';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
@@ -25,7 +26,13 @@ import { UserAccount } from '../../types/user-account';
   selector: 'app-finances',
   templateUrl: './finances.component.html',
   styleUrl: './finances.component.css',
-  imports: [CommonModule, RouterModule, MatIconModule, CardIdFormatPipe],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatIconModule,
+    MatTooltipModule,
+    CardIdFormatPipe,
+  ],
   animations: [
     trigger('rotateCard', [
       state('front', style({ transform: 'rotateY(0)' })),
@@ -109,6 +116,11 @@ export class FinancesComponent implements OnInit {
   }
   setSelectedCard(card: Card): void {
     this.itemSelectionService.setSelectedCard(card);
+  }
+  getShortenedAccountNumber(transaction: Transaction): string {
+    return typeof transaction.accountNumber === 'string'
+      ? transaction.accountNumber.slice(31)
+      : transaction.accountNumber.toString();
   }
   private filterTransactions(): void {
     this.userTransactions = this.userTransactions.filter(

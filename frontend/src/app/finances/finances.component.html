@@ -3,7 +3,7 @@
         <div class="relative flex flex-row space-x-5">
             <p class="font-walter text-3xl text-white">Lista kont</p>
             <div class="relative rounded-full w-8 h-8 bg-gray-500 hover:bg-gray-400 cursor-pointer mt-1 inline-block items-center justify-center"
-                (click)="changeTabName('AuthorizedOpenAccount')">
+                matTooltip="Otwórz nowe konto." (click)="changeTabName('AuthorizedOpenAccount')">
                 <hr class="absolute top-[50%] left-[10%] bg-black border-none shadow-none w-6 h-0.5" />
                 <hr class="absolute top-[50%] left-[10%] bg-black border-none shadow-none w-6 h-0.5 rotate-90" />
             </div>
@@ -32,8 +32,8 @@
                     <p class="font-roboto font-medium max-sm:text-lg text-2xl text-white pt-5">Konto
                         {{convertService.getPolishAccountType(account.type)}}
                     </p>
-                    <img class="rounded-2xl max-sm:w-16 max-sm:h-14 w-28 h-24 border border-black" src={{account.image}}
-                        alt="single-account-image" />
+                    <img class="rounded-2xl max-sm:w-16 max-sm:h-14 w-28 h-24 border border-black pointer-events-none"
+                        src={{account.image}} alt="single-account-image" />
                 </div>
                 <p class="font-roboto font-normal max-sm:text-sm text-xl text-black">{{account.id}}</p>
                 <div class="flex flex-row space-x-2">
@@ -115,7 +115,7 @@
                                 <p
                                     class="font-roboto text-white font-light text-base max-sm:text-sm max-sm:text-center text-nowrap">
                                     ****
-                                    {{transaction.accountNumber.slice(31)}}</p>
+                                    {{getShortenedAccountNumber(transaction)}}</p>
                             </div>
                             <div class="flex flex-col text-end pr-5 sm:w-1/3 max-sm:w-[40%]">
                                 <p class="font-roboto font-medium text-md max-sm:text-sm text-nowrap" [ngClass]="{
@@ -154,7 +154,7 @@
         <div class="relative flex flex-row space-x-5">
             <p class="font-walter text-3xl text-white">Moje karty</p>
             <div class="relative rounded-full w-8 h-8 bg-gray-500 hover:bg-gray-400 cursor-pointer mt-1 inline-block items-center justify-center"
-                (click)="changeTabName('OrderCard')">
+                matTooltip="Zamów nową kartę." (click)="changeTabName('OrderCard')">
                 <hr class="absolute top-[50%] left-[10%] bg-black border-none shadow-none w-6 h-0.5" />
                 <hr class="absolute top-[50%] left-[10%] bg-black border-none shadow-none w-6 h-0.5 rotate-90" />
             </div>
@@ -176,15 +176,16 @@
             </div>
             }
             @for(card of cardPaginationService.paginatedItems; track card.id) {
-            <div class="flex flex-col relative mb-5 z-30"
-                (click)="card.showingCardSite = card.showingCardSite === 'front' ? 'back' : 'front'">
+            <div class="flex flex-col relative mb-5 z-30">
                 <div class="flex flex-col relative cursor-pointer z-30 w-full h-full max-sm:w-[85%] max-sm:self-center"
-                    [@rotateCard]="card.showingCardSite">
-                    <img class="object-cover max-sm:h-44 w-80 h-48 shadow-gray-400 shadow-sm rounded-2xl my-10 z-10"
+                    [@rotateCard]="card.showingCardSite"
+                    (click)="card.showingCardSite = card.showingCardSite === 'front' ? 'back' : 'front'">
+                    <img class="object-cover max-sm:h-44 w-80 h-48 shadow-gray-400 shadow-sm rounded-2xl my-10 z-10 pointer-events-none"
+                        [ngClass]="{'opacity-50': card.status === 'suspended'}"
                         [src]="card.showingCardSite==='front' ? card.image : card.backImage" alt="user-single-card">
                     @if(card.showingCardSite === 'front') {
                     <div class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                        <img class="w-4 h-4" src="icon.png" alt="Quantum Trust Logo" />
+                        <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
                         <p [ngClass]="{'text-black': card.image === 'mastercard-standard.png'}"
                             class="font-salsa text-xs leading-none pt-2 pl-2">Quantum Trust</p>
                     </div>
@@ -202,7 +203,7 @@
                     <p class="font-courier text-sm text-silver text-shadow absolute z-20" [ngClass]="{
                     'sm:pb-2 bottom-8 max-sm:pb-2 left-8 sm:left-10': card.publisher === 'Visa', 
                     'bottom-4 pb-4 left-3.5': card.publisher === 'Mastercard'
-                }">
+                    }">
                         {{userAccount.name.substring(0,1).toUpperCase()}}.{{userAccount.surname.toUpperCase()}}
                     </p>
                     }
@@ -214,10 +215,14 @@
                     }
                     <i class="absolute top-14 fa-solid fa-gear text-brown hover:text-light-brown text-2xl cursor-pointer z-30"
                         [ngClass]="{'left-2': card.showingCardSite === 'back', 'right-2': card.showingCardSite === 'front'}"
-                        (click)="changeTabName('CardSettings')"></i>
+                        (click)="changeTabName('CardSettings'); setSelectedCard(card);"></i>
                 </div>
-                <p class="font-roboto font-normal text-2xl text-own-gray">{{card.publisher}}
-                    {{card.type.toLocaleLowerCase()}}</p>
+                <div class="flex flex-row w-full space-x-5 justify-center z-50">
+                    <p class="font-roboto font-normal text-2xl text-own-gray">{{card.publisher}}
+                        {{card.type.toLocaleLowerCase()}}</p>
+                    <i class="fa-solid fa-circle-exclamation pt-2" [ngClass]="{'hidden': card.status !== 'suspended'}"
+                        matTooltip="Karta została zawieszona."></i>
+                </div>
             </div>
             }
             @if(cardPaginationService.paginatedArray === undefined || cardPaginationService.paginatedArray.length === 0)

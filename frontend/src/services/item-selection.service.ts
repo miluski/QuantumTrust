@@ -25,12 +25,17 @@ export class ItemSelectionService {
   setSelectedCard(selectedCard: Card): void {
     this.selectedCard.next(selectedCard);
   }
-  public async getUserTransactions(): Promise<Transaction[]> {
+  public async getUserTransactions(
+    itemType: 'account' | 'card'
+  ): Promise<Transaction[]> {
     let userTransactions: Transaction[] =
       await this.userService.getUserTransactionsArray();
     userTransactions = userTransactions.filter(
       (transaction: Transaction) =>
-        transaction.accountNumber === this.selectedAccount.getValue().id
+        transaction.accountNumber ===
+        (itemType === 'account'
+          ? this.selectedAccount.getValue().id
+          : this.selectedCard.getValue().id)
     );
     return userTransactions;
   }

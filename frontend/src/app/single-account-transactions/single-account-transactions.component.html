@@ -32,14 +32,15 @@
         <app-sort-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
         <app-duration-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
         <app-status-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
-        <app-search-bar class="max-lg:w-[80%]" [transactionsArray]="dailyTransactions" />
+        <app-search-bar class="max-lg:w-[80%] w-1/4" [transactionsArray]="dailyTransactions" />
     </div>
     <div class="flex flex-col w-screen">
         @for(dayTransactionsArray of dailyTransactions; track dayTransactionsArray) {
         @if(dayTransactionsArray[0]) {
         <div class="w-screen h-0.5 bg-gray-400 mb-6"></div>
         <p class="font-roboto font-bold text-2xl text-white pt-3 pl-3 mb-6 self-center pb-6">
-            {{dayTransactionsArray[0].date | date: 'dd.MM.yyyy'}}, {{getDayFromDate(dayTransactionsArray[0].date)}}</p>
+            {{dayTransactionsArray[0].date | date: 'dd.MM.yyyy'}},
+            {{convertService.getDayFromDate(dayTransactionsArray[0].date)}}</p>
         }
         @for(transaction of dayTransactionsArray; track transaction.id) {
         <div class="flex flex-row justify-between md:w-[85%] w-[95%] self-center py-5">

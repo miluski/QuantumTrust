@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Account } from '../types/account';
+import { CardSettings } from '../types/card-settings';
 import { Transaction } from '../types/transaction';
 import {
   BOTTOM_INFORMATION,
@@ -87,6 +88,9 @@ export class ConvertService {
     });
     return Array.from(dailyTransactionsMap.values());
   }
+  getDayFromDate(date: string): string {
+    return this.getWeekDayFromNumber(new Date(date).getDay());
+  }
   getWeekDayFromNumber(day: number): string {
     switch (day) {
       case 1:
@@ -164,5 +168,88 @@ export class ConvertService {
     const fromRate: number = exchangeRates.get(fromCurrency) as number;
     const toRate: number = exchangeRates.get(toCurrency) as number;
     return fromRate / toRate;
+  }
+  getStep(cardSettings: CardSettings): number {
+    const max: number = this.getMaxLimit(cardSettings);
+    const min: number = this.getMinLimit(cardSettings.currency);
+    const range: number = max - min;
+    const steps: number = Math.ceil(range / 10);
+    return range / steps;
+  }
+  getMaxLimit(cardSettings: CardSettings): number {
+    return this.getCalculatedAmount(
+      cardSettings.currency,
+      cardSettings.transactionType === 'cash'
+        ? cardSettings.card.limits[0].cashTransactions[0]
+        : cardSettings.card.limits[0].internetTransactions[0]
+    );
+  }
+  getMinLimit(accountCurrency: string): number {
+    return this.getCalculatedAmount(accountCurrency, 500);
+  }
+  getFormattedTransactionsLimit(cardSettings: CardSettings): string {
+    const limit = this.getTransactionsLimit(cardSettings);
+    return limit.toLocaleString('pl-PL');
+  }
+  getTransactionsLimit(cardSettings: CardSettings): number {
+    const currentLimit: number =
+      cardSettings.limitType === 'max'
+        ? cardSettings.transactionType === 'internet'
+          ? cardSettings.card.limits[0].internetTransactions[0]
+          : cardSettings.card.limits[0].cashTransactions[0]
+        : 500;
+    const convertedLimit: number = this.getCalculatedAmount(
+      cardSettings.currency,
+      currentLimit
+    );
+    return convertedLimit;
+  }
+  getCurrentTransactionLimit(cardSettings: CardSettings): number {
+    const upLimit: number = this.getMaxLimit(cardSettings);
+    const downLimit: number = this.getMinLimit(cardSettings.currency);
+    cardSettings.transactionType === 'cash'
+      ? this.setCashTransactionLimit(upLimit, downLimit, cardSettings)
+      : this.setInternetTransactionLimit(upLimit, downLimit, cardSettings);
+    return cardSettings.transactionType === 'cash'
+      ? cardSettings.limits.cashTransactionsLimit
+      : cardSettings.limits.internetTransactionsLimit;
+  }
+  private setInternetTransactionLimit(
+    upLimit: number,
+    downLimit: number,
+    cardSettings: CardSettings
+  ): void {
+    const isUpperThanLimit: boolean =
+      cardSettings.limits.internetTransactionsLimit > upLimit;
+    const isDownThanLimit: boolean =
+      cardSettings.limits.internetTransactionsLimit < downLimit;
+    if (isUpperThanLimit) {
+      cardSettings.limits.internetTransactionsLimit = Math.round(upLimit);
+    } else if (isDownThanLimit) {
+      cardSettings.limits.internetTransactionsLimit = Math.round(downLimit);
+    } else {
+      cardSettings.limits.internetTransactionsLimit = Math.round(
+        cardSettings.limits.internetTransactionsLimit
+      );
+    }
+  }
+  private setCashTransactionLimit(
+    upLimit: number,
+    downLimit: number,
+    cardSettings: CardSettings
+  ): void {
+    const isUpperThanLimit: boolean =
+      cardSettings.limits.cashTransactionsLimit > upLimit;
+    const isDownThanLimit: boolean =
+      cardSettings.limits.cashTransactionsLimit < downLimit;
+    if (isUpperThanLimit) {
+      cardSettings.limits.cashTransactionsLimit = Math.round(upLimit);
+    } else if (isDownThanLimit) {
+      cardSettings.limits.cashTransactionsLimit = Math.round(downLimit);
+    } else {
+      cardSettings.limits.cashTransactionsLimit = Math.round(
+        cardSettings.limits.cashTransactionsLimit
+      );
+    }
   }
 }

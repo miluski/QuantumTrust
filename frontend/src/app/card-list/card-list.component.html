@@ -21,11 +21,11 @@
                     routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(visaCard.type)"
                     (click)="onScrollToTop()">
                     <div class="flex flex-col relative items-center">
-                        <img class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm"
+                        <img class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
                             src={{visaCard.image}} alt="single-card">
                         <div
                             class="absolute top-10 left-[10%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                            <img class="w-4 h-4" src="icon.png" alt="Quantum Trust Logo" />
+                            <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
                             <p class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
                         </div>
                         <p
@@ -68,11 +68,11 @@
                     routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(masterCard.type)"
                     (click)="onScrollToTop()">
                     <div class="flex flex-col relative items-center">
-                        <img class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm"
+                        <img class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
                             src={{masterCard.image}} alt="single-card">
                         <div
                             class="absolute top-10 left-[10%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                            <img class="w-4 h-4" src="icon.png" alt="Quantum Trust Logo" />
+                            <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
                             <p [ngClass]="{'text-black': masterCard.image === 'mastercard-standard.png'}"
                                 class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
                         </div>

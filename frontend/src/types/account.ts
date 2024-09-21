@@ -1,3 +1,5 @@
+import { Currency } from "./currency";
+
 export class Account {
   id!: string;
   advertismentText!: string;
@@ -6,5 +8,5 @@ export class Account {
   type!: string;
   benefits!: string[];
   balance?: number;
-  currency?: 'PLN' | 'EUR' | 'USD' | 'GBP' | 'CHF' | 'JPY' | 'AUD' | 'CAD';
+  currency?: Currency;
 }

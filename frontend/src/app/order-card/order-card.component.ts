@@ -14,6 +14,7 @@ import { PaginationService } from '../../services/pagination.service';
 import { UserService } from '../../services/user.service';
 import { Account } from '../../types/account';
 import { Card } from '../../types/card';
+import { CardSettings } from '../../types/card-settings';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 
@@ -41,9 +42,8 @@ import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 export class OrderCardComponent implements OnInit {
   protected userAccounts!: Account[];
   protected currentSelectedAccountId!: string;
-  protected internetTransactionLimit: number = 500;
-  protected cashTransactionLimit: number = 500;
   protected pinCode: number = 1111;
+  protected cardSettings: CardSettings = new CardSettings();
   constructor(
     protected userService: UserService,
     protected paginationService: PaginationService,
@@ -85,56 +85,6 @@ export class OrderCardComponent implements OnInit {
   isCardIndexAtCenter(index: number): boolean {
     return this.currentSelectedCard.id === index;
   }
-  getFormattedTransactionsLimit(
-    type: 'min' | 'max',
-    limitType: 'cash' | 'internet'
-  ): string {
-    const limit = this.getTransactionsLimit(type, limitType);
-    return limit.toLocaleString('pl-PL');
-  }
-  getTransactionsLimit(
-    type: 'min' | 'max',
-    limitType: 'cash' | 'internet'
-  ): number {
-    const currentLimit: number =
-      type === 'max'
-        ? limitType === 'internet'
-          ? this.currentSelectedCard.limits[0].internetTransactions[0]
-          : this.currentSelectedCard.limits[0].cashTransactions[0]
-        : 500;
-    const convertedLimit: number = this.convertService.getCalculatedAmount(
-      this.currentSelectedAccount.currency ?? 'PLN',
-      currentLimit
-    );
-    return convertedLimit;
-  }
-  getCurrentTransactionLimit(limitType: 'cash' | 'internet'): number {
-    const upLimit: number = this.getMaxLimit(
-      this.currentSelectedAccount.currency ?? 'PLN',
-      limitType
-    );
-    const downLimit: number = this.getMinLimit(
-      this.currentSelectedAccount.currency ?? 'PLN'
-    );
-    limitType === 'cash'
-      ? this.setCashTransactionLimit(upLimit, downLimit)
-      : this.setInternetTransactionLimit(upLimit, downLimit);
-    return limitType === 'cash'
-      ? this.cashTransactionLimit
-      : this.internetTransactionLimit;
-  }
-  getStep(limitType: 'cash' | 'internet'): number {
-    const max: number = this.getMaxLimit(
-      this.currentSelectedAccount.currency ?? 'PLN',
-      limitType
-    );
-    const min: number = this.getMinLimit(
-      this.currentSelectedAccount.currency ?? 'PLN'
-    );
-    const range: number = max - min;
-    const steps: number = Math.ceil(range / 10);
-    return range / steps;
-  }
   getFee(type: 'monthly' | 'issuance'): string {
     const issuanceAmount: number = this.convertService.getCalculatedAmount(
       this.currentSelectedAccount.currency ?? 'PLN',
@@ -151,6 +101,15 @@ export class OrderCardComponent implements OnInit {
       this.currentSelectedCard.showingCardSite === 'back'
       ? this.currentSelectedCard.backImage
       : currentCard.image;
+  }
+  getCardSettingsObject(
+    limitType: 'min' | 'max' = 'min',
+    transactionType: 'internet' | 'cash' = 'internet'
+  ): CardSettings {
+    this.setCardAndCurrency(this.cardSettings);
+    this.cardSettings.limitType = limitType;
+    this.cardSettings.transactionType = transactionType;
+    return this.cardSettings;
   }
   get currentSelectedCard(): Card {
     return this.paginationService.paginatedItems[1]
@@ -176,54 +135,19 @@ export class OrderCardComponent implements OnInit {
       this.currentSelectedCard.type
     );
   }
+  private setCardAndCurrency(cardSettings: CardSettings): void {
+    cardSettings.card = this.currentSelectedCard;
+    cardSettings.currency = this.currentSelectedAccount.currency ?? 'PLN';
+  }
   private setMinTransactionsLimit(): void {
     const accountCurrency: string =
       this.currentSelectedAccount.currency ?? 'PLN';
     const minTransactionsLimit: number =
       accountCurrency === 'PLN'
         ? 500
-        : Math.round(this.getMinLimit(accountCurrency));
-    this.internetTransactionLimit = minTransactionsLimit;
-    this.cashTransactionLimit = minTransactionsLimit;
-  }
-  private setInternetTransactionLimit(
-    upLimit: number,
-    downLimit: number
-  ): void {
-    const isUpperThanLimit: boolean = this.internetTransactionLimit > upLimit;
-    const isDownThanLimit: boolean = this.internetTransactionLimit < downLimit;
-    if (isUpperThanLimit) {
-      this.internetTransactionLimit = Math.round(upLimit);
-    } else if (isDownThanLimit) {
-      this.internetTransactionLimit = Math.round(downLimit);
-    } else {
-      this.internetTransactionLimit = Math.round(this.internetTransactionLimit);
-    }
-  }
-  private setCashTransactionLimit(upLimit: number, downLimit: number): void {
-    const isUpperThanLimit: boolean = this.cashTransactionLimit > upLimit;
-    const isDownThanLimit: boolean = this.cashTransactionLimit < downLimit;
-    if (isUpperThanLimit) {
-      this.cashTransactionLimit = Math.round(upLimit);
-    } else if (isDownThanLimit) {
-      this.cashTransactionLimit = Math.round(downLimit);
-    } else {
-      this.cashTransactionLimit = Math.round(this.cashTransactionLimit);
-    }
-  }
-  private getMinLimit(accountCurrency: string): number {
-    return this.convertService.getCalculatedAmount(accountCurrency, 500);
-  }
-  private getMaxLimit(
-    accountCurrency: string,
-    type: 'cash' | 'internet'
-  ): number {
-    return this.convertService.getCalculatedAmount(
-      accountCurrency,
-      type === 'cash'
-        ? this.currentSelectedCard.limits[0].cashTransactions[0]
-        : this.currentSelectedCard.limits[0].internetTransactions[0]
-    );
+        : Math.round(this.convertService.getMinLimit(accountCurrency));
+    this.cardSettings.limits.internetTransactionsLimit = minTransactionsLimit;
+    this.cardSettings.limits.cashTransactionsLimit = minTransactionsLimit;
   }
   private get cardsObjectsArray(): Card[] {
     return Array.from([
