@@ -134,23 +134,23 @@ export class ConvertService {
         return 'miesięcy';
     }
   }
-  getShortenedAccountId(account: Account): string {
-    return (
-      account.id.substring(0, 5) +
-      ' **** ' +
-      account.id.substring(account.id.length - 4, account.id.length)
-    );
-  }
   getAccountOptionString(account: Account): string {
     const polishAccountType: string =
       'Konto ' + this.getPolishAccountType(account.type);
-    const shortenedAccountId: string = this.getShortenedAccountId(account);
+    const shortenedAccountId: string = this.getShortenedAccountId(account.id);
     const avalaibleBalance: string =
       this.getNumberWithSpacesBetweenThousands(account.balance) +
       ' ' +
       account.currency;
     return (
       polishAccountType + ', ' + shortenedAccountId + ', ' + avalaibleBalance
+    );
+  }
+  getShortenedAccountId(accountId: string): string {
+    return (
+      accountId.substring(0, 5) +
+      ' **** ' +
+      accountId.substring(accountId.length - 4, accountId.length)
     );
   }
   getCalculatedAmount(accountCurrency: string, multiplier: number): number {
