@@ -1,0 +1,14 @@
+.mat-mdc-table-container, .mat-mdc-table, .mat-mdc-paginator {
+    min-width: 95% !important;
+    width: 95% !important;
+    align-self: center;
+}
+
+.mat-mdc-table {
+    border-radius: 10px 10px 0px 0px !important;
+    overflow: hidden !important;
+}
+
+.mat-mdc-paginator {
+    border-radius: 0px 0px 10px 10px !important;
+}

@@ -60,7 +60,7 @@
             </p>
             <div class="flex flex-row rounded-2xl max-sm:w-12 max-sm:h-4 w-20 h-8 mb-5 md:px-1 text-center items-center justify-center flex-shrink-0"
                 [ngClass]="{
-                            'bg-amber-700': transaction.status === 'blockade', 
+                            'bg-[#a2845e]': transaction.status === 'blockade', 
                             'bg-gray-400': transaction.status === 'settled'}">
                 <p class="font-roboto font-light text-xs pt-2 max-sm:text-xxs max-sm:pt-1">
                     {{transaction.status === 'blockade' ? "Blokada" : "Rozliczona"}}

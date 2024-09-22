@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FiltersService } from '../../services/filters.service';
+import { GlobalTransactionsFiltersService } from '../../services/global-transactions-filters.service';
 import { Transaction } from '../../types/transaction';
 
 @Component({
@@ -12,10 +13,15 @@ import { Transaction } from '../../types/transaction';
 })
 export class SearchBarComponent {
   @Input() transactionsArray!: Transaction[][];
-  constructor(public filtersService: FiltersService) {}
+  @Input() filterServiceType: 'global' | 'non-global' = 'global';
+  private searchPhrase: string = '';
+  constructor(
+    private filtersService: FiltersService,
+    private globalTransactionsFiltersService: GlobalTransactionsFiltersService
+  ) {}
   changeSearchPhrase(event: Event): void {
-    const searchPhrase: string = (event.target as HTMLInputElement).value;
-    this.filtersService.setSearchPhrase(searchPhrase);
+    this.searchPhrase = (event.target as HTMLInputElement).value;
+    this.filtersService.setSearchPhrase(this.searchPhrase);
   }
   onKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
@@ -23,6 +29,11 @@ export class SearchBarComponent {
     }
   }
   onSearch(): void {
-    this.filtersService.applyFilters(true, this.transactionsArray);
+    this.filterServiceType === 'global'
+      ? this.globalTransactionsFiltersService.setAppliedFilter(
+          this.globalTransactionsFiltersService.actualAppliedFilter,
+          this.searchPhrase
+        )
+      : this.filtersService.applyFilters(true, this.transactionsArray);
   }
 }

@@ -1,0 +1,10 @@
+<div class="flex flex-row justify-between">
+    @for(filter of globalTransactionsFiltersService.acceptedFiltersArray; track filter) {
+    <div class="flex flex-row text-center cursor-pointer text-white hover:border-gray-400 hover:text-gray-400 w-1/3 justify-center"
+        (click)="globalTransactionsFiltersService.setAppliedFilter(filter, globalTransactionsFiltersService.actualSearchedPhrase)"
+        [ngClass]="{'border-b-2 border-white' : filter === globalTransactionsFiltersService.actualAppliedFilter}"
+        [@slideInOut]="filter === globalTransactionsFiltersService.actualAppliedFilter ? 'in' : 'out'">
+        <p class="font-roboto text-md">{{filter}}</p>
+    </div>
+    }
+</div>
