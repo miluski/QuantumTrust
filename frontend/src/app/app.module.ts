@@ -5,6 +5,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { RouterModule } from '@angular/router';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { AccountListComponent } from './account-list/account-list.component';
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CardListComponent } from './card-list/card-list.component';
@@ -75,6 +76,7 @@ import { UserOpenAccountComponent } from './user-open-account/user-open-account.
     TransactionsComponent,
     GlobalTransactionsFiltersComponent,
     MobileGlobalTransactionsFiltersComponent,
+    AccountSettingsComponent,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,

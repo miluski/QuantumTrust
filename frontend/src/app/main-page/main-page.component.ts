@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
+import { AccountSettingsComponent } from '../account-settings/account-settings.component';
 import { CardSettingsComponent } from '../card-settings/card-settings.component';
 import { FinancesComponent } from '../finances/finances.component';
 import { FooterComponent } from '../footer/footer.component';
@@ -27,6 +28,7 @@ import { UserOpenAccountComponent } from '../user-open-account/user-open-account
     OrderCardComponent,
     CardSettingsComponent,
     TransactionsComponent,
+    AccountSettingsComponent,
   ],
   standalone: true,
 })

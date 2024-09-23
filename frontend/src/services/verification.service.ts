@@ -160,4 +160,14 @@ export class VerificationService {
       operationAmount <= (account.balance ?? 0)
     );
   }
+
+  validateSelectedAvatarType(avatar: Blob): boolean {
+    const validTypes: string[] = ['image/png', 'image/jpeg'];
+    return validTypes.includes(avatar.type);
+  }
+
+  validateSelectedAvatarSize(avatar: Blob): boolean {
+    const maxSize: number = 1024 * 1024;
+    return avatar.size <= maxSize;
+  }
 }

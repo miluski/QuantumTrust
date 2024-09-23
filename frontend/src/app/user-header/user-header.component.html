@@ -24,14 +24,14 @@
                 <p class="pt-5 font-roboto font-light text-xl text-nowrap hover:text-gray-300">{{user.name}}
                     {{user.surname}}</p>
                 <button class="w-full">
-                    @if(!avatarError) {
+                    @if(!avatarService.avatarError) {
                     <img class="rounded-full min-w-12 w-12 h-12 pointer-events-none" alt="user-avatar" [src]="user.avatarUrl"
-                        (error)="avatarError = true" />
+                        (error)="avatarService.avatarError = true" />
                     }
                     @else {
                     <div class="rounded-full min-w-12 w-12 h-12 flex items-center justify-center text-white "
-                        [style.background-color]="avatarColor">
-                        {{ getInitials() }}
+                        [style.background-color]="avatarService.avatarColor">
+                        {{ avatarService.getInitials() }}
                     </div>
                     }
                 </button>
