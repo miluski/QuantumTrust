@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
+import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 
@@ -16,17 +17,15 @@ export class UserHeaderComponent implements OnInit {
   currentRoute: string = '/main-page';
   tabName: string = 'Finanse';
   isMenuVisible: boolean = false;
-  avatarError: boolean = false;
   user: UserAccount;
-  avatarColor: string;
   constructor(
     router: Router,
     userService: UserService,
-    private appInformationStatesService: AppInformationStatesService
+    private appInformationStatesService: AppInformationStatesService,
+    protected avatarService: AvatarService
   ) {
     this.currentRoute = router.url;
     this.user = userService.userAccount;
-    this.avatarColor = this.getRandomColor();
   }
   ngOnInit(): void {
     this.appInformationStatesService.currentTabName.subscribe(
@@ -41,13 +40,5 @@ export class UserHeaderComponent implements OnInit {
   }
   toggleMenuVisible(): void {
     this.isMenuVisible = !this.isMenuVisible;
-  }
-  getInitials(): string {
-    const initials = this.user.name.charAt(0) + this.user.surname.charAt(0);
-    return initials.toUpperCase();
-  }
-  getRandomColor(): string {
-    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8C33'];
-    return colors[Math.floor(Math.random() * colors.length)];
   }
 }

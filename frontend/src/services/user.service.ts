@@ -17,6 +17,9 @@ export class UserService {
   constructor() {
     this.loggedUserAccount.name = 'Maksymilian';
     this.loggedUserAccount.surname = 'Sowula';
+    this.loggedUserAccount.address = 'Al.Tysiąclecia 1/1';
+    this.loggedUserAccount.email = 'example@gmail.com';
+    this.loggedUserAccount.phoneNumber = 123456789;
   }
   register(userAccount: UserAccount, account: Account): boolean {
     return true;

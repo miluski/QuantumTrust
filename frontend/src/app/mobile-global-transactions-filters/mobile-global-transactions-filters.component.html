@@ -8,11 +8,11 @@
     </div>
     <div class="flex flex-col justify-between w-screen space-y-10">
         @for(filter of globalTransactionsFiltersService.acceptedFiltersArray; track filter) {
-        <div class="flex flex-row text-center text-xl cursor-pointer text-white hover:text-gray-400 w-full justify-center"
+        <div class="flex flex-row text-center text-xl cursor-pointer text-gray-400 hover:text-gray-400 w-full justify-center"
             (click)="
                     globalTransactionsFiltersService.setAppliedFilter(filter, globalTransactionsFiltersService.actualSearchedPhrase);
                     globalTransactionsFiltersService.isMobileFiltersOpened = false
-            " [ngClass]="{'!text-gray-400' : filter === globalTransactionsFiltersService.actualAppliedFilter}">
+            " [ngClass]="{'!text-white' : filter === globalTransactionsFiltersService.actualAppliedFilter}">
             <p class="font-roboto text-md">{{filter}}</p>
         </div>
         }
