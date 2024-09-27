@@ -1,9 +1,12 @@
 <div class="flex flex-col m-0 p-0 overflow-hidden scroll-smooth">
+    @if(shakeStateService.siteNumber === 1) {
     <main class="flex-col flex text-center bg-black text-white w-screen h-auto items-center">
-        <div class="flex flex-row my-12 bg-white rounded-3xl shadow-gray-500 shadow-lg 2xl:w-[55%] lg:h-[80%] xl:w-[70%] w-[75%] max-sm:w-[95%] h-full">
-            <img class="max-lg:hidden block rounded-l-3xl opacity-50 w-1/2 h-[650px] pointer-events-none" src="open-account-background.png"
-                alt="open-account-background" />
-            <div class="open-account-mobile flex flex-col justify-center items-center w-full rounded-3xl self-center space-y-10">
+        <div
+            class="flex flex-row my-12 bg-white rounded-3xl shadow-gray-500 shadow-lg 2xl:w-[55%] lg:h-[80%] xl:w-[70%] w-[75%] max-sm:w-[95%] h-full">
+            <img class="max-lg:hidden block rounded-l-3xl opacity-50 w-3/4 h-[780px] pointer-events-none"
+                src="open-account-background.png" alt="open-account-background" />
+            <div
+                class="open-account-mobile flex flex-col justify-center items-center w-full rounded-3xl self-center space-y-10">
                 <p class="font-roboto font-extrabold text-5xl text-black pt-24 z-20">Otwieranie konta</p>
                 <div class="flex flex-col lg:w-[75%] w-[80%] z-20"
                     [ngClass]="{'mb-6': userAccountFlags.isAccountTypeValid === true || userAccountFlags.isAccountTypeValid === undefined}">
@@ -19,7 +22,7 @@
                         <option class="py-2" value="Konto senior">Konto senior</option>
                     </select>
                     @if(userAccountFlags.isAccountTypeValid === false) {
-                    <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wybrany typ konta jest
+                    <p class="font-roboto font-light text-red-500 text-sm pt-5">Wybrany typ konta jest
                         nieprawidłowy.
                     </p>
                     }
@@ -50,8 +53,8 @@
                 }
                 <button
                     class="lg:w-[75%] w-[80%] lg:mb-10 mb-10 border text-3xl border-white text-white font-salsa rounded-full py-5 hover:bg-gray-600 bg-own-gray mx-5 self-center z-20"
-                    [ngClass]="{'shake': canShake === true}" (click)="verifyData()">
-                    Zatwierdź
+                    [@shake]="shakeStateService.shakeState" (click)="verifyData()">
+                    Dalej
                 </button>
                 <mat-divider class="lg:w-[75%] w-[80%] !border-t-gray-300 my-5 z-20 max-lg:!border-t-gray-400" />
                 <div class="flex flex-row py-10 space-x-2 z-20">
@@ -62,4 +65,8 @@
             </div>
         </div>
     </main>
+    }
+    @else {
+    <app-verification-code actionType="Otwieranie konta" />
+    }
 </div>

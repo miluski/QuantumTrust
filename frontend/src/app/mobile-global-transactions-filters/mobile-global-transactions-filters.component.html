@@ -1,7 +1,7 @@
 <div *ngIf="globalTransactionsFiltersService.isMobileFiltersOpened"
     class="flex flex-col z-50 inset-0 fixed bg-black w-screen h-screen overflow-y-auto md:hidden">
     <div class="flex flex-row w-[85%] self-center p-5">
-        <p class="font-roboto font-medium text-lg text-white">Filtry</p>
+        <p class="font-roboto font-medium text-lg text-white text-nowrap">Filtry</p>
         <div class="flex flex-grow"></div>
         <i class="fa-solid fa-x text-lg text-white hover:text-gray-400 cursor-pointer"
             (click)="globalTransactionsFiltersService.isMobileFiltersOpened = false"></i>

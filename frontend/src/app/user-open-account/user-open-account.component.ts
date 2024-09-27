@@ -2,21 +2,30 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
+import { AnimationsProvider } from '../../providers/animations.provider';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
+import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { UserAccountFlags } from '../../types/user-account-flags';
+import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
 @Component({
   selector: 'app-user-open-account',
   templateUrl: './user-open-account.component.html',
-  imports: [CommonModule, MatDividerModule, FormsModule],
+  animations: [AnimationsProvider.animations],
+  imports: [
+    VerificationCodeComponent,
+    CommonModule,
+    MatDividerModule,
+    FormsModule,
+  ],
   standalone: true,
 })
 export class UserOpenAccountComponent {
-  canShake: boolean = false;
-  userAccountFlags: UserAccountFlags = new UserAccountFlags();
-  account: Account = new Account();
+  protected account: Account = new Account();
+  protected userAccountFlags: UserAccountFlags = new UserAccountFlags();
+  protected shakeStateService: ShakeStateService = new ShakeStateService();
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private verificationService: VerificationService
@@ -37,8 +46,9 @@ export class UserOpenAccountComponent {
     this.setCanShake();
   }
   private setCanShake(): void {
-    this.canShake =
+    const isSomeDataInvalid: boolean =
       this.userAccountFlags.isAccountCurrencyValid === false ||
       this.userAccountFlags.isAccountTypeValid === false;
+    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid);
   }
 }

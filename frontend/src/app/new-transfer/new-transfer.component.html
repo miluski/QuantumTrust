@@ -1,4 +1,5 @@
 <div class="flex-col flex justify-center text-center bg-black text-white w-screen">
+    @if(shakeStateService.siteNumber === 1){
     <div class="w-screen bg-white h-[1px]"></div>
     <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
         <p class="font-roboto font-medium text-lg text-white pt-2">Wybór konta</p>
@@ -21,11 +22,11 @@
         <div class="flex flex-col bg-gray-500 rounded-3xl p-3 h-64 lg:w-64 w-72 xl:w-72 2xl:w-80 justify-center"
             [ngClass]="{'blur-xxs': account.id !== currentSelectedAccount.id}">
             <div class="flex flex-row w-full items-center justify-between mb-6">
-                <p class="font-roboto font-medium text-2xl text-white pt-5 md:w-1/2 md:text-left">Konto
+                <p class="font-roboto font-medium text-2xl text-white pt-5 md:w-1/2 md:text-left xl:text-nowrap">Konto
                     {{convertService.getPolishAccountType(account.type)}}
                 </p>
-                <img class="rounded-2xl lg:w-16 lg:h-14 w-24 h-20 border border-black pointer-events-none" src={{account.image}}
-                    alt="single-account-image" />
+                <img class="rounded-2xl lg:w-16 lg:h-14 w-24 h-20 border border-black pointer-events-none"
+                    src={{account.image}} alt="single-account-image" />
             </div>
             <p class="font-roboto font-normal text-2xl text-black mb-6">
                 {{convertService.getShortenedAccountId(account.id)}}</p>
@@ -76,6 +77,9 @@
                         {{convertService.getNumberWithSpacesBetweenThousands(currentSelectedAccount.balance)}}
                         {{currentSelectedAccount.currency}}</span>
                 </div>
+                @if(transferFlags.isTransferAmountValid === false) {
+                <p class="font-roboto font-light text-red-500 text-sm pt-5">Kwota przelewu jest nieprawidłowa.</p>
+                }
             </div>
         </div>
     </div>
@@ -92,6 +96,9 @@
             <input
                 class="max-lg:w-full !bg-white lg:!w-100 w-[85%] text-black p-2 rounded-md no-arrows font-roboto font-light"
                 type="text" placeholder="np. Na urodziny" [(ngModel)]="transferTitle" required />
+            @if(transferFlags.isTransferTitleValid === false) {
+            <p class="font-roboto font-light text-red-500 text-sm pt-5">Wprowadzony tytuł jest nieprawidłowy.</p>
+            }
         </div>
         <div class="flex flex-col w-full lg:w-1/2">
             <div class="relative self-center justify-center flex flex-col lg:w-100 w-[85%]">
@@ -100,11 +107,19 @@
                     placeholder="np. PL 49 1020 2222 3333 4444 0000 0002" [(ngModel)]="transferReceiverAccountId"
                     required />
             </div>
+            @if(transferFlags.isTransferReceiverAccountNumberValid === false) {
+            <p class="font-roboto font-light text-red-500 text-sm pt-5">Wprowadzony numer konta jest nieprawidłowy.</p>
+            }
         </div>
     </div>
     <div class="w-screen bg-white h-[1px]"></div>
     <button
-        class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8">
+        class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8"
+        [@shake]="shakeStateService.shakeState" (click)="handleButtonClick()">
         Zrealizuj przelew
     </button>
+    }
+    @else {
+    <app-verification-code actionType="Potwierdzenie przelewu" />
+    }
 </div>

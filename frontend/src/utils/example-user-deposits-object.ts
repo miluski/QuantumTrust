@@ -10,6 +10,9 @@ export const userDeposits: Deposit[] = [
     shortDescription: '',
     balance: 100000,
     currency: 'PLN',
+    endDate: '2024-12-26',
+    assignedAccountNumber: 'PL 49 1020 2892 2276 3005 0000 0001',
+    duration: 0
   },
   {
     id: 'PL 49 1020 2892 2276 3005 0000 0006',
@@ -20,6 +23,9 @@ export const userDeposits: Deposit[] = [
     shortDescription: '',
     balance: 100000,
     currency: 'PLN',
+    endDate: '2025-01-26',
+    assignedAccountNumber: 'PL 49 1020 2892 2276 3005 0000 0002',
+    duration: 0
   },
   {
     id: 'PL 49 1020 2892 2276 3005 0000 0007',
@@ -30,5 +36,8 @@ export const userDeposits: Deposit[] = [
     shortDescription: '',
     balance: 100000,
     currency: 'PLN',
+    endDate: '2025-09-26',
+    assignedAccountNumber: 'PL 49 1020 2892 2276 3005 0000 0003',
+    duration: 0
   },
 ];

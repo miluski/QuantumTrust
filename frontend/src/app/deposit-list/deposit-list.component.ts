@@ -16,8 +16,8 @@ import { depositsObjectArray } from '../../utils/deposits-objects-array';
 })
 export class DepositListComponent implements OnInit {
   @Input() tabName: string = 'Lokaty';
-  depositType: string = 'timely';
-  depositsObjectArray: Deposit[] = depositsObjectArray;
+  protected depositType: string = 'timely';
+  protected depositsObjectArray: Deposit[] = depositsObjectArray;
   constructor(
     private productTypesService: ProductTypesService,
     private windowEventsService: WindowEventsService,

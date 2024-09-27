@@ -17,11 +17,11 @@ export class AppInformationStatesService {
   private isDrawerOpened: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private transactionsArrayLength: BehaviorSubject<number> =
     new BehaviorSubject(0);
-  drawer?: MatDrawer;
-  currentTabName: Observable<string>;
-  currentTransactionsArrayLength: Observable<number> =
+  protected drawer?: MatDrawer;
+  public currentTabName: Observable<string>;
+  public currentTransactionsArrayLength: Observable<number> =
     this.transactionsArrayLength.asObservable();
-  currentIsDrawerOpened: Observable<boolean> =
+  public currentIsDrawerOpened: Observable<boolean> =
     this.isDrawerOpened.asObservable();
   constructor(router: Router, private breakpointObserver: BreakpointObserver) {
     this.tabName =

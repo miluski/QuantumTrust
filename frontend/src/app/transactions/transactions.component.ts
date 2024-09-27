@@ -71,6 +71,7 @@ export class TransactionsComponent implements OnInit {
     this.userCards = await this.userService.getUserCardsArray();
   }
   private mapUserTransactionsIntoTableTransactions(): void {
+    this.globalTransactionsFiltersService.tableDataSource.data = [];
     this.userTransactions.forEach((transaction: Transaction) => {
       const tableTransaction: TableTransaction = new TableTransaction();
       this.setTableTransactionFields(transaction, tableTransaction);
@@ -83,6 +84,9 @@ export class TransactionsComponent implements OnInit {
     this.globalTransactionsFiltersService.setOriginalTableTransactionsArray(
       this.globalTransactionsFiltersService.tableDataSource.data
     );
+    this.setPaginator();
+  }
+  private setPaginator(): void {
     this.globalTransactionsFiltersService.tableDataSource.paginator =
       this.paginator;
   }
@@ -137,11 +141,17 @@ export class TransactionsComponent implements OnInit {
     );
   }
   private changeDateFormat(): void {
+    const dateFormatRegex = /^\d{2}\.\d{2}\.\d{4}$/;
     this.globalTransactionsFiltersService.tableDataSource.data.forEach(
-      (transaction: TableTransaction) =>
-        (transaction.dateAndHour.date =
-          this.datePipe.transform(transaction.dateAndHour.date, 'dd.MM.yyyy') ??
-          '')
+      (transaction: TableTransaction) => {
+        if (!dateFormatRegex.test(transaction.dateAndHour.date)) {
+          transaction.dateAndHour.date =
+            this.datePipe.transform(
+              transaction.dateAndHour.date,
+              'dd.MM.yyyy'
+            ) ?? '';
+        }
+      }
     );
   }
   private getAccountIdAssignedToCard(cardId: number): string {

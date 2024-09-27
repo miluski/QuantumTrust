@@ -26,8 +26,8 @@ import { HeaderComponent } from '../header/header.component';
   standalone: true,
 })
 export class HomePageComponent implements OnInit {
-  tabName: string = 'Konta';
-  isDrawerOpened: boolean = false;
+  protected tabName: string = 'Konta';
+  protected isDrawerOpened: boolean = false;
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private windowEventsService: WindowEventsService

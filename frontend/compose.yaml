@@ -9,9 +9,10 @@ services:
       - "4200:4200"
     volumes:
       - ./:/quantum-trust-frontend
+      - node_modules:/quantum-trust-frontend/node_modules
     environment:
-      - NODE_ENV=development
       - STYLE=css
     restart: always
 volumes:
   app:
+  node_modules:

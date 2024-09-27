@@ -20,6 +20,7 @@ export class UserService {
     this.loggedUserAccount.address = 'Al.Tysiąclecia 1/1';
     this.loggedUserAccount.email = 'example@gmail.com';
     this.loggedUserAccount.phoneNumber = 123456789;
+    this.loggedUserAccount.password = 'Test@1234';
   }
   register(userAccount: UserAccount, account: Account): boolean {
     return true;

@@ -1,16 +1,10 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { CardIdFormatPipe } from '../../pipes/card-id-format.pipe';
+import { AnimationsProvider } from '../../providers/animations.provider';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
 import { ItemSelectionService } from '../../services/item-selection.service';
@@ -33,25 +27,18 @@ import { UserAccount } from '../../types/user-account';
     MatTooltipModule,
     CardIdFormatPipe,
   ],
-  animations: [
-    trigger('rotateCard', [
-      state('front', style({ transform: 'rotateY(0)' })),
-      state('back', style({ transform: 'rotateY(180deg)' })),
-      transition('front => back', [animate('0.6s')]),
-      transition('back => front', [animate('0.6s')]),
-    ]),
-  ],
+  animations: [AnimationsProvider.animations],
   standalone: true,
 })
 export class FinancesComponent implements OnInit {
-  userAccount: UserAccount;
-  userAccounts!: Account[];
-  userDeposits!: Deposit[];
-  userTransactions!: Transaction[];
-  userCards!: Card[];
-  dailyTransactions: Transaction[][] = [[]];
-  accountsPaginationService: PaginationService = new PaginationService();
-  cardPaginationService: PaginationService = new PaginationService();
+  protected userAccount: UserAccount;
+  protected userAccounts!: Account[];
+  protected userDeposits!: Deposit[];
+  protected userTransactions!: Transaction[];
+  protected userCards!: Card[];
+  protected dailyTransactions: Transaction[][] = [[]];
+  protected accountsPaginationService: PaginationService = new PaginationService();
+  protected cardPaginationService: PaginationService = new PaginationService();
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private userService: UserService,

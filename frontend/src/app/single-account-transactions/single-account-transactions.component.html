@@ -32,7 +32,8 @@
         <app-sort-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
         <app-duration-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
         <app-status-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
-        <app-search-bar class="max-lg:w-[80%] w-1/4" [transactionsArray]="dailyTransactions" />
+        <app-search-bar class="max-lg:w-[80%] w-1/4" [transactionsArray]="dailyTransactions"
+            filterServiceType="non-global" />
     </div>
     <div class="flex flex-col w-screen">
         @for(dayTransactionsArray of dailyTransactions; track dayTransactionsArray) {
@@ -58,7 +59,7 @@
                 {{convertService.getNumberWithSpacesBetweenThousands(transaction.amount)}}
                 {{transaction.currency}}
             </p>
-            <div class="flex flex-row rounded-2xl max-sm:w-12 max-sm:h-4 w-20 h-8 mb-5 md:px-1 text-center items-center justify-center flex-shrink-0"
+            <div class="flex flex-row rounded-2xl max-sm:w-14 max-sm:h-8 w-20 h-8 mb-5 md:px-1 text-center items-center justify-center flex-shrink-0"
                 [ngClass]="{
                             'bg-[#a2845e]': transaction.status === 'blockade', 
                             'bg-gray-400': transaction.status === 'settled'}">

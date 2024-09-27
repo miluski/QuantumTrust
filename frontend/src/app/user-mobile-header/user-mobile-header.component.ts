@@ -15,9 +15,9 @@ import { UserAccount } from '../../types/user-account';
 })
 export class UserMobileHeaderComponent {
   @ViewChild('drawer') drawer!: MatDrawer;
-  currentRoute: string = '/home-page';
-  tabName: string = 'Konta';
-  user: UserAccount = new UserAccount();
+  protected currentRoute: string = '/home-page';
+  protected tabName: string = 'Konta';
+  protected user: UserAccount = new UserAccount();
   constructor(
     router: Router,
     userService: UserService,

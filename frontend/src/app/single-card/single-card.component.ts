@@ -1,14 +1,8 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
+import { AnimationsProvider } from '../../providers/animations.provider';
 import { ProductTypesService } from '../../services/product-types.service';
 import { WindowEventsService } from '../../services/window-events.service';
 import { Card } from '../../types/card';
@@ -28,20 +22,13 @@ import { HeaderComponent } from '../header/header.component';
     CommonModule,
     RouterModule,
   ],
-  animations: [
-    trigger('rotateCard', [
-      state('front', style({ transform: 'rotateY(0)' })),
-      state('back', style({ transform: 'rotateY(180deg)' })),
-      transition('front => back', [animate('0.6s')]),
-      transition('back => front', [animate('0.6s')]),
-    ]),
-  ],
+  animations: [AnimationsProvider.animations],
   standalone: true,
 })
 export class SingleCardComponent implements OnInit {
-  mastercardObject!: Card;
-  visaCardObject!: Card;
-  questionsAndAnswersPairs!: Question[];
+  protected mastercardObject!: Card;
+  protected visaCardObject!: Card;
+  protected questionsAndAnswersPairs!: Question[];
   private cardType: string = 'standard';
   constructor(
     private productTypesService: ProductTypesService,

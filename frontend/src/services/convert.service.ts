@@ -68,12 +68,14 @@ export class ConvertService {
     }
   }
   getNumberWithSpacesBetweenThousands(number?: number): string {
-    if (number === undefined) {
-      throw new Error('Number is undefined');
+    if (number !== undefined) {
+      const formattedNumber = number.toFixed(2);
+      const parts = formattedNumber.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      return parts[1] === '00' ? parts[0] : parts.join(',');
+    } else {
+      return '';
     }
-    const parts = (number as number).toString().split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    return parts.join(',');
   }
   getGroupedUserTransactions(userTransactions: Transaction[]): Transaction[][] {
     const dailyTransactionsMap: Map<String, Transaction[]> = new Map<
@@ -113,7 +115,7 @@ export class ConvertService {
     switch (interval) {
       case ONE_MONTH:
       default:
-        return 1;
+        return interval > 4 ? 12 : 1;
       case THREE_MONTHS:
         return 3;
       case SIX_MONTHS:
@@ -126,7 +128,7 @@ export class ConvertService {
     switch (interval) {
       case ONE_MONTH:
       default:
-        return 'miesiąc';
+        return interval > 4 ? 'miesięcy' : 'miesiąc';
       case THREE_MONTHS:
         return 'miesiące';
       case SIX_MONTHS:
@@ -176,33 +178,26 @@ export class ConvertService {
     const steps: number = Math.ceil(range / 10);
     return range / steps;
   }
-  getMaxLimit(cardSettings: CardSettings): number {
-    return this.getCalculatedAmount(
-      cardSettings.currency,
-      cardSettings.transactionType === 'cash'
-        ? cardSettings.card.limits[0].cashTransactions[0]
-        : cardSettings.card.limits[0].internetTransactions[0]
-    );
-  }
-  getMinLimit(accountCurrency: string): number {
-    return this.getCalculatedAmount(accountCurrency, 500);
-  }
   getFormattedTransactionsLimit(cardSettings: CardSettings): string {
     const limit = this.getTransactionsLimit(cardSettings);
     return limit.toLocaleString('pl-PL');
   }
   getTransactionsLimit(cardSettings: CardSettings): number {
-    const currentLimit: number =
-      cardSettings.limitType === 'max'
-        ? cardSettings.transactionType === 'internet'
-          ? cardSettings.card.limits[0].internetTransactions[0]
-          : cardSettings.card.limits[0].cashTransactions[0]
-        : 500;
-    const convertedLimit: number = this.getCalculatedAmount(
-      cardSettings.currency,
-      currentLimit
-    );
-    return convertedLimit;
+    if (cardSettings.card.limits) {
+      const currentLimit: number =
+        cardSettings.limitType === 'max'
+          ? cardSettings.transactionType === 'internet'
+            ? cardSettings.card.limits[0].internetTransactions[0]
+            : cardSettings.card.limits[0].cashTransactions[0]
+          : 500;
+      const convertedLimit: number = this.getCalculatedAmount(
+        cardSettings.currency,
+        currentLimit
+      );
+      return convertedLimit;
+    } else {
+      return 0;
+    }
   }
   getCurrentTransactionLimit(cardSettings: CardSettings): number {
     const upLimit: number = this.getMaxLimit(cardSettings);
@@ -213,6 +208,21 @@ export class ConvertService {
     return cardSettings.transactionType === 'cash'
       ? cardSettings.limits.cashTransactionsLimit
       : cardSettings.limits.internetTransactionsLimit;
+  }
+  getMaxLimit(cardSettings: CardSettings): number {
+    if (cardSettings.card.limits) {
+      return this.getCalculatedAmount(
+        cardSettings.currency,
+        cardSettings.transactionType === 'cash'
+          ? cardSettings.card.limits[0].cashTransactions[0]
+          : cardSettings.card.limits[0].internetTransactions[0]
+      );
+    } else {
+      return 0;
+    }
+  }
+  getMinLimit(accountCurrency: string): number {
+    return this.getCalculatedAmount(accountCurrency, 500);
   }
   private setInternetTransactionLimit(
     upLimit: number,

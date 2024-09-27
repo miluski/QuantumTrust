@@ -18,9 +18,9 @@ import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 })
 export class CardListComponent implements OnInit {
   @Input() tabName = 'Karty';
-  cardType: string = 'standard';
-  visaCardsPaginationService: PaginationService = new PaginationService();
-  masterCardsPaginationService: PaginationService = new PaginationService();
+  protected cardType: string = 'standard';
+  protected visaCardsPaginationService: PaginationService = new PaginationService();
+  protected masterCardsPaginationService: PaginationService = new PaginationService();
   constructor(
     private productTypesService: ProductTypesService,
     private windowEventsService: WindowEventsService

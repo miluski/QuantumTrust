@@ -20,8 +20,8 @@ import { UserMobileHeaderComponent } from '../user-mobile-header/user-mobile-hea
   standalone: true,
 })
 export class HeaderComponent implements OnInit {
-  tabName!: string;
-  currentRoute!: string;
+  protected tabName!: string;
+  protected currentRoute!: string;
   constructor(
     router: Router,
     private appInformationStatesService: AppInformationStatesService
@@ -37,14 +37,6 @@ export class HeaderComponent implements OnInit {
     this.appInformationStatesService.changeTabName(tabName);
   }
   isGuestPart(): boolean {
-    return (
-      this.currentRoute === '' ||
-      this.currentRoute === '/home-page' ||
-      this.currentRoute === '/login' ||
-      this.currentRoute === '/open-account' ||
-      this.currentRoute === '/single-account' ||
-      this.currentRoute === '/single-deposit' ||
-      this.currentRoute === '/single-card'
-    );
+    return this.currentRoute !== '/main-page';
   }
 }

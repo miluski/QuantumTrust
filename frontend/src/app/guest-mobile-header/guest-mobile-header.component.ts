@@ -12,8 +12,8 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 })
 export class GuestMobileHeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('drawer') drawer!: MatDrawer;
-  currentRoute: string = '/home-page';
-  tabName: string = 'Konta';
+  protected currentRoute: string = '/home-page';
+  protected tabName: string = 'Konta';
   constructor(
     router: Router,
     private appInformationStatesService: AppInformationStatesService

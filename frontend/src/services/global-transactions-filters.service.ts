@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Input, OnInit } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { TableTransaction } from '../types/table-transaction';
 
@@ -6,12 +7,12 @@ import { TableTransaction } from '../types/table-transaction';
   providedIn: 'root',
 })
 export class GlobalTransactionsFiltersService {
+  private originalTableTransactionsArray!: TableTransaction[];
   private acceptedFilters: string[] = ['Wszystkie', 'Wpływy', 'Wydatki'];
   private appliedFilter: string = 'Wszystkie';
   private searchedPhrase: string = '';
-  isMobileFiltersOpened: boolean = false;
-  originalTableTransactionsArray!: TableTransaction[];
-  tableDataSource: MatTableDataSource<TableTransaction> =
+  public isMobileFiltersOpened: boolean = false;
+  public tableDataSource: MatTableDataSource<TableTransaction> =
     new MatTableDataSource<TableTransaction>([]);
   setOriginalTableTransactionsArray(
     tableTransactionArray: TableTransaction[]
@@ -19,9 +20,6 @@ export class GlobalTransactionsFiltersService {
     this.originalTableTransactionsArray = JSON.parse(
       JSON.stringify(tableTransactionArray)
     );
-  }
-  get acceptedFiltersArray(): string[] {
-    return this.acceptedFilters;
   }
   setAppliedFilter(appliedFilter: string, searchedPhrase: string): void {
     this.resetArray();
@@ -43,19 +41,24 @@ export class GlobalTransactionsFiltersService {
       this.replaceArray(filteredArray);
     }
   }
+  get acceptedFiltersArray(): string[] {
+    return this.acceptedFilters;
+  }
   get actualAppliedFilter(): string {
     return this.appliedFilter;
   }
   get actualSearchedPhrase(): string {
     return this.searchedPhrase;
   }
-  private resetArray(): void {
-    this.tableDataSource.data = JSON.parse(
-      JSON.stringify(this.originalTableTransactionsArray)
-    );
+  public resetArray(): void {
+    this.tableDataSource.data = this.originalTableTransactionsArray
+      ? JSON.parse(JSON.stringify(this.originalTableTransactionsArray))
+      : this.tableDataSource.data;
   }
   private replaceArray(newArray: TableTransaction[]): void {
-    this.tableDataSource.data = JSON.parse(JSON.stringify(newArray));
+    this.tableDataSource.data = newArray
+      ? JSON.parse(JSON.stringify(newArray))
+      : this.tableDataSource.data;
   }
   private get englishFilterType(): string {
     switch (this.appliedFilter) {

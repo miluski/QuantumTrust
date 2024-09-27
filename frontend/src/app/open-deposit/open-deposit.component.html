@@ -1,4 +1,5 @@
 <div class="flex-col flex justify-center text-center bg-black text-white w-screen">
+    @if(shakeStateService.siteNumber === 1) {
     <div class="w-screen bg-white h-[1px]"></div>
     <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
         <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Otwieranie nowej lokaty</p>
@@ -37,7 +38,7 @@
             }
         </div>
         <p class="font-roboto font-normal text-2xl text-white py-5 text-center lg:pl-12 2xl:pl-36">Wybrano lokatę
-            {{convertService.getPolishDepositType(currentSelectedDepositType, BOTTOM_INFORMATION)}}</p>
+            {{convertService.getPolishDepositType(currentSelectedDepositType, "BOTTOM_INFORMATION")}}</p>
         <div class="w-screen bg-white h-[1px]"></div>
         <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
             <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Czas trwania</p>
@@ -48,7 +49,9 @@
             <div class="flex flex-col lg:w-1/3 items-center space-y-5 max-md:w-[85%] md:w-[65%]">
                 <p class="font-roboto font-light text-2xl">Czas trwania</p>
                 <div class="w-full flex flex-col items-center space-y-5">
-                    <input type="range" min="1" max="4" step="1" [value]="depositDuration" [(ngModel)]="depositDuration"
+                    <input type="range" min="1" max="4" step="1" [value]="deposit.duration"
+                        [(ngModel)]="deposit.duration" (ngModelChange)="setDepositEndDate()"
+                        #depositDurationInput="ngModel" readonly
                         class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb">
                     <div class="flex justify-between w-full px-2 mt-2">
                         <span class="text-white">1 mc</span>
@@ -63,7 +66,8 @@
         <div class="w-screen bg-white h-[1px]"></div>
         <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
             <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Informacje techniczne</p>
-            <p class="font-roboto font-light text-md text-white w-3/4">Wybierz konto bankowe, z którego powstanie lokata i
+            <p class="font-roboto font-light text-md text-white w-3/4">Wybierz konto bankowe, z którego powstanie lokata
+                i
                 określ
                 kapitał początkowy.</p>
         </div>
@@ -73,13 +77,12 @@
                 <div class="relative w-full">
                     <p class="font-roboto font-light text-md text-left">Kapitał początkowy</p>
                     <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
-                        type="number" min="{{getLimit(100)}}" max="{{getLimit(10000)}}" value={{startCapital}}
-                        [(ngModel)]="startCapital" #initialCapitalInput="ngModel" required />
+                        type="number" min="{{getLimit(100)}}" max="{{getLimit(10000)}}" value={{deposit.balance}}
+                        [(ngModel)]="deposit.balance" #initialCapitalInput="ngModel" required />
                     <span
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-black pt-9">{{currentCurrency}}</span>
                 </div>
-                <div *ngIf="initialCapitalInput.invalid && (initialCapitalInput.dirty || initialCapitalInput.touched)"
-                    class="text-red-500 pt-2">
+                <div *ngIf="!getIsInitialCapitalValid(initialCapitalInput)" class="text-red-500 pt-2">
                     <div *ngIf="initialCapitalInput.errors?.['required']">Kapitał początkowy jest wymagany.</div>
                     <div *ngIf="initialCapitalInput.errors?.['min']">Minimalna wartość to
                         {{getValueWithCurrency(100)}}</div>
@@ -91,22 +94,27 @@
                 <p class="font-roboto font-light text-md text-left">Konto bankowe</p>
                 <select
                     class="!font-roboto !font-light !text-black !rounded-lg !px-5 !h-10 !w-100 max-lg:!w-full !bg-white"
-                    [(ngModel)]="currentSelectedAccountId">
+                    (change)="setDepositAccountNumber($event)"> 
                     @for(userAccount of userAccounts; track userAccount.id) {
-                    <option class="py-2" value={{userAccount.id}}>
+                    <option class="py-2" [value]="userAccount.id">
                         {{convertService.getAccountOptionString(userAccount)}}
                     </option>
                     }
                 </select>
-                @if(false) {
-                <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wybrane konto jest nieprawidłowe.</p>
+                @if(isAccountNumberValid === false) {
+                <p class="font-roboto font-light text-red-500 text-sm pt-5">Wybrane konto jest nieprawidłowe.</p>
                 }
             </div>
         </div>
         <div class="w-screen bg-white h-[1px]"></div>
         <button
-            class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8">
+            class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8"
+            [@shake]="shakeStateService.shakeState" (click)="handleButtonClick()">
             Załóż lokatę
         </button>
     </div>
+    }
+    @else {
+    <app-verification-code actionType="Otwieranie lokaty" />
+    }
 </div>
