@@ -13,9 +13,9 @@ import { WindowEventsService } from '../../services/window-events.service';
   standalone: true,
 })
 export class FooterComponent {
-  accountType: string = 'personal';
-  cardType: string = 'standard';
-  depositType: string = 'timely';
+  protected accountType: string = 'personal';
+  protected cardType: string = 'standard';
+  protected depositType: string = 'timely';
   protected currentTabName!: string;
   protected currentTransactionsArrayLength!: number;
   constructor(

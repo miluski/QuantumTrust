@@ -1,0 +1,36 @@
+<main class="flex-col flex text-center bg-black text-white w-screen items-center justify-center">
+    <div class="flex flex-row my-12 bg-white rounded-3xl shadow-gray-500 shadow-lg w-[85%] 2xl:w-[70%]">
+        <div class="login-mobile flex flex-col justify-center items-center lg:w-[50%] w-full rounded-3xl">
+            <p class="font-roboto font-extrabold text-5xl text-black pt-24 z-20">{{actionType}}</p>
+            <p class="font-roboto font-light text-xl text-gray-600 w-[95%] mb-12 z-20 lg:text-gray-400">Na twój
+                adres email
+                został wysłany 6 cyfrowy kod weryfikacyjny. Wprowadź go poniżej.</p>
+            <div class="flex flex-col lg:w-[75%] w-[80%] z-20 mb-6">
+                <p class="text-left font-roboto font-light text-sm text-black w-full">Kod uwierzytelniający</p>
+                <input
+                    class="no-arrows font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent z-50 mb-6"
+                    type="number" min="111111" max="999999" placeholder="123456" [(ngModel)]="verificationCode" />
+                @if(isVerificationCodeValid === false) {
+                <p class="font-roboto font-light text-red-500 text-sm pb-5">Wprowadzony kod weryfikacyjny jest
+                    nieprawidłowy.</p>
+                }
+                <button [@shake]="shakeStateService.shakeState"
+                    class="lg:w-[75%] w-[80%] lg:mb-10 mb-10 border text-3xl border-white text-white font-salsa rounded-full py-5 hover:bg-gray-600 bg-own-gray mx-5 self-center z-50"
+                    (click)="handleButtonClick()">
+                    {{buttonText}}
+                </button>
+                <mat-divider class="w-full !border-t-gray-300 my-5 z-20 max-lg:!border-t-gray-400" />
+                <div class="flex flex-row py-10 space-x-2 z-20 w-full justify-center">
+                    <p class="font-roboto font-normal lg:text-2xl text-xl text-black">
+                        {{ask}}</p>
+                    <a class="font-roboto font-bold lg:text-2xl text-xl text-gray-400 hover:text-gray-200 text-nowrap"
+                        routerLink={{redirectLink}} routerLinkActive="active" (click)="handleRedirectButtonClick()">
+                        {{redirectText}}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <img class="max-lg:hidden block rounded-r-3xl w-[50%] opacity-30 pointer-events-none" src="login-background.png"
+            alt="login-background" />
+    </div>
+</main>

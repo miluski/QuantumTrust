@@ -29,12 +29,12 @@ import { HeaderComponent } from '../header/header.component';
 })
 export class SingleDepositComponent implements OnInit {
   @Input() steps: Step[] = singleDepositStepsArray;
-  depositObject!: Deposit;
-  BOTTOM_INFORMATION: string = BOTTOM_INFORMATION;
-  TOP_INFORMATION: string = TOP_INFORMATION;
-  initialCapital: number = 100;
-  interval: number = 1;
-  profit: number = 0;
+  protected depositObject!: Deposit;
+  protected BOTTOM_INFORMATION: string = BOTTOM_INFORMATION;
+  protected TOP_INFORMATION: string = TOP_INFORMATION;
+  protected initialCapital: number = 100;
+  protected interval: number = 1;
+  protected profit: number = 0;
   protected depositType: string = 'timely';
   constructor(
     private productTypesService: ProductTypesService,

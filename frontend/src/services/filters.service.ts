@@ -19,13 +19,14 @@ export class FiltersService {
   ]);
   private searchPhrase: BehaviorSubject<string> = new BehaviorSubject('');
   public originalTransactionsArray!: Transaction[][];
-  currentIsMobileFiltersOpened: Observable<boolean> =
+  public currentIsMobileFiltersOpened: Observable<boolean> =
     this.isMobileFiltersOpened.asObservable();
-  currentExpansionFlagsArray: Observable<boolean[]> =
+  public currentExpansionFlagsArray: Observable<boolean[]> =
     this.expansionFlagsArray.asObservable();
-  currentSelectedFilters: Observable<string[]> =
+  public currentSelectedFilters: Observable<string[]> =
     this.selectedFilters.asObservable();
-  currentSearchPhrase: Observable<string> = this.searchPhrase.asObservable();
+  public currentSearchPhrase: Observable<string> =
+    this.searchPhrase.asObservable();
   resetSelectedFilters(): void {
     this.setSelectedFilters(['Domyślnie', 'Domyślnie', 'Domyślnie']);
     this.setSearchPhrase('');

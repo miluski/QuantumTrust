@@ -1,11 +1,11 @@
-<div class="flex-col flex justify-center text-center bg-black text-white hyphens-auto py-10 select-none w-screen">
+<div class="flex-col flex justify-start text-center bg-black text-white hyphens-auto py-10 select-none w-screen min-h-screen">
     <div class="flex flex-row w-[95%] justify-between self-center">
         <app-global-transactions-filters class="max-md:hidden w-[75%] justify-self-center self-center pb-5" />
         <div class="flex flex-row space-x-10 self-end max-md:w-full justify-between max-md:self-center">
             <div class="md:hidden flex flex-row cursor-pointer space-x-2 pt-5 group"
                 (click)="globalTransactionsFiltersService.isMobileFiltersOpened = true">
                 <i class="fa-solid fa-filter text-2xl group-hover:text-gray-400"></i>
-                <p class="font-roboto text-white text-lg font-light pt-1 group-hover:text-gray-400">Filtry</p>
+                <p class="font-roboto text-white text-lg font-light pt-1 group-hover:text-gray-400 text-nowrap">Filtry</p>
             </div>
             <app-search-bar class="self-center justify-self-start pb-10" filterServiceType="global" />
             <div class="relative rounded-full min-w-8 min-h-8 w-8 h-8 bg-gray-500 hover:bg-gray-400 cursor-pointer inline-block items-center justify-center mt-5 max-lg:mb-14 justify-self-end"
@@ -21,7 +21,8 @@
                 <p class="font-roboto text-xs md:text-lg font-normal text-white">Tytuł</p>
             </th>
             <td mat-cell *matCellDef="let element" class="!justify-center !text-center !pt-5 w-[40%]">
-                <p class="font-roboto text-xs md:text-lg font-light text-black text-center !min-w-[5%]">{{element.title}}</p>
+                <p class="font-roboto text-xs md:text-lg font-light text-black text-center !min-w-[5%]">
+                    {{element.title}}</p>
             </td>
         </ng-container>
         <ng-container matColumnDef="Data i godzina">

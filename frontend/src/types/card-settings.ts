@@ -11,4 +11,5 @@ export class CardSettings {
   transactionType!: 'cash' | 'internet';
   currency!: Currency;
   card!: Card;
+  assignedAccountNumber!: string;
 }

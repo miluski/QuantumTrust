@@ -33,11 +33,11 @@ import { StatusExpansionComponent } from '../status-expansion/status-expansion.c
   standalone: true,
 })
 export class SingleAccountTransactionsComponent implements OnInit {
-  account: Account = new Account();
-  accountTransactions: Transaction[] = [];
-  dailyTransactions!: Transaction[][];
-  totalIncomingBalance: number = 0;
-  totalOutgoingBalance: number = 0;
+  protected dailyTransactions!: Transaction[][];
+  protected account: Account = new Account();
+  protected accountTransactions: Transaction[] = [];
+  protected totalIncomingBalance: number = 0;
+  protected totalOutgoingBalance: number = 0;
   constructor(
     private itemSelectionService: ItemSelectionService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -49,7 +49,6 @@ export class SingleAccountTransactionsComponent implements OnInit {
     this.initializeAccountTransactions();
     this.changeDetectorRef.detectChanges();
   }
-
   async initializeAccountTransactions(): Promise<void> {
     this.itemSelectionService.currentAccount.subscribe(
       (account: Account) => (this.account = account)

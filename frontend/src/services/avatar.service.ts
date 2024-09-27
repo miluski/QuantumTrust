@@ -11,12 +11,12 @@ export class AvatarService {
   private temporaryAvatarError: BehaviorSubject<boolean> = new BehaviorSubject(
     false
   );
-  user: UserAccount;
-  avatarColor: string;
-  avatarError: boolean = false;
-  currentTemporaryAvatarUrl: Observable<string> =
+  protected user: UserAccount;
+  public avatarColor: string;
+  public avatarError: boolean = false;
+  public currentTemporaryAvatarUrl: Observable<string> =
     this.temporaryAvatarUrl.asObservable();
-  currentAvatarError: Observable<boolean> =
+  public currentAvatarError: Observable<boolean> =
     this.temporaryAvatarError.asObservable();
   constructor(userService: UserService) {
     this.user = userService.userAccount;

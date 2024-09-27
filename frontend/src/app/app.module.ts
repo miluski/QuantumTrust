@@ -40,6 +40,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { UserHeaderComponent } from './user-header/user-header.component';
 import { UserMobileHeaderComponent } from './user-mobile-header/user-mobile-header.component';
 import { UserOpenAccountComponent } from './user-open-account/user-open-account.component';
+import { VerificationCodeComponent } from './verification-code/verification-code.component';
 
 @NgModule({
   imports: [
@@ -77,6 +78,7 @@ import { UserOpenAccountComponent } from './user-open-account/user-open-account.
     GlobalTransactionsFiltersComponent,
     MobileGlobalTransactionsFiltersComponent,
     AccountSettingsComponent,
+    VerificationCodeComponent,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,

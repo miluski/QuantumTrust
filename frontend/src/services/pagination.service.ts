@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class PaginationService {
-  paginatedArray!: any[];
+  public paginatedArray!: any[];
   public itemsPerPage: number = 3;
   public currentPage: number = 1;
   public totalPages: number = 1;
@@ -50,7 +50,7 @@ export class PaginationService {
   get paginatedItems(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    return this.paginatedArray.slice(startIndex, endIndex);
+    return this.paginatedArray && this.paginatedArray.slice(startIndex, endIndex);
   }
   private moveArrayBackward(): void {
     if (this.paginatedArray.length > 1) {

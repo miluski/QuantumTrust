@@ -11,8 +11,8 @@ import { AppInformationStatesService } from '../../services/app-information-stat
   standalone: true,
 })
 export class GuestHeaderComponent implements OnInit {
-  currentRoute: string = '/home-page';
-  tabName: string = 'Konta';
+  protected currentRoute: string = '/home-page';
+  protected tabName: string = 'Konta';
   constructor(
     router: Router,
     private appInformationStatesService: AppInformationStatesService

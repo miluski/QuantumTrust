@@ -10,9 +10,9 @@ export class ProductTypesService {
   );
   private depositType: BehaviorSubject<string> = new BehaviorSubject('timely');
   private cardType: BehaviorSubject<string> = new BehaviorSubject('standard');
-  currentAccountType = this.accountType.asObservable();
-  currentDepositType = this.depositType.asObservable();
-  currentCardType = this.cardType.asObservable();
+  public currentAccountType = this.accountType.asObservable();
+  public currentDepositType = this.depositType.asObservable();
+  public currentCardType = this.cardType.asObservable();
   changeAccountType(accountType: string): void {
     this.accountType.next(accountType);
   }

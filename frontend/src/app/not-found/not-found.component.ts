@@ -12,7 +12,7 @@ import { HeaderComponent } from '../header/header.component';
   standalone: true,
 })
 export class NotFoundComponent implements OnInit {
-  isDrawerOpened: boolean = false;
+  protected isDrawerOpened: boolean = false;
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private windowEventsService: WindowEventsService

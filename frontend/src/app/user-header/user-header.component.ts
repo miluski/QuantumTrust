@@ -14,10 +14,10 @@ import { UserAccount } from '../../types/user-account';
   standalone: true,
 })
 export class UserHeaderComponent implements OnInit {
-  currentRoute: string = '/main-page';
-  tabName: string = 'Finanse';
-  isMenuVisible: boolean = false;
-  user: UserAccount;
+  protected user: UserAccount;
+  protected currentRoute: string = '/main-page';
+  protected tabName: string = 'Finanse';
+  protected isMenuVisible: boolean = false;
   constructor(
     router: Router,
     userService: UserService,

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AnimationsProvider } from '../../providers/animations.provider';
 import { ProductTypesService } from '../../services/product-types.service';
 import { WindowEventsService } from '../../services/window-events.service';
 import { Account } from '../../types/account';
@@ -9,14 +10,15 @@ import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 @Component({
   selector: 'app-account-list',
   templateUrl: './account-list.component.html',
+  animations: [AnimationsProvider.animations],
   imports: [CommonModule, RouterModule],
   standalone: true,
 })
 export class AccountListComponent implements OnInit {
   @Input() tabName: string = 'Konta';
-  accountType: string = 'personal';
-  accountsObjectsArray: Account[] = accountsObjectsArray;
-  currentIndex: number = 0;
+  protected accountType: string = 'personal';
+  protected accountsObjectsArray: Account[] = accountsObjectsArray;
+  protected currentIndex: number = 0;
   constructor(
     private productTypeService: ProductTypesService,
     private windowEventsService: WindowEventsService
@@ -33,6 +35,6 @@ export class AccountListComponent implements OnInit {
     this.windowEventsService.scrollToTop();
   }
   isAccountIdEven(accountId: string): boolean {
-    return Number(accountId) % Number(2) === Number(0);
+    return Number(accountId) % 2 === 0;
   }
 }

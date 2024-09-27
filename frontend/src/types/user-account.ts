@@ -11,5 +11,4 @@ export class UserAccount {
   address!: string;
   password!: string;
   repeatedPassword!: string;
-  verificationCode!: number;
 }

@@ -33,7 +33,7 @@ import { UserOpenAccountComponent } from '../user-open-account/user-open-account
   standalone: true,
 })
 export class MainPageComponent implements OnInit {
-  tabName: string = 'Finanse';
+  protected tabName: string = 'Finanse';
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private changeDetectorRef: ChangeDetectorRef
