@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { CardIdFormatPipe } from '../../pipes/card-id-format.pipe';
 import { PaginationService } from '../../services/pagination.service';
 import { ProductTypesService } from '../../services/product-types.service';
-import { WindowEventsService } from '../../services/window-events.service';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 
@@ -19,12 +18,11 @@ import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 export class CardListComponent implements OnInit {
   @Input() tabName = 'Karty';
   protected cardType: string = 'standard';
-  protected visaCardsPaginationService: PaginationService = new PaginationService();
-  protected masterCardsPaginationService: PaginationService = new PaginationService();
-  constructor(
-    private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService
-  ) {}
+  protected visaCardsPaginationService: PaginationService =
+    new PaginationService();
+  protected masterCardsPaginationService: PaginationService =
+    new PaginationService();
+  constructor(private productTypesService: ProductTypesService) {}
   ngOnInit(): void {
     this.productTypesService.currentCardType.subscribe(
       (cardType: string) => (this.cardType = cardType)
@@ -49,8 +47,5 @@ export class CardListComponent implements OnInit {
   }
   changeCardType(cardType: string): void {
     this.productTypesService.changeCardType(cardType);
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
   }
 }

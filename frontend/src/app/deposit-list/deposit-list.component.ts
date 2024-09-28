@@ -4,7 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ConvertService } from '../../services/convert.service';
 import { ProductTypesService } from '../../services/product-types.service';
-import { WindowEventsService } from '../../services/window-events.service';
 import { Deposit } from '../../types/deposit';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 
@@ -20,7 +19,6 @@ export class DepositListComponent implements OnInit {
   protected depositsObjectArray: Deposit[] = depositsObjectArray;
   constructor(
     private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService,
     protected convertService: ConvertService
   ) {}
   ngOnInit(): void {
@@ -30,9 +28,6 @@ export class DepositListComponent implements OnInit {
   }
   changeDepositType(depositType: string): void {
     this.productTypesService.changeDepositType(depositType);
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
   }
   isDepositIdHigherThanTwo(depositId: string): boolean {
     return Number(depositId) > Number(2);

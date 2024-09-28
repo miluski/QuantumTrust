@@ -6,14 +6,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { AnimationsProvider } from '../../providers/animations.provider';
+import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
-import { WindowEventsService } from '../../services/window-events.service';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
-import { ShakeStateService } from '../../services/shake-state.service';
 
 @Component({
   selector: 'app-login',
@@ -36,13 +35,7 @@ export class LoginComponent {
   protected shakeStateService: ShakeStateService = new ShakeStateService();
   protected userAccountFlags: UserAccountFlags = new UserAccountFlags();
   protected userAccount: UserAccount = new UserAccount();
-  constructor(
-    private windowEventsService: WindowEventsService,
-    private verificationService: VerificationService
-  ) {}
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
-  }
+  constructor(private verificationService: VerificationService) {}
   verifyData(): void {
     this.userAccountFlags.isIdentifierValid =
       this.verificationService.validateIdentifier(this.userAccount.identifier);

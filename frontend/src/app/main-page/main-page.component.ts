@@ -9,6 +9,7 @@ import { HeaderComponent } from '../header/header.component';
 import { NewTransferComponent } from '../new-transfer/new-transfer.component';
 import { OpenDepositComponent } from '../open-deposit/open-deposit.component';
 import { OrderCardComponent } from '../order-card/order-card.component';
+import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 import { SingleAccountTransactionsComponent } from '../single-account-transactions/single-account-transactions.component';
 import { TransactionsComponent } from '../transactions/transactions.component';
 import { UserOpenAccountComponent } from '../user-open-account/user-open-account.component';
@@ -29,6 +30,7 @@ import { UserOpenAccountComponent } from '../user-open-account/user-open-account
     CardSettingsComponent,
     TransactionsComponent,
     AccountSettingsComponent,
+    ScrollArrowUpComponent,
   ],
   standalone: true,
 })

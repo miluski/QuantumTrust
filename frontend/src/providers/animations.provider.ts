@@ -73,5 +73,10 @@ export class AnimationsProvider {
         animate('1.5s ease-out'),
       ]),
     ]),
+    trigger('pulseAnimation', [
+      state('start', style({ transform: 'scale(1)' })),
+      state('end', style({ transform: 'scale(1.2)' })),
+      transition('start <=> end', animate('1s ease-in-out')),
+    ]),
   ];
 }

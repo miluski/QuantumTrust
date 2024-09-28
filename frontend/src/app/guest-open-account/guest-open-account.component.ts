@@ -6,12 +6,12 @@ import { RouterModule } from '@angular/router';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
-import { WindowEventsService } from '../../services/window-events.service';
 import { Account } from '../../types/account';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
+import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
 @Component({
@@ -22,6 +22,7 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
     HeaderComponent,
     FooterComponent,
     VerificationCodeComponent,
+    ScrollArrowUpComponent,
     CommonModule,
     RouterModule,
     FormsModule,
@@ -34,16 +35,10 @@ export class GuestOpenAccountComponent {
   protected userAccountFlags: UserAccountFlags = new UserAccountFlags();
   protected userAccount: UserAccount = new UserAccount();
   protected account: Account = new Account();
-  constructor(
-    private windowEventsService: WindowEventsService,
-    private verificationService: VerificationService
-  ) {
+  constructor(private verificationService: VerificationService) {
     this.userAccount.identityDocumentType = 'Dowód Osobisty';
     this.account.type = 'Konto osobiste';
     this.account.currency = 'PLN';
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
   }
   verifyData(): void {
     this.setIsContactDataValid();

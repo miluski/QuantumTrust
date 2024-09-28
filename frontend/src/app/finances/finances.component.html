@@ -215,7 +215,8 @@
                     }
                     <i class="absolute top-14 fa-solid fa-gear text-brown hover:text-light-brown text-2xl cursor-pointer z-30"
                         [ngClass]="{'left-2': card.showingCardSite === 'back', 'right-2': card.showingCardSite === 'front'}"
-                        (click)="changeTabName('CardSettings'); setSelectedCard(card);"></i>
+                        (click)="changeTabName('CardSettings'); setSelectedCard(card);"
+                        matTooltip="Zmień ustawienia karty."></i>
                 </div>
                 <div class="flex flex-row w-full space-x-5 justify-center z-50">
                     <p class="font-roboto font-normal text-2xl text-own-gray">{{card.publisher}}

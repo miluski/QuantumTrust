@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ProductTypesService } from '../../services/product-types.service';
-import { WindowEventsService } from '../../services/window-events.service';
 import { Account } from '../../types/account';
 import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 
@@ -19,10 +18,7 @@ export class AccountListComponent implements OnInit {
   protected accountType: string = 'personal';
   protected accountsObjectsArray: Account[] = accountsObjectsArray;
   protected currentIndex: number = 0;
-  constructor(
-    private productTypeService: ProductTypesService,
-    private windowEventsService: WindowEventsService
-  ) {}
+  constructor(private productTypeService: ProductTypesService) {}
   ngOnInit(): void {
     this.productTypeService.currentAccountType.subscribe(
       (accountType: string) => (this.accountType = accountType)
@@ -30,9 +26,6 @@ export class AccountListComponent implements OnInit {
   }
   changeAccountType(accountType: string): void {
     this.productTypeService.changeAccountType(accountType);
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
   }
   isAccountIdEven(accountId: string): boolean {
     return Number(accountId) % 2 === 0;
