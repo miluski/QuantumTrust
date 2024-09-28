@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { AccountSettingsComponent } from '../account-settings/account-settings.component';
 import { CardSettingsComponent } from '../card-settings/card-settings.component';
+import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
 import { FinancesComponent } from '../finances/finances.component';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
@@ -31,6 +33,7 @@ import { UserOpenAccountComponent } from '../user-open-account/user-open-account
     TransactionsComponent,
     AccountSettingsComponent,
     ScrollArrowUpComponent,
+    CustomAlertComponent,
   ],
   standalone: true,
 })
@@ -38,7 +41,8 @@ export class MainPageComponent implements OnInit {
   protected tabName: string = 'Finanse';
   constructor(
     private appInformationStatesService: AppInformationStatesService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    protected alertService: AlertService
   ) {
     this.appInformationStatesService.changeTabName(this.tabName);
   }

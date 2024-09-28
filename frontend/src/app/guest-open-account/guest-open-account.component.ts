@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { AnimationsProvider } from '../../providers/animations.provider';
+import { AlertService } from '../../services/alert.service';
 import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
+import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
@@ -23,6 +25,7 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
     FooterComponent,
     VerificationCodeComponent,
     ScrollArrowUpComponent,
+    CustomAlertComponent,
     CommonModule,
     RouterModule,
     FormsModule,
@@ -35,7 +38,10 @@ export class GuestOpenAccountComponent {
   protected userAccountFlags: UserAccountFlags = new UserAccountFlags();
   protected userAccount: UserAccount = new UserAccount();
   protected account: Account = new Account();
-  constructor(private verificationService: VerificationService) {
+  constructor(
+    private verificationService: VerificationService,
+    protected alertService: AlertService
+  ) {
     this.userAccount.identityDocumentType = 'Dowód Osobisty';
     this.account.type = 'Konto osobiste';
     this.account.currency = 'PLN';

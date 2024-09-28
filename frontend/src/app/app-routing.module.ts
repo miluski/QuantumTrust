@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'single-card', component: SingleCardComponent },
   { path: 'open-account', component: GuestOpenAccountComponent },
   { path: 'login', component: LoginComponent },
-  { path: '**', component: NotFoundComponent },
+  { path: '**/*', component: NotFoundComponent },
 ];
 
 @NgModule({

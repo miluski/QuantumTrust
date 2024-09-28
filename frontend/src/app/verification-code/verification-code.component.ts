@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { Router, RouterModule } from '@angular/router';
 import { AnimationsProvider } from '../../providers/animations.provider';
+import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
+import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
+import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
-import { ShakeStateService } from '../../services/shake-state.service';
 
 @Component({
   selector: 'app-verification-code',
@@ -20,6 +22,7 @@ import { ShakeStateService } from '../../services/shake-state.service';
     MatDividerModule,
     HeaderComponent,
     FooterComponent,
+    CustomAlertComponent,
   ],
   animations: [AnimationsProvider.animations],
   standalone: true,
@@ -32,21 +35,29 @@ export class VerificationCodeComponent {
   constructor(
     private router: Router,
     private verificationService: VerificationService,
-    private appInformationStatesService: AppInformationStatesService
+    private appInformationStatesService: AppInformationStatesService,
+    private alertService: AlertService
   ) {}
   handleButtonClick(): void {
     this.isVerificationCodeValid =
       this.verificationService.validateVerificationCode(this.verificationCode);
     if (!this.isVerificationCodeValid) {
-      this.shakeStateService.setCurrentShakeState(
-        !this.isVerificationCodeValid
-      );
+      this.shakeStateService.setCurrentShakeState(true);
+      return;
+    }
+    const isOpeningAccount = this.actionType === 'Otwieranie konta';
+    const isLoggingIn = this.actionType === 'Logowanie';
+    const isNotOnMainPage = this.router.url !== '/main-page';
+    if ((isOpeningAccount && isNotOnMainPage) || isLoggingIn) {
+      this.alertService.progressValue = 100;
+      this.setAlertCredentials('info', 'Sukces!', 'positive');
+      this.alertService.show();
+      this.router.navigateByUrl(this.buttonLink);
     } else {
-      (this.actionType === 'Otwieranie konta' &&
-        this.router.url !== '/main-page') ||
-      this.actionType === 'Logowanie'
-        ? this.router.navigateByUrl(this.buttonLink)
-        : this.changeTabName('Finanse');
+      this.alertService.progressValue = 100;
+      this.setAlertCredentials('info', 'Sukces!', 'positive');
+      this.alertService.show();
+      this.changeTabName('Finanse');
     }
   }
   handleRedirectButtonClick(): void {
@@ -107,6 +118,61 @@ export class VerificationCodeComponent {
         return this.router.url === '/main-page' ? '/main-page' : '/login';
       default:
         return '/main-page';
+    }
+  }
+  private setAlertCredentials(
+    alertType: 'info' | 'warning' | 'error',
+    alertTitle: string,
+    triggerType: 'positive' | 'negative'
+  ): void {
+    this.alertService.alertType = alertType;
+    this.alertService.alertTitle = alertTitle;
+    switch (this.actionType) {
+      case 'Logowanie':
+        this.alertService.alertContent =
+          triggerType === 'positive'
+            ? 'Pomyślnie zalogowano!'
+            : 'Wystąpił błąd przy próbie zalogowania się!';
+        break;
+      case 'Otwieranie konta':
+        this.alertService.alertContent =
+          triggerType === 'positive'
+            ? 'Pomyślnie otworzono nowe konto!'
+            : 'Wystąpił błąd przy próbie otworzenia konta!';
+        break;
+      case 'Zmiana ustawień konta':
+        this.alertService.alertContent =
+          triggerType === 'positive'
+            ? 'Pomyślnie zmieniono wybrane ustawienie konta!'
+            : 'Wystąpił błąd przy próbie zmiany ustawień konta!';
+        break;
+      case 'Wyrób nowej karty':
+        this.alertService.alertContent =
+          triggerType === 'positive'
+            ? 'Pomyślnie wyrobiono nową kartę!'
+            : 'Wystąpił błąd przy próbie wyrobienia nowej karty!';
+        break;
+      case 'Otwieranie lokaty':
+        this.alertService.alertContent =
+          triggerType === 'positive'
+            ? 'Pomyślnie otworzono nową lokatę!'
+            : 'Wystąpił błąd przy próbie otworzenia nowej lokaty!';
+        break;
+      case 'Zmiana ustawień karty':
+        this.alertService.alertContent =
+          triggerType === 'positive'
+            ? 'Pomyślnie zmieniono wybrane ustawienie karty!'
+            : 'Wystąpił błąd przy próbie zmiany ustawień karty!';
+        break;
+      case 'Potwierdzenie przelewu':
+        this.alertService.alertContent =
+          triggerType === 'positive'
+            ? 'Pomyślnie wysłano przelew!'
+            : 'Wystąpił błąd przy próbie wysłania przelewu!';
+        break;
+      default:
+        this.alertService.alertContent = '';
+        break;
     }
   }
   private changeTabName(tabName: string) {
