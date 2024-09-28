@@ -4,10 +4,11 @@
     <div class="flex flex-col space-x-5 px-5">
         <div class="flex flex-col items-start space-y-5">
             <div class="flex flex-row items-center space-x-5">
-                <img class="w-10 h-10 cursor-pointer pointer-events-none" src="icon.png" alt="Quantum Trust Logo" routerLink="/home-page"
+                <img class="w-10 h-10 cursor-pointer" src="icon.png" alt="Quantum Trust Logo" routerLink="/home-page"
                     routerLinkActive="active" (click)="changeTabName('Konta')" />
                 <div class="flex flex-col">
-                    <p class="font-salsa text-xl leading-none text-white !mt-1">Quantum Trust</p>
+                    <p class="font-salsa text-xl leading-none text-white !mt-1 cursor-pointer" routerLink="/home-page"
+                        routerLinkActive="active" (click)="changeTabName('Konta')">Quantum Trust</p>
                     <div class="flex flex-row space-x-10"> <a href="https://facebook.com" target="_blank"
                             rel="noopener noreferrer">
                             <i class="fab fa-facebook text-white text-xl cursor-pointer hover:text-gray-500"></i>
@@ -38,59 +39,46 @@
     <div class="flex flex-col items-start px-10">
         <p class="text-white font-roboto font-medium text-xl">Konta</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
-            (click)="changeAccountType('personal')">Konto
+            routerLink="/single-account" routerLinkActive="active" (click)="changeAccountType('personal')">Konto
             osobiste</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
-            (click)="changeAccountType('young')">Konto dla
+            routerLink="/single-account" routerLinkActive="active" (click)="changeAccountType('young')">Konto dla
             młodych</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
-            (click)="changeAccountType('multiCurrency')">Konto
+            routerLink="/single-account" routerLinkActive="active" (click)="changeAccountType('multiCurrency')">Konto
             wielowalutowe</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
-            (click)="changeAccountType('family')">Konto rodzinne
+            routerLink="/single-account" routerLinkActive="active" (click)="changeAccountType('family')">Konto rodzinne
         </p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-account" routerLinkActive="active"
-            (click)="changeAccountType('oldPeople')">Konto senior
+            routerLink="/single-account" routerLinkActive="active" (click)="changeAccountType('oldPeople')">Konto senior
         </p>
     </div>
     <div class="flex flex-col items-start px-10">
         <p class="text-white font-roboto font-medium text-xl">Lokaty</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-deposit" routerLinkActive="active"
-            (click)="changeDepositType('timely')">Lokata
+            routerLink="/single-deposit" routerLinkActive="active" (click)="changeDepositType('timely')">Lokata
             terminowa</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-deposit" routerLinkActive="active"
-            (click)="changeDepositType('mobile')">Lokata mobilna
+            routerLink="/single-deposit" routerLinkActive="active" (click)="changeDepositType('mobile')">Lokata mobilna
         </p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-deposit" routerLinkActive="active"
-            (click)="changeDepositType('family')">Lokata rodzinna
+            routerLink="/single-deposit" routerLinkActive="active" (click)="changeDepositType('family')">Lokata rodzinna
         </p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-deposit" routerLinkActive="active"
-            (click)="changeDepositType('progressive')">Lokata
+            routerLink="/single-deposit" routerLinkActive="active" (click)="changeDepositType('progressive')">Lokata
             progresywna</p>
     </div>
     <div class="flex flex-col items-start px-10">
         <p class="text-white font-roboto font-medium text-xl">Karty</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-card" routerLinkActive="active"
-            (click)="changeCardType('STANDARD')">Karta standard</p>
+            routerLink="/single-card" routerLinkActive="active" (click)="changeCardType('STANDARD')">Karta standard</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-card" routerLinkActive="active"
-            (click)="changeCardType('STUDENT')">Karta student</p>
+            routerLink="/single-card" routerLinkActive="active" (click)="changeCardType('STUDENT')">Karta student</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-card" routerLinkActive="active"
-            (click)="changeCardType('BIZNES')">Karta biznes</p>
+            routerLink="/single-card" routerLinkActive="active" (click)="changeCardType('BIZNES')">Karta biznes</p>
         <p class="cursor-pointer text-white font-roboto font-light text-md hover:text-gray-500"
-            (click)="onScrollToTop()" routerLink="/single-card" routerLinkActive="active"
-            (click)="changeCardType('PODRÓŻNIK')">Karta podróżnika
+            routerLink="/single-card" routerLinkActive="active" (click)="changeCardType('PODRÓŻNIK')">Karta podróżnika
         </p>
     </div>
 </footer>

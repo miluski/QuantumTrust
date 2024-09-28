@@ -5,6 +5,12 @@ import { Injectable } from '@angular/core';
 })
 export class WindowEventsService {
   private duration: number = 2000;
+  public pulseState: string = 'start';
+  startPulsing(): void {
+    setInterval(() => {
+      this.pulseState = this.pulseState === 'start' ? 'end' : 'start';
+    }, 1000);
+  }
   scrollToTop(): void {
     if (window.scrollY === 0) {
       return;

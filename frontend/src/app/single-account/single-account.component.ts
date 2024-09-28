@@ -1,25 +1,18 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ConvertService } from '../../services/convert.service';
 import { PaginationService } from '../../services/pagination.service';
 import { ProductTypesService } from '../../services/product-types.service';
-import { WindowEventsService } from '../../services/window-events.service';
 import { Account } from '../../types/account';
 import { Step } from '../../types/step';
 import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 import { singleAccountStepsArray } from '../../utils/steps-objects-arrays';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
+import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 
 @Component({
   selector: 'app-single-account',
@@ -27,6 +20,7 @@ import { HeaderComponent } from '../header/header.component';
   imports: [
     HeaderComponent,
     FooterComponent,
+    ScrollArrowUpComponent,
     MatDividerModule,
     MatIconModule,
     CommonModule,
@@ -36,12 +30,10 @@ import { HeaderComponent } from '../header/header.component';
 })
 export class SingleAccountComponent implements OnInit {
   @Input() steps: Step[] = singleAccountStepsArray;
-  @Output() scrollToTopEvent = new EventEmitter<void>();
   protected accountType: string = 'personal';
   protected accountObject!: Account;
   constructor(
     private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService,
     protected paginationService: PaginationService,
     public convertService: ConvertService
   ) {
@@ -64,10 +56,6 @@ export class SingleAccountComponent implements OnInit {
   changeAccountType(accountType: string): void {
     this.productTypesService.changeAccountType(accountType);
     this.setAccountsArray();
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
-    this.paginationService.setCurrentPage(1);
   }
   trackById(step: Step): number {
     return step.id;

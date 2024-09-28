@@ -1,5 +1,5 @@
 <div class="flex-grow flex justify-center text-center bg-black text-white w-full">
-    <div *ngIf='tabName == "Konta"' class="flex flex-col h-full space-y-10 my-10 justify-center items-center w-[85%]">
+    <div *ngIf='tabName == "Konta"' class="flex flex-col h-full space-y-10 mt-10 justify-center items-center w-[85%]">
         @for (account of accountsObjectsArray; track account.id) {
         <div class="max-md:w-[85%]">
             <div class="flex flex-row max-xl:flex-col items-center">
@@ -23,7 +23,7 @@
                             </button>
                             <a class="py-2 font-salsa font-normal max-md:w-[70%] text-xl w-[65%] cursor-pointer"
                                 routerLink="/single-account" routerLinkActive="active"
-                                (click)="changeAccountType(account.type)" (click)="onScrollToTop()">Dowiedz się
+                                (click)="changeAccountType(account.type)">Dowiedz się
                                 więcej
                                 -></a>
                         </div>

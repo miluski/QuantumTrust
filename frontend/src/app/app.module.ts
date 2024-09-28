@@ -27,6 +27,7 @@ import { NewTransferComponent } from './new-transfer/new-transfer.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { OpenDepositComponent } from './open-deposit/open-deposit.component';
 import { OrderCardComponent } from './order-card/order-card.component';
+import { ScrollArrowUpComponent } from './scroll-arrow-up/scroll-arrow-up.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { SingleAccountBalanceChartComponent } from './single-account-balance-chart/single-account-balance-chart.component';
 import { SingleAccountTransactionsComponent } from './single-account-transactions/single-account-transactions.component';
@@ -79,6 +80,7 @@ import { VerificationCodeComponent } from './verification-code/verification-code
     MobileGlobalTransactionsFiltersComponent,
     AccountSettingsComponent,
     VerificationCodeComponent,
+    ScrollArrowUpComponent,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,

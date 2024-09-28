@@ -4,13 +4,13 @@ import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ProductTypesService } from '../../services/product-types.service';
-import { WindowEventsService } from '../../services/window-events.service';
 import { Card } from '../../types/card';
 import { Question } from '../../types/question';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
+import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 
 @Component({
   selector: 'app-single-card',
@@ -21,6 +21,7 @@ import { HeaderComponent } from '../header/header.component';
     MatDividerModule,
     CommonModule,
     RouterModule,
+    ScrollArrowUpComponent,
   ],
   animations: [AnimationsProvider.animations],
   standalone: true,
@@ -30,10 +31,7 @@ export class SingleCardComponent implements OnInit {
   protected visaCardObject!: Card;
   protected questionsAndAnswersPairs!: Question[];
   private cardType: string = 'standard';
-  constructor(
-    private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService
-  ) {}
+  constructor(private productTypesService: ProductTypesService) {}
   ngOnInit(): void {
     this.productTypesService.currentCardType.subscribe((cardType: string) => {
       this.cardType = cardType;
@@ -77,9 +75,6 @@ export class SingleCardComponent implements OnInit {
   }
   changeCardType(cardType: string): void {
     this.productTypesService.changeCardType(cardType);
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
   }
   private getVisaCardObject(): Card {
     return visaCardsObjectsArray.find(

@@ -5,7 +5,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { ConvertService } from '../../services/convert.service';
 import { ProductTypesService } from '../../services/product-types.service';
-import { WindowEventsService } from '../../services/window-events.service';
 import { Deposit } from '../../types/deposit';
 import { Step } from '../../types/step';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
@@ -13,6 +12,7 @@ import { BOTTOM_INFORMATION, TOP_INFORMATION } from '../../utils/enums';
 import { singleDepositStepsArray } from '../../utils/steps-objects-arrays';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
+import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 
 @Component({
   selector: 'app-single-deposit',
@@ -24,6 +24,7 @@ import { HeaderComponent } from '../header/header.component';
     FormsModule,
     CommonModule,
     RouterModule,
+    ScrollArrowUpComponent,
   ],
   standalone: true,
 })
@@ -38,7 +39,6 @@ export class SingleDepositComponent implements OnInit {
   protected depositType: string = 'timely';
   constructor(
     private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService,
     public convertService: ConvertService
   ) {}
   ngOnInit(): void {
@@ -54,10 +54,6 @@ export class SingleDepositComponent implements OnInit {
   }
   changeDepositType(depositType: string): void {
     this.productTypesService.changeDepositType(depositType);
-    this.depositObject = this.getDepositObject();
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
     this.depositObject = this.getDepositObject();
   }
   calculateProfit(): void {

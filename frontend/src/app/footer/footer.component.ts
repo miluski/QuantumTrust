@@ -4,7 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ProductTypesService } from '../../services/product-types.service';
-import { WindowEventsService } from '../../services/window-events.service';
 
 @Component({
   selector: 'app-footer',
@@ -20,7 +19,6 @@ export class FooterComponent {
   protected currentTransactionsArrayLength!: number;
   constructor(
     private productTypesService: ProductTypesService,
-    private windowEventsService: WindowEventsService,
     private appInformationStatesService: AppInformationStatesService
   ) {}
   ngOnInit(): void {
@@ -52,9 +50,6 @@ export class FooterComponent {
   }
   changeTabName(tabName: string): void {
     this.appInformationStatesService.changeTabName(tabName);
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
   }
   get canBeSticky(): boolean {
     return (
