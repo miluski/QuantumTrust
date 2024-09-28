@@ -78,5 +78,11 @@ export class AnimationsProvider {
       state('end', style({ transform: 'scale(1.2)' })),
       transition('start <=> end', animate('1s ease-in-out')),
     ]),
+    trigger('slideInFromTop', [
+      transition(':enter', [
+        style({ transform: 'translateY(-100%)' }),
+        animate('500ms ease-out', style({ transform: 'translateY(0)' })),
+      ]),
+    ]),
   ];
 }

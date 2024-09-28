@@ -1,0 +1,18 @@
+<div *ngIf="alertService.isOpened"
+    class="fixed bottom-5 right-5 pt-2 z-[1000] rounded-xl max-sm:w-[85%] sm:w-2/3 lg:w-1/3" [@slideInFromTop]
+    [ngClass]="{
+        'bg-red-400': alertType === 'error',
+        'bg-green-400': alertType === 'info',
+        'bg-yellow-400': alertType === 'warning'
+    }" [ngStyle]="{'--progress-bar-border-color': progressBarBorderColor}">
+    <i class="absolute top-2 right-2 fa-solid fa-x hover:text-gray-400 text-white cursor-pointer font-extrabold"
+        (click)="alertService.close()"></i>
+    <div class="flex flex-row w-[95%] h-full items-center justify-center space-x-5 mx-5 mt-5">
+        <i class='fa-solid {{alertIcon}} text-5xl text-white'></i>
+        <div class="flex flex-col w-full text-left">
+            <p class="font-roboto text-xl text-white font-bold">{{alertTitle}}</p>
+            <p class="font-roboto text-xl text-white font-base">{{alertContent}}</p>
+        </div>
+    </div>
+    <mat-progress-bar class="!h-10" mode="determinate" [value]="alertService.progressValue"></mat-progress-bar>
+</div>

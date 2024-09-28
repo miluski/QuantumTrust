@@ -5,6 +5,8 @@
         <app-deposit-list tabName={{tabName}} />
         <app-card-list tabName={{tabName}} />
     </main>
+    <app-custom-alert [alertType]="alertService.alertType" [alertTitle]="alertService.alertTitle"
+        [alertContent]="alertService.alertContent" [alertService]="alertService" />
 </div>
 <app-scroll-arrow-up />
 <app-footer />

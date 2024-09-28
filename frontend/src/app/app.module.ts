@@ -9,6 +9,7 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CardListComponent } from './card-list/card-list.component';
+import { CustomAlertComponent } from './custom-alert/custom-alert.component';
 import { DepositListComponent } from './deposit-list/deposit-list.component';
 import { DurationExpansionComponent } from './duration-expansion/duration-expansion.component';
 import { FinancesComponent } from './finances/finances.component';
@@ -81,6 +82,7 @@ import { VerificationCodeComponent } from './verification-code/verification-code
     AccountSettingsComponent,
     VerificationCodeComponent,
     ScrollArrowUpComponent,
+    CustomAlertComponent,
     RouterModule,
     BrowserModule,
     BrowserAnimationsModule,

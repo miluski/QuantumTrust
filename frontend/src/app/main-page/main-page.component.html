@@ -29,6 +29,8 @@
         <app-account-settings />
         }
     </main>
+    <app-custom-alert [alertType]="alertService.alertType" [alertTitle]="alertService.alertTitle"
+        [alertContent]="alertService.alertContent" [alertService]="alertService" />
 </div>
 <app-scroll-arrow-up />
 <app-footer />
