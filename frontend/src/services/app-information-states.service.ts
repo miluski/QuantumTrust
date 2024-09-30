@@ -9,6 +9,36 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Transaction } from '../types/transaction';
 
+/**
+ * @fileoverview AppInformationStatesService manages the state information of the application.
+ * It handles the current tab name, drawer state, and transactions array length.
+ * It also observes breakpoints to manage the drawer state based on screen size.
+ *
+ * @service
+ * @providedIn root
+ *
+ * @class AppInformationStatesService
+ * @property {BehaviorSubject<string>} tabName - The current tab name.
+ * @property {BehaviorSubject<boolean>} isDrawerOpened - The state of the drawer (opened or closed).
+ * @property {BehaviorSubject<number>} transactionsArrayLength - The length of the transactions array.
+ * @property {MatDrawer} drawer - The drawer component.
+ * @property {Observable<string>} currentTabName - Observable for the current tab name.
+ * @property {Observable<number>} currentTransactionsArrayLength - Observable for the transactions array length.
+ * @property {Observable<boolean>} currentIsDrawerOpened - Observable for the drawer state.
+ *
+ * @method observeBreakpoints - Observes screen size breakpoints and closes the drawer if necessary.
+ * @method changeDrawer - Changes the drawer component.
+ * @method changeTabName - Changes the current tab name.
+ * @method changeIsDrawerOpened - Changes the state of the drawer (opened or closed).
+ * @method changeTransactionsArrayLength - Changes the length of the transactions array.
+ * @method toggleDrawer - Toggles the state of the drawer (opened or closed).
+ * @method isDrawerOpen - Returns whether the drawer is open.
+ * @method canSetAbsoluteStyle - Determines if absolute style can be set based on the transactions array.
+ *
+ * @constructor
+ * @param {Router} router - Angular Router service for navigation.
+ * @param {BreakpointObserver} breakpointObserver - Service to observe screen size breakpoints.
+ */
 @Injectable({
   providedIn: 'root',
 })

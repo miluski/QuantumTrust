@@ -12,6 +12,40 @@ import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 
+/**
+ * @fileoverview VerificationCodeComponent handles the verification code input and validation process.
+ * It provides various functionalities based on the action type such as logging in, opening an account, etc.
+ * It also manages the display of alerts and navigation based on the verification result.
+ *
+ * @component
+ * @selector app-verification-code
+ * @templateUrl ./verification-code.component.html
+ * @imports CommonModule, FormsModule, RouterModule, MatDividerModule, HeaderComponent, FooterComponent, CustomAlertComponent
+ * @animations AnimationsProvider.animations
+ * @standalone true
+ *
+ * @class VerificationCodeComponent
+ * @property {string} actionType - The type of action being performed (e.g., 'Logowanie', 'Otwieranie konta').
+ * @property {number} verificationCode - The verification code input by the user.
+ * @property {boolean} isVerificationCodeValid - Indicates whether the verification code is valid.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
+ *
+ * @method handleButtonClick - Handles the button click event, validates the verification code, and performs actions based on the result.
+ * @method handleRedirectButtonClick - Handles the redirect button click event and changes the tab name if necessary.
+ * @method redirectText - Returns the text for the redirect button based on the action type.
+ * @method redirectLink - Returns the link for the redirect button based on the action type.
+ * @method buttonText - Returns the text for the main button based on the action type.
+ * @method ask - Returns the question text based on the action type.
+ * @method buttonLink - Returns the link for the main button based on the action type.
+ * @method setAlertCredentials - Sets the alert credentials (type, title, content) based on the action type and trigger type.
+ * @method changeTabName - Changes the tab name using the AppInformationStatesService.
+ *
+ * @constructor
+ * @param {Router} router - Angular Router service for navigation.
+ * @param {VerificationService} verificationService - Service for verifying the verification code.
+ * @param {AppInformationStatesService} appInformationStatesService - Service for managing application state information.
+ * @param {AlertService} alertService - Service for managing alerts.
+ */
 @Component({
   selector: 'app-verification-code',
   templateUrl: './verification-code.component.html',
@@ -29,9 +63,9 @@ import { HeaderComponent } from '../header/header.component';
 })
 export class VerificationCodeComponent {
   @Input() actionType!: string;
-  protected verificationCode!: number;
-  protected isVerificationCodeValid!: boolean;
-  protected shakeStateService: ShakeStateService = new ShakeStateService();
+  public verificationCode!: number;
+  public isVerificationCodeValid!: boolean;
+  public shakeStateService: ShakeStateService = new ShakeStateService();
   constructor(
     private router: Router,
     private verificationService: VerificationService,
@@ -42,7 +76,7 @@ export class VerificationCodeComponent {
     this.isVerificationCodeValid =
       this.verificationService.validateVerificationCode(this.verificationCode);
     if (!this.isVerificationCodeValid) {
-      this.shakeStateService.setCurrentShakeState(true);
+      this.shakeStateService.setCurrentShakeState('shake');
       return;
     }
     const isOpeningAccount = this.actionType === 'Otwieranie konta';
@@ -110,17 +144,7 @@ export class VerificationCodeComponent {
         return 'Zabłądziłeś?';
     }
   }
-  private get buttonLink(): string {
-    switch (this.actionType) {
-      case 'Logowanie':
-        return '/main-page';
-      case 'Otwieranie konta':
-        return this.router.url === '/main-page' ? '/main-page' : '/login';
-      default:
-        return '/main-page';
-    }
-  }
-  private setAlertCredentials(
+  public setAlertCredentials(
     alertType: 'info' | 'warning' | 'error',
     alertTitle: string,
     triggerType: 'positive' | 'negative'
@@ -175,7 +199,17 @@ export class VerificationCodeComponent {
         break;
     }
   }
-  private changeTabName(tabName: string) {
+  public changeTabName(tabName: string) {
     this.appInformationStatesService.changeTabName(tabName);
+  }
+  private get buttonLink(): string {
+    switch (this.actionType) {
+      case 'Logowanie':
+        return '/main-page';
+      case 'Otwieranie konta':
+        return this.router.url === '/main-page' ? '/main-page' : '/login';
+      default:
+        return '/main-page';
+    }
   }
 }

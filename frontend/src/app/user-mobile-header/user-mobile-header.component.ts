@@ -7,6 +7,35 @@ import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 
+/**
+ * @fileoverview UserMobileHeaderComponent is a standalone Angular component that represents the mobile header section for a user.
+ * It includes functionality for managing the current route, tab name, and drawer visibility.
+ *
+ * @component
+ * @selector app-user-mobile-header
+ * @templateUrl ./user-mobile-header.component.html
+ * @imports CommonModule, RouterModule, MatDrawer
+ *
+ * @class UserMobileHeaderComponent
+ * @implements OnInit, AfterViewInit
+ *
+ * @property {MatDrawer} drawer - The drawer component reference.
+ * @property {string} currentRoute - The current route of the application.
+ * @property {string} tabName - The name of the current tab.
+ * @property {UserAccount} user - The user account information.
+ *
+ * @constructor
+ * @param {Router} router - The Angular Router service.
+ * @param {UserService} userService - The service providing user account information.
+ * @param {AppInformationStatesService} appInformationStatesService - The service managing application state information.
+ * @param {AvatarService} avatarService - The service managing user avatars.
+ *
+ * @method ngOnInit - Initializes the component and subscribes to the current tab name.
+ * @method ngAfterViewInit - Sets the drawer reference in the application state service.
+ * @method changeTabName - Changes the current tab name.
+ * @param {string} tabName - The new tab name.
+ * @method toggleDrawer - Toggles the visibility of the drawer.
+ */
 @Component({
   selector: 'app-user-mobile-header',
   templateUrl: './user-mobile-header.component.html',
@@ -15,9 +44,9 @@ import { UserAccount } from '../../types/user-account';
 })
 export class UserMobileHeaderComponent {
   @ViewChild('drawer') drawer!: MatDrawer;
-  protected currentRoute: string = '/home-page';
-  protected tabName: string = 'Konta';
-  protected user: UserAccount = new UserAccount();
+  public currentRoute: string = '/home-page';
+  public tabName: string = 'Konta';
+  public user: UserAccount = new UserAccount();
   constructor(
     router: Router,
     userService: UserService,

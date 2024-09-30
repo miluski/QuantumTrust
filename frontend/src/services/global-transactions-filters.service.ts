@@ -1,8 +1,41 @@
-import { Injectable, Input, OnInit } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { TableTransaction } from '../types/table-transaction';
 
+/**
+ * @fileoverview GlobalTransactionsFiltersService manages the filtering and searching of table transactions.
+ * It provides functionalities to set and reset filters, search phrases, and manage the state of mobile filters.
+ *
+ * @service
+ * @providedIn root
+ *
+ * @class GlobalTransactionsFiltersService
+ * @property {TableTransaction[]} originalTableTransactionsArray - The original array of table transactions.
+ * @property {string[]} acceptedFilters - The list of accepted filters.
+ * @property {string} appliedFilter - The currently applied filter.
+ * @property {string} searchedPhrase - The current search phrase.
+ * @property {boolean} isMobileFiltersOpened - The state of mobile filters (opened or closed).
+ * @property {MatTableDataSource<TableTransaction>} tableDataSource - The data source for the table transactions.
+ *
+ * @method setOriginalTableTransactionsArray - Sets the original array of table transactions.
+ * @param {TableTransaction[]} tableTransactionArray - The original array of table transactions.
+ * @method setAppliedFilter - Sets the applied filter and search phrase, and filters the transactions accordingly.
+ * @param {string} appliedFilter - The filter to apply.
+ * @param {string} searchedPhrase - The search phrase to apply.
+ * @method setSearchPhrase - Sets the search phrase and filters the transactions accordingly.
+ * @param {string} searchedPhrase - The search phrase to apply.
+ * @method resetArray - Resets the table transactions array to the original array.
+ * @method replaceArray - Replaces the current table transactions array with a new array.
+ * @param {TableTransaction[]} newArray - The new array of table transactions.
+ * @method get acceptedFiltersArray - Returns the list of accepted filters.
+ * @returns {string[]} - The list of accepted filters.
+ * @method get actualAppliedFilter - Returns the currently applied filter.
+ * @returns {string} - The currently applied filter.
+ * @method get actualSearchedPhrase - Returns the current search phrase.
+ * @returns {string} - The current search phrase.
+ * @method get englishFilterType - Returns the English equivalent of the applied filter.
+ * @returns {string} - The English equivalent of the applied filter.
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -39,7 +72,7 @@ export class GlobalTransactionsFiltersService {
           transaction.title.toLowerCase().includes(this.searchedPhrase)
         );
       this.replaceArray(filteredArray);
-    }
+    } 
   }
   get acceptedFiltersArray(): string[] {
     return this.acceptedFilters;

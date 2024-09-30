@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgModel } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
 import { ConvertService } from '../../services/convert.service';
@@ -14,6 +14,49 @@ import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 
+/**
+ * @fileoverview SingleDepositComponent is a standalone Angular component that handles the logic for a single deposit view.
+ * It includes methods for changing the deposit type, calculating profit, and initializing the component state.
+ *
+ * @component
+ * @selector app-single-deposit
+ * @templateUrl ./single-deposit.component.html
+ * @imports [
+ *   MatDividerModule,
+ *   HeaderComponent,
+ *   FooterComponent,
+ *   FormsModule,
+ *   CommonModule,
+ *   RouterModule,
+ *   ScrollArrowUpComponent
+ * ]
+ *
+ * @class SingleDepositComponent
+ * @implements OnInit
+ *
+ * @property {Step[]} steps - Input property that holds an array of steps for the deposit process.
+ * @property {Deposit} depositObject - Protected property that holds the current deposit object.
+ * @property {string} BOTTOM_INFORMATION - Protected property that holds bottom information text.
+ * @property {string} TOP_INFORMATION - Protected property that holds top information text.
+ * @property {number} initialCapital - Protected property that holds the initial capital amount.
+ * @property {number} interval - Protected property that holds the interval for the deposit.
+ * @property {number} profit - Protected property that holds the calculated profit.
+ * @property {string} depositType - Protected property that holds the type of the deposit.
+ *
+ * @constructor
+ * @param {ProductTypesService} productTypesService - Service to manage product types.
+ * @param {ConvertService} convertService - Service to handle conversion logic.
+ *
+ * @method ngOnInit - Lifecycle hook that initializes the component state and subscribes to deposit type changes.
+ * @method changeDepositType - Changes the deposit type and updates the deposit object.
+ * @param {string} depositType - The new deposit type to be set.
+ *
+ * @method calculateProfit - Calculates the profit based on the deposit type, initial capital, and interval.
+ *
+ * @method getDepositObject - Retrieves the deposit object based on the current deposit type.
+ * @private
+ * @returns {Deposit} - The deposit object corresponding to the current deposit type.
+ */
 @Component({
   selector: 'app-single-deposit',
   templateUrl: './single-deposit.component.html',
@@ -30,13 +73,14 @@ import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.compo
 })
 export class SingleDepositComponent implements OnInit {
   @Input() steps: Step[] = singleDepositStepsArray;
-  protected depositObject!: Deposit;
-  protected BOTTOM_INFORMATION: string = BOTTOM_INFORMATION;
-  protected TOP_INFORMATION: string = TOP_INFORMATION;
-  protected initialCapital: number = 100;
-  protected interval: number = 1;
-  protected profit: number = 0;
-  protected depositType: string = 'timely';
+  public depositObject!: Deposit;
+  public isInitialCapitalInValid: boolean = false;
+  public BOTTOM_INFORMATION: string = BOTTOM_INFORMATION;
+  public TOP_INFORMATION: string = TOP_INFORMATION;
+  public initialCapital: number = 100;
+  public interval: number = 1;
+  public profit: number = 0;
+  public depositType: string = 'timely';
   constructor(
     private productTypesService: ProductTypesService,
     public convertService: ConvertService
@@ -57,6 +101,9 @@ export class SingleDepositComponent implements OnInit {
     this.depositObject = this.getDepositObject();
   }
   calculateProfit(): void {
+    if (this.isInitialCapitalInValid) {
+      return;
+    }
     const monthsCount: number = this.convertService.getMonths(this.interval);
     if (this.depositObject.type !== 'progressive') {
       this.profit = Math.round(
@@ -76,7 +123,13 @@ export class SingleDepositComponent implements OnInit {
     }
     this.profit = Math.round(this.profit * 0.83);
   }
-  private getDepositObject(): Deposit {
+  getIsInitialCapitalInvalid(initialCapitalInput: NgModel): boolean {
+    this.isInitialCapitalInValid =
+      initialCapitalInput.invalid! &&
+      (initialCapitalInput.dirty! || initialCapitalInput.touched!);
+    return this.isInitialCapitalInValid;
+  }
+  public getDepositObject(): Deposit {
     return depositsObjectArray.find(
       (deposit: Deposit) => deposit.type === this.depositType
     ) as Deposit;

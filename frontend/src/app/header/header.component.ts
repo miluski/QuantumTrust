@@ -6,6 +6,27 @@ import { GuestMobileHeaderComponent } from '../guest-mobile-header/guest-mobile-
 import { UserHeaderComponent } from '../user-header/user-header.component';
 import { UserMobileHeaderComponent } from '../user-mobile-header/user-mobile-header.component';
 
+/**
+ * HeaderComponent is responsible for displaying the appropriate header based on the current route and tab name.
+ * It includes methods for changing the tab name and determining if the current route is part of the guest section.
+ *
+ * @component
+ * @selector 'app-header'
+ * @templateUrl './header.component.html'
+ * @styleUrls ['./header.component.css']
+ * @imports [
+ *   RouterModule,
+ *   GuestMobileHeaderComponent,
+ *   GuestHeaderComponent,
+ *   UserMobileHeaderComponent,
+ *   UserHeaderComponent,
+ * ]
+ * @standalone true
+ *
+ * @method ngOnInit Initializes the component and subscribes to the currentTabName observable.
+ * @method changeTabName Changes the current tab name using the AppInformationStatesService.
+ * @method isGuestPart Determines if the current route is part of the guest section.
+ */
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -20,8 +41,8 @@ import { UserMobileHeaderComponent } from '../user-mobile-header/user-mobile-hea
   standalone: true,
 })
 export class HeaderComponent implements OnInit {
-  protected tabName!: string;
-  protected currentRoute!: string;
+  public tabName!: string;
+  public currentRoute!: string;
   constructor(
     router: Router,
     private appInformationStatesService: AppInformationStatesService

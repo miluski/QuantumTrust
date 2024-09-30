@@ -16,6 +16,35 @@ import { SingleAccountTransactionsComponent } from '../single-account-transactio
 import { TransactionsComponent } from '../transactions/transactions.component';
 import { UserOpenAccountComponent } from '../user-open-account/user-open-account.component';
 
+/**
+ * MainPageComponent is the main component for the application's main page.
+ * It includes various sub-components and manages the state of the current tab name.
+ *
+ * @selector 'app-main-page'
+ * @templateUrl './main-page.component.html'
+ * @imports [
+ *   CommonModule,
+ *   HeaderComponent,
+ *   FooterComponent,
+ *   FinancesComponent,
+ *   UserOpenAccountComponent,
+ *   SingleAccountTransactionsComponent,
+ *   OpenDepositComponent,
+ *   NewTransferComponent,
+ *   OrderCardComponent,
+ *   CardSettingsComponent,
+ *   TransactionsComponent,
+ *   AccountSettingsComponent,
+ *   ScrollArrowUpComponent,
+ *   CustomAlertComponent
+ * ]
+ * @standalone true
+ *
+ * @class MainPageComponent
+ * @implements OnInit
+ *
+ * @method ngOnInit Initializes the component and subscribes to the currentTabName observable.
+ */
 @Component({
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
@@ -38,7 +67,7 @@ import { UserOpenAccountComponent } from '../user-open-account/user-open-account
   standalone: true,
 })
 export class MainPageComponent implements OnInit {
-  protected tabName: string = 'Finanse';
+  public tabName: string = 'Finanse';
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private changeDetectorRef: ChangeDetectorRef,

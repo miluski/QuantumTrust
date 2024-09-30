@@ -15,6 +15,49 @@ import { SingleAccountBalanceChartComponent } from '../single-account-balance-ch
 import { SortExpansionComponent } from '../sort-expansion/sort-expansion.component';
 import { StatusExpansionComponent } from '../status-expansion/status-expansion.component';
 
+/**
+ * Component for displaying and managing single account transactions.
+ *
+ * @component
+ * @selector app-single-account-transactions
+ * @templateUrl ./single-account-transactions.component.html
+ * @imports [
+ *   CommonModule,
+ *   RouterModule,
+ *   SingleAccountBalanceChartComponent,
+ *   SortExpansionComponent,
+ *   DurationExpansionComponent,
+ *   StatusExpansionComponent,
+ *   SearchBarComponent,
+ *   MobileFiltersComponent,
+ *   MatRadioButton,
+ *   DatePipe,
+ * ]
+ * @standalone true
+ *
+ * @class SingleAccountTransactionsComponent
+ * @implements OnInit
+ *
+ * @property {Transaction[][]} dailyTransactions - Grouped daily transactions.
+ * @property {Account} account - The account associated with the transactions.
+ * @property {Transaction[]} accountTransactions - List of transactions for the account.
+ * @property {number} totalIncomingBalance - Total incoming balance.
+ * @property {number} totalOutgoingBalance - Total outgoing balance.
+ *
+ * @constructor
+ * @param {ItemSelectionService} itemSelectionService - Service for item selection.
+ * @param {ChangeDetectorRef} changeDetectorRef - Service to detect changes.
+ * @param {AppInformationStatesService} appInformationStatesService - Service for app state management.
+ * @param {FiltersService} filtersService - Service for filtering transactions.
+ * @param {ConvertService} convertService - Service for currency conversion.
+ *
+ * @method ngOnInit - Initializes the component and loads account transactions.
+ * @method initializeAccountTransactions - Loads and processes account transactions.
+ * @method calculateBalances - Calculates the total incoming and outgoing balances.
+ * @method calculateTotalIncomingBalance - Calculates the total incoming balance for a given transaction.
+ * @method calculateTotalOutgoingBalance - Calculates the total outgoing balance for a given transaction.
+ * @method convertCurrency - Converts a given amount from one currency to another.
+ */
 @Component({
   selector: 'app-single-account-transactions',
   templateUrl: './single-account-transactions.component.html',
@@ -33,11 +76,11 @@ import { StatusExpansionComponent } from '../status-expansion/status-expansion.c
   standalone: true,
 })
 export class SingleAccountTransactionsComponent implements OnInit {
-  protected dailyTransactions!: Transaction[][];
-  protected account: Account = new Account();
-  protected accountTransactions: Transaction[] = [];
-  protected totalIncomingBalance: number = 0;
-  protected totalOutgoingBalance: number = 0;
+  public dailyTransactions!: Transaction[][];
+  public account: Account = new Account();
+  public accountTransactions: Transaction[] = [];
+  public totalIncomingBalance: number = 0;
+  public totalOutgoingBalance: number = 0;
   constructor(
     private itemSelectionService: ItemSelectionService,
     private changeDetectorRef: ChangeDetectorRef,
@@ -46,6 +89,7 @@ export class SingleAccountTransactionsComponent implements OnInit {
     public convertService: ConvertService
   ) {}
   ngOnInit(): void {
+    this.filtersService.resetSelectedFilters();
     this.initializeAccountTransactions();
     this.changeDetectorRef.detectChanges();
   }
@@ -67,11 +111,22 @@ export class SingleAccountTransactionsComponent implements OnInit {
     );
     this.calculateBalances();
   }
-  private calculateBalances(): void {
+  public calculateBalances(): void {
     this.accountTransactions.forEach((transaction: Transaction) => {
       this.calculateTotalIncomingBalance(transaction);
       this.calculateTotalOutgoingBalance(transaction);
     });
+  }
+  public convertCurrency(
+    amount: number,
+    fromCurrency: string,
+    toCurrency: string
+  ): number {
+    const conversionRate = this.convertService.getConversionRate(
+      fromCurrency,
+      toCurrency
+    );
+    return parseFloat((amount * conversionRate).toFixed(2));
   }
   private calculateTotalIncomingBalance(transaction: Transaction): void {
     this.totalIncomingBalance +=
@@ -92,16 +147,5 @@ export class SingleAccountTransactionsComponent implements OnInit {
             this.account.currency as string
           )
         : 0;
-  }
-  private convertCurrency(
-    amount: number,
-    fromCurrency: string,
-    toCurrency: string
-  ): number {
-    const conversionRate = this.convertService.getConversionRate(
-      fromCurrency,
-      toCurrency
-    );
-    return parseFloat((amount * conversionRate).toFixed(2));
   }
 }

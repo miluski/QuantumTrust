@@ -16,6 +16,33 @@ import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
+/**
+ * LoginComponent is responsible for handling the login process.
+ * It includes form validation and state management for user account data.
+ *
+ * @component
+ * @selector 'app-login'
+ * @templateUrl './login.component.html'
+ * @animations [AnimationsProvider.animations]
+ * @imports [
+ *   HeaderComponent,
+ *   FooterComponent,
+ *   VerificationCodeComponent,
+ *   CustomAlertComponent,
+ *   CommonModule,
+ *   RouterModule,
+ *   MatDividerModule,
+ *   MatFormFieldModule,
+ *   MatIconModule,
+ *   FormsModule,
+ * ]
+ * @standalone true
+ *
+ * @class LoginComponent
+ *
+ * @method verifyData Verifies the user data by validating the identifier and password fields.
+ * @method setCanShake Sets the shake state based on the validation flags.
+ */
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -35,9 +62,9 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   standalone: true,
 })
 export class LoginComponent {
-  protected shakeStateService: ShakeStateService = new ShakeStateService();
-  protected userAccountFlags: UserAccountFlags = new UserAccountFlags();
-  protected userAccount: UserAccount = new UserAccount();
+  public shakeStateService: ShakeStateService = new ShakeStateService();
+  public userAccountFlags: UserAccountFlags = new UserAccountFlags();
+  public userAccount: UserAccount = new UserAccount();
   constructor(
     private verificationService: VerificationService,
     protected alertService: AlertService
@@ -53,6 +80,6 @@ export class LoginComponent {
     const isSomeDataInvalid: boolean =
       this.userAccountFlags.isIdentifierValid === false ||
       this.userAccountFlags.isPasswordValid === false;
-    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid);
+    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid ? 'shake' : 'none');
   }
 }

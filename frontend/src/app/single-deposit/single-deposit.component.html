@@ -35,11 +35,11 @@
                             #initialCapitalInput="ngModel" required (change)="calculateProfit()" />
                         <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white">PLN</span>
                     </div>
-                    <div *ngIf="initialCapitalInput.invalid && (initialCapitalInput.dirty || initialCapitalInput.touched)"
+                    <div *ngIf="getIsInitialCapitalInvalid(initialCapitalInput)"
                         class="text-red-500">
                         <div *ngIf="initialCapitalInput.errors?.['required']">Kapitał początkowy jest wymagany.</div>
-                        <div *ngIf="initialCapitalInput.errors?.['min']">Minimalna wartość to 100 PLN.</div>
-                        <div *ngIf="initialCapitalInput.errors?.['max']">Maksymalna wartość to 10000 PLN.</div>
+                        <div *ngIf="initialCapitalInput.errors?.['min']">Minimalna wartość lokaty to 100 PLN.</div>
+                        <div *ngIf="initialCapitalInput.errors?.['max']">Maksymalna wartość lokaty to 10000 PLN.</div>
                     </div>
                 </div>
                 <div class="flex flex-col lg:w-1/3 items-center space-y-5 max-md:w-[85%] md:w-[65%]">

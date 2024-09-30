@@ -17,6 +17,56 @@ import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-object
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
+/**
+ * @fileoverview OrderCardComponent is a standalone Angular component that manages the display and interaction
+ * with user order cards. It includes functionalities such as pagination, card rotation, input validation,
+ * and user account management.
+ * 
+ * @component
+ * @selector app-order-card
+ * @templateUrl ./order-card.component.html
+ * @imports VerificationCodeComponent, MatIconModule, CommonModule, FormsModule
+ * @animations AnimationsProvider.animations
+ * 
+ * @class OrderCardComponent
+ * @implements OnInit
+ * 
+ * @property {Account[]} userAccounts - Array of user accounts.
+ * @property {number} pinCode - Default pin code for the card.
+ * @property {CardFlags} cardFlags - Flags indicating the state of various card properties.
+ * @property {CardSettings} cardSettings - Settings related to the card.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the card.
+ * 
+ * @constructor
+ * @param {VerificationService} verificationService - Service for input validation.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {PaginationService} paginationService - Service to manage pagination.
+ * @param {ConvertService} convertService - Service to handle currency conversion.
+ * 
+ * @method ngOnInit - Lifecycle hook that is called after data-bound properties are initialized.
+ * @method onResize - Host listener for window resize events.
+ * @method setUserAccounts - Asynchronously sets the user accounts and initializes card settings.
+ * @method handleButtonClick - Handles button click events and sets the shake state based on data validity.
+ * @method getIsInputValueValid - Validates input values and sets the corresponding flags.
+ * @method setDepositAccountNumber - Sets the deposit account number based on user input.
+ * @method rotateCard - Rotates the card to show either the front or back side.
+ * @method isCardIndexAtCenter - Checks if the card index is at the center.
+ * @method getRotateState - Gets the rotate state of the card.
+ * @method getCardState - Gets the state of the card based on its index.
+ * @method getFee - Calculates and returns the fee based on the type.
+ * @method getCardImage - Gets the image of the card based on its current state.
+ * @method getCardSettingsObject - Returns the card settings object with specified limits and transaction types.
+ * @method currentSelectedCard - Gets the currently selected card.
+ * @method currentSelectedAccount - Gets the currently selected account.
+ * @method ownerFullName - Gets the full name of the card owner.
+ * @method cardTypeWithPublisher - Gets the card type along with its publisher.
+ * @method setCardAndCurrency - Sets the card and currency in the card settings.
+ * @method setMinTransactionsLimit - Sets the minimum transaction limit based on the current currency.
+ * @method setCorrectInputFlag - Sets the correct input flag based on the type and validity.
+ * @method currentCurrency - Gets the current currency of the selected account.
+ * @method cardsObjectsArray - Gets the array of card objects.
+ * @method cardFlagsArray - Gets the array of card flags.
+ */
 @Component({
   selector: 'app-order-card',
   templateUrl: './order-card.component.html',
@@ -30,11 +80,11 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   standalone: true,
 })
 export class OrderCardComponent implements OnInit {
-  protected userAccounts!: Account[];
-  protected pinCode: number = 1111;
-  protected cardFlags: CardFlags = new CardFlags();
-  protected cardSettings: CardSettings = new CardSettings();
-  protected shakeStateService: ShakeStateService = new ShakeStateService();
+  public userAccounts!: Account[];
+  public pinCode: number = 1111;
+  public cardFlags: CardFlags = new CardFlags();
+  public cardSettings: CardSettings = new CardSettings();
+  public shakeStateService: ShakeStateService = new ShakeStateService();
   constructor(
     private verificationService: VerificationService,
     protected userService: UserService,
@@ -62,7 +112,7 @@ export class OrderCardComponent implements OnInit {
     const isSomeDataInvalid: boolean = this.cardFlagsArray.some(
       (flag: boolean) => flag === false
     );
-    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid);
+    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid ? 'shake' : 'none');
   }
   getIsInputValueValid(
     input: NgModel,

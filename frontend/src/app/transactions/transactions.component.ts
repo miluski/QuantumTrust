@@ -19,6 +19,57 @@ import { GlobalTransactionsFiltersComponent } from '../global-transactions-filte
 import { MobileGlobalTransactionsFiltersComponent } from '../mobile-global-transactions-filters/mobile-global-transactions-filters.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 
+/**
+ * @fileoverview TransactionsComponent is responsible for displaying and managing user transactions.
+ * It fetches user transactions and cards, maps them into a table format, and handles pagination and sorting.
+ *
+ * @component
+ * @selector app-transactions
+ * @templateUrl ./transactions.component.html
+ * @styleUrl ./transactions.component.css
+ * @imports [
+ *   CommonModule,
+ *   MatTableModule,
+ *   MatPaginatorModule,
+ *   MatTooltipModule,
+ *   SearchBarComponent,
+ *   GlobalTransactionsFiltersComponent,
+ *   MobileGlobalTransactionsFiltersComponent,
+ * ]
+ * @providers [
+ *   { provide: MatPaginatorIntl, useClass: PolishPaginatorProvider },
+ *   DatePipe,
+ * ]
+ * @standalone true
+ *
+ * @class TransactionsComponent
+ * @implements OnInit
+ *
+ * @method ngOnInit Lifecycle hook that is called after data-bound properties of a directive are initialized.
+ * @method changeTabName Changes the name of the current tab.
+ * @param tabName The new name of the tab.
+ * @method setUserTransactions Fetches and sets user transactions and cards, then maps them into table transactions.
+ * @method setUserCards Fetches and sets user cards.
+ * @method mapUserTransactionsIntoTableTransactions Maps user transactions into table transactions and sets the paginator.
+ * @method setPaginator Sets the paginator for the table data source.
+ * @method setTableTransactionFields Sets the fields of a table transaction based on a user transaction.
+ * @param transaction The user transaction.
+ * @param tableTransaction The table transaction.
+ * @method setAccountNumber Sets the account number for a table transaction.
+ * @param transaction The user transaction.
+ * @param tableTransaction The table transaction.
+ * @method setAmountWithCurrency Sets the amount with currency for a table transaction.
+ * @param transaction The user transaction.
+ * @param tableTransaction The table transaction.
+ * @method setDateAndHour Sets the date and hour for a table transaction.
+ * @param transaction The user transaction.
+ * @param tableTransaction The table transaction.
+ * @method sortTableTransactionsArray Sorts the table transactions array by date.
+ * @method changeDateFormat Changes the date format of the table transactions.
+ * @method getAccountIdAssignedToCard Gets the account ID assigned to a card.
+ * @param cardId The card ID.
+ * @returns The account ID assigned to the card.
+ */
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
@@ -39,9 +90,9 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
   standalone: true,
 })
 export class TransactionsComponent implements OnInit {
-  private userTransactions!: Transaction[];
-  private userCards!: Card[];
-  protected displayedColumns: string[] = [
+  public userTransactions!: Transaction[];
+  public userCards!: Card[];
+  public displayedColumns: string[] = [
     'Tytuł',
     'Data i godzina',
     'Numer konta',
@@ -70,7 +121,7 @@ export class TransactionsComponent implements OnInit {
   async setUserCards(): Promise<void> {
     this.userCards = await this.userService.getUserCardsArray();
   }
-  private mapUserTransactionsIntoTableTransactions(): void {
+  public mapUserTransactionsIntoTableTransactions(): void {
     this.globalTransactionsFiltersService.tableDataSource.data = [];
     this.userTransactions.forEach((transaction: Transaction) => {
       const tableTransaction: TableTransaction = new TableTransaction();
@@ -86,11 +137,11 @@ export class TransactionsComponent implements OnInit {
     );
     this.setPaginator();
   }
-  private setPaginator(): void {
+  public setPaginator(): void {
     this.globalTransactionsFiltersService.tableDataSource.paginator =
       this.paginator;
   }
-  private setTableTransactionFields(
+  public setTableTransactionFields(
     transaction: Transaction,
     tableTransaction: TableTransaction
   ): void {
@@ -101,7 +152,7 @@ export class TransactionsComponent implements OnInit {
     tableTransaction.title = transaction.title;
     tableTransaction.type = transaction.type;
   }
-  private setAccountNumber(
+  public setAccountNumber(
     transaction: Transaction,
     tableTransaction: TableTransaction
   ): void {
@@ -110,7 +161,7 @@ export class TransactionsComponent implements OnInit {
         ? transaction.accountNumber
         : this.getAccountIdAssignedToCard(transaction.accountNumber);
   }
-  private setAmountWithCurrency(
+  public setAmountWithCurrency(
     transaction: Transaction,
     tableTransaction: TableTransaction
   ): void {
@@ -121,7 +172,7 @@ export class TransactionsComponent implements OnInit {
       ' ' +
       transaction.currency;
   }
-  private setDateAndHour(
+  public setDateAndHour(
     transaction: Transaction,
     tableTransaction: TableTransaction
   ): void {
@@ -130,7 +181,7 @@ export class TransactionsComponent implements OnInit {
       hour: transaction.hour,
     };
   }
-  private sortTableTransactionsArray(): void {
+  public sortTableTransactionsArray(): void {
     this.globalTransactionsFiltersService.tableDataSource.data.sort(
       (
         firstTransaction: TableTransaction,
@@ -140,7 +191,7 @@ export class TransactionsComponent implements OnInit {
         new Date(firstTransaction.dateAndHour.date).getTime()
     );
   }
-  private changeDateFormat(): void {
+  public changeDateFormat(): void {
     const dateFormatRegex = /^\d{2}\.\d{2}\.\d{4}$/;
     this.globalTransactionsFiltersService.tableDataSource.data.forEach(
       (transaction: TableTransaction) => {
@@ -154,7 +205,7 @@ export class TransactionsComponent implements OnInit {
       }
     );
   }
-  private getAccountIdAssignedToCard(cardId: number): string {
+  public getAccountIdAssignedToCard(cardId: number): string {
     const foundedCard: Card = this.userCards.find(
       (card: Card) => card.id === cardId
     ) as Card;

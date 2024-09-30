@@ -13,14 +13,14 @@ import { userTransactions } from '../utils/example-user-transactions-object';
   providedIn: 'root',
 })
 export class UserService {
-  private loggedUserAccount: UserAccount = new UserAccount();
+  public userAccount: UserAccount = new UserAccount();
   constructor() {
-    this.loggedUserAccount.name = 'Maksymilian';
-    this.loggedUserAccount.surname = 'Sowula';
-    this.loggedUserAccount.address = 'Al.Tysiąclecia 1/1';
-    this.loggedUserAccount.email = 'example@gmail.com';
-    this.loggedUserAccount.phoneNumber = 123456789;
-    this.loggedUserAccount.password = 'Test@1234';
+    this.userAccount.name = 'Maksymilian';
+    this.userAccount.surname = 'Sowula';
+    this.userAccount.address = 'Al.Tysiąclecia 1/1';
+    this.userAccount.email = 'example@gmail.com';
+    this.userAccount.phoneNumber = 123456789;
+    this.userAccount.password = 'Test@12345678';
   }
   register(userAccount: UserAccount, account: Account): boolean {
     return true;
@@ -28,8 +28,8 @@ export class UserService {
   login(userAccount: UserAccount): boolean {
     return true;
   }
-  get userAccount(): UserAccount {
-    return this.loggedUserAccount;
+  setLoggedUserAccount(userAccount: UserAccount): void {
+    this.userAccount = JSON.parse(JSON.stringify(userAccount));
   }
   async getUserAccountsArray(): Promise<Account[]> {
     return Promise.resolve(userAccounts);

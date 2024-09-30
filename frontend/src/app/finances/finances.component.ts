@@ -16,6 +16,50 @@ import { Deposit } from '../../types/deposit';
 import { Transaction } from '../../types/transaction';
 import { UserAccount } from '../../types/user-account';
 
+/**
+ * @file finances.component.ts
+ * @description This component handles the finances view of the application, including user accounts, deposits, transactions, and cards.
+ * It provides functionalities such as pagination, transaction grouping, and responsive design handling.
+ *
+ * @component
+ * @selector app-finances
+ * @templateUrl ./finances.component.html
+ * @styleUrl ./finances.component.css
+ * @imports CommonModule, RouterModule, MatIconModule, MatTooltipModule, CardIdFormatPipe
+ * @animations AnimationsProvider.animations
+ * @standalone true
+ *
+ * @class FinancesComponent
+ * @implements OnInit
+ *
+ * @property {UserAccount} userAccount - The current user's account.
+ * @property {Account[]} userAccounts - Array of user accounts.
+ * @property {Deposit[]} userDeposits - Array of user deposits.
+ * @property {Transaction[]} userTransactions - Array of user transactions.
+ * @property {Card[]} userCards - Array of user cards.
+ * @property {Transaction[][]} dailyTransactions - Grouped daily transactions.
+ * @property {PaginationService} accountsPaginationService - Service for paginating user accounts.
+ * @property {PaginationService} cardPaginationService - Service for paginating user cards.
+ *
+ * @constructor
+ * @param {AppInformationStatesService} appInformationStatesService - Service for managing application state.
+ * @param {UserService} userService - Service for managing user data.
+ * @param {ItemSelectionService} itemSelectionService - Service for managing item selection.
+ * @param {ConvertService} convertService - Service for converting data.
+ *
+ * @method ngOnInit - Lifecycle hook that is called after data-bound properties are initialized.
+ * @method initializeUserData - Initializes user data by fetching accounts, deposits, transactions, and cards.
+ * @method setPaginatedArrays - Sets paginated arrays for accounts and cards.
+ * @method handleWidthChange - Handles changes in window width for responsive design.
+ * @method onResize - Host listener for window resize events.
+ * @method groupUserTransactions - Groups user transactions by day.
+ * @method changeTabName - Changes the name of the current tab.
+ * @method getDayAndMonthFromDate - Extracts and formats the day and month from a date string.
+ * @method setSelectedAccount - Sets the selected account.
+ * @method setSelectedCard - Sets the selected card.
+ * @method getShortenedAccountNumber - Shortens the account number in a transaction.
+ * @method filterTransactions - Filters transactions to include only those from today or yesterday.
+ */
 @Component({
   selector: 'app-finances',
   templateUrl: './finances.component.html',
@@ -31,14 +75,14 @@ import { UserAccount } from '../../types/user-account';
   standalone: true,
 })
 export class FinancesComponent implements OnInit {
+  public userAccounts!: Account[];
+  public userTransactions!: Transaction[];
+  public userCards!: Card[];
+  public accountsPaginationService: PaginationService = new PaginationService();
+  public cardPaginationService: PaginationService = new PaginationService();
   protected userAccount: UserAccount;
-  protected userAccounts!: Account[];
   protected userDeposits!: Deposit[];
-  protected userTransactions!: Transaction[];
-  protected userCards!: Card[];
   protected dailyTransactions: Transaction[][] = [[]];
-  protected accountsPaginationService: PaginationService = new PaginationService();
-  protected cardPaginationService: PaginationService = new PaginationService();
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private userService: UserService,
@@ -109,7 +153,7 @@ export class FinancesComponent implements OnInit {
       ? transaction.accountNumber.slice(31)
       : transaction.accountNumber.toString();
   }
-  private filterTransactions(): void {
+  public filterTransactions(): void {
     this.userTransactions = this.userTransactions.filter(
       (transaction: Transaction) =>
         new Date().getDate() === new Date(transaction.date).getDate() ||

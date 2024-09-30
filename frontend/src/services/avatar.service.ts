@@ -3,6 +3,30 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { UserAccount } from '../types/user-account';
 import { UserService } from './user.service';
 
+/**
+ * @fileoverview AvatarService manages the avatar URL and color for the user account.
+ * It provides functionalities to set temporary avatar URLs and handle avatar errors.
+ * It also generates a random color for the avatar.
+ *
+ * @service
+ * @providedIn root
+ *
+ * @class AvatarService
+ * @property {BehaviorSubject<string>} temporaryAvatarUrl - The temporary avatar URL.
+ * @property {BehaviorSubject<boolean>} temporaryAvatarError - The error state of the temporary avatar.
+ * @property {UserAccount} user - The user account information.
+ * @property {string} avatarColor - The color of the avatar.
+ * @property {boolean} avatarError - Indicates whether there is an error with the avatar.
+ * @property {Observable<string>} currentTemporaryAvatarUrl - Observable for the temporary avatar URL.
+ * @property {Observable<boolean>} currentAvatarError - Observable for the temporary avatar error state.
+ *
+ * @method setTemporaryAvatarUrl - Sets the temporary avatar URL.
+ * @method setTemporaryAvatarError - Sets the error state of the temporary avatar.
+ * @method getRandomColor - Generates a random color for the avatar.
+ *
+ * @constructor
+ * @param {UserService} userService - Service for managing user account information.
+ */
 @Injectable({
   providedIn: 'root',
 })
