@@ -7,6 +7,22 @@ import {
   trigger,
 } from '@angular/animations';
 
+/**
+ * Provides a collection of animation triggers for use in Angular applications.
+ * 
+ * @class AnimationsProvider
+ * @static
+ * @property {any[] | undefined} animations - An array of animation triggers.
+ * 
+ * The available animations are:
+ * 
+ * - `shake`: A shaking animation that moves an element left and right.
+ * - `rotateCard`: Rotates an element between front and back states.
+ * - `slideInOut`: Slides an element in and out with a border animation.
+ * - `fadeInCenter`: Fades an element in to the center.
+ * - `pulseAnimation`: Pulses an element by scaling it up and down.
+ * - `slideInFromTop`: Slides an element in from the top.
+ */
 export class AnimationsProvider {
   static animations: any[] | undefined = [
     trigger('shake', [

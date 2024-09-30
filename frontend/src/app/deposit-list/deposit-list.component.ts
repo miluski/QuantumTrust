@@ -7,6 +7,32 @@ import { ProductTypesService } from '../../services/product-types.service';
 import { Deposit } from '../../types/deposit';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 
+/**
+ * @component DepositListComponent
+ * @description This component is responsible for displaying a list of deposits.
+ * It uses Angular's standalone component feature and imports necessary modules.
+ * 
+ * @selector app-deposit-list
+ * @templateUrl ./deposit-list.component.html
+ * 
+ * @input
+ * @property {string} tabName - The name of the tab, default is 'Lokaty'.
+ * 
+ * @property {string} depositType - The type of deposit, default is 'timely'.
+ * @property {Deposit[]} depositsObjectArray - An array of deposit objects.
+ * 
+ * @constructor
+ * @param {ProductTypesService} productTypesService - Service to manage product types.
+ * @param {ConvertService} convertService - Service to handle conversions.
+ * 
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentDepositType observable.
+ * @method changeDepositType - Changes the deposit type using the productTypesService.
+ * @param {string} depositType - The new deposit type to be set.
+ * 
+ * @method isDepositIdHigherThanTwo - Checks if the deposit ID is higher than two.
+ * @param {string} depositId - The ID of the deposit to be checked.
+ * @returns {boolean} - Returns true if the deposit ID is higher than two, otherwise false.
+ */
 @Component({
   selector: 'app-deposit-list',
   templateUrl: './deposit-list.component.html',
@@ -15,8 +41,8 @@ import { depositsObjectArray } from '../../utils/deposits-objects-array';
 })
 export class DepositListComponent implements OnInit {
   @Input() tabName: string = 'Lokaty';
-  protected depositType: string = 'timely';
-  protected depositsObjectArray: Deposit[] = depositsObjectArray;
+  public depositType: string = 'timely';
+  public depositsObjectArray: Deposit[] = depositsObjectArray;
   constructor(
     private productTypesService: ProductTypesService,
     protected convertService: ConvertService

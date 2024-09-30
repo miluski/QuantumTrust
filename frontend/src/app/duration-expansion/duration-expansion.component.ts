@@ -7,6 +7,32 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 import { FiltersService } from '../../services/filters.service';
 import { Transaction } from '../../types/transaction';
 
+/**
+ * @component DurationExpansionComponent
+ * @description A standalone Angular component that provides a UI for selecting a duration filter.
+ *
+ * @selector app-duration-expansion
+ * @templateUrl ./duration-expansion.component.html
+ * @imports [MatExpansionModule, MatRadioButton, CommonModule, FormsModule]
+ *
+ * @input {Transaction[][]} transactionsArray - An array of transaction arrays to be filtered.
+ *
+ * @property {boolean} isExpanded - Indicates whether the expansion panel is expanded.
+ * @property {String[]} options - List of duration options available for selection.
+ *
+ * @constructor
+ * @param {FiltersService} filtersService - Service for managing filter states.
+ * @param {AppInformationStatesService} appInformationStatesService - Service for managing application state information.
+ *
+ * @method ngOnInit - Lifecycle hook that initializes the component, resets selected filters, and subscribes to expansion flag changes.
+ * @method isChecked - Determines if a given option is currently selected.
+ * @param {String} option - The option to check.
+ * @returns {string} - 'true' if the option is selected, otherwise 'false'.
+ *
+ * @method changeCheckedOption - Updates the selected filter option.
+ * @param {String} option - The option to set as selected.
+ * @returns {void}
+ */
 @Component({
   selector: 'app-duration-expansion',
   templateUrl: './duration-expansion.component.html',
@@ -15,8 +41,8 @@ import { Transaction } from '../../types/transaction';
 })
 export class DurationExpansionComponent implements OnInit {
   @Input() transactionsArray!: Transaction[][];
-  protected isExpanded: boolean = false;
-  protected options: String[] = [
+  public isExpanded: boolean = false;
+  public options: String[] = [
     'Ostatni dzień',
     'Ostatni tydzień',
     'Ostatni miesiąc',
@@ -29,7 +55,6 @@ export class DurationExpansionComponent implements OnInit {
     public appInformationStatesService: AppInformationStatesService
   ) {}
   ngOnInit(): void {
-    this.filtersService.resetSelectedFilters();
     this.filtersService.currentExpansionFlagsArray.subscribe(
       (expansionFlagsArray: boolean[]) =>
         (this.isExpanded = expansionFlagsArray[1])

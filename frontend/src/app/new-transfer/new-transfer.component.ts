@@ -12,6 +12,51 @@ import { Account } from '../../types/account';
 import { TransferFlags } from '../../types/transfer-flags';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
+/**
+ * @fileoverview NewTransferComponent handles the creation of new transfers.
+ * It includes methods for validating transfer details, setting user accounts,
+ * and handling UI events such as window resizing.
+ *
+ * @component
+ * @selector app-new-transfer
+ * @templateUrl ./new-transfer.component.html
+ * @animations [AnimationsProvider.animations]
+ * @imports [
+ *   VerificationCodeComponent,
+ *   MatIconModule,
+ *   CommonModule,
+ *   FormsModule,
+ * ]
+ * @standalone true
+ *
+ * @class NewTransferComponent
+ * @implements OnInit
+ *
+ * @property {string} transferTitle - The title of the transfer.
+ * @property {string} transferReceiverAccountId - The receiver's account ID.
+ * @property {number} transferAmount - The amount to be transferred.
+ * @property {ShakeStateService} shakeStateService - Service to manage shake state.
+ * @property {TransferFlags} transferFlags - Flags indicating the validity of transfer fields.
+ *
+ * @constructor
+ * @param {UserService} userService - Service to handle user-related operations.
+ * @param {VerificationService} verificationService - Service to handle verification operations.
+ * @param {PaginationService} paginationService - Service to handle pagination.
+ * @param {ConvertService} convertService - Service to handle conversions.
+ *
+ * @method ngOnInit - Initializes the component and sets user accounts.
+ * @method onResize - Handles window resize events.
+ * @param {UIEvent} event - The resize event.
+ * @method handleButtonClick - Handles button click events and validates fields.
+ * @method setUserAccounts - Sets the user accounts and handles width changes.
+ * @method get currentSelectedAccount - Retrieves the currently selected account.
+ * @method get currentTransferAmount - Retrieves the current transfer amount.
+ * @method validateFields - Validates the transfer fields.
+ * @method setIsTransferAmountValid - Validates the transfer amount.
+ * @method setIsTransferTitleValid - Validates the transfer title.
+ * @method setsTransferReceiverAccountNumberValid - Validates the receiver's account number.
+ * @method get actualTransferFlagsArray - Retrieves an array of transfer flags.
+ */
 @Component({
   selector: 'app-new-transfer',
   templateUrl: './new-transfer.component.html',
@@ -25,16 +70,16 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   standalone: true,
 })
 export class NewTransferComponent implements OnInit {
-  protected transferTitle!: string;
-  protected transferReceiverAccountId!: string;
-  protected transferAmount: number = 1;
-  protected shakeStateService: ShakeStateService = new ShakeStateService();
-  protected transferFlags: TransferFlags = new TransferFlags();
+  public transferTitle!: string;
+  public transferReceiverAccountId!: string;
+  public transferAmount: number = 1;
+  public shakeStateService: ShakeStateService = new ShakeStateService();
+  public transferFlags: TransferFlags = new TransferFlags();
   constructor(
     private userService: UserService,
     private verificationService: VerificationService,
-    protected paginationService: PaginationService,
-    protected convertService: ConvertService
+    protected convertService: ConvertService,
+    public paginationService: PaginationService
   ) {
     this.paginationService.paginationMethod = 'movableItems';
   }
@@ -50,7 +95,9 @@ export class NewTransferComponent implements OnInit {
     const isSomeDataInvalid: boolean = this.actualTransferFlagsArray.some(
       (flag: boolean) => flag === false
     );
-    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid);
+    this.shakeStateService.setCurrentShakeState(
+      isSomeDataInvalid ? 'shake' : 'none'
+    );
   }
   async setUserAccounts(): Promise<void> {
     const userAccounts: Account[] =
@@ -59,7 +106,7 @@ export class NewTransferComponent implements OnInit {
     this.paginationService.handleWidthChange(window.innerWidth, 3, 3);
   }
   get currentSelectedAccount(): Account {
-    return this.paginationService.paginatedItems
+    return this.paginationService.paginatedItems !== undefined
       ? this.paginationService.paginatedItems[1]
         ? this.paginationService.paginatedItems[1]
         : this.paginationService.paginatedItems[0]
@@ -73,7 +120,7 @@ export class NewTransferComponent implements OnInit {
         : this.transferAmount;
     return this.transferAmount;
   }
-  private validateFields(): void {
+  public validateFields(): void {
     this.setIsTransferAmountValid();
     this.setIsTransferTitleValid();
     this.setsTransferReceiverAccountNumberValid();
@@ -82,7 +129,7 @@ export class NewTransferComponent implements OnInit {
     this.transferFlags.isTransferAmountValid =
       this.verificationService.validateOperationAmount(
         this.transferAmount,
-        this.paginationService.paginatedItems[1]
+        this.currentSelectedAccount
       );
   }
   private setIsTransferTitleValid(): void {
@@ -93,9 +140,10 @@ export class NewTransferComponent implements OnInit {
     const receiverAccountId: string =
       this.transferReceiverAccountId &&
       this.transferReceiverAccountId.replace(' ', '');
-    const senderAccountId: string =
-      this.paginationService.paginatedItems &&
-      this.paginationService.paginatedItems[1].id.replace(' ', '');
+    const senderAccountId: string = this.currentSelectedAccount.id.replace(
+      ' ',
+      ''
+    );
     this.transferFlags.isTransferReceiverAccountNumberValid =
       this.verificationService.validateReceiverAccountId(
         receiverAccountId,

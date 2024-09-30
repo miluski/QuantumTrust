@@ -91,7 +91,7 @@
                 [value]="userObject.address" [(ngModel)]="userObject.address" (ngModelChange)="validateAddress()" />
             @if(userAccountFlags.isAddressValid === false) {
             <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzony adres jest
-                nieprawidłowe!</p>
+                nieprawidłowy!</p>
             }
         </div>
     </div>
@@ -111,9 +111,11 @@
         <div class="flex flex-col lg:w-100">
             <p class="font-roboto font-light text-md text-left">Nowe hasło</p>
             <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="password"
-                placeholder="************" [(ngModel)]="actualPassword" (ngModelChange)="validateRepeatedPassword()" />
+                placeholder="************" [(ngModel)]="userObject.repeatedPassword"
+                (ngModelChange)="validateNewPassword()" />
             @if(userAccountFlags.isRepeatedPasswordValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzone hasła różnią się!</p>
+            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzone nowe hasło jest
+                nieprawidłowe!</p>
             }
         </div>
     </div>

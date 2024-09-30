@@ -12,6 +12,68 @@ import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 
+/**
+ * @fileoverview SingleCardComponent is a standalone Angular component that displays details of a single card, including Mastercard and Visa card details, and a list of frequently asked questions and answers. It uses various Angular modules and components, and includes animations.
+ * 
+ * @component
+ * @selector app-single-card
+ * @templateUrl ./single-card.component.html
+ * @imports [
+ *   HeaderComponent,
+ *   FooterComponent,
+ *   MatDividerModule,
+ *   CommonModule,
+ *   RouterModule,
+ *   ScrollArrowUpComponent,
+ * ]
+ * @animations [AnimationsProvider.animations]
+ * @standalone true
+ * 
+ * @class SingleCardComponent
+ * @implements OnInit
+ * 
+ * @property {Card} mastercardObject - Object representing the Mastercard details.
+ * @protected
+ * 
+ * @property {Card} visaCardObject - Object representing the Visa card details.
+ * @protected
+ * 
+ * @property {Question[]} questionsAndAnswersPairs - Array of questions and answers related to the card.
+ * @protected
+ * 
+ * @property {string} cardType - Type of the card, default is 'standard'.
+ * @private
+ * 
+ * @constructor
+ * @param {ProductTypesService} productTypesService - Service to manage product types.
+ * 
+ * @method ngOnInit
+ * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
+ * 
+ * @method initializeFields
+ * @description Initializes the fields for the component, fetching card details and setting up questions and answers.
+ * @protected
+ * 
+ * @method changeStateOfQuestionAnswer
+ * @description Toggles the state of a question and answer pair.
+ * @param {number} id - The ID of the question and answer pair to toggle.
+ * @public
+ * 
+ * @method changeCardType
+ * @description Changes the card type and updates the service.
+ * @param {string} cardType - The new card type to set.
+ * @public
+ * 
+ * @method getVisaCardObject
+ * @description Fetches the Visa card object based on the current card type.
+ * @private
+ * @returns {Card} The Visa card object.
+ * 
+ * @method getMastercardObject
+ * @description Fetches the Mastercard object based on the current card type.
+ * @private
+ * @returns {Card} The Mastercard object.
+ */
 @Component({
   selector: 'app-single-card',
   templateUrl: './single-card.component.html',
@@ -27,10 +89,10 @@ import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.compo
   standalone: true,
 })
 export class SingleCardComponent implements OnInit {
-  protected mastercardObject!: Card;
-  protected visaCardObject!: Card;
-  protected questionsAndAnswersPairs!: Question[];
-  private cardType: string = 'standard';
+  public mastercardObject!: Card;
+  public visaCardObject!: Card;
+  public questionsAndAnswersPairs!: Question[];
+  public cardType: string = 'standard';
   constructor(private productTypesService: ProductTypesService) {}
   ngOnInit(): void {
     this.productTypesService.currentCardType.subscribe((cardType: string) => {

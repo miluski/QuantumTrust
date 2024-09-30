@@ -14,6 +14,32 @@ import { GuestMobileHeaderComponent } from '../guest-mobile-header/guest-mobile-
 import { HeaderComponent } from '../header/header.component';
 import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 
+/**
+ * HomePageComponent is the main component for the home page of the application.
+ * It includes various sub-components and handles the state of the home page.
+ *
+ * @selector 'app-home-page'
+ * @templateUrl './home-page.component.html'
+ * @animations AnimationsProvider.animations
+ * @imports [
+ *   HeaderComponent,
+ *   FooterComponent,
+ *   AccountListComponent,
+ *   DepositListComponent,
+ *   CardListComponent,
+ *   GuestMobileHeaderComponent,
+ *   ScrollArrowUpComponent,
+ *   CustomAlertComponent,
+ *   CommonModule,
+ *   RouterModule
+ * ]
+ * @standalone true
+ *
+ * @class HomePageComponent
+ * @implements OnInit
+ *
+ * @method ngOnInit Initializes the component and subscribes to observables for tab name and drawer state.
+ */
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',

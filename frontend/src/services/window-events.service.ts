@@ -1,5 +1,22 @@
 import { Injectable } from '@angular/core';
 
+/**
+ * @fileoverview WindowEventsService manages window-related events such as pulsing and scrolling.
+ * It provides functionalities to start a pulsing animation and to smoothly scroll to the top of the page.
+ *
+ * @service
+ * @providedIn root
+ *
+ * @class WindowEventsService
+ * @property {number} duration - The duration of the scroll animation in milliseconds.
+ * @property {string} pulseState - The current state of the pulsing animation ('start' or 'end').
+ *
+ * @method startPulsing - Starts a pulsing animation that alternates the pulseState between 'start' and 'end' every second.
+ * @method scrollToTop - Smoothly scrolls the window to the top over a duration.
+ * @method easeInOutCubic - Easing function for smooth scrolling.
+ * @param {number} t - The current time progress of the animation.
+ * @returns {number} - The eased value.
+ */
 @Injectable({
   providedIn: 'root',
 })

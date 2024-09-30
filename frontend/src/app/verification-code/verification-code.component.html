@@ -1,7 +1,7 @@
 <main class="flex-col flex text-center bg-black text-white w-screen items-center justify-center">
     <div class="flex flex-row my-12 bg-white rounded-3xl shadow-gray-500 shadow-lg w-[85%] 2xl:w-[70%]">
         <div class="login-mobile flex flex-col justify-center items-center lg:w-[50%] w-full rounded-3xl">
-            <p class="font-roboto font-extrabold text-5xl text-black pt-24 z-20">{{actionType}}</p>
+            <p class="font-roboto font-extrabold text-5xl text-black pt-24 z-20 max-sm:text-2xl">{{actionType}}</p>
             <p class="font-roboto font-light text-xl text-gray-600 w-[95%] mb-12 z-20 lg:text-gray-400">Na twój
                 adres email
                 został wysłany 6 cyfrowy kod weryfikacyjny. Wprowadź go poniżej.</p>
@@ -20,10 +20,10 @@
                     {{buttonText}}
                 </button>
                 <mat-divider class="w-full !border-t-gray-300 my-5 z-20 max-lg:!border-t-gray-400" />
-                <div class="flex flex-row py-10 space-x-2 z-20 w-full justify-center">
+                <div class="flex flex-row max-sm:flex-col py-10 space-x-2 z-20 w-full justify-center">
                     <p class="font-roboto font-normal lg:text-2xl text-xl text-black">
                         {{ask}}</p>
-                    <a class="font-roboto font-bold lg:text-2xl text-xl text-gray-400 hover:text-gray-200 text-nowrap"
+                    <a class="font-roboto font-bold lg:text-2xl text-xl text-gray-400 hover:text-gray-200"
                         routerLink={{redirectLink}} routerLinkActive="active" (click)="handleRedirectButtonClick()">
                         {{redirectText}}
                     </a>

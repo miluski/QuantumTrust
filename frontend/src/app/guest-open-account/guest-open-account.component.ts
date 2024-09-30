@@ -16,6 +16,36 @@ import { HeaderComponent } from '../header/header.component';
 import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
+/**
+ * GuestOpenAccountComponent is responsible for handling the guest account opening process.
+ * It includes form validation and state management for user account data.
+ *
+ * @component
+ * @selector 'app-guest-open-account'
+ * @templateUrl './guest-open-account.component.html'
+ * @animations [AnimationsProvider.animations]
+ * @imports [
+ *   HeaderComponent,
+ *   FooterComponent,
+ *   VerificationCodeComponent,
+ *   ScrollArrowUpComponent,
+ *   CustomAlertComponent,
+ *   CommonModule,
+ *   RouterModule,
+ *   FormsModule,
+ *   MatDividerModule,
+ * ]
+ * @standalone true
+ *
+ * @method verifyData Verifies the user data by validating various fields and setting the shake state.
+ * @method setIsContactDataValid Validates the contact data (email and phone number) of the user account.
+ * @method setIsFullNameValid Validates the full name (first name and last name) of the user account.
+ * @method setIsIdentityDataValid Validates the identity data (PESEL, document type, document series, and address) of the user account.
+ * @method setIsPasswordValid Validates the password and repeated password of the user account.
+ * @method setIsAccountDataValid Validates the account data (currency and type) of the user account.
+ * @method setCanShake Sets the shake state based on the validation flags.
+ * @method get validationFlags Returns an array of validation flags for the user account data.
+ */
 @Component({
   selector: 'app-guest-open-account',
   templateUrl: './guest-open-account.component.html',
@@ -34,10 +64,10 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   standalone: true,
 })
 export class GuestOpenAccountComponent {
-  protected shakeStateService: ShakeStateService = new ShakeStateService();
-  protected userAccountFlags: UserAccountFlags = new UserAccountFlags();
-  protected userAccount: UserAccount = new UserAccount();
-  protected account: Account = new Account();
+  public shakeStateService: ShakeStateService = new ShakeStateService();
+  public userAccountFlags: UserAccountFlags = new UserAccountFlags();
+  public userAccount: UserAccount = new UserAccount();
+  public account: Account = new Account();
   constructor(
     private verificationService: VerificationService,
     protected alertService: AlertService
@@ -105,7 +135,7 @@ export class GuestOpenAccountComponent {
     const isSomeDataInvalid: boolean = this.validationFlags.some(
       (flag: boolean) => flag === false
     );
-    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid);
+    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid ? 'shake' : 'none');
   }
   private get validationFlags(): boolean[] {
     return [

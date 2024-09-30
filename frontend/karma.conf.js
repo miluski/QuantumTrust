@@ -8,10 +8,10 @@ module.exports = function (config) {
       require("karma-jasmine-html-reporter"),
       require("karma-coverage"),
       require("@angular-devkit/build-angular/plugins/karma"),
-      require("karma-safari-launcher"),
     ],
     client: {
       jasmine: {},
+      clearContext: false,
     },
     jasmineHtmlReporter: {
       suppressAll: true,
@@ -22,7 +22,10 @@ module.exports = function (config) {
       reporters: [{ type: "html" }, { type: "text-summary" }],
     },
     reporters: ["progress", "kjhtml"],
-    browsers: ["Safari"],
+    browsers: ["ChromeHeadless"],
+    browserDisconnectTimeout: 10000,
+    browserNoActivityTimeout: 30000,
+    captureTimeout: 60000,
     restartOnFileChange: true,
   });
 };

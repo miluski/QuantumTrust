@@ -4,6 +4,31 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 
+/**
+ * Component representing the mobile header for guest users.
+ * 
+ * @selector 'app-guest-mobile-header'
+ * @templateUrl './guest-mobile-header.component.html'
+ * @imports [CommonModule, RouterModule, MatDrawer]
+ * @standalone true
+ * 
+ * @class GuestMobileHeaderComponent
+ * @implements OnInit, AfterViewInit
+ * 
+ * @property {MatDrawer} drawer - Reference to the MatDrawer component.
+ * @property {string} currentRoute - The current route of the application.
+ * @property {string} tabName - The name of the current tab.
+ * 
+ * @constructor
+ * @param {Router} router - Angular Router service.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state.
+ * 
+ * @method ngOnInit - Lifecycle hook that is called after Angular has initialized all data-bound properties.
+ * @method ngAfterViewInit - Lifecycle hook that is called after Angular has fully initialized a component's view.
+ * @method changeTabName - Changes the name of the current tab.
+ * @param {string} tabName - The new name of the tab.
+ * @method toggleDrawer - Toggles the state of the drawer.
+ */
 @Component({
   selector: 'app-guest-mobile-header',
   templateUrl: './guest-mobile-header.component.html',
@@ -12,8 +37,8 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 })
 export class GuestMobileHeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('drawer') drawer!: MatDrawer;
-  protected currentRoute: string = '/home-page';
-  protected tabName: string = 'Konta';
+  public currentRoute: string = '/home-page';
+  public tabName: string = 'Konta';
   constructor(
     router: Router,
     private appInformationStatesService: AppInformationStatesService

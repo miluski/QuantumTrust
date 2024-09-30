@@ -11,6 +11,107 @@ import {
 } from '../utils/enums';
 import { exchangeRates } from '../utils/exchange-rates';
 
+/**
+ * @fileoverview ConvertService provides utility methods for converting various types of data related to accounts, deposits, transactions, and card settings.
+ * It includes methods to get the Polish equivalent of account types, deposit types, and transaction categories, as well as methods for formatting numbers and dates.
+ *
+ * @service
+ * @providedIn root
+ *
+ * @class ConvertService
+ * @method getPolishAccountType - Converts the given account type to its Polish equivalent.
+ * @param {string} accountType - The type of the account in English.
+ * @returns {string} - The Polish equivalent of the account type.
+ *
+ * @method getPolishDepositType - Converts the given deposit type to its Polish equivalent.
+ * @param {string} depositType - The type of the deposit in English.
+ * @param {string} [usageType] - Optional usage type for grammatical correctness.
+ * @returns {string} - The Polish equivalent of the deposit type.
+ *
+ * @method getDepositIcon - Returns the icon name for the given deposit type.
+ * @param {string} depositType - The type of the deposit.
+ * @returns {string} - The icon name for the deposit type.
+ *
+ * @method getIconClassFromTransactionCategory - Returns the icon class for the given transaction category.
+ * @param {string} transactionCategory - The category of the transaction.
+ * @returns {string} - The icon class for the transaction category.
+ *
+ * @method getNumberWithSpacesBetweenThousands - Formats a number with spaces between thousands.
+ * @param {number} [number] - The number to format.
+ * @returns {string} - The formatted number.
+ *
+ * @method getGroupedUserTransactions - Groups user transactions by date.
+ * @param {Transaction[]} userTransactions - The list of user transactions.
+ * @returns {Transaction[][]} - The grouped transactions.
+ *
+ * @method getDayFromDate - Returns the day of the week for a given date.
+ * @param {string} date - The date string.
+ * @returns {string} - The day of the week in Polish.
+ *
+ * @method getWeekDayFromNumber - Returns the day of the week for a given day number.
+ * @param {number} day - The day number (0-6).
+ * @returns {string} - The day of the week in Polish.
+ *
+ * @method getMonths - Returns the number of months for a given interval.
+ * @param {number} interval - The interval in months.
+ * @returns {number} - The number of months.
+ *
+ * @method getMonthForm - Returns the grammatical form of "month" for a given interval.
+ * @param {number} interval - The interval in months.
+ * @returns {string} - The grammatical form of "month" in Polish.
+ *
+ * @method getAccountOptionString - Returns a formatted string for account options.
+ * @param {Account} account - The account object.
+ * @returns {string} - The formatted account option string.
+ *
+ * @method getShortenedAccountId - Returns a shortened version of the account ID.
+ * @param {string} accountId - The account ID.
+ * @returns {string} - The shortened account ID.
+ *
+ * @method getCalculatedAmount - Calculates the amount based on currency conversion.
+ * @param {string} accountCurrency - The currency of the account.
+ * @param {number} multiplier - The multiplier for the conversion.
+ * @returns {number} - The calculated amount.
+ *
+ * @method getConversionRate - Returns the conversion rate between two currencies.
+ * @param {string} fromCurrency - The source currency.
+ * @param {string} toCurrency - The target currency.
+ * @returns {number} - The conversion rate.
+ *
+ * @method getStep - Returns the step value for card settings.
+ * @param {CardSettings} cardSettings - The card settings object.
+ * @returns {number} - The step value.
+ *
+ * @method getFormattedTransactionsLimit - Returns the formatted transactions limit.
+ * @param {CardSettings} cardSettings - The card settings object.
+ * @returns {string} - The formatted transactions limit.
+ *
+ * @method getTransactionsLimit - Returns the transactions limit for card settings.
+ * @param {CardSettings} cardSettings - The card settings object.
+ * @returns {number} - The transactions limit.
+ *
+ * @method getCurrentTransactionLimit - Returns the current transaction limit for card settings.
+ * @param {CardSettings} cardSettings - The card settings object.
+ * @returns {number} - The current transaction limit.
+ *
+ * @method getMaxLimit - Returns the maximum limit for card settings.
+ * @param {CardSettings} cardSettings - The card settings object.
+ * @returns {number} - The maximum limit.
+ *
+ * @method getMinLimit - Returns the minimum limit for a given currency.
+ * @param {string} accountCurrency - The currency of the account.
+ * @returns {number} - The minimum limit.
+ *
+ * @method setInternetTransactionLimit - Sets the internet transaction limit for card settings.
+ * @param {number} upLimit - The upper limit.
+ * @param {number} downLimit - The lower limit.
+ * @param {CardSettings} cardSettings - The card settings object.
+ *
+ * @method setCashTransactionLimit - Sets the cash transaction limit for card settings.
+ * @param {number} upLimit - The upper limit.
+ * @param {number} downLimit - The lower limit.
+ * @param {CardSettings} cardSettings - The card settings object.
+ */
 @Injectable({
   providedIn: 'root',
 })

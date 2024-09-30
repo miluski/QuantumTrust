@@ -24,6 +24,50 @@ import { SortExpansionComponent } from '../sort-expansion/sort-expansion.compone
 import { StatusExpansionComponent } from '../status-expansion/status-expansion.component';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
+/**
+ * @fileoverview CardSettingsComponent is a standalone Angular component that manages the settings of a user's card.
+ * It includes functionalities such as initializing card transactions, setting user accounts, validating input values,
+ * and handling save button clicks.
+ *
+ * @component
+ * @selector app-card-settings
+ * @templateUrl ./card-settings.component.html
+ * @imports [
+ *   VerificationCodeComponent,
+ *   MobileFiltersComponent,
+ *   SortExpansionComponent,
+ *   DurationExpansionComponent,
+ *   StatusExpansionComponent,
+ *   SearchBarComponent,
+ *   CommonModule,
+ *   FormsModule,
+ *   MatTooltipModule,
+ *   CardIdFormatPipe,
+ * ]
+ * @animations [AnimationsProvider.animations]
+ * @standalone true
+ *
+ * @class
+ * @implements OnInit
+ *
+ * @method ngOnInit Initializes the component and sets up card transactions.
+ * @method initializeCardTransactions Initializes card transactions and sets user accounts.
+ * @method setUserAccounts Sets the user accounts for the card.
+ * @method setCurrentSelectedAccount Sets the currently selected account based on user input.
+ * @method getIsInputValueValid Validates the input value and sets the corresponding flag.
+ * @method getCardSettingsObject Returns the card settings object based on the specified limit and transaction type.
+ * @method handleSaveButtonClick Handles the save button click event and sets the shake state.
+ * @method setTransactions Sets the transactions for the card.
+ * @method setCorrectInputFlag Sets the correct input flag based on the type and validity.
+ * @method setCardAndCurrency Sets the card and currency for the card settings.
+ * @method getFoundedAccount Returns the account that matches the specified account ID.
+ * @method isSaveError Checks if there is an error in saving the card settings.
+ * @method isSomeCardDataChanged Checks if any card data has been changed.
+ * @method isAccountIdChanged Checks if the account ID has been changed.
+ * @method isCashTransactionsLimitChanged Checks if the cash transactions limit has been changed.
+ * @method isInternetTransactionsLimitChanged Checks if the internet transactions limit has been changed.
+ * @method cardFlagsArray Returns an array of card flags.
+ */
 @Component({
   selector: 'app-card-settings',
   templateUrl: './card-settings.component.html',
@@ -43,18 +87,18 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   standalone: true,
 })
 export class CardSettingsComponent implements OnInit {
-  private originalCard!: Card;
+  public originalCard!: Card;
+  public userAccounts!: Account[];
+  public currentSelectedAccountId!: string;
+  public card: Card = new Card();
+  public cardFlags: CardFlags = new CardFlags();
+  public cardSettings: CardSettings = new CardSettings();
+  public currentSelectedAccount: Account = new Account();
+  public accountTransactions: Transaction[] = [];
+  public dailyTransactions: Transaction[][] = [];
+  public shakeStateService: ShakeStateService = new ShakeStateService();
   protected newPinCode!: number;
-  protected userAccounts!: Account[];
-  protected currentSelectedAccountId!: string;
-  protected dailyTransactions!: Transaction[][];
   protected userAccount: UserAccount;
-  protected accountTransactions: Transaction[] = [];
-  protected card: Card = new Card();
-  protected cardFlags: CardFlags = new CardFlags();
-  protected cardSettings: CardSettings = new CardSettings();
-  protected currentSelectedAccount: Account = new Account();
-  protected shakeStateService: ShakeStateService = new ShakeStateService();
   constructor(
     private userService: UserService,
     private itemSelectionService: ItemSelectionService,
@@ -66,6 +110,7 @@ export class CardSettingsComponent implements OnInit {
     this.userAccount = userService.userAccount;
   }
   ngOnInit(): void {
+    this.filtersService.resetSelectedFilters();
     this.initializeCardTransactions();
   }
   async initializeCardTransactions(): Promise<void> {
@@ -101,6 +146,9 @@ export class CardSettingsComponent implements OnInit {
         .isAccountNumberValid
         ? target.value
         : this.cardSettings.assignedAccountNumber;
+      this.currentSelectedAccount = this.getFoundedAccount(
+        this.cardSettings.assignedAccountNumber
+      );
     }
   }
   getIsInputValueValid(
@@ -124,12 +172,60 @@ export class CardSettingsComponent implements OnInit {
     const isSomeDataInvalid: boolean =
       this.cardFlagsArray.some((flag: boolean) => flag === false) ||
       !this.isSomeCardDataChanged();
-    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid);
-  }
-  private setTransactions(): void {
-    this.dailyTransactions = this.convertService.getGroupedUserTransactions(
-      this.accountTransactions
+    this.shakeStateService.setCurrentShakeState(
+      isSomeDataInvalid ? 'shake' : 'none'
     );
+  }
+  public isSomeCardDataChanged(): boolean {
+    const isAccountIdChanged: boolean = this.isAccountIdChanged();
+    const isCashLimitChanged: boolean = this.isCashTransactionsLimitChanged();
+    const isInternetLimitChanged: boolean =
+      this.isInternetTransactionsLimitChanged();
+    return (
+      isAccountIdChanged ||
+      isCashLimitChanged ||
+      isInternetLimitChanged ||
+      this.newPinCode !== undefined
+    );
+  }
+  public isAccountIdChanged(): boolean {
+    return (
+      this.cardSettings.assignedAccountNumber !== undefined &&
+      this.originalCard.assignedAccountId !==
+        this.cardSettings.assignedAccountNumber
+    );
+  }
+  public isCashTransactionsLimitChanged(): boolean {
+    const localCardSettings: CardSettings = new CardSettings();
+    localCardSettings.card = this.originalCard;
+    localCardSettings.limitType = 'max';
+    localCardSettings.currency = this.cardSettings.currency;
+    const convertedOriginalLimit: number =
+      this.convertService.getTransactionsLimit(localCardSettings);
+    return (
+      this.cardSettings.limits.cashTransactionsLimit !== undefined &&
+      this.cardSettings.limits.cashTransactionsLimit !== convertedOriginalLimit
+    );
+  }
+  public isInternetTransactionsLimitChanged(): boolean {
+    const localCardSettings: CardSettings = new CardSettings();
+    localCardSettings.card = this.originalCard;
+    localCardSettings.limitType = 'max';
+    localCardSettings.transactionType = 'internet';
+    localCardSettings.currency = this.cardSettings.currency;
+    const convertedOriginalLimit: number =
+      this.convertService.getTransactionsLimit(localCardSettings);
+    return (
+      this.cardSettings.limits.internetTransactionsLimit !== undefined &&
+      this.cardSettings.limits.internetTransactionsLimit !==
+        convertedOriginalLimit
+    );
+  }
+  public setTransactions(): void {
+    this.dailyTransactions =
+      this.convertService.getGroupedUserTransactions(
+        this.accountTransactions
+      ) || [];
     this.filtersService.sortByDate(this.dailyTransactions, 'asc');
     this.filtersService.setOriginalTransactionsArray([
       ...this.dailyTransactions,
@@ -171,51 +267,6 @@ export class CardSettingsComponent implements OnInit {
     return (
       this.isSomeCardDataChanged() === false &&
       this.shakeStateService.shakeState !== ''
-    );
-  }
-  private isSomeCardDataChanged(): boolean {
-    const isAccountIdChanged: boolean = this.isAccountIdChanged();
-    const isCashLimitChanged: boolean = this.isCashTransactionsLimitChanged();
-    const isInternetLimitChanged: boolean =
-      this.isInternetTransactionsLimitChanged();
-    return (
-      isAccountIdChanged ||
-      isCashLimitChanged ||
-      isInternetLimitChanged ||
-      this.newPinCode !== undefined
-    );
-  }
-  private isAccountIdChanged(): boolean {
-    return (
-      this.cardSettings.assignedAccountNumber !== undefined &&
-      this.originalCard.assignedAccountId !==
-        this.cardSettings.assignedAccountNumber
-    );
-  }
-  private isCashTransactionsLimitChanged(): boolean {
-    const localCardSettings: CardSettings = new CardSettings();
-    localCardSettings.card = this.originalCard;
-    localCardSettings.limitType = 'max';
-    localCardSettings.currency = this.cardSettings.currency;
-    const convertedOriginalLimit: number =
-      this.convertService.getTransactionsLimit(localCardSettings);
-    return (
-      this.cardSettings.limits.cashTransactionsLimit !== undefined &&
-      this.cardSettings.limits.cashTransactionsLimit !== convertedOriginalLimit
-    );
-  }
-  private isInternetTransactionsLimitChanged(): boolean {
-    const localCardSettings: CardSettings = new CardSettings();
-    localCardSettings.card = this.originalCard;
-    localCardSettings.limitType = 'max';
-    localCardSettings.transactionType = 'internet';
-    localCardSettings.currency = this.cardSettings.currency;
-    const convertedOriginalLimit: number =
-      this.convertService.getTransactionsLimit(localCardSettings);
-    return (
-      this.cardSettings.limits.internetTransactionsLimit !== undefined &&
-      this.cardSettings.limits.internetTransactionsLimit !==
-        convertedOriginalLimit
     );
   }
   private get cardFlagsArray(): boolean[] {
