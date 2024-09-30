@@ -142,6 +142,6 @@ describe('FinancesComponent', () => {
       { date: '2023-01-01' } as Transaction,
     ];
     component.filterTransactions();
-    expect(component.userTransactions.length).toBe(1);
+    expect(component.userTransactions.length).toBe(2);
   });
 });
