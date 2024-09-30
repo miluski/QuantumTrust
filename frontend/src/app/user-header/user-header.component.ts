@@ -2,10 +2,40 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
-import { HeaderStateService } from '../../services/header-state.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
+import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 
+/**
+ * @fileoverview UserHeaderComponent is a standalone Angular component that represents the header section for a user.
+ * It includes functionality for managing the current route, tab name, and menu visibility.
+ * 
+ * @component
+ * @selector app-user-header
+ * @templateUrl ./user-header.component.html
+ * @imports CommonModule, RouterModule, MatIconModule
+ * 
+ * @class UserHeaderComponent
+ * @implements OnInit
+ * 
+ * @property {UserAccount} user - The user account information.
+ * @property {string} currentRoute - The current route of the application.
+ * @property {string} tabName - The name of the current tab.
+ * @property {boolean} isMenuVisible - A flag indicating whether the menu is visible.
+ * 
+ * @constructor
+ * @param {Router} router - The Angular Router service.
+ * @param {UserService} userService - The service providing user account information.
+ * @param {AppInformationStatesService} appInformationStatesService - The service managing application state information.
+ * @param {AvatarService} avatarService - The service managing user avatars.
+ * 
+ * @method ngOnInit - Initializes the component and subscribes to the current tab name.
+ * @method changeTabName - Changes the current tab name.
+ * @param {string} tabName - The new tab name.
+ * @method toggleDrawer - Toggles the visibility of the drawer.
+ * @method toggleMenuVisible - Toggles the visibility of the menu.
+ */
 @Component({
   selector: 'app-user-header',
   templateUrl: './user-header.component.html',
@@ -13,42 +43,31 @@ import { UserAccount } from '../../types/user-account';
   standalone: true,
 })
 export class UserHeaderComponent implements OnInit {
-  currentRoute: string = '/main-page';
-  tabName: string = 'Finanse';
-  isMenuVisible: boolean = false;
-  avatarError: boolean = false;
-  user: UserAccount;
-  avatarColor: string;
+  public user: UserAccount;
+  public currentRoute: string = '/main-page';
+  public tabName: string = 'Finanse';
+  public isMenuVisible: boolean = false;
   constructor(
     router: Router,
-    private headerStateService: HeaderStateService,
-    private userService: UserService
+    userService: UserService,
+    private appInformationStatesService: AppInformationStatesService,
+    protected avatarService: AvatarService
   ) {
     this.currentRoute = router.url;
     this.user = userService.userAccount;
-    this.avatarColor = this.getRandomColor();
   }
   ngOnInit(): void {
-    this.headerStateService.changeTabName('Finanse');
-    this.headerStateService.currentTabName.subscribe(
+    this.appInformationStatesService.currentTabName.subscribe(
       (currentTabName: string) => (this.tabName = currentTabName)
     );
   }
   changeTabName(tabName: string) {
-    this.headerStateService.changeTabName(tabName);
+    this.appInformationStatesService.changeTabName(tabName);
   }
   toggleDrawer(): void {
-    this.headerStateService.toggleDrawer();
+    this.appInformationStatesService.toggleDrawer();
   }
   toggleMenuVisible(): void {
     this.isMenuVisible = !this.isMenuVisible;
-  }
-  getInitials(): string {
-    const initials = this.user.name.charAt(0) + this.user.surname.charAt(0);
-    return initials.toUpperCase();
-  }
-  getRandomColor(): string {
-    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8C33'];
-    return colors[Math.floor(Math.random() * colors.length)];
   }
 }

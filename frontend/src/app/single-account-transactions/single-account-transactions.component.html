@@ -1,0 +1,75 @@
+<div class="flex-col flex justify-center text-center bg-black text-white w-screen">
+    <div class="flex flex-row max-md:flex-col justify-center items-center text-nowrap md:space-x-8 lg:space-x-20 mt-6">
+        <p class="font-salsa text-white text-2xl max-sm:text-lg md:px-6 lg:px-20">Konto
+            {{convertService.getPolishAccountType(account.type)}}
+        </p>
+        <p class="font-salsa text-white text-2xl max-sm:text-lg md:px-6 lg:px-20">{{account.id}}</p>
+    </div>
+    <div class="w-screen h-0.5 bg-gray-400 my-6"></div>
+    <div class="flex flex-row max-md:flex-col max-md:space-y-10 justify-between w-[85%] items-center self-center mb-6">
+        <app-single-account-balance-chart [totalIncomingBalance]="totalIncomingBalance"
+            [totalOutgoingBalance]="totalOutgoingBalance" [accountCurrency]="account.currency">
+        </app-single-account-balance-chart>
+        <div class="flex flex-col md:text-right">
+            <p class="font-roboto text-2xl font-light">Suma wpływów</p>
+            <p class="font-roboto text-2xl font-thin text-green-400">
+                {{convertService.getNumberWithSpacesBetweenThousands(totalIncomingBalance)}} {{account.currency}}</p>
+            <p class="font-roboto text-2xl font-light">Suma wydatków</p>
+            <p class="font-roboto text-2xl font-thin text-red-400">
+                {{convertService.getNumberWithSpacesBetweenThousands(totalOutgoingBalance)}} {{account.currency}}</p>
+            <p class="font-roboto text-2xl font-light">Bilans</p>
+            <p class="font-roboto text-2xl font-thin text-green-400">
+                {{convertService.getNumberWithSpacesBetweenThousands(account.balance)}} {{account.currency}}</p>
+        </div>
+    </div>
+    <div class="w-screen h-0.5 bg-gray-400 my-6"></div>
+    <div class="flex flex-row mb-5 justify-between w-[85%] max-lg:w-[95%] self-center space-x-5 z-30">
+        <div class="lg:hidden flex flex-row cursor-pointer space-x-2 w-[20%] group"
+            (click)="filtersService.setIsMobileFiltersOpened(true)">
+            <i class="fa-solid fa-filter text-2xl group-hover:text-gray-400"></i>
+            <p class="font-roboto text-white text-lg font-light pt-1 group-hover:text-gray-400">Filtry</p>
+        </div>
+        <app-sort-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
+        <app-duration-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
+        <app-status-expansion class="hidden lg:flex" [transactionsArray]="dailyTransactions" />
+        <app-search-bar class="max-lg:w-[80%] w-1/4" [transactionsArray]="dailyTransactions"
+            filterServiceType="non-global" />
+    </div>
+    <div class="flex flex-col w-screen">
+        @for(dayTransactionsArray of dailyTransactions; track dayTransactionsArray) {
+        @if(dayTransactionsArray[0]) {
+        <div class="w-screen h-0.5 bg-gray-400 mb-6"></div>
+        <p class="font-roboto font-bold text-2xl text-white pt-3 pl-3 mb-6 self-center pb-6">
+            {{dayTransactionsArray[0].date | date: 'dd.MM.yyyy'}},
+            {{convertService.getDayFromDate(dayTransactionsArray[0].date)}}</p>
+        }
+        @for(transaction of dayTransactionsArray; track transaction.id) {
+        <div class="flex flex-row justify-between md:w-[85%] w-[95%] self-center py-5">
+            <p
+                class="font-roboto font-light text-base md:text-lg text-own-gray md:w-1/5 w-auto max-sm:text-left max-sm:text-xs">
+                {{transaction.hour}}</p>
+            <p
+                class="font-roboto font-light text-base md:text-lg text-white sm:w-2/5 w-[30%] max-sm:text-left max-sm:text-xs">
+                {{transaction.title}}</p>
+            <p class="font-roboto font-medium text-base md:text-lg max-sm:text-left max-sm:w-[30%] max-sm:text-xs"
+                [ngClass]="{
+                    'text-red-400': transaction.type === 'outgoing', 
+                    'text-green-400': transaction.type === 'incoming'}">
+                {{transaction.type === 'incoming' ? "+" : "-"}}
+                {{convertService.getNumberWithSpacesBetweenThousands(transaction.amount)}}
+                {{transaction.currency}}
+            </p>
+            <div class="flex flex-row rounded-2xl max-sm:w-14 max-sm:h-8 w-20 h-8 mb-5 md:px-1 text-center items-center justify-center flex-shrink-0"
+                [ngClass]="{
+                            'bg-[#a2845e]': transaction.status === 'blockade', 
+                            'bg-gray-400': transaction.status === 'settled'}">
+                <p class="font-roboto font-light text-xs pt-2 max-sm:text-xxs max-sm:pt-1">
+                    {{transaction.status === 'blockade' ? "Blokada" : "Rozliczona"}}
+                </p>
+            </div>
+        </div>
+        }
+        }
+    </div>
+</div>
+<app-mobile-filters [transactionsArray]="dailyTransactions" />

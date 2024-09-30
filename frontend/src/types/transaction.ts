@@ -3,7 +3,7 @@ export class Transaction {
     date!: string;
     hour!: string;
     title!: string;
-    accountNumber!: string;
+    accountNumber!: string | number;
     type!: 'incoming' | 'outgoing';
     category!: string;
     amount!: number;

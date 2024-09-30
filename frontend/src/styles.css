@@ -44,28 +44,6 @@
   transform: scale(3);
 }
 
-@keyframes shake {
-  0% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  50% {
-    transform: translateX(5px);
-  }
-  75% {
-    transform: translateX(-5px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-.shake {
-  animation: shake 0.5s;
-}
-
 .text-shadow {
   text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.4);
 }
@@ -76,4 +54,88 @@
 
 .counter-rotate {
   transform: rotateY(180deg);
+}
+
+.open-account-mobile {
+  position: relative;
+}
+
+.open-account-mobile::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  z-index: 10;
+  background-image: url("/open-account-background.png");
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+  background-size: cover;
+}
+
+@media (min-width: 1024px) {
+  .open-account-mobile::before {
+    z-index: -1;
+  }
+}
+
+.login-mobile {
+  position: relative;
+}
+
+.login-mobile::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+  z-index: 10;
+  background-image: url("/login-background.png");
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+  background-size: cover;
+}
+
+@media (min-width: 1024px) {
+    .login-mobile::before {
+        z-index: -1;
+    }
+}
+
+.mat-expansion-indicator svg {
+  fill: #ffffff !important;
+}
+
+.mdc-radio__outer-circle,
+.mdc-radio__inner-circle {
+  border-color: white !important;
+}
+
+.slider-thumb::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  background: gray;
+  border: 2px solid #000;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.slider-thumb::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: gray;
+  border: 2px solid #000;
+  cursor: pointer;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+  transition: transform 0.5s ease-in-out;
 }

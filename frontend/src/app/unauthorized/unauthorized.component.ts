@@ -1,10 +1,28 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { HeaderStateService } from '../../services/header-state.service';
-import { WindowEventsService } from '../../services/window-events.service';
+import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 
+/**
+ * Component representing an unauthorized access page.
+ * 
+ * @selector app-unauthorized
+ * @templateUrl ./unauthorized.component.html
+ * @imports HeaderComponent, FooterComponent, CommonModule
+ * @standalone true
+ * 
+ * @class UnauthorizedComponent
+ * @implements OnInit
+ * 
+ * @property {boolean} isDrawerOpened - Indicates whether the drawer is opened.
+ * 
+ * @constructor
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * 
+ * @method ngOnInit
+ * @description Initializes the component and subscribes to the drawer state changes.
+ */
 @Component({
   selector: 'app-unauthorized',
   templateUrl: './unauthorized.component.html',
@@ -12,17 +30,13 @@ import { HeaderComponent } from '../header/header.component';
   standalone: true,
 })
 export class UnauthorizedComponent implements OnInit {
-  isDrawerOpened: boolean = false;
+  public isDrawerOpened: boolean = false;
   constructor(
-    private headerStateService: HeaderStateService,
-    private windowEventsService: WindowEventsService
+    private appInformationStatesService: AppInformationStatesService
   ) {}
   ngOnInit(): void {
-    this.headerStateService.currentIsDrawerOpened.subscribe(
+    this.appInformationStatesService.currentIsDrawerOpened.subscribe(
       (isDrawerOpened: boolean) => (this.isDrawerOpened = isDrawerOpened)
     );
-  }
-  onScrollToTop(): void {
-    this.windowEventsService.scrollToTop();
   }
 }

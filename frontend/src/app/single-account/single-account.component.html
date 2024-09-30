@@ -5,8 +5,8 @@
             <div class="flex flex-col w-[50%] max-md:w-full">
                 <p
                     class="max-lg:self-center max-lg:text-center font-walter text-5xl max-sm:text-3xl text-white font-normal">
-                    KONTO {{getPolishAccountType().toUpperCase()}}</p>
-                <img class="md:hidden block my-12 h-64 w-[75%] max-sm:w-full self-center rounded-lg"
+                    KONTO {{convertService.getPolishAccountType(accountType).toUpperCase()}}</p>
+                <img class="md:hidden block my-12 h-64 w-[75%] max-sm:w-full self-center rounded-lg pointer-events-none"
                     src={{accountObject.image}} />
                 <ul class="list-disc text-left self-center space-y-5">
                     @for(benefit of accountObject.benefits; track accountObject.id) {
@@ -19,13 +19,13 @@
                     Otwórz konto
                 </button>
             </div>
-            <img class="max-md:hidden w-auto md:h-52 md:w-auto lg:h-64 xl:h-80 rounded-lg"
+            <img class="max-md:hidden w-auto md:h-52 md:w-auto lg:h-64 xl:h-80 rounded-lg pointer-events-none"
                 src={{accountObject.image}} />
         </div>
         <mat-divider class="shadow-inner shadow-gray-500" />
         <div class="w-screen flex flex-col items-center my-12">
             <p class="font-roboto font-extrabold text-white text-2xl max-md:text-xl px-12 pb-12">Jak otworzyć konto
-                {{getPolishAccountType()}}?</p>
+                {{convertService.getPolishAccountType(accountType)}}?</p>
             <div
                 class="flex flex-col md:flex-row md:w-[85%] max-md:w-[80%] max-sm:w-screen items-center md:space-x-5 max-sm:p-0 max-md:p-5 max-md:space-y-10">
                 @for(step of steps; track step.id) {
@@ -51,23 +51,24 @@
             </p>
             <div class="absolute inset-y-[60%] flex items-center w-full px-1 z-10">
                 <button class="font-bold py-5 px-4 max-md:px-2 rounded-l text-white 2xl:mx-[5%]"
-                    (click)="previousPage()" [hidden]="currentPage === 1">
+                    (click)="paginationService.previousPage()" [hidden]="paginationService.currentPage === 1">
                     <mat-icon class="cursor-pointer">arrow_back</mat-icon>
                 </button>
                 <div class="flex-grow"></div>
-                <button class="font-bold py-5 px-4 max-md:px-2 rounded-r text-white 2xl:mx-[5%]" (click)="nextPage()"
-                    [hidden]="currentPage === totalPages">
+                <button class="font-bold py-5 px-4 max-md:px-2 rounded-r text-white 2xl:mx-[5%]"
+                    (click)="paginationService.nextPage()"
+                    [hidden]="paginationService.currentPage === paginationService.totalPages">
                     <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
                 </button>
             </div>
             <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch mt-12">
-                @for(account of accountsPaginatedItems; track account.id) {
-                <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-[25%] lg:w-[25%] max-md:w-[70%] hover:bg-gray-200 cursor-pointer p-5"
-                    (click)="changeAccountType(account.type)" (click)="onScrollToTop()">
-                    <img class="object-cover h-52 w-auto border rounded-md my-10" src={{account.image}} />
+                @for(account of paginationService.paginatedItems; track account.id) {
+                <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-72 max-md:w-64 hover:bg-gray-200 cursor-pointer p-5"
+                    (click)="changeAccountType(account.type)">
+                    <img class="object-cover h-52 w-auto border rounded-md my-10 pointer-events-none" src={{account.image}} />
                     <p class="font-salsa font-normal text-black max-sm:text-3xl max-md:text-lg lg:text-3xl max-md:px-5">
                         KONTO
-                        {{getPolishAccountType(account.type).toUpperCase()}}
+                        {{convertService.getPolishAccountType(account.type).toUpperCase()}}
                     </p>
                 </div>
                 }
@@ -75,4 +76,5 @@
         </div>
     </main>
 </div>
+<app-scroll-arrow-up />
 <app-footer />

@@ -10,13 +10,13 @@
                         <div class="flex flex-col relative items-center cursor-pointer z-30"
                             [@rotateCard]="visaCardObject.showingCardSite"
                             (click)="visaCardObject.showingCardSite = visaCardObject.showingCardSite === 'front' ? 'back' : 'front'">
-                            <img class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm"
+                            <img class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
                                 [src]="visaCardObject.showingCardSite === 'front' ? visaCardObject.image : visaCardObject.backImage"
                                 alt="single-card">
                             @if(visaCardObject.showingCardSite === 'front') {
                             <div
                                 class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                                <img class="w-4 h-4" src="icon.png" alt="Quantum Trust Logo" />
+                                <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
                                 <p class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
                             </div>
                             <p
@@ -48,13 +48,13 @@
                         <div class="flex flex-col relative items-center cursor-pointer z-30"
                             [@rotateCard]="mastercardObject.showingCardSite"
                             (click)="mastercardObject.showingCardSite = mastercardObject.showingCardSite === 'front' ? 'back' : 'front'">
-                            <img class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm"
+                            <img class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
                                 [src]="mastercardObject.showingCardSite === 'front' ? mastercardObject.image : mastercardObject.backImage"
                                 alt="single-card">
                             @if(mastercardObject.showingCardSite === 'front') {
                             <div
                                 class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                                <img class="w-4 h-4" src="icon.png" alt="Quantum Trust Logo" />
+                                <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
                                 <p class="font-salsa text-xxs leading-none pt-2 pl-2" [ngClass]="{
                                     'text-black': mastercardObject.image === 'mastercard-standard.png'}">Quantum Trust
                                 </p>
@@ -100,7 +100,7 @@
             <div class="flex flex-row justify-center items-center space-x-5 mt-5 w-[85%] max-sm:w-[95%] pt-3 relative">
                 <div class="flex flex-col w-screen h-auto md:items-center justify-center">
                     <p [ngClass]="{'text-gray-500': qaPair.isOpened}"
-                        class="font-roboto font-semibold text-xl max-sm:text-base pb-2 max-md:self-center">
+                        class="font-roboto font-semibold text-xl max-sm:text-base pb-2 max-md:self-center max-sm:w-[70%]">
                         {{qaPair.content}}</p>
                     @if(qaPair.isOpened) {
                     <p class="font-roboto font-light text-xl max-sm:text-base pb-2 w-[70%] max-md:pl-5"
@@ -118,4 +118,5 @@
         </div>
     </main>
 </div>
+<app-scroll-arrow-up />
 <app-footer />

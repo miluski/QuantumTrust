@@ -12,5 +12,5 @@ export class UserAccountFlags {
   isRepeatedPasswordValid!: boolean;
   isAccountTypeValid!: boolean;
   isAccountCurrencyValid!: boolean;
-  isVerificationCodeValid!: boolean;
+  isAvatarValid!: boolean;
 }

@@ -4,7 +4,13 @@ module.exports = {
   theme: {
     extend: {
       fontSize: {
-        'xxs': '0.5rem'
+        xxs: "0.6rem",
+      },
+      blur: {
+        xxs: "1.5px",
+      },
+      width: {
+        100: "27.25rem"
       }
     },
   },

@@ -1,0 +1,14 @@
+::ng-deep .mdc-linear-progress__primary-bar .mdc-linear-progress__bar-inner,
+::ng-deep .mdc-linear-progress__secondary-bar .mdc-linear-progress__bar-inner {
+  border: 11px solid var(--progress-bar-border-color);
+  border-bottom-left-radius: 15px;
+  width: 100%;
+}
+
+::ng-deep .mdc-linear-progress__buffer .mdc-linear-progress__buffer-bar {
+  background-color: transparent !important;
+}
+
+::ng-deep .mdc-linear-progress {
+    overflow-x: visible !important;
+}

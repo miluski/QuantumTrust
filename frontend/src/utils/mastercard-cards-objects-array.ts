@@ -2,11 +2,11 @@ import { Card } from '../types/card';
 
 export const mastercardCardsObjectsArray: Card[] = [
   {
-    id: 1,
+    id: 5,
     type: 'STANDARD',
-    description:
-      'Karta Mastercard z podstawowymi funkcjami płatniczymi i bezpieczeństwem.',
+    description: 'Karta Mastercard z podstawowymi funkcjami płatniczymi i bezpieczeństwem.',
     image: 'mastercard-standard.png',
+    publisher: 'Mastercard',
     benefits: [
       'Globalne wsparcie w przypadku awarii',
       'Unikalny program priceless cities dający dostęp do wyjątkowych wydarzeń i ofert na całym świecie',
@@ -16,13 +16,17 @@ export const mastercardCardsObjectsArray: Card[] = [
     limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
     backImage: 'mastercard-standard-back.png',
     showingCardSite: 'front',
+    fees: {
+      release: 0,
+      monthly: 10
+    }
   },
   {
-    id: 2,
+    id: 6,
     type: 'STUDENT',
-    description:
-      'Łatwy dostęp do środków i unikalne promocje dla aktywnych studentów.',
+    description: 'Łatwy dostęp do środków i unikalne promocje dla aktywnych studentów.',
     image: 'mastercard-student.png',
+    publisher: 'Mastercard',
     benefits: [
       'Dostęp do specjalnych ofert edukacyjnych',
       'Zniżki na bilety do kina i teatru',
@@ -34,13 +38,17 @@ export const mastercardCardsObjectsArray: Card[] = [
     ],
     backImage: 'mastercard-student-back.png',
     showingCardSite: 'front',
+    fees: {
+      release: 0,
+      monthly: 0
+    }
   },
   {
-    id: 3,
+    id: 7,
     type: 'PODRÓŻNIK',
-    description:
-      'Bezproblemowe płatności wielowalutowe i wyjątkowe oferty podróży do 20 krajów.',
+    description: 'Bezproblemowe płatności wielowalutowe i wyjątkowe oferty podróży do 20 krajów.',
     image: 'mastercard-travel.png',
+    publisher: 'Mastercard',
     benefits: [
       'Bezpłatne ubezpieczenie bagażu',
       'Dostęp do ekskluzywnych ofert podróżniczych',
@@ -52,13 +60,17 @@ export const mastercardCardsObjectsArray: Card[] = [
     ],
     backImage: 'mastercard-travel-back.png',
     showingCardSite: 'front',
+    fees: {
+      release: 0,
+      monthly: 5
+    }
   },
   {
-    id: 4,
+    id: 8,
     type: 'BIZNES',
-    description:
-      'Karta Mastercard dla przedsiębiorców z dodatkowymi korzyściami biznesowymi.',
+    description: 'Karta Mastercard dla przedsiębiorców z dodatkowymi korzyściami biznesowymi.',
     image: 'mastercard-business.png',
+    publisher: 'Mastercard',
     benefits: [
       'Dostęp do narzędzi analitycznych dla biznesu',
       'Zniżki na usługi księgowe i prawne',
@@ -70,5 +82,9 @@ export const mastercardCardsObjectsArray: Card[] = [
     ],
     backImage: 'mastercard-business-back.png',
     showingCardSite: 'front',
+    fees: {
+      release: 100,
+      monthly: 20
+    }
   },
 ];

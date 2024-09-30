@@ -23,12 +23,11 @@
                 @for(deposit of depositsObjectArray; track deposit.id) {
                 <div *ngIf="!isDepositIdHigherThanTwo(deposit.id)"
                     class="bg-own-gray rounded-xl md:w-[35%] h-auto max-md:w-[85%] md:py-5 px-5 flex flex-col justify-between items-center cursor-pointer hover:bg-gray-400"
-                    (click)="changeDepositType(deposit.type)" (click)="onScrollToTop()" routerLink="/single-deposit"
+                    (click)="changeDepositType(deposit.type)" routerLink="/single-deposit"
                     routerLinkActive="active">
-                    <mat-icon class="my-10 icon-3x">{{deposit.id === "1" ? "calendar_month" :
-                        "phone_iphone"}}</mat-icon>
-                    <p class="font-walter font-normal text-2xl text-black">Lokata {{deposit.type === 'timely' ?
-                        "Terminowa" : "Mobilna"}}</p>
+                    <mat-icon class="my-10 icon-3x">{{convertService.getDepositIcon(deposit.type)}}</mat-icon>
+                    <p class="font-walter font-normal text-2xl text-black">Lokata
+                        {{convertService.getPolishDepositType(deposit.type)}}</p>
                     <p class="font-walter font-normal text-2xl text-white">{{deposit.percent}}%</p>
                     <p class="font-roboto font-light text-md text-black max-md:py-5">{{deposit.description}}</p>
                 </div>
@@ -39,11 +38,11 @@
                 @for(deposit of depositsObjectArray; track deposit.id) {
                 <div *ngIf="isDepositIdHigherThanTwo(deposit.id)"
                     class="bg-own-gray rounded-xl md:w-[35%] h-auto max-md:w-[85%] md:py-5 px-5 flex flex-col justify-between items-center cursor-pointer hover:bg-gray-400"
-                    (click)="changeDepositType(deposit.type)" (click)="onScrollToTop()" routerLink="/single-deposit"
+                    (click)="changeDepositType(deposit.type)" routerLink="/single-deposit"
                     routerLinkActive="active">
-                    <mat-icon class="my-10 icon-3x">{{deposit.id === "3" ? "savings" : "bar_chart"}}</mat-icon>
-                    <p class="font-walter font-normal text-2xl text-black">Lokata {{deposit.type === 'family' ?
-                        "Rodzinna" : "Progresywna"}}</p>
+                    <mat-icon class="my-10 icon-3x">{{convertService.getDepositIcon(deposit.type)}}</mat-icon>
+                    <p class="font-walter font-normal text-2xl text-black">Lokata
+                        {{convertService.getPolishDepositType(deposit.type)}}</p>
                     <p class="font-walter font-normal text-2xl text-white">{{deposit.id === "4" ? "DO " :
                         ""}}{{deposit.percent}}%</p>
                     <p class="font-roboto font-light text-md text-black max-md:py-5">{{deposit.description}}</p>

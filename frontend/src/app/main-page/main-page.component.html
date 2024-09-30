@@ -1,9 +1,36 @@
 <app-header />
 <div class="flex flex-col m-0 p-0 overflow-hidden scroll-smooth">
     <main class="flex-grow flex justify-center text-center bg-black text-white w-full">
-        @if(tabName==='Finanse') {
+        @if(tabName === 'Finanse') {
         <app-finances />
         }
+        @if(tabName === 'AuthorizedOpenAccount') {
+        <app-user-open-account />
+        }
+        @if(tabName === 'SingleAccountTransactions') {
+        <app-single-account-transactions />
+        }
+        @if(tabName === 'OpenDeposit') {
+        <app-open-deposit />
+        }
+        @if(tabName === 'NewTransfer') {
+        <app-new-transfer />
+        }
+        @if(tabName === 'OrderCard') {
+        <app-order-card />
+        }
+        @if(tabName === 'CardSettings') {
+        <app-card-settings />
+        }
+        @if(tabName === 'Transakcje') {
+        <app-transactions />
+        }
+        @if(tabName === 'Ustawienia') {
+        <app-account-settings />
+        }
     </main>
+    <app-custom-alert [alertType]="alertService.alertType" [alertTitle]="alertService.alertTitle"
+        [alertContent]="alertService.alertContent" [alertService]="alertService" />
 </div>
+<app-scroll-arrow-up />
 <app-footer />

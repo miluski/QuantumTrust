@@ -3,6 +3,7 @@ import { Card } from '../types/card';
 export const userCards: Card[] = [
   {
     id: 1234567890123456,
+    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0001',
     type: 'STANDARD',
     publisher: 'Visa',
     description: '',
@@ -14,9 +15,15 @@ export const userCards: Card[] = [
     expirationDate: '12/25',
     showingCardSite: 'front',
     backImage: 'visa-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    },
+    status: 'suspended'
   },
   {
     id: 7890123456789012,
+    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0002',
     type: 'PODRÓŻNIK',
     publisher: 'Mastercard',
     description: '',
@@ -30,9 +37,15 @@ export const userCards: Card[] = [
     expirationDate: '05/27',
     showingCardSite: 'front',
     backImage: 'mastercard-travel-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    },
+    status: 'unsuspended'
   },
   {
     id: 3456789012345678,
+    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0000',
     type: 'PODRÓŻNIK',
     publisher: 'Visa',
     description: '',
@@ -46,9 +59,15 @@ export const userCards: Card[] = [
     expirationDate: '10/29',
     showingCardSite: 'front',
     backImage: 'visa-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    },
+    status: 'unsuspended'
   },
   {
     id: 2345678901234567,
+    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0003',
     type: 'STANDARD',
     publisher: 'Mastercard',
     description: '',
@@ -62,9 +81,15 @@ export const userCards: Card[] = [
     expirationDate: '08/26',
     showingCardSite: 'front',
     backImage: 'mastercard-standard-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    },
+    status: 'suspended'
   },
   {
     id: 4567890123456789,
+    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0004',
     type: 'BIZNES',
     publisher: 'Visa',
     description: '',
@@ -78,9 +103,15 @@ export const userCards: Card[] = [
     expirationDate: '11/28',
     showingCardSite: 'front',
     backImage: 'visa-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    },
+    status: 'unsuspended'
   },
   {
     id: 5678901234567890,
+    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0004',
     type: 'BIZNES',
     publisher: 'Mastercard',
     description: '',
@@ -94,9 +125,15 @@ export const userCards: Card[] = [
     expirationDate: '03/30',
     showingCardSite: 'front',
     backImage: 'mastercard-business-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    },
+    status: 'unsuspended'
   },
   {
     id: 6789012345678901,
+    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0001',
     type: 'STUDENT',
     publisher: 'Visa',
     description: '',
@@ -108,9 +145,15 @@ export const userCards: Card[] = [
     expirationDate: '07/24',
     showingCardSite: 'front',
     backImage: 'visa-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    },
+    status: 'unsuspended'
   },
   {
     id: 7890123456789013,
+    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0000',
     type: 'STUDENT',
     publisher: 'Mastercard',
     description: '',
@@ -122,5 +165,10 @@ export const userCards: Card[] = [
     expirationDate: '09/25',
     showingCardSite: 'front',
     backImage: 'mastercard-student-back.png',
+    fees: {
+      release: 0,
+      monthly: 0
+    },
+    status: 'unsuspended'
   },
 ];
