@@ -21,8 +21,6 @@ FROM nginx:alpine
 COPY --from=build /quantum-trust-frontend/dist/frontend /usr/share/nginx/html
 
 COPY nginx.conf /usr/share/nginx/nginx.conf
-COPY certificate.pem /usr/share/nginx/certificate.pem 
-COPY private-key.pem /usr/share/nginx/private-key.pem 
 
 EXPOSE 80
 EXPOSE 443
