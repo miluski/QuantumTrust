@@ -20,5 +20,5 @@ jobs:
       run: echo "Ending CD early" && exit 0
 
     - name: Deploy to Server
-      if: always() # Ensure this step is skipped
+      if: always() 
       run: ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} '/home/miluski/deploy.sh'
