@@ -1,26 +1,22 @@
-FROM node:alpine as build
+FROM node:alpine AS build
 
-RUN npm i -g @angular/cli
+WORKDIR /app
 
-WORKDIR /
+COPY package.json ./
 
-RUN mkdir quantum-trust-frontend
+COPY . .
 
-WORKDIR /quantum-trust-frontend
+RUN rm -rf node_modules package-lock.json
 
-COPY . /quantum-trust-frontend/
+RUN npm install
 
-RUN rm -rf /quantum-trust-frontend/node_modules /quantum-trust-frontend/package-lock.json
-
-RUN npm i
-
-RUN ng build 
+RUN npm run build --prod
 
 FROM nginx:alpine
 
-COPY --from=build /quantum-trust-frontend/dist/frontend /usr/share/nginx/html
+COPY --from=build /app/dist/frontend /usr/share/nginx/html
 
-COPY nginx.conf /usr/share/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 EXPOSE 443

@@ -57,3 +57,4 @@ Thumbs.db
 application.properties
 .prettierrc
 *.pem
+certs
