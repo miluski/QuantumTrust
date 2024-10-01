@@ -122,9 +122,9 @@ export class FinancesComponent implements OnInit {
     this.dailyTransactions = this.convertService.getGroupedUserTransactions(
       this.userTransactions
     );
-    this.dailyTransactions.forEach((transactionArray: Transaction[]) =>
-      transactionArray.splice(2)
-    );
+    this.dailyTransactions.forEach((transactionArray: Transaction[]) => {
+      transactionArray.splice(2);
+    });
   }
   changeTabName(tabName: string): void {
     this.appInformationStatesService.changeTabName(tabName);
@@ -155,9 +155,10 @@ export class FinancesComponent implements OnInit {
   }
   public filterTransactions(): void {
     this.userTransactions = this.userTransactions.filter(
-      (transaction: Transaction) =>
+      (transaction: Transaction) => {
         new Date().getDate() === new Date(transaction.date).getDate() ||
-        new Date().getDate() - 1 === new Date(transaction.date).getDate()
+          new Date().getDate() - 1 === new Date(transaction.date).getDate();
+      }
     );
   }
 }
