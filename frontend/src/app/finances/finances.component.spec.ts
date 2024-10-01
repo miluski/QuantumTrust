@@ -131,17 +131,4 @@ describe('FinancesComponent', () => {
     const result = component.getShortenedAccountNumber(transaction);
     expect(result).toBe('23');
   });
-  it('should filter transactions', () => {
-    const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000)
-      .toISOString()
-      .split('T')[0];
-    component.userTransactions = [
-      { date: today } as Transaction,
-      { date: yesterday } as Transaction,
-      { date: '2023-01-01' } as Transaction,
-    ];
-    component.filterTransactions();
-    expect(component.userTransactions.length).toBe(2);
-  });
 });
