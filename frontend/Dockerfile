@@ -20,7 +20,7 @@ COPY --from=build /app/dist/frontend /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY /etc/fail2ban/jail.local /etc/fail2ban/jail.local
+COPY /etc/fail2ban/jail.conf /etc/fail2ban/jail.conf
 COPY /etc/fail2ban/filter.d/nginx-http-auth.conf /etc/fail2ban/filter.d/nginx-http-auth.conf
 
 EXPOSE 80
