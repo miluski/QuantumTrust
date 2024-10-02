@@ -58,3 +58,5 @@ application.properties
 .prettierrc
 *.pem
 certs
+jail.conf
+nginx-http-auth.conf
