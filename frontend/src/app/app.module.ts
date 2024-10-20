@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RouterModule } from '@angular/router';
@@ -92,6 +92,7 @@ import { VerificationCodeComponent } from './verification-code/verification-code
   providers: [
     provideAnimationsAsync(),
     provideCharts(withDefaultRegisterables()),
+    provideClientHydration(),
   ],
   bootstrap: [AppComponent],
 })
