@@ -1,0 +1,10 @@
+<img
+  [src]="src"
+  [alt]="alt"
+  [ngClass]="ngClass"
+  class="w-full h-full rounded-inherit"
+  (click)="click()"
+  (load)="onload()"
+  (error)="onerror()"
+  [class.hidden]="!canRender"
+/>

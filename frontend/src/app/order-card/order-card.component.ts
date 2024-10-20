@@ -1,7 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { NgModel } from '@angular/forms';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ConvertService } from '../../services/convert.service';
 import { PaginationService } from '../../services/pagination.service';
@@ -15,34 +13,32 @@ import { CardSettings } from '../../types/card-settings';
 import { Currency } from '../../types/currency';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
 /**
  * @fileoverview OrderCardComponent is a standalone Angular component that manages the display and interaction
  * with user order cards. It includes functionalities such as pagination, card rotation, input validation,
  * and user account management.
- * 
+ *
  * @component
  * @selector app-order-card
  * @templateUrl ./order-card.component.html
- * @imports VerificationCodeComponent, MatIconModule, CommonModule, FormsModule
  * @animations AnimationsProvider.animations
- * 
+ *
  * @class OrderCardComponent
  * @implements OnInit
- * 
+ *
  * @property {Account[]} userAccounts - Array of user accounts.
  * @property {number} pinCode - Default pin code for the card.
  * @property {CardFlags} cardFlags - Flags indicating the state of various card properties.
  * @property {CardSettings} cardSettings - Settings related to the card.
  * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the card.
- * 
+ *
  * @constructor
  * @param {VerificationService} verificationService - Service for input validation.
  * @param {UserService} userService - Service to manage user data.
  * @param {PaginationService} paginationService - Service to manage pagination.
  * @param {ConvertService} convertService - Service to handle currency conversion.
- * 
+ *
  * @method ngOnInit - Lifecycle hook that is called after data-bound properties are initialized.
  * @method onResize - Host listener for window resize events.
  * @method setUserAccounts - Asynchronously sets the user accounts and initializes card settings.
@@ -70,14 +66,7 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
 @Component({
   selector: 'app-order-card',
   templateUrl: './order-card.component.html',
-  imports: [
-    VerificationCodeComponent,
-    MatIconModule,
-    CommonModule,
-    FormsModule,
-  ],
   animations: [AnimationsProvider.animations],
-  standalone: true,
 })
 export class OrderCardComponent implements OnInit {
   public userAccounts!: Account[];
@@ -112,7 +101,9 @@ export class OrderCardComponent implements OnInit {
     const isSomeDataInvalid: boolean = this.cardFlagsArray.some(
       (flag: boolean) => flag === false
     );
-    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid ? 'shake' : 'none');
+    this.shakeStateService.setCurrentShakeState(
+      isSomeDataInvalid ? 'shake' : 'none'
+    );
   }
   getIsInputValueValid(
     input: NgModel,

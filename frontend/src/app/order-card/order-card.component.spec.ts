@@ -10,8 +10,9 @@ import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { Card } from '../../types/card';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
+import { VerificationCodeModule } from '../verification-code/verification-code.module';
 import { OrderCardComponent } from './order-card.component';
+import { OrderCardModule } from './order-card.module';
 
 describe('OrderCardComponent', () => {
   let component: OrderCardComponent;
@@ -37,8 +38,8 @@ describe('OrderCardComponent', () => {
             publisher: 'VISA',
             type: 'Credit',
             fees: {
-              release: 10
-            }
+              release: 10,
+            },
           },
           {
             id: '2',
@@ -48,8 +49,8 @@ describe('OrderCardComponent', () => {
             publisher: 'VISA',
             type: 'Credit',
             fees: {
-              release: 10
-            }
+              release: 10,
+            },
           },
         ],
       }
@@ -67,8 +68,8 @@ describe('OrderCardComponent', () => {
         CommonModule,
         FormsModule,
         MatIconModule,
-        OrderCardComponent,
-        VerificationCodeComponent,
+        OrderCardModule,
+        VerificationCodeModule,
       ],
       providers: [
         AnimationsProvider,

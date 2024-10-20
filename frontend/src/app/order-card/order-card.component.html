@@ -1,223 +1,423 @@
-<div class="flex-col flex justify-center text-center bg-black text-white w-screen">
-    @if(shakeStateService.siteNumber === 1) {
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
-        <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Zamawianie nowej karty</p>
-        <p class="font-roboto font-light text-md text-white w-3/4">Wybierz interesującą cię kartę i ciesz się wolnością!
-        </p>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-col justify-center items-center py-5">
-        <div class="flex flex-row w-screen h-full relative justify-center border-none">
-            <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
-                <button class="sm:ml-10 font-bold px-4 rounded-l text-white max-sm:px-2"
-                    (click)="paginationService.previousPage()">
-                    <mat-icon class="cursor-pointer">arrow_back</mat-icon>
-                </button>
-                <div class="flex-grow"></div>
-                <button class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2"
-                    (click)="paginationService.nextPage()">
-                    <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
-                </button>
-            </div>
-            <div class="flex flex-row w-screen items-center justify-center lg:-space-x-5">
-                @for(card of paginationService.paginatedItems; track card.id) {
-                <div class="flex flex-col relative items-center cursor-pointer select-none" (click)="rotateCard(card)"
-                    [@rotateCard]="getRotateState(card)" [@fadeInCenter]="getCardState(card.id)" [ngClass]="{
-                        'cursor-pointer z-30' : card.id === currentSelectedCard.id,
-                        'opacity-30 z-20': card.id !== currentSelectedCard.id
-                    }">
-                    <img class="object-cover w-64 h-[155px] rounded-2xl my-10 z-10 pointer-events-none"
-                        [src]="getCardImage(card)"
-                        [ngClass]="{'shadow-lg shadow-gray-400' : card.id === currentSelectedCard.id}">
-                    @if(card.showingCardSite === 'front') {
-                    <div class="absolute top-10 left-[3%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                        <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
-                        <p class="font-salsa text-xxs leading-none pt-2 pl-2"
-                            [ngClass]="{'text-black': card.publisher === 'Mastercard' && card.type==='STANDARD'}">
-                            Quantum Trust</p>
-                    </div>
-                    <p class="absolute font-courier text-silver top-[55%] z-40">
-                        1234 5678 9012 3456
-                    </p>
-                    <p class="absolute font-courier text-silver text-base z-40 top-[65%]"
-                        [ngClass]='{"left-[3%] top-[68%]": card.publisher === "Mastercard"}'>
-                        01/24
-                    </p>
-                    <p class="absolute font-courier text-silver text-base z-40 left-[4%] top-[72%]"
-                        [ngClass]='{"top-[74%]": card.publisher === "Mastercard"}'>
-                        {{ownerFullName}}
-                    </p>
-                    }
-                    @if(card.showingCardSite === 'back' && currentSelectedCard.id === card.id) {
-                    <p class="absolute font-roboto font-normal text-xs text-black top-20 pt-2.5 z-30 counter-rotate left-24"
-                        [ngClass]="{'pt-4 sm:top-20': card.publisher === 'Mastercard'}">
-                        123</p>
-                    }
-                </div>
-                }
-            </div>
-        </div>
-        <div class="flex flex-col w-full pb-5">
-            <p class="font-salsa text-white text-3xl"> {{cardTypeWithPublisher}} </p>
-            <div class="flex flex-row w-full justify-center items-center">
-                <div class="flex flex-col w-1/2 text-center">
-                    <p class="font-roboto font-normal text-2xl text-white">{{getFee('issuance')}}</p>
-                    <p class="font-roboto font-light text-xl text-own-gray">za wydanie</p>
-                </div>
-                <div class="flex flex-col w-1/2">
-                    <p class="font-roboto font-normal text-2xl text-white">{{getFee('monthly')}}</p>
-                    <p class="font-roboto font-light text-xl text-own-gray">opłaty miesięcznej</p>
-                </div>
-            </div>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <div class="flex flex-col w-screen pl-5 md:px-10 items-start text-left py-2">
-            <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Limity transakcji</p>
-            <p class="font-roboto font-light text-md text-white">Wybierz limity transakcji internetowych i
-                gotówkowych.
-            </p>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <div class="w-screen flex flex-row max-lg:flex-col max-lg:space-y-5 items-center py-12">
-            <div class="flex flex-col items-start w-full">
-                <p class="font-roboto font-light text-md text-left self-center">Limit transakcji internetowych</p>
-                <div class="w-full flex flex-col items-center space-y-5">
-                    <div class="relative w-[85%] lg:w-100 self-center">
-                        <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
-                            type="number" min="{{convertService.getTransactionsLimit(getCardSettingsObject())}}"
-                            max="{{convertService.getTransactionsLimit(getCardSettingsObject('max'))}}"
-                            [value]="convertService.getCurrentTransactionLimit(getCardSettingsObject())"
-                            [(ngModel)]="cardSettings.limits.internetTransactionsLimit"
-                            #internetTransactionsLimitInput="ngModel" required />
-                        <span
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-black">
-                            {{currentCurrency}}
-                        </span>
-                    </div>
-                    <input
-                        class="w-[85%] lg:w-100 h-2 bg-own-gray rounded-lg appearance-none cursor-pointer slider-thumb select-none"
-                        type="range" min="{{convertService.getTransactionsLimit(getCardSettingsObject())}}"
-                        max="{{convertService.getTransactionsLimit(getCardSettingsObject('max'))}}"
-                        step="{{convertService.getStep(getCardSettingsObject())}}"
-                        [value]="convertService.getCurrentTransactionLimit(getCardSettingsObject())"
-                        [(ngModel)]="cardSettings.limits.internetTransactionsLimit"
-                        #internetTransactionsLimitInput="ngModel">
-                    <div class="flex justify-between w-[85%] lg:w-100 mt-2">
-                        <span class="text-white">
-                            min. {{convertService.getFormattedTransactionsLimit(getCardSettingsObject())}}
-                            {{currentCurrency}}
-                        </span>
-                        <span class="text-white">max.
-                            {{convertService.getFormattedTransactionsLimit(getCardSettingsObject('max'))}}
-                            {{currentCurrency}}
-                        </span>
-                    </div>
-                    <div *ngIf="!getIsInputValueValid(internetTransactionsLimitInput, 'internet')"
-                        class="text-red-500 pt-2">
-                        <div *ngIf="internetTransactionsLimitInput.errors?.['required']">Limit jest wymagany.</div>
-                        <div *ngIf="internetTransactionsLimitInput.errors?.['min']">Minimalna wartość to
-                            {{convertService.getFormattedTransactionsLimit(getCardSettingsObject())}}
-                        </div>
-                        <div *ngIf="internetTransactionsLimitInput.errors?.['max']">Maksymalna wartość to
-                            {{convertService.getFormattedTransactionsLimit(getCardSettingsObject('max'))}}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex flex-col items-start w-full">
-                <p class="font-roboto font-light text-md text-left self-center">Limit transakcji gotówkowych</p>
-                <div class="w-full flex flex-col items-center space-y-5">
-                    <div class="relative w-[85%] lg:w-100 self-center">
-                        <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
-                            type="number"
-                            min="{{convertService.getTransactionsLimit(getCardSettingsObject('min', 'cash'))}}"
-                            max="{{convertService.getTransactionsLimit(getCardSettingsObject('max', 'cash'))}}"
-                            [value]="convertService.getCurrentTransactionLimit(getCardSettingsObject('min', 'cash'))"
-                            [(ngModel)]="cardSettings.limits.cashTransactionsLimit"
-                            #cashTransactionsLimitInput="ngModel" required />
-                        <span
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-black">
-                            {{currentCurrency}}
-                        </span>
-                    </div>
-                    <input type="range"
-                        min="{{convertService.getTransactionsLimit(getCardSettingsObject('min', 'cash'))}}"
-                        max="{{convertService.getTransactionsLimit(getCardSettingsObject('max', 'cash'))}}"
-                        step="{{convertService.getStep(getCardSettingsObject('min','cash'))}}"
-                        [value]="convertService.getCurrentTransactionLimit(getCardSettingsObject('min', 'cash'))"
-                        [(ngModel)]="cardSettings.limits.cashTransactionsLimit" #cashTransactionsLimitInput="ngModel"
-                        class="w-[85%] lg:w-100 h-2 bg-own-gray rounded-lg appearance-none cursor-pointer slider-thumb select-none">
-                    <div class="flex justify-between w-[85%] lg:w-100 mt-2">
-                        <span class="text-white">min.
-                            {{convertService.getFormattedTransactionsLimit(getCardSettingsObject('min', 'cash'))}}
-                            {{currentCurrency}}
-                        </span>
-                        <span class="text-white">max.
-                            {{convertService.getFormattedTransactionsLimit(getCardSettingsObject('max', 'cash'))}}
-                            {{currentCurrency}}
-                        </span>
-                    </div>
-                    <div *ngIf="!getIsInputValueValid(cashTransactionsLimitInput, 'cash')" class="text-red-500 pt-2">
-                        <div *ngIf="cashTransactionsLimitInput.errors?.['required']">Limit jest wymagany.</div>
-                        <div *ngIf="cashTransactionsLimitInput.errors?.['min']">Minimalna wartość to
-                            {{convertService.getFormattedTransactionsLimit(getCardSettingsObject('min', 'cash'))}}
-                        </div>
-                        <div *ngIf="cashTransactionsLimitInput.errors?.['max']">Maksymalna wartość to
-                            {{convertService.getFormattedTransactionsLimit(getCardSettingsObject('max', 'cash'))}}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <div class="flex flex-col pl-5 md:px-10 items-start text-left py-2 w-screen">
-            <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Informacje techniczne</p>
-            <p class="font-roboto font-light text-md text-white w-3/4">Wybierz konto bankowe, z którego będą
-                ściągane
-                środki za transakcje wykonane kartą i nadaj jej unikalny kod pin.</p>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <div class="flex flex-col lg:flex-row justify-between py-12 w-screen max-lg:space-y-5">
-            <div class="flex flex-col z-20 w-[85%] lg:w-1/2 items-center justify-center self-center">
-                <p class="font-roboto font-light text-md text-left lg:w-100 max-lg:self-start">Konto bankowe</p>
-                <select
-                    class="!font-roboto !font-light !text-black !rounded-lg !h-10 max-lg:!w-full !bg-white lg:!w-100 !w-[85%]"
-                    (change)="setDepositAccountNumber($event)">
-                    @for(userAccount of userAccounts; track userAccount.id) {
-                    <option class="py-2" value={{userAccount.id}}>
-                        {{convertService.getAccountOptionString(userAccount)}}
-                    </option>
-                    }
-                </select>
-                @if(cardFlags.isAccountNumberValid === false) {
-                <p class="font-roboto font-light text-red-500 text-sm pt-5">Wybrane konto jest nieprawidłowe.</p>
-                }
-            </div>
-            <div class="flex flex-col w-full lg:w-1/2">
-                <div class="relative self-center justify-center flex flex-col lg:w-100 w-[85%]">
-                    <p class="font-roboto font-light text-md text-left">Kod PIN</p>
-                    <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
-                        type="number" min={{1111}} max={{99999999}} value={{pinCode}} [(ngModel)]="pinCode"
-                        #pinCodeInput="ngModel" required />
-                </div>
-                <div *ngIf="!getIsInputValueValid(pinCodeInput, 'pinCode')" class="text-red-500 pt-2">
-                    <div *ngIf="pinCodeInput.errors?.['required']">Kod PIN jest wymagany.</div>
-                    <div *ngIf="pinCodeInput.errors?.['min']">Minimalna wartość to
-                        1111</div>
-                    <div *ngIf="pinCodeInput.errors?.['max']">Maksymalna wartość to
-                        99999999</div>
-                </div>
-            </div>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
+<div
+  class="flex-col flex justify-center text-center bg-black text-white w-screen"
+>
+  @if(shakeStateService.siteNumber === 1) {
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
+    <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">
+      Zamawianie nowej karty
+    </p>
+    <p class="font-roboto font-light text-md text-white w-3/4">
+      Wybierz interesującą cię kartę i ciesz się wolnością!
+    </p>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="flex flex-col justify-center items-center py-5">
+    <div
+      class="flex flex-row w-screen h-full relative justify-center border-none"
+    >
+      <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
         <button
-            class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8"
-            [@shake]="shakeStateService.shakeState"
-            (click)="handleButtonClick()">
-            Zamów kartę
+          class="sm:ml-10 font-bold px-4 rounded-l text-white max-sm:px-2"
+          (click)="paginationService.previousPage()"
+        >
+          <mat-icon class="cursor-pointer">arrow_back</mat-icon>
         </button>
+        <div class="flex-grow"></div>
+        <button
+          class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2"
+          (click)="paginationService.nextPage()"
+        >
+          <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
+        </button>
+      </div>
+      <div
+        class="flex flex-row w-screen items-center justify-center lg:-space-x-5"
+      >
+        @for(card of paginationService.paginatedItems; track card.id) {
+        <div
+          class="flex flex-col relative items-center cursor-pointer select-none"
+          (click)="rotateCard(card)"
+          [@rotateCard]="getRotateState(card)"
+          [@fadeInCenter]="getCardState(card.id)"
+          [ngClass]="{
+            'cursor-pointer z-30': card.id === currentSelectedCard.id,
+            'opacity-30 z-20': card.id !== currentSelectedCard.id
+          }"
+        >
+          <app-image
+            class="object-cover w-64 h-[155px] rounded-2xl my-10 z-10 pointer-events-none"
+            [src]="getCardImage(card)"
+            [ngClass]="{
+              'shadow-lg shadow-gray-400': card.id === currentSelectedCard.id
+            }"
+          />
+          @if(card.showingCardSite === 'front') {
+          <div
+            class="absolute top-10 left-[3%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
+          >
+            <app-image
+              class="w-4 h-4 pointer-events-none"
+              src="favicon.ico"
+              alt="Quantum Trust Logo"
+            />
+            <p
+              class="font-salsa text-xxs leading-none pt-2 pl-2"
+              [ngClass]="{
+                'text-black':
+                  card.publisher === 'Mastercard' && card.type === 'STANDARD'
+              }"
+            >
+              Quantum Trust
+            </p>
+          </div>
+          <p class="absolute font-courier text-silver top-[55%] z-40">
+            1234 5678 9012 3456
+          </p>
+          <p
+            class="absolute font-courier text-silver text-base z-40 top-[65%]"
+            [ngClass]="{
+              'left-[3%] top-[68%]': card.publisher === 'Mastercard'
+            }"
+          >
+            01/24
+          </p>
+          <p
+            class="absolute font-courier text-silver text-base z-40 left-[4%] top-[72%]"
+            [ngClass]="{ 'top-[74%]': card.publisher === 'Mastercard' }"
+          >
+            {{ ownerFullName }}
+          </p>
+          } @if(card.showingCardSite === 'back' && currentSelectedCard.id ===
+          card.id) {
+          <p
+            class="absolute font-roboto font-normal text-xs text-black top-20 pt-2.5 z-30 counter-rotate left-24"
+            [ngClass]="{ 'pt-4 sm:top-20': card.publisher === 'Mastercard' }"
+          >
+            123
+          </p>
+          }
+        </div>
+        }
+      </div>
     </div>
-    }
-    @else {
-    <app-verification-code actionType="Wyrób nowej karty" />
-    }
+    <div class="flex flex-col w-full pb-5">
+      <p class="font-salsa text-white text-3xl">{{ cardTypeWithPublisher }}</p>
+      <div class="flex flex-row w-full justify-center items-center">
+        <div class="flex flex-col w-1/2 text-center">
+          <p class="font-roboto font-normal text-2xl text-white">
+            {{ getFee("issuance") }}
+          </p>
+          <p class="font-roboto font-light text-xl text-own-gray">za wydanie</p>
+        </div>
+        <div class="flex flex-col w-1/2">
+          <p class="font-roboto font-normal text-2xl text-white">
+            {{ getFee("monthly") }}
+          </p>
+          <p class="font-roboto font-light text-xl text-own-gray">
+            opłaty miesięcznej
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="w-screen bg-white h-[1px]"></div>
+    <div
+      class="flex flex-col w-screen pl-5 md:px-10 items-start text-left py-2"
+    >
+      <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">
+        Limity transakcji
+      </p>
+      <p class="font-roboto font-light text-md text-white">
+        Wybierz limity transakcji internetowych i gotówkowych.
+      </p>
+    </div>
+    <div class="w-screen bg-white h-[1px]"></div>
+    <div
+      class="w-screen flex flex-row max-lg:flex-col max-lg:space-y-5 items-center py-12"
+    >
+      <div class="flex flex-col items-start w-full">
+        <p class="font-roboto font-light text-md text-left self-center">
+          Limit transakcji internetowych
+        </p>
+        <div class="w-full flex flex-col items-center space-y-5">
+          <div class="relative w-[85%] lg:w-100 self-center">
+            <input
+              class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+              type="number"
+              min="{{
+                convertService.getTransactionsLimit(getCardSettingsObject())
+              }}"
+              max="{{
+                convertService.getTransactionsLimit(
+                  getCardSettingsObject('max')
+                )
+              }}"
+              [value]="
+                convertService.getCurrentTransactionLimit(
+                  getCardSettingsObject()
+                )
+              "
+              [(ngModel)]="cardSettings.limits.internetTransactionsLimit"
+              #internetTransactionsLimitInput="ngModel"
+              required
+            />
+            <span
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-black"
+            >
+              {{ currentCurrency }}
+            </span>
+          </div>
+          <input
+            class="w-[85%] lg:w-100 h-2 bg-own-gray rounded-lg appearance-none cursor-pointer slider-thumb select-none"
+            type="range"
+            min="{{
+              convertService.getTransactionsLimit(getCardSettingsObject())
+            }}"
+            max="{{
+              convertService.getTransactionsLimit(getCardSettingsObject('max'))
+            }}"
+            step="{{ convertService.getStep(getCardSettingsObject()) }}"
+            [value]="
+              convertService.getCurrentTransactionLimit(getCardSettingsObject())
+            "
+            [(ngModel)]="cardSettings.limits.internetTransactionsLimit"
+            #internetTransactionsLimitInput="ngModel"
+          />
+          <div class="flex justify-between w-[85%] lg:w-100 mt-2">
+            <span class="text-white">
+              min.
+              {{
+                convertService.getFormattedTransactionsLimit(
+                  getCardSettingsObject()
+                )
+              }}
+              {{ currentCurrency }}
+            </span>
+            <span class="text-white"
+              >max.
+              {{
+                convertService.getFormattedTransactionsLimit(
+                  getCardSettingsObject("max")
+                )
+              }}
+              {{ currentCurrency }}
+            </span>
+          </div>
+          <div
+            *ngIf="
+              !getIsInputValueValid(internetTransactionsLimitInput, 'internet')
+            "
+            class="text-red-500 pt-2"
+          >
+            <div *ngIf="internetTransactionsLimitInput.errors?.['required']">
+              Limit jest wymagany.
+            </div>
+            <div *ngIf="internetTransactionsLimitInput.errors?.['min']">
+              Minimalna wartość to
+              {{
+                convertService.getFormattedTransactionsLimit(
+                  getCardSettingsObject()
+                )
+              }}
+            </div>
+            <div *ngIf="internetTransactionsLimitInput.errors?.['max']">
+              Maksymalna wartość to
+              {{
+                convertService.getFormattedTransactionsLimit(
+                  getCardSettingsObject("max")
+                )
+              }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col items-start w-full">
+        <p class="font-roboto font-light text-md text-left self-center">
+          Limit transakcji gotówkowych
+        </p>
+        <div class="w-full flex flex-col items-center space-y-5">
+          <div class="relative w-[85%] lg:w-100 self-center">
+            <input
+              class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+              type="number"
+              min="{{
+                convertService.getTransactionsLimit(
+                  getCardSettingsObject('min', 'cash')
+                )
+              }}"
+              max="{{
+                convertService.getTransactionsLimit(
+                  getCardSettingsObject('max', 'cash')
+                )
+              }}"
+              [value]="
+                convertService.getCurrentTransactionLimit(
+                  getCardSettingsObject('min', 'cash')
+                )
+              "
+              [(ngModel)]="cardSettings.limits.cashTransactionsLimit"
+              #cashTransactionsLimitInput="ngModel"
+              required
+            />
+            <span
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-black"
+            >
+              {{ currentCurrency }}
+            </span>
+          </div>
+          <input
+            type="range"
+            min="{{
+              convertService.getTransactionsLimit(
+                getCardSettingsObject('min', 'cash')
+              )
+            }}"
+            max="{{
+              convertService.getTransactionsLimit(
+                getCardSettingsObject('max', 'cash')
+              )
+            }}"
+            step="{{
+              convertService.getStep(getCardSettingsObject('min', 'cash'))
+            }}"
+            [value]="
+              convertService.getCurrentTransactionLimit(
+                getCardSettingsObject('min', 'cash')
+              )
+            "
+            [(ngModel)]="cardSettings.limits.cashTransactionsLimit"
+            #cashTransactionsLimitInput="ngModel"
+            class="w-[85%] lg:w-100 h-2 bg-own-gray rounded-lg appearance-none cursor-pointer slider-thumb select-none"
+          />
+          <div class="flex justify-between w-[85%] lg:w-100 mt-2">
+            <span class="text-white"
+              >min.
+              {{
+                convertService.getFormattedTransactionsLimit(
+                  getCardSettingsObject("min", "cash")
+                )
+              }}
+              {{ currentCurrency }}
+            </span>
+            <span class="text-white"
+              >max.
+              {{
+                convertService.getFormattedTransactionsLimit(
+                  getCardSettingsObject("max", "cash")
+                )
+              }}
+              {{ currentCurrency }}
+            </span>
+          </div>
+          <div
+            *ngIf="!getIsInputValueValid(cashTransactionsLimitInput, 'cash')"
+            class="text-red-500 pt-2"
+          >
+            <div *ngIf="cashTransactionsLimitInput.errors?.['required']">
+              Limit jest wymagany.
+            </div>
+            <div *ngIf="cashTransactionsLimitInput.errors?.['min']">
+              Minimalna wartość to
+              {{
+                convertService.getFormattedTransactionsLimit(
+                  getCardSettingsObject("min", "cash")
+                )
+              }}
+            </div>
+            <div *ngIf="cashTransactionsLimitInput.errors?.['max']">
+              Maksymalna wartość to
+              {{
+                convertService.getFormattedTransactionsLimit(
+                  getCardSettingsObject("max", "cash")
+                )
+              }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-screen bg-white h-[1px]"></div>
+    <div
+      class="flex flex-col pl-5 md:px-10 items-start text-left py-2 w-screen"
+    >
+      <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">
+        Informacje techniczne
+      </p>
+      <p class="font-roboto font-light text-md text-white w-3/4">
+        Wybierz konto bankowe, z którego będą ściągane środki za transakcje
+        wykonane kartą i nadaj jej unikalny kod pin.
+      </p>
+    </div>
+    <div class="w-screen bg-white h-[1px]"></div>
+    <div
+      class="flex flex-col lg:flex-row justify-between py-12 w-screen max-lg:space-y-5"
+    >
+      <div
+        class="flex flex-col z-20 w-[85%] lg:w-1/2 items-center justify-center self-center"
+      >
+        <p
+          class="font-roboto font-light text-md text-left lg:w-100 max-lg:self-start"
+        >
+          Konto bankowe
+        </p>
+        <select
+          class="!font-roboto !font-light !text-black !rounded-lg !h-10 max-lg:!w-full !bg-white lg:!w-100 !w-[85%]"
+          (change)="setDepositAccountNumber($event)"
+        >
+          @for(userAccount of userAccounts; track userAccount.id) {
+          <option class="py-2" value="{{ userAccount.id }}">
+            {{ convertService.getAccountOptionString(userAccount) }}
+          </option>
+          }
+        </select>
+        @if(cardFlags.isAccountNumberValid === false) {
+        <p class="font-roboto font-light text-red-500 text-sm pt-5">
+          Wybrane konto jest nieprawidłowe.
+        </p>
+        }
+      </div>
+      <div class="flex flex-col w-full lg:w-1/2">
+        <div
+          class="relative self-center justify-center flex flex-col lg:w-100 w-[85%]"
+        >
+          <p class="font-roboto font-light text-md text-left">Kod PIN</p>
+          <input
+            class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+            type="number"
+            min="{{ 1111 }}"
+            max="{{ 99999999 }}"
+            value="{{ pinCode }}"
+            [(ngModel)]="pinCode"
+            #pinCodeInput="ngModel"
+            required
+          />
+        </div>
+        <div
+          *ngIf="!getIsInputValueValid(pinCodeInput, 'pinCode')"
+          class="text-red-500 pt-2"
+        >
+          <div *ngIf="pinCodeInput.errors?.['required']">
+            Kod PIN jest wymagany.
+          </div>
+          <div *ngIf="pinCodeInput.errors?.['min']">
+            Minimalna wartość to 1111
+          </div>
+          <div *ngIf="pinCodeInput.errors?.['max']">
+            Maksymalna wartość to 99999999
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-screen bg-white h-[1px]"></div>
+    <button
+      class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8"
+      [@shake]="shakeStateService.shakeState"
+      (click)="handleButtonClick()"
+    >
+      Zamów kartę
+    </button>
+  </div>
+  } @else {
+  <app-verification-code actionType="Wyrób nowej karty" />
+  }
 </div>

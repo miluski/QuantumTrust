@@ -60,3 +60,5 @@ application.properties
 certs
 jail.conf
 nginx-http-auth.conf
+
+photos-backup

@@ -1,91 +1,153 @@
 <app-header />
 <div class="flex flex-col m-0 p-0 overflow-hidden scroll-smooth">
-    <main class="flex-col flex justify-center bg-black text-white w-screen">
-        <div class="relative flex flex-row w-full py-32 bg-cover bg-center bg-opacity-25 my-12 px-10 sm:px-14 justify-center"
-            style="background-image: url({{depositObject.image}});">
-            <div class="absolute inset-0 bg-black opacity-40 z-10 h-full"></div>
-            <div class="w-[35%] max-lg:w-[75%] flex flex-col self-start items-center space-y-8 max-lg:self-center z-20">
-                <p class="font-walter max-lg:text-2xl text-3xl">Lokata
-                    {{convertService.getPolishDepositType(depositType, TOP_INFORMATION)}}</p>
-                <p class="font-roboto font-light text-xl">{{depositObject.shortDescription}}</p>
-                <button
-                    class="border border-white text-white font-salsa rounded-full py-6 max-lg:p-5 px-1 hover:bg-gray-500 my-15 lg:w-[50%]"
-                    routerLink="/login" routerLinkActive="active">
-                    Załóż online
-                </button>
+  <main class="flex-col flex justify-center bg-black text-white w-screen">
+    <div
+      class="relative flex flex-row w-full py-32 bg-cover bg-center bg-opacity-25 my-12 px-10 sm:px-14 justify-center"
+      [style.backgroundImage]="'url(' + depositObject.image + ')'"
+    >
+      <div class="absolute inset-0 bg-black opacity-40 z-10 h-full"></div>
+      <div
+        class="w-[35%] max-lg:w-[75%] flex flex-col self-start items-center space-y-8 max-lg:self-center z-20"
+      >
+        <p class="font-walter max-lg:text-2xl text-3xl">
+          Lokata
+          {{
+            convertService.getPolishDepositType(depositType, TOP_INFORMATION)
+          }}
+        </p>
+        <p class="font-roboto font-light text-xl">
+          {{ depositObject.shortDescription }}
+        </p>
+        <button
+          class="border border-white text-white font-salsa rounded-full py-6 max-lg:p-5 px-1 hover:bg-gray-500 my-15 lg:w-[50%]"
+          routerLink="/login"
+        >
+          Załóż online
+        </button>
+      </div>
+      <div
+        class="flex flex-row justify-end self-center font-roboto font-extrabold text-right lg:px-32 w-[65%] max-lg:w-[25%] space-x-1 z-20"
+      >
+        <p class="text-7xl max-lg:text-4xl xl:text-5xl xl:px-5 xl:self-center">
+          {{ depositObject.type === "progressive" ? "do" : null }}
+        </p>
+        <p class="text-7xl max-lg:text-4xl">{{ depositObject.percent }}%</p>
+      </div>
+    </div>
+    <mat-divider class="shadow-inner shadow-gray-500" />
+    <div class="w-screen flex flex-col items-center my-12">
+      <p
+        class="font-roboto font-extrabold text-white text-2xl max-md:text-lg px-12 pb-12"
+      >
+        Oblicz, ile zarobisz
+      </p>
+      <div
+        class="flex flex-row max-lg:flex-col w-[85%] justify-center items-center max-lg:space-y-12 lg:space-x-12"
+      >
+        <div class="flex flex-col lg:w-1/3 items-center space-y-5">
+          <p class="font-roboto font-light text-2xl">Kapitał początkowy:</p>
+          <div class="relative">
+            <input
+              class="bg-transparent p-4 border-2 border-gray-400 rounded-md no-arrows pr-12"
+              type="number"
+              min="100"
+              max="10000"
+              value="{{ initialCapital }}"
+              [(ngModel)]="initialCapital"
+              #initialCapitalInput="ngModel"
+              required
+              (change)="calculateProfit()"
+            />
+            <span
+              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white"
+              >PLN</span
+            >
+          </div>
+          <div
+            *ngIf="getIsInitialCapitalInvalid(initialCapitalInput)"
+            class="text-red-500"
+          >
+            <div *ngIf="initialCapitalInput.errors?.['required']">
+              Kapitał początkowy jest wymagany.
             </div>
-            <div
-                class="flex flex-row justify-end self-center font-roboto font-extrabold text-right lg:px-32 w-[65%] max-lg:w-[25%] space-x-1 z-20">
-                <p class="text-7xl max-lg:text-4xl xl:text-5xl xl:px-5 xl:self-center">{{depositObject.type ===
-                    'progressive' ? "do" : null}}</p>
-                <p class="text-7xl max-lg:text-4xl">{{depositObject.percent}}%</p>
+            <div *ngIf="initialCapitalInput.errors?.['min']">
+              Minimalna wartość lokaty to 100 PLN.
             </div>
+            <div *ngIf="initialCapitalInput.errors?.['max']">
+              Maksymalna wartość lokaty to 10000 PLN.
+            </div>
+          </div>
         </div>
-        <mat-divider class="shadow-inner shadow-gray-500" />
-        <div class="w-screen flex flex-col items-center my-12">
-            <p class="font-roboto font-extrabold text-white text-2xl max-md:text-lg px-12 pb-12">Oblicz, ile zarobisz
+        <div
+          class="flex flex-col lg:w-1/3 items-center space-y-5 max-md:w-[85%] md:w-[65%]"
+        >
+          <p class="font-roboto font-light text-2xl">Czas trwania:</p>
+          <div class="w-full flex flex-col items-center space-y-5">
+            <input
+              type="range"
+              min="1"
+              max="4"
+              step="1"
+              [value]="interval"
+              class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb"
+              [(ngModel)]="interval"
+              (change)="calculateProfit()"
+            />
+            <div class="flex justify-between w-full px-2 mt-2">
+              <span class="text-white">1 mc</span>
+              <span class="text-white">3 mc</span>
+              <span class="text-white">6 mc</span>
+              <span class="text-white">12 mc</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col lg:w-1/3 items-center space-y-5">
+          <p class="font-roboto font-light text-2xl">Zysk:</p>
+          <p class="font-roboto font-semibold text-2xl text-green-500">
+            {{ profit }} PLN
+          </p>
+        </div>
+      </div>
+    </div>
+    <mat-divider class="shadow-inner shadow-gray-500" />
+    <div class="w-screen flex flex-col items-center my-12">
+      <p
+        class="font-roboto font-extrabold text-white text-2xl max-md:text-lg px-12 pb-12"
+      >
+        Jak otworzyć lokatę
+        {{
+          convertService.getPolishDepositType(depositType, BOTTOM_INFORMATION)
+        }}?
+      </p>
+      <div
+        class="flex flex-col md:flex-row md:w-[85%] max-md:w-[80%] max-sm:w-screen items-center md:space-x-5 max-sm:p-0 max-md:p-5 max-md:space-y-10"
+      >
+        @for(step of steps; track step.id) {
+        <div
+          class="flex flex-col max-md:flex-row md:w-1/3 max-md:w-[85%] max-md:space-x-10 max-md:justify-center text-wrap"
+        >
+          <p
+            class="font-viga text-lg lg:text-2xl xl:text-4xl text-own-gray border-gray-400 border-2 rounded-full py-2 px-4 lg:py-4 lg:px-6 xl:py-6 xl:px-8 self-center relative"
+          >
+            {{ step.id }}
+          </p>
+          <div class="flex flex-col text-center">
+            <p
+              class="font-roboto font-bold text-md lg:text-lg xl:text-xl text-white"
+            >
+              {{ step.instruction }}
             </p>
-            <div
-                class="flex flex-row max-lg:flex-col w-[85%] justify-center items-center max-lg:space-y-12 lg:space-x-12">
-                <div class="flex flex-col lg:w-1/3 items-center space-y-5">
-                    <p class="font-roboto font-light text-2xl">Kapitał początkowy:</p>
-                    <div class="relative">
-                        <input class="bg-transparent p-4 border-2 border-gray-400 rounded-md no-arrows pr-12"
-                            type="number" min="100" max="10000" value={{initialCapital}} [(ngModel)]="initialCapital"
-                            #initialCapitalInput="ngModel" required (change)="calculateProfit()" />
-                        <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white">PLN</span>
-                    </div>
-                    <div *ngIf="getIsInitialCapitalInvalid(initialCapitalInput)"
-                        class="text-red-500">
-                        <div *ngIf="initialCapitalInput.errors?.['required']">Kapitał początkowy jest wymagany.</div>
-                        <div *ngIf="initialCapitalInput.errors?.['min']">Minimalna wartość lokaty to 100 PLN.</div>
-                        <div *ngIf="initialCapitalInput.errors?.['max']">Maksymalna wartość lokaty to 10000 PLN.</div>
-                    </div>
-                </div>
-                <div class="flex flex-col lg:w-1/3 items-center space-y-5 max-md:w-[85%] md:w-[65%]">
-                    <p class="font-roboto font-light text-2xl">Czas trwania:</p>
-                    <div class="w-full flex flex-col items-center space-y-5">
-                        <input type="range" min="1" max="4" step="1" [value]="interval"
-                            class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb"
-                            [(ngModel)]="interval" (change)="calculateProfit()">
-                        <div class="flex justify-between w-full px-2 mt-2">
-                            <span class="text-white">1 mc</span>
-                            <span class="text-white">3 mc</span>
-                            <span class="text-white">6 mc</span>
-                            <span class="text-white">12 mc</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col lg:w-1/3 items-center space-y-5">
-                    <p class="font-roboto font-light text-2xl">Zysk:</p>
-                    <p class="font-roboto font-semibold text-2xl text-green-500">{{profit}} PLN</p>
-                </div>
-            </div>
+            <p
+              class="font-roboto font-light text-md lg:text-lg xl:text-xl text-white"
+            >
+              {{ step.description }}
+            </p>
+          </div>
         </div>
-        <mat-divider class="shadow-inner shadow-gray-500" />
-        <div class="w-screen flex flex-col items-center my-12">
-            <p class="font-roboto font-extrabold text-white text-2xl max-md:text-lg px-12 pb-12">Jak otworzyć lokatę
-                {{convertService.getPolishDepositType(depositType, BOTTOM_INFORMATION)}}?</p>
-            <div
-                class="flex flex-col md:flex-row md:w-[85%] max-md:w-[80%] max-sm:w-screen items-center md:space-x-5 max-sm:p-0 max-md:p-5 max-md:space-y-10">
-                @for(step of steps; track step.id) {
-                <div
-                    class="flex flex-col max-md:flex-row md:w-1/3 max-md:w-[85%] max-md:space-x-10 max-md:justify-center text-wrap">
-                    <p
-                        class="font-viga text-lg lg:text-2xl xl:text-4xl text-own-gray border-gray-400 border-2 rounded-full py-2 px-4 lg:py-4 lg:px-6 xl:py-6 xl:px-8 self-center relative">
-                        {{step.id}}
-                    </p>
-                    <div class="flex flex-col text-center">
-                        <p class="font-roboto font-bold text-md lg:text-lg xl:text-xl text-white">{{step.instruction}}
-                        </p>
-                        <p class="font-roboto font-light text-md lg:text-lg xl:text-xl text-white">
-                            {{step.description}}</p>
-                    </div>
-                </div>
-                }
-            </div>
-        </div>
-    </main>
+        }
+      </div>
+    </div>
+  </main>
 </div>
 <app-scroll-arrow-up />
 <app-footer />

@@ -4,8 +4,9 @@ export const mastercardCardsObjectsArray: Card[] = [
   {
     id: 5,
     type: 'STANDARD',
-    description: 'Karta Mastercard z podstawowymi funkcjami płatniczymi i bezpieczeństwem.',
-    image: 'mastercard-standard.png',
+    description:
+      'Karta Mastercard z podstawowymi funkcjami płatniczymi i bezpieczeństwem.',
+    image: 'mastercard-standard.webp',
     publisher: 'Mastercard',
     benefits: [
       'Globalne wsparcie w przypadku awarii',
@@ -14,18 +15,19 @@ export const mastercardCardsObjectsArray: Card[] = [
       'Bezpieczeństwo transakcji online zapewnione za pomocą technologii Mastercard secure code',
     ],
     limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
-    backImage: 'mastercard-standard-back.png',
+    backImage: 'mastercard-standard-back.webp',
     showingCardSite: 'front',
     fees: {
       release: 0,
-      monthly: 10
-    }
+      monthly: 10,
+    },
   },
   {
     id: 6,
     type: 'STUDENT',
-    description: 'Łatwy dostęp do środków i unikalne promocje dla aktywnych studentów.',
-    image: 'mastercard-student.png',
+    description:
+      'Łatwy dostęp do środków i unikalne promocje dla aktywnych studentów.',
+    image: 'mastercard-student.webp',
     publisher: 'Mastercard',
     benefits: [
       'Dostęp do specjalnych ofert edukacyjnych',
@@ -36,18 +38,19 @@ export const mastercardCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [15000, 10], cashTransactions: [7000, 5] },
     ],
-    backImage: 'mastercard-student-back.png',
+    backImage: 'mastercard-student-back.webp',
     showingCardSite: 'front',
     fees: {
       release: 0,
-      monthly: 0
-    }
+      monthly: 0,
+    },
   },
   {
     id: 7,
     type: 'PODRÓŻNIK',
-    description: 'Bezproblemowe płatności wielowalutowe i wyjątkowe oferty podróży do 20 krajów.',
-    image: 'mastercard-travel.png',
+    description:
+      'Bezproblemowe płatności wielowalutowe i wyjątkowe oferty podróży do 20 krajów.',
+    image: 'mastercard-travel.webp',
     publisher: 'Mastercard',
     benefits: [
       'Bezpłatne ubezpieczenie bagażu',
@@ -58,18 +61,19 @@ export const mastercardCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [20000, 15], cashTransactions: [10000, 8] },
     ],
-    backImage: 'mastercard-travel-back.png',
+    backImage: 'mastercard-travel-back.webp',
     showingCardSite: 'front',
     fees: {
       release: 0,
-      monthly: 5
-    }
+      monthly: 5,
+    },
   },
   {
     id: 8,
     type: 'BIZNES',
-    description: 'Karta Mastercard dla przedsiębiorców z dodatkowymi korzyściami biznesowymi.',
-    image: 'mastercard-business.png',
+    description:
+      'Karta Mastercard dla przedsiębiorców z dodatkowymi korzyściami biznesowymi.',
+    image: 'mastercard-business.webp',
     publisher: 'Mastercard',
     benefits: [
       'Dostęp do narzędzi analitycznych dla biznesu',
@@ -80,11 +84,11 @@ export const mastercardCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [100000, 5], cashTransactions: [50000, 3] },
     ],
-    backImage: 'mastercard-business-back.png',
+    backImage: 'mastercard-business-back.webp',
     showingCardSite: 'front',
     fees: {
       release: 100,
-      monthly: 20
-    }
+      monthly: 20,
+    },
   },
 ];

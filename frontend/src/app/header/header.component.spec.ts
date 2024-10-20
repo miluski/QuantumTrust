@@ -4,6 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { HeaderComponent } from './header.component';
+import { HeaderModule } from './header.module';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -24,7 +25,7 @@ describe('HeaderComponent', () => {
       changeDrawer: jasmine.createSpy('changeDrawer'),
     };
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent, BrowserAnimationsModule],
+      imports: [HeaderModule, BrowserAnimationsModule],
       providers: [
         { provide: Router, useValue: mockRouter },
         {

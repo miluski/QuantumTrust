@@ -1,7 +1,4 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatRadioModule } from '@angular/material/radio';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { FiltersService } from '../../services/filters.service';
 import { Transaction } from '../../types/transaction';
@@ -13,11 +10,6 @@ import { Transaction } from '../../types/transaction';
  * @component
  * @selector app-sort-expansion
  * @templateUrl ./sort-expansion.component.html
- * @imports [
- *   MatRadioModule,
- *   CommonModule,
- *   FormsModule
- * ]
  *
  * @class SortExpansionComponent
  * @implements OnInit
@@ -41,8 +33,6 @@ import { Transaction } from '../../types/transaction';
 @Component({
   selector: 'app-sort-expansion',
   templateUrl: './sort-expansion.component.html',
-  imports: [MatRadioModule, CommonModule, FormsModule],
-  standalone: true,
 })
 export class SortExpansionComponent implements OnInit {
   @Input() transactionsArray!: Transaction[][];

@@ -89,6 +89,12 @@ export class AnimationsProvider {
         animate('1.5s ease-out'),
       ]),
     ]),
+    trigger('fadeIn', [
+      state('void', style({ opacity: 0 })),
+      transition(':enter', [
+        animate('2s ease-in', style({ opacity: 1 }))
+      ])
+    ]),
     trigger('pulseAnimation', [
       state('start', style({ transform: 'scale(1)' })),
       state('end', style({ transform: 'scale(1.2)' })),

@@ -8,6 +8,7 @@ import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 import { UserMobileHeaderComponent } from './user-mobile-header.component';
+import { UserMobileHeaderModule } from './user-mobile-header.module';
 
 describe('UserMobileHeaderComponent', () => {
   let component: UserMobileHeaderComponent;
@@ -34,7 +35,7 @@ describe('UserMobileHeaderComponent', () => {
     };
     mockAvatarService = {};
     await TestBed.configureTestingModule({
-      imports: [UserMobileHeaderComponent, BrowserAnimationsModule],
+      imports: [UserMobileHeaderModule, BrowserAnimationsModule],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: UserService, useValue: mockUserService },

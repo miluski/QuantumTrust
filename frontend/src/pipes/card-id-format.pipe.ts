@@ -12,7 +12,6 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({
   name: 'cardIdFormat',
-  standalone: true,
 })
 export class CardIdFormatPipe implements PipeTransform {
   transform(value: number): string {

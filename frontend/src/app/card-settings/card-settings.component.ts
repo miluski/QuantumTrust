@@ -1,8 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { CardIdFormatPipe } from '../../pipes/card-id-format.pipe';
+import { NgModel } from '@angular/forms';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
@@ -17,12 +14,6 @@ import { CardFlags } from '../../types/card-flags';
 import { CardSettings } from '../../types/card-settings';
 import { Transaction } from '../../types/transaction';
 import { UserAccount } from '../../types/user-account';
-import { DurationExpansionComponent } from '../duration-expansion/duration-expansion.component';
-import { MobileFiltersComponent } from '../mobile-filters/mobile-filters.component';
-import { SearchBarComponent } from '../search-bar/search-bar.component';
-import { SortExpansionComponent } from '../sort-expansion/sort-expansion.component';
-import { StatusExpansionComponent } from '../status-expansion/status-expansion.component';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
 /**
  * @fileoverview CardSettingsComponent is a standalone Angular component that manages the settings of a user's card.
@@ -32,20 +23,7 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
  * @component
  * @selector app-card-settings
  * @templateUrl ./card-settings.component.html
- * @imports [
- *   VerificationCodeComponent,
- *   MobileFiltersComponent,
- *   SortExpansionComponent,
- *   DurationExpansionComponent,
- *   StatusExpansionComponent,
- *   SearchBarComponent,
- *   CommonModule,
- *   FormsModule,
- *   MatTooltipModule,
- *   CardIdFormatPipe,
- * ]
  * @animations [AnimationsProvider.animations]
- * @standalone true
  *
  * @class
  * @implements OnInit
@@ -71,20 +49,7 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
 @Component({
   selector: 'app-card-settings',
   templateUrl: './card-settings.component.html',
-  imports: [
-    VerificationCodeComponent,
-    MobileFiltersComponent,
-    SortExpansionComponent,
-    DurationExpansionComponent,
-    StatusExpansionComponent,
-    SearchBarComponent,
-    CommonModule,
-    FormsModule,
-    MatTooltipModule,
-    CardIdFormatPipe,
-  ],
   animations: [AnimationsProvider.animations],
-  standalone: true,
 })
 export class CardSettingsComponent implements OnInit {
   public originalCard!: Card;

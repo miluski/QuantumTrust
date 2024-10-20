@@ -1,9 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
-import { CardIdFormatPipe } from '../../pipes/card-id-format.pipe';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
@@ -25,9 +27,7 @@ import { UserAccount } from '../../types/user-account';
  * @selector app-finances
  * @templateUrl ./finances.component.html
  * @styleUrl ./finances.component.css
- * @imports CommonModule, RouterModule, MatIconModule, MatTooltipModule, CardIdFormatPipe
  * @animations AnimationsProvider.animations
- * @standalone true
  *
  * @class FinancesComponent
  * @implements OnInit
@@ -64,15 +64,7 @@ import { UserAccount } from '../../types/user-account';
   selector: 'app-finances',
   templateUrl: './finances.component.html',
   styleUrl: './finances.component.css',
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatIconModule,
-    MatTooltipModule,
-    CardIdFormatPipe,
-  ],
   animations: [AnimationsProvider.animations],
-  standalone: true,
 })
 export class FinancesComponent implements OnInit {
   public userAccounts!: Account[];
@@ -84,6 +76,7 @@ export class FinancesComponent implements OnInit {
   protected userDeposits!: Deposit[];
   protected dailyTransactions: Transaction[][] = [[]];
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private appInformationStatesService: AppInformationStatesService,
     private userService: UserService,
     private itemSelectionService: ItemSelectionService,
@@ -110,8 +103,10 @@ export class FinancesComponent implements OnInit {
     this.cardPaginationService.setLargeBreakpointItemsPerPage(4);
   }
   handleWidthChange(): void {
-    this.accountsPaginationService.handleWidthChange(window.innerWidth);
-    this.cardPaginationService.handleWidthChange(window.innerWidth);
+    if (isPlatformBrowser(this.platformId)) {
+      this.accountsPaginationService.handleWidthChange(window.innerWidth);
+      this.cardPaginationService.handleWidthChange(window.innerWidth);
+    }
   }
   @HostListener('window:resize', ['$event'])
   onResize(event: UIEvent): void {

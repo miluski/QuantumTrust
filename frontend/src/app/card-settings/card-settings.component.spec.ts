@@ -13,6 +13,7 @@ import { Card } from '../../types/card';
 import { CardSettings } from '../../types/card-settings';
 import { Transaction } from '../../types/transaction';
 import { CardSettingsComponent } from './card-settings.component';
+import { CardSettingsModule } from './card-settings.module';
 
 describe('CardSettingsComponent', () => {
   let component: CardSettingsComponent;
@@ -42,14 +43,14 @@ describe('CardSettingsComponent', () => {
     const filtersServiceSpy = jasmine.createSpyObj('FiltersService', [
       'sortByDate',
       'setOriginalTransactionsArray',
-      'resetSelectedFilters'
+      'resetSelectedFilters',
     ]);
     const convertServiceSpy = jasmine.createSpyObj('ConvertService', [
       'getTransactionsLimit',
       'getGroupedUserTransactions',
     ]);
     await TestBed.configureTestingModule({
-      imports: [FormsModule, CardSettingsComponent],
+      imports: [FormsModule, CardSettingsModule],
       providers: [
         { provide: UserService, useValue: userServiceSpy },
         { provide: ItemSelectionService, useValue: itemSelectionServiceSpy },

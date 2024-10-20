@@ -1,57 +1,114 @@
 <header
-    class="sticky z-50 w-full bg-black top-0 flex flex-row justify-between items-center text-white p-4 shadow-none border-none">
-    <button class="relative flex flex-row items-center h-full cursor-pointer mx-5" routerLink="/main-page"
-        routerLinkActive="active" (click)="changeTabName('Finanse')">
-        <img class="w-10 h-10 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
-        <p class="sm:hidden flex font-salsa text-xl leading-none end-5 !mt-5 items-center pl-5">Quantum Trust</p>
-    </button>
-    <div [ngClass]="{'!hidden' : currentRoute !== '/main-page', 'hidden md:block' : currentRoute === '/main-page'}"
-        class="md:w-[65%] space-x-10 mt-5">
-        <p class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block transition-colors duration-500"
-            [ngClass]="{'text-white': tabName === 'Finanse', 'text-own-gray': tabName !== 'Finanse'}"
-            (click)="changeTabName('Finanse')">Finanse</p>
-        <p class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block ml-4 transition-colors duration-500"
-            [ngClass]="{'text-white': tabName === 'Transakcje', 'text-own-gray': tabName !== 'Transakcje'}"
-            (click)="changeTabName('Transakcje')">Transakcje</p>
-        <p class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block ml-4 transition-colors duration-500"
-            [ngClass]="{'text-white': tabName === 'Ustawienia', 'text-own-gray': tabName !== 'Ustawienia'}"
-            (click)="changeTabName('Ustawienia')">Ustawienia</p>
-    </div>
-    <div class="flex flex-col">
-        <div class="flex flex-row space-x-5">
-            <div class="relative hidden md:flex md:flex-row space-x-5 w-full cursor-pointer"
-                (click)="toggleMenuVisible()">
-                <p class="pt-5 font-roboto font-light text-xl text-nowrap hover:text-gray-300">{{user.name}}
-                    {{user.surname}}</p>
-                <button class="w-full">
-                    @if(!avatarService.avatarError) {
-                    <img class="rounded-full min-w-12 w-12 h-12 pointer-events-none" alt="user-avatar" [src]="user.avatarUrl"
-                        (error)="avatarService.avatarError = true" />
-                    }
-                    @else {
-                    <div class="rounded-full min-w-12 w-12 h-12 flex items-center justify-center text-white "
-                        [style.background-color]="avatarService.avatarColor">
-                        {{ avatarService.getInitials() }}
-                    </div>
-                    }
-                </button>
-                @if(isMenuVisible) {
-                <div class="space-x-5 px-14 right-0 absolute text-center flex flex-row top-full mt-2 bg-black border-b-2 border-gray-400 shadow-white w-auto z-50 cursor-pointer group/logout rounded-b-lg"
-                    routerLink="/home-page" routerLinkActive="active" (click)="changeTabName('Konta')">
-                    <i
-                        class="fa-solid fa-arrow-right-from-bracket text-white text-xl group-hover/logout:text-gray-500"></i>
-                    <p class="text-nowrap font-roboto text-xl text-white font-light group-hover/logout:text-gray-500">
-                        Wyloguj
-                        się</p>
-                </div>
-                }
-            </div>
-            <div class="flex md:hidden bg-black">
-                <button mat-icon-button (click)="toggleDrawer()" class="focus:outline-none">
-                    <mat-icon class="text-white">menu</mat-icon>
-                </button>
-            </div>
+  class="sticky z-50 w-full bg-black top-0 flex flex-row justify-between items-center text-white p-4 shadow-none border-none"
+>
+  <button
+    class="relative flex flex-row items-center h-full cursor-pointer mx-5"
+    routerLink="/main-page"
+    (click)="changeTabName('Finanse')"
+  >
+    <app-image
+      class="w-10 h-10 pointer-events-none"
+      src="favicon.ico"
+      alt="Quantum Trust Logo"
+    />
+    <p
+      class="sm:hidden flex font-salsa text-xl leading-none end-5 !mt-5 items-center pl-5"
+    >
+      Quantum Trust
+    </p>
+  </button>
+  <div
+    [ngClass]="{
+      '!hidden': currentRoute !== '/main-page',
+      'hidden md:block': currentRoute === '/main-page'
+    }"
+    class="md:w-[65%] space-x-10 mt-5"
+  >
+    <p
+      class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block transition-colors duration-500"
+      [ngClass]="{
+        'text-white': tabName === 'Finanse',
+        'text-own-gray': tabName !== 'Finanse'
+      }"
+      (click)="changeTabName('Finanse')"
+    >
+      Finanse
+    </p>
+    <p
+      class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block ml-4 transition-colors duration-500"
+      [ngClass]="{
+        'text-white': tabName === 'Transakcje',
+        'text-own-gray': tabName !== 'Transakcje'
+      }"
+      (click)="changeTabName('Transakcje')"
+    >
+      Transakcje
+    </p>
+    <p
+      class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block ml-4 transition-colors duration-500"
+      [ngClass]="{
+        'text-white': tabName === 'Ustawienia',
+        'text-own-gray': tabName !== 'Ustawienia'
+      }"
+      (click)="changeTabName('Ustawienia')"
+    >
+      Ustawienia
+    </p>
+  </div>
+  <div class="flex flex-col">
+    <div class="flex flex-row space-x-5">
+      <div
+        class="relative hidden md:flex md:flex-row space-x-5 w-full cursor-pointer"
+        (click)="toggleMenuVisible()"
+      >
+        <p
+          class="pt-5 font-roboto font-light text-xl text-nowrap hover:text-gray-300"
+        >
+          {{ user.name }} {{ user.surname }}
+        </p>
+        <button class="w-full">
+          @if(!avatarService.avatarError) {
+          <app-image
+            class="rounded-full min-w-12 w-12 h-12 pointer-events-none"
+            alt="user-avatar"
+            [src]="user.avatarUrl"
+            [error]="handleAvatarError()"
+          />
+          } @else {
+          <div
+            class="rounded-full min-w-12 w-12 h-12 flex items-center justify-center text-white"
+            [style.background-color]="avatarService.avatarColor"
+          >
+            {{ avatarService.getInitials() }}
+          </div>
+          }
+        </button>
+        @if(isMenuVisible) {
+        <div
+          class="space-x-5 px-14 right-0 absolute text-center flex flex-row top-full mt-2 bg-black border-b-2 border-gray-400 shadow-white w-auto z-50 cursor-pointer group/logout rounded-b-lg"
+          routerLink="/home-page"
+          (click)="changeTabName('Konta')"
+        >
+          <i
+            class="fa-solid fa-arrow-right-from-bracket text-white text-xl group-hover/logout:text-gray-500"
+          ></i>
+          <p
+            class="text-nowrap font-roboto text-xl text-white font-light group-hover/logout:text-gray-500"
+          >
+            Wyloguj się
+          </p>
         </div>
+        }
+      </div>
+      <div class="flex md:hidden bg-black">
+        <button
+          mat-icon-button
+          (click)="toggleDrawer()"
+          class="focus:outline-none"
+        >
+          <mat-icon class="text-white">menu</mat-icon>
+        </button>
+      </div>
     </div>
-
+  </div>
 </header>

@@ -1,7 +1,4 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatRadioButton } from '@angular/material/radio';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { FiltersService } from '../../services/filters.service';
 import { Transaction } from '../../types/transaction';
@@ -13,11 +10,6 @@ import { Transaction } from '../../types/transaction';
  * @component
  * @selector app-status-expansion
  * @templateUrl ./status-expansion.component.html
- * @imports [
- *   CommonModule,
- *   MatRadioButton,
- *   MatExpansionModule
- * ]
  *
  * @class StatusExpansionComponent
  * @implements OnInit
@@ -41,8 +33,6 @@ import { Transaction } from '../../types/transaction';
 @Component({
   selector: 'app-status-expansion',
   templateUrl: './status-expansion.component.html',
-  imports: [CommonModule, MatRadioButton, MatExpansionModule],
-  standalone: true,
 })
 export class StatusExpansionComponent implements OnInit {
   @Input() transactionsArray!: Transaction[][];

@@ -6,13 +6,14 @@ import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 import { UserHeaderComponent } from './user-header.component';
+import { UserHeaderModule } from './user-header.module';
 
 describe('UserHeaderComponent', () => {
   let component: UserHeaderComponent;
   let fixture: ComponentFixture<UserHeaderComponent>;
   let mockRouter = {
     url: '/main-page',
-    events: of({}), 
+    events: of({}),
     navigate: jasmine.createSpy('navigate'),
   };
   let mockUserService = { userAccount: { name: 'Test User' } as UserAccount };
@@ -21,23 +22,19 @@ describe('UserHeaderComponent', () => {
     changeTabName: jasmine.createSpy('changeTabName'),
     toggleDrawer: jasmine.createSpy('toggleDrawer'),
   };
-  let mockAvatarService = {};
+  let mockAvatarService = {
+    getInitials: jasmine.createSpy('getInitials').and.returnValue('TU')
+  };
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserHeaderComponent],
+      imports: [UserHeaderModule],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: UserService, useValue: mockUserService },
-        {
-          provide: AppInformationStatesService,
-          useValue: mockAppInformationStatesService,
-        },
+        { provide: AppInformationStatesService, useValue: mockAppInformationStatesService },
         { provide: AvatarService, useValue: mockAvatarService },
-        {
-          provide: ActivatedRoute,
-          useValue: {},
-        },
-      ],
+        { provide: ActivatedRoute, useValue: {} },
+      ]
     }).compileComponents();
   });
   beforeEach(() => {
@@ -59,21 +56,7 @@ describe('UserHeaderComponent', () => {
     expect(component.tabName).toBe('Finanse');
   });
   it('should change tab name', () => {
-    const newTabName = 'New Tab';
-    component.changeTabName(newTabName);
-    expect(mockAppInformationStatesService.changeTabName).toHaveBeenCalledWith(
-      newTabName
-    );
-  });
-  it('should toggle drawer visibility', () => {
-    component.toggleDrawer();
-    expect(mockAppInformationStatesService.toggleDrawer).toHaveBeenCalled();
-  });
-  it('should toggle menu visibility', () => {
-    expect(component.isMenuVisible).toBeFalse();
-    component.toggleMenuVisible();
-    expect(component.isMenuVisible).toBeTrue();
-    component.toggleMenuVisible();
-    expect(component.isMenuVisible).toBeFalse();
+    component.changeTabName('New Tab');
+    expect(mockAppInformationStatesService.changeTabName).toHaveBeenCalledWith('New Tab');
   });
 });

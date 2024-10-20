@@ -1,6 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { WindowEventsService } from '../../services/window-events.service';
 
@@ -9,22 +8,23 @@ import { WindowEventsService } from '../../services/window-events.service';
  *
  * @selector 'app-scroll-arrow-up'
  * @templateUrl './scroll-arrow-up.component.html'
- * @imports [CommonModule, MatTooltipModule]
  * @animations [AnimationsProvider.animations]
- * @standalone true
  *
  * @method scrollToTop Scrolls the window to the top of the page with a smooth scrolling behavior.
  */
 @Component({
   selector: 'app-scroll-arrow-up',
   templateUrl: './scroll-arrow-up.component.html',
-  imports: [CommonModule, MatTooltipModule],
   animations: [AnimationsProvider.animations],
-  standalone: true,
 })
 export class ScrollArrowUpComponent {
-  constructor(protected windowEventsService: WindowEventsService) {
-    this.windowEventsService.startPulsing();
+  constructor(
+    @Inject(PLATFORM_ID) platformId: Object,
+    protected windowEventsService: WindowEventsService
+  ) {
+    if (isPlatformBrowser(platformId)) {
+      this.windowEventsService.startPulsing();
+    }
   }
   scrollToTop(): void {
     this.windowEventsService.scrollToTop();

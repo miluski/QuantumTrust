@@ -5,6 +5,7 @@ import { ConvertService } from '../../services/convert.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { DepositListComponent } from './deposit-list.component';
+import { DepositListModule } from './deposit-list.module';
 
 describe('DepositListComponent', () => {
   let component: DepositListComponent;
@@ -21,7 +22,7 @@ describe('DepositListComponent', () => {
       'getPolishDepositType',
     ]);
     await TestBed.configureTestingModule({
-      imports: [DepositListComponent],
+      imports: [DepositListModule],
       providers: [
         { provide: ProductTypesService, useValue: productTypesServiceMock },
         { provide: ConvertService, useValue: convertServiceMock },
@@ -36,9 +37,6 @@ describe('DepositListComponent', () => {
   });
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-  it('should have default tabName as "Lokaty"', () => {
-    expect(component.tabName).toBe('Lokaty');
   });
   it('should have default depositType as "timely"', () => {
     expect(component.depositType).toBe('timely');

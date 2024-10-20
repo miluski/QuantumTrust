@@ -1,62 +1,98 @@
-<div class="flex-grow flex justify-center text-center bg-black text-white w-full">
-    <div *ngIf='tabName == "Lokaty"' class="flex flex-col h-full space-y-10 my-10 justify-center items-center w-[85%]">
-        <p class="font-roboto text-xl font-bold">Dlaczego warto założyć u nas lokatę?</p>
-        <p class="font-roboto text-md font-light">
-            Zakładanie lokaty w naszym banku to pewny krok w stronę stabilnej i bezpiecznej przyszłości finansowej.
-            Oferujemy szeroki wachlarz lokat, dostosowanych do różnych potrzeb i oczekiwań naszych klientów. Bez względu
-            na to, czy szukasz krótkoterminowej inwestycji, czy chcesz oszczędzać przez dłuższy okres, znajdziesz u nas
-            odpowiednie rozwiązanie.
-        </p>
-        <p class="font-roboto text-md font-light">
-            Nasze lokaty zapewniają gwarantowany zysk, chronione przez Bankowy Fundusz Gwarancyjny, co daje Ci pełne
-            bezpieczeństwo. Oferujemy różne rodzaje lokat - terminowe, mobilne, rodzinne i progresywne - każda z
-            unikalnymi zaletami. Możesz zarządzać nimi zarówno w placówkach banku, jak i online oraz przez aplikację
-            mobilną. Nasze konkurencyjne oprocentowanie pozwala efektywnie pomnażać oszczędności, a lokata progresywna
-            oferuje rosnące zyski z czasem. Lokata rodzinna umożliwia wspólne oszczędzanie, a lokata mobilna - wyższe
-            oprocentowanie dla ceniących wygodę.
-        </p>
-        <p class="font-roboto text-md font-bold">Wybierz lokatę, która najlepiej odpowiada Twoim potrzebom i zacznij
-            pomnażać swoje oszczędności już dziś!</p>
-        <div class="flex flex-col items-center justify-center w-full md:space-y-20 max-md:space-y-20">
-            <div
-                class="flex flex-row max-md:flex-col md:space-x-60 max-md:space-y-20 items-stretch justify-center max-md:items-center">
-                @for(deposit of depositsObjectArray; track deposit.id) {
-                <div *ngIf="!isDepositIdHigherThanTwo(deposit.id)"
-                    class="bg-own-gray rounded-xl md:w-[35%] h-auto max-md:w-[85%] md:py-5 px-5 flex flex-col justify-between items-center cursor-pointer hover:bg-gray-400"
-                    (click)="changeDepositType(deposit.type)" routerLink="/single-deposit"
-                    routerLinkActive="active">
-                    <mat-icon class="my-10 icon-3x">{{convertService.getDepositIcon(deposit.type)}}</mat-icon>
-                    <p class="font-walter font-normal text-2xl text-black">Lokata
-                        {{convertService.getPolishDepositType(deposit.type)}}</p>
-                    <p class="font-walter font-normal text-2xl text-white">{{deposit.percent}}%</p>
-                    <p class="font-roboto font-light text-md text-black max-md:py-5">{{deposit.description}}</p>
-                </div>
-                }
-            </div>
-            <div
-                class="flex flex-row max-md:flex-col md:space-x-60 max-md:space-y-20 items-stretch justify-center max-md:items-center">
-                @for(deposit of depositsObjectArray; track deposit.id) {
-                <div *ngIf="isDepositIdHigherThanTwo(deposit.id)"
-                    class="bg-own-gray rounded-xl md:w-[35%] h-auto max-md:w-[85%] md:py-5 px-5 flex flex-col justify-between items-center cursor-pointer hover:bg-gray-400"
-                    (click)="changeDepositType(deposit.type)" routerLink="/single-deposit"
-                    routerLinkActive="active">
-                    <mat-icon class="my-10 icon-3x">{{convertService.getDepositIcon(deposit.type)}}</mat-icon>
-                    <p class="font-walter font-normal text-2xl text-black">Lokata
-                        {{convertService.getPolishDepositType(deposit.type)}}</p>
-                    <p class="font-walter font-normal text-2xl text-white">{{deposit.id === "4" ? "DO " :
-                        ""}}{{deposit.percent}}%</p>
-                    <p class="font-roboto font-light text-md text-black max-md:py-5">{{deposit.description}}</p>
-                </div>
-                }
-            </div>
+<div
+  class="flex-grow flex justify-center text-center bg-black text-white w-full"
+  *ngIf="tabName === 'Lokaty'"
+>
+  <div
+    class="flex flex-col h-full space-y-10 my-10 justify-center items-center w-[85%]"
+  >
+    <p class="font-roboto text-xl font-bold">
+      Dlaczego warto założyć u nas lokatę?
+    </p>
+    <p class="font-roboto text-md font-light">
+      Zakładanie lokaty w naszym banku to pewny krok w stronę stabilnej i
+      bezpiecznej przyszłości finansowej. Oferujemy szeroki wachlarz lokat,
+      dostosowanych do różnych potrzeb i oczekiwań naszych klientów. Bez względu
+      na to, czy szukasz krótkoterminowej inwestycji, czy chcesz oszczędzać
+      przez dłuższy okres, znajdziesz u nas odpowiednie rozwiązanie.
+    </p>
+    <p class="font-roboto text-md font-light">
+      Nasze lokaty zapewniają gwarantowany zysk, chronione przez Bankowy Fundusz
+      Gwarancyjny, co daje Ci pełne bezpieczeństwo. Oferujemy różne rodzaje
+      lokat - terminowe, mobilne, rodzinne i progresywne - każda z unikalnymi
+      zaletami. Możesz zarządzać nimi zarówno w placówkach banku, jak i online
+      oraz przez aplikację mobilną. Nasze konkurencyjne oprocentowanie pozwala
+      efektywnie pomnażać oszczędności, a lokata progresywna oferuje rosnące
+      zyski z czasem. Lokata rodzinna umożliwia wspólne oszczędzanie, a lokata
+      mobilna - wyższe oprocentowanie dla ceniących wygodę.
+    </p>
+    <p class="font-roboto text-md font-bold">
+      Wybierz lokatę, która najlepiej odpowiada Twoim potrzebom i zacznij
+      pomnażać swoje oszczędności już dziś!
+    </p>
+    <div
+      class="flex flex-col items-center justify-center w-full md:space-y-20 max-md:space-y-20"
+    >
+      <div
+        class="flex flex-row max-md:flex-col md:space-x-60 max-md:space-y-20 items-stretch justify-center max-md:items-center"
+      >
+        @for(deposit of depositsObjectArray; track deposit.id) {
+        <div
+          *ngIf="!isDepositIdHigherThanTwo(deposit.id)"
+          class="bg-own-gray rounded-xl md:w-[35%] h-auto max-md:w-[85%] md:py-5 px-5 flex flex-col justify-between items-center cursor-pointer hover:bg-gray-400"
+          (click)="changeDepositType(deposit.type)"
+          routerLink="/single-deposit"
+        >
+          <mat-icon class="my-10 icon-3x">{{
+            convertService.getDepositIcon(deposit.type)
+          }}</mat-icon>
+          <p class="font-walter font-normal text-2xl text-black">
+            Lokata {{ convertService.getPolishDepositType(deposit.type) }}
+          </p>
+          <p class="font-walter font-normal text-2xl text-white">
+            {{ deposit.percent }}%
+          </p>
+          <p class="font-roboto font-light text-md text-black max-md:py-5">
+            {{ deposit.description }}
+          </p>
         </div>
-        <div class="bg-white rounded-xl w-[50%] max-md:w-[85%] py-5">
-            <p class="font-roboto text-xl max-md:text-sm font-extrabold text-black">Znalazłeś ofertę dla siebie?</p>
-            <button
-                class="border border-own-gray text-own-gray font-salsa rounded-md py-2 px-10 max-md:px-5 max-md:py-1 hover:bg-black hover:text-white hover:border-gray-400 mx-5"
-                routerLink="/login" routerLinkActive="active">
-                Załóż lokatę
-            </button>
+        }
+      </div>
+      <div
+        class="flex flex-row max-md:flex-col md:space-x-60 max-md:space-y-20 items-stretch justify-center max-md:items-center"
+      >
+        @for(deposit of depositsObjectArray; track deposit.id) {
+        <div
+          *ngIf="isDepositIdHigherThanTwo(deposit.id)"
+          class="bg-own-gray rounded-xl md:w-[35%] h-auto max-md:w-[85%] md:py-5 px-5 flex flex-col justify-between items-center cursor-pointer hover:bg-gray-400"
+          (click)="changeDepositType(deposit.type)"
+          routerLink="/single-deposit"
+        >
+          <mat-icon class="my-10 icon-3x">{{
+            convertService.getDepositIcon(deposit.type)
+          }}</mat-icon>
+          <p class="font-walter font-normal text-2xl text-black">
+            Lokata {{ convertService.getPolishDepositType(deposit.type) }}
+          </p>
+          <p class="font-walter font-normal text-2xl text-white">
+            {{ deposit.id === "4" ? "DO " : "" }}{{ deposit.percent }}%
+          </p>
+          <p class="font-roboto font-light text-md text-black max-md:py-5">
+            {{ deposit.description }}
+          </p>
         </div>
+        }
+      </div>
     </div>
+    <div class="bg-white rounded-xl w-[50%] max-md:w-[85%] py-5">
+      <p class="font-roboto text-xl max-md:text-sm font-extrabold text-black">
+        Znalazłeś ofertę dla siebie?
+      </p>
+      <button
+        class="border border-own-gray text-own-gray font-salsa rounded-md py-2 px-10 max-md:px-5 max-md:py-1 hover:bg-black hover:text-white hover:border-gray-400 mx-5"
+        routerLink="/login"
+      >
+        Załóż lokatę
+      </button>
+    </div>
+  </div>
 </div>

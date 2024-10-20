@@ -1,38 +1,84 @@
 <header
-    class="sticky z-50 w-full bg-black top-0 flex flex-row justify-between items-center text-white p-4 shadow-none border-none">
-    <button class="relative flex flex-row items-center space-x-3 h-full cursor-pointer" routerLink="/home-page"
-        routerLinkActive="active" (click)="changeTabName('Konta')">
-        <img class="w-10 h-10 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
-        <p class="font-salsa text-xl leading-none flex end-5 !mt-5 items-center">Quantum Trust</p>
-    </button>
-    <div [ngClass]="{'!hidden' : currentRoute !== '/home-page', 'hidden md:block' : currentRoute === '/home-page'}"
-        class="self-center items-center text-center justify-center space-x-10 mt-5">
-        <p class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block transition-colors duration-500"
-            [ngClass]="{'text-white': tabName === 'Konta', 'text-own-gray': tabName !== 'Konta'}"
-            (click)="changeTabName('Konta')">Konta</p>
-        <p class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block ml-4 transition-colors duration-500"
-            [ngClass]="{'text-white': tabName === 'Lokaty', 'text-own-gray': tabName !== 'Lokaty'}"
-            (click)="changeTabName('Lokaty')">Lokaty</p>
-        <p class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block ml-4 transition-colors duration-500"
-            [ngClass]="{'text-white': tabName === 'Karty', 'text-own-gray': tabName !== 'Karty'}"
-            (click)="changeTabName('Karty')">Karty</p>
+  class="sticky z-50 w-full bg-black top-0 flex flex-row justify-between items-center text-white p-4 shadow-none border-none"
+>
+  <button
+    class="relative flex flex-row items-center space-x-3 h-full cursor-pointer"
+    routerLink="/home-page"
+    (click)="changeTabName('Konta')"
+  >
+    <app-image
+      class="w-10 h-10 pointer-events-none"
+      src="favicon.ico"
+      alt="Quantum Trust Logo"
+    />
+    <p class="font-salsa text-xl leading-none flex end-5 !mt-5 items-center">
+      Quantum Trust
+    </p>
+  </button>
+  <div
+    [ngClass]="{
+      '!hidden': currentRoute !== '/home-page',
+      'hidden md:block': currentRoute === '/home-page'
+    }"
+    class="self-center items-center text-center justify-center space-x-10 mt-5"
+  >
+    <p
+      class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block transition-colors duration-500"
+      [ngClass]="{
+        'text-white': tabName === 'Konta',
+        'text-own-gray': tabName !== 'Konta'
+      }"
+      (click)="changeTabName('Konta')"
+    >
+      Konta
+    </p>
+    <p
+      class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block ml-4 transition-colors duration-500"
+      [ngClass]="{
+        'text-white': tabName === 'Lokaty',
+        'text-own-gray': tabName !== 'Lokaty'
+      }"
+      (click)="changeTabName('Lokaty')"
+    >
+      Lokaty
+    </p>
+    <p
+      class="hover:text-white font-roboto text-xl font-light cursor-pointer inline-block ml-4 transition-colors duration-500"
+      [ngClass]="{
+        'text-white': tabName === 'Karty',
+        'text-own-gray': tabName !== 'Karty'
+      }"
+      (click)="changeTabName('Karty')"
+    >
+      Karty
+    </p>
+  </div>
+  <div class="flex space-x-5">
+    <div class="hidden md:flex space-x-5">
+      <button
+        class="border border-white text-white font-salsa rounded-md py-2 px-1 hover:bg-gray-500"
+        [ngClass]="{ '!hidden': currentRoute === '/open-account' }"
+        routerLink="/open-account"
+        routerLinkActive="router-link-active"
+      >
+        Otwórz konto
+      </button>
+      <button
+        class="border border-gray-500 text-gray-500 font-salsa rounded-md py-2 px-4 hover:bg-white"
+        [ngClass]="{ '!hidden': currentRoute === '/login' }"
+        routerLink="/login"
+      >
+        Zaloguj się
+      </button>
     </div>
-    <div class="flex space-x-5">
-        <div class="hidden md:flex space-x-5">
-            <button class="border border-white text-white font-salsa rounded-md py-2 px-1 hover:bg-gray-500"
-                [ngClass]="{'!hidden' : currentRoute === '/open-account'}" routerLink="/open-account"
-                routerLinkActive="active">
-                Otwórz konto
-            </button>
-            <button class="border border-gray-500 text-gray-500 font-salsa rounded-md py-2 px-4 hover:bg-white"
-                [ngClass]="{'!hidden' : currentRoute === '/login'}" routerLink="/login" routerLinkActive="active">
-                Zaloguj się
-            </button>
-        </div>
-        <div class="flex md:hidden bg-black">
-            <button mat-icon-button (click)="toggleDrawer()" class="focus:outline-none">
-                <mat-icon class="text-white">menu</mat-icon>
-            </button>
-        </div>
+    <div class="flex md:hidden bg-black">
+      <button
+        mat-icon-button
+        (click)="toggleDrawer()"
+        class="focus:outline-none"
+      >
+        <mat-icon class="text-white">menu</mat-icon>
+      </button>
     </div>
+  </div>
 </header>

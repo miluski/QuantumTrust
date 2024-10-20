@@ -1,6 +1,4 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AvatarService } from '../../services/avatar.service';
 import { ShakeStateService } from '../../services/shake-state.service';
@@ -8,7 +6,6 @@ import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
 /**
  * @fileoverview AccountSettingsComponent is responsible for managing user account settings.
@@ -19,8 +16,6 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
  * @selector app-account-settings
  * @templateUrl ./account-settings.component.html
  * @animations [AnimationsProvider.animations]
- * @imports [VerificationCodeComponent, CommonModule, FormsModule]
- * @standalone true
  *
  * @class AccountSettingsComponent
  * @implements OnInit
@@ -57,8 +52,6 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   selector: 'app-account-settings',
   templateUrl: './account-settings.component.html',
   animations: [AnimationsProvider.animations],
-  imports: [VerificationCodeComponent, CommonModule, FormsModule],
-  standalone: true,
 })
 export class AccountSettingsComponent implements OnInit {
   public isNotDataChanged!: boolean;
@@ -141,7 +134,9 @@ export class AccountSettingsComponent implements OnInit {
   validateNewPassword(): void {
     if (this.actualPassword !== '') {
       this.userAccountFlags.isRepeatedPasswordValid =
-        this.verificationService.validatePassword(this.userObject.repeatedPassword)
+        this.verificationService.validatePassword(
+          this.userObject.repeatedPassword
+        );
     }
   }
   public changeAvatarUrl(avatar: Blob): void {

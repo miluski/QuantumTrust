@@ -1,20 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
-import { AccountSettingsComponent } from '../account-settings/account-settings.component';
-import { CardSettingsComponent } from '../card-settings/card-settings.component';
-import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
-import { FinancesComponent } from '../finances/finances.component';
-import { FooterComponent } from '../footer/footer.component';
-import { HeaderComponent } from '../header/header.component';
-import { NewTransferComponent } from '../new-transfer/new-transfer.component';
-import { OpenDepositComponent } from '../open-deposit/open-deposit.component';
-import { OrderCardComponent } from '../order-card/order-card.component';
-import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
-import { SingleAccountTransactionsComponent } from '../single-account-transactions/single-account-transactions.component';
-import { TransactionsComponent } from '../transactions/transactions.component';
-import { UserOpenAccountComponent } from '../user-open-account/user-open-account.component';
 
 /**
  * MainPageComponent is the main component for the application's main page.
@@ -22,23 +8,6 @@ import { UserOpenAccountComponent } from '../user-open-account/user-open-account
  *
  * @selector 'app-main-page'
  * @templateUrl './main-page.component.html'
- * @imports [
- *   CommonModule,
- *   HeaderComponent,
- *   FooterComponent,
- *   FinancesComponent,
- *   UserOpenAccountComponent,
- *   SingleAccountTransactionsComponent,
- *   OpenDepositComponent,
- *   NewTransferComponent,
- *   OrderCardComponent,
- *   CardSettingsComponent,
- *   TransactionsComponent,
- *   AccountSettingsComponent,
- *   ScrollArrowUpComponent,
- *   CustomAlertComponent
- * ]
- * @standalone true
  *
  * @class MainPageComponent
  * @implements OnInit
@@ -48,23 +17,6 @@ import { UserOpenAccountComponent } from '../user-open-account/user-open-account
 @Component({
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
-  imports: [
-    CommonModule,
-    HeaderComponent,
-    FooterComponent,
-    FinancesComponent,
-    UserOpenAccountComponent,
-    SingleAccountTransactionsComponent,
-    OpenDepositComponent,
-    NewTransferComponent,
-    OrderCardComponent,
-    CardSettingsComponent,
-    TransactionsComponent,
-    AccountSettingsComponent,
-    ScrollArrowUpComponent,
-    CustomAlertComponent,
-  ],
-  standalone: true,
 })
 export class MainPageComponent implements OnInit {
   public tabName: string = 'Finanse';

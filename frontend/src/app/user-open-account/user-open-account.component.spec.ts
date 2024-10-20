@@ -4,6 +4,7 @@ import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 import { UserOpenAccountComponent } from './user-open-account.component';
+import { UserOpenAccountModule } from './user-open-account.module';
 
 describe('UserOpenAccountComponent', () => {
   let component: UserOpenAccountComponent;
@@ -19,7 +20,7 @@ describe('UserOpenAccountComponent', () => {
       'validateAccountType',
     ]);
     TestBed.configureTestingModule({
-      imports: [UserOpenAccountComponent],
+      imports: [UserOpenAccountModule],
       providers: [
         {
           provide: AppInformationStatesService,
