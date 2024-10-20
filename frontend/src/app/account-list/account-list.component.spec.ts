@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductTypesService } from '../../services/product-types.service';
 import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 import { AccountListComponent } from './account-list.component';
+import { AccountListModule } from './account-list.module';
 
 describe('AccountListComponent', () => {
   let component: AccountListComponent;
@@ -15,7 +16,7 @@ describe('AccountListComponent', () => {
       changeAccountType: jasmine.createSpy('changeAccountType'),
     };
     await TestBed.configureTestingModule({
-      imports: [AccountListComponent],
+      imports: [AccountListModule],
       providers: [
         { provide: ProductTypesService, useValue: productTypesServiceStub },
         { provide: ActivatedRoute, useValue: { snapshot: { params: {} } } },
@@ -29,7 +30,6 @@ describe('AccountListComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should initialize with default values', () => {
-    expect(component.tabName).toBe('Konta');
     expect(component.accountType).toBe('business');
     expect(component.accountsObjectsArray).toEqual(accountsObjectsArray);
     expect(component.currentIndex).toBe(0);

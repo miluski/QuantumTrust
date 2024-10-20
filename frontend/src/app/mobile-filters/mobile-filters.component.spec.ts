@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { FiltersService } from '../../services/filters.service';
-import { DepositListComponent } from '../deposit-list/deposit-list.component';
-import { DurationExpansionComponent } from '../duration-expansion/duration-expansion.component';
-import { SortExpansionComponent } from '../sort-expansion/sort-expansion.component';
-import { StatusExpansionComponent } from '../status-expansion/status-expansion.component';
+import { DepositListModule } from '../deposit-list/deposit-list.module';
+import { DurationExpansionModule } from '../duration-expansion/duration-expansion.module';
+import { SortExpansionModule } from '../sort-expansion/sort-expansion.module';
+import { StatusExpansionModule } from '../status-expansion/status-expansion.module';
 import { MobileFiltersComponent } from './mobile-filters.component';
+import { MobileFiltersModule } from './mobile-filters.module';
 
 describe('MobileFiltersComponent', () => {
   let component: MobileFiltersComponent;
@@ -37,11 +38,11 @@ describe('MobileFiltersComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         CommonModule,
-        SortExpansionComponent,
-        DurationExpansionComponent,
-        StatusExpansionComponent,
-        DepositListComponent,
-        MobileFiltersComponent,
+        SortExpansionModule,
+        DurationExpansionModule,
+        StatusExpansionModule,
+        DepositListModule,
+        MobileFiltersModule,
       ],
       providers: [
         { provide: BreakpointObserver, useValue: breakpointObserver },

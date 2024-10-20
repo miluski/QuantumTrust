@@ -1,101 +1,179 @@
-<div class="flex-grow flex justify-center text-center bg-black text-white w-full mb-12 overflow-hidden">
-    <div *ngIf='tabName == "Karty"' class="flex flex-col h-full space-y-10 mt-12 justify-center items-center w-[85%]">
-        <p class="font-walter font-normal text-own-gray text-6xl max-md:text-3xl">KARTY VISA</p>
-        <div class="w-screen flex flex-col items-center relative mb-12">
-            <div class="absolute inset-y-1/2 flex items-center w-full px-4 z-10">
-                <button class="font-bold py-2 px-4 rounded-l text-white 2xl:mx-[5%]"
-                    (click)="visaCardsPaginationService.previousPage()"
-                    [hidden]="visaCardsPaginationService.currentPage === 1">
-                    <mat-icon class="cursor-pointer">arrow_back</mat-icon>
-                </button>
-                <div class="flex-grow"></div>
-                <button class="font-bold py-2 px-4 rounded-r text-white 2xl:mx-[5%]"
-                    (click)="visaCardsPaginationService.nextPage()"
-                    [hidden]="visaCardsPaginationService.currentPage === visaCardsPaginationService.totalPages">
-                    <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
-                </button>
-            </div>
-            <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch mb-12">
-                @for(visaCard of visaCardsPaginationService.paginatedItems; track visaCard.id) {
-                <div class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-64 lg:w-72 2xl:w-80 max-md:w-60 py-5 hover:bg-gray-200 cursor-pointer"
-                    routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(visaCard.type)">
-                    <div class="flex flex-col relative items-center">
-                        <img class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
-                            src={{visaCard.image}} alt="single-card">
-                        <div
-                            class="absolute top-10 left-[10%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                            <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
-                            <p class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
-                        </div>
-                        <p
-                            class="font-courier text-silver self-start text-shadow absolute z-20 max-md:!text-xs xl:text-base top-[52%] max-sm:left-[12%] left-[17%] 2xl:!text-xl">
-                            1234 5678 9012 3456</p>
-                        <p
-                            class="font-courier text-silver self-start text-shadow absolute z-20 max-sm:!text-xs top-[60%] max-md:top-[62%] md:top-[63%] left-[43%] 2xl:!text-xl 2xl:top-[65%]">
-                            01/24
-                        </p>
-                        <p
-                            class="font-courier text-silver self-start text-sm text-shadow absolute z-20 max-sm:!text-xs top-[70%] max-sm:left-[12%] left-[17%] 2xl:!text-xl 2xl:top-[75%]">
-                            A.MILLER
-                        </p>
-                    </div>
-                    <p class="font-salsa font-normal text-black text-3xl">VISA {{visaCard.type}}</p>
-                    <p class="font-roboto font-light text-black text-2xl w-[80%]">{{visaCard.description}}</p>
-                </div>
-                }
-            </div>
-        </div>
-        <p class="font-walter font-normal text-own-gray text-6xl md:text-nowrap max-md:text-3xl">KARTY MASTERCARD
-        </p>
-        <div class="w-screen flex flex-col items-center relative mb-12">
-            <div class="absolute inset-y-1/2 flex items-center w-full px-4 z-10">
-                <button class="font-bold py-2 px-4 rounded-l text-white 2xl:mx-[5%]"
-                    (click)="masterCardsPaginationService.previousPage()"
-                    [hidden]="masterCardsPaginationService.currentPage === 1">
-                    <mat-icon class="cursor-pointer">arrow_back</mat-icon>
-                </button>
-                <div class="flex-grow"></div>
-                <button class="font-bold py-2 px-4 rounded-r text-white 2xl:mx-[5%]"
-                    (click)="masterCardsPaginationService.nextPage()"
-                    [hidden]="masterCardsPaginationService.currentPage === masterCardsPaginationService.totalPages">
-                    <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
-                </button>
-            </div>
-            <div class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch my-12">
-                @for(masterCard of masterCardsPaginationService.paginatedItems; track masterCard.id) {
-                <div class="flex flex-col bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-64 lg:w-72 2xl:w-80 max-md:w-60 py-5 hover:bg-gray-200 cursor-pointer"
-                    routerLink="/single-card" routerLinkActive="active" (click)="changeCardType(masterCard.type)">
-                    <div class="flex flex-col relative items-center">
-                        <img class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
-                            src={{masterCard.image}} alt="single-card">
-                        <div
-                            class="absolute top-10 left-[10%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                            <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
-                            <p [ngClass]="{'text-black': masterCard.image === 'mastercard-standard.png'}"
-                                class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
-                        </div>
-                        <p
-                            class="font-courier text-xs text-silver self-start text-shadow absolute z-20 top-[56%] md:text-base max-sm:!text-xs max-md:top-[55%] left-[11%] 2xl:text-xl">
-                            1234 5678 9012 3456</p>
-                        <p
-                            class="font-courier text-xxs text-silver self-start text-shadow absolute z-20 top-[64%] max-sm:!text-xxs max-md:top-[65.5%] xl:top-[67%] left-[11%] 2xl:!text-xl 2xl:top-[69%]">
-                            01/24
-                        </p>
-                        <p
-                            class="font-courier text-xxs text-silver self-start text-shadow absolute z-20 top-[69%] max-sm:!text-xxs max-md:top-[69%] xl:top-[72%] left-[11%] 2xl:!text-xl 2xl:top-[75%]">
-                            A.MILLER
-                        </p>
-                    </div>
-                    <p class="font-salsa font-normal text-black text-3xl">MASTERCARD {{masterCard.type}}</p>
-                    <p class="font-roboto font-light text-black text-2xl w-[80%]">{{masterCard.description}}</p>
-                </div>
-                }
-            </div>
-        </div>
+<div
+  class="flex-grow flex justify-center text-center bg-black text-white w-full mb-12 overflow-hidden"
+  *ngIf="tabName === 'Karty'"
+>
+  <div
+    class="flex flex-col h-full space-y-10 mt-12 justify-center items-center w-[85%]"
+  >
+    <p class="font-walter font-normal text-own-gray text-6xl max-md:text-3xl">
+      KARTY VISA
+    </p>
+    <div class="w-screen flex flex-col items-center relative mb-12">
+      <div class="absolute inset-y-1/2 flex items-center w-full px-4 z-10">
         <button
-            class="border border-white text-white font-salsa rounded-3xl py-2 px-10 max-md:px-5 max-md:py-1 hover:bg-gray-600 bg-own-gray mx-5"
-            routerLink="/open-account" routerLinkActive="active">
-            Zamów kartę
+          class="font-bold py-2 px-4 rounded-l text-white 2xl:mx-[5%]"
+          (click)="visaCardsPaginationService.previousPage()"
+          [hidden]="visaCardsPaginationService.currentPage === 1"
+        >
+          <mat-icon class="cursor-pointer">arrow_back</mat-icon>
         </button>
+        <div class="flex-grow"></div>
+        <button
+          class="font-bold py-2 px-4 rounded-r text-white 2xl:mx-[5%]"
+          (click)="visaCardsPaginationService.nextPage()"
+          [hidden]="
+            visaCardsPaginationService.currentPage ===
+            visaCardsPaginationService.totalPages
+          "
+        >
+          <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
+        </button>
+      </div>
+      <div
+        class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch mb-12"
+      >
+        @for(visaCard of visaCardsPaginationService.paginatedItems; track
+        visaCard.id) {
+        <div
+          class="flex flex-col justify-start bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-64 lg:w-72 2xl:w-80 max-md:w-60 py-5 hover:bg-gray-200 cursor-pointer"
+          routerLink="/single-card"
+          (click)="changeCardType(visaCard.type)"
+        >
+          <div class="flex flex-col relative items-center">
+            <app-image
+              class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
+              [src]="visaCard.image"
+              alt="single-card"
+            />
+            <div
+              class="absolute top-10 left-[10%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
+            >
+              <app-image
+                class="w-4 h-4 pointer-events-none"
+                src="favicon.ico"
+                alt="Quantum Trust Logo"
+              />
+              <p class="font-salsa text-xxs leading-none pt-2 pl-2">
+                Quantum Trust
+              </p>
+            </div>
+            <p
+              class="font-courier text-silver self-start text-shadow absolute z-20 max-md:!text-xs xl:text-base top-[52%] max-sm:left-[12%] left-[17%] 2xl:!text-xl"
+            >
+              1234 5678 9012 3456
+            </p>
+            <p
+              class="font-courier text-silver self-start text-shadow absolute z-20 max-sm:!text-xs top-[60%] max-md:top-[62%] md:top-[63%] left-[43%] 2xl:!text-xl 2xl:top-[65%]"
+            >
+              01/24
+            </p>
+            <p
+              class="font-courier text-silver self-start text-sm text-shadow absolute z-20 max-sm:!text-xs top-[70%] max-sm:left-[12%] left-[17%] 2xl:!text-xl 2xl:top-[75%]"
+            >
+              A.MILLER
+            </p>
+          </div>
+          <p class="font-salsa font-normal text-black text-3xl">
+            VISA {{ visaCard.type }}
+          </p>
+          <p class="font-roboto font-light text-black text-2xl w-[80%]">
+            {{ visaCard.description }}
+          </p>
+        </div>
+        }
+      </div>
     </div>
+    <p
+      class="font-walter font-normal text-own-gray text-6xl md:text-nowrap max-md:text-3xl"
+    >
+      KARTY MASTERCARD
+    </p>
+    <div class="w-screen flex flex-col items-center relative mb-12">
+      <div class="absolute inset-y-1/2 flex items-center w-full px-4 z-10">
+        <button
+          class="font-bold py-2 px-4 rounded-l text-white 2xl:mx-[5%]"
+          (click)="masterCardsPaginationService.previousPage()"
+          [hidden]="masterCardsPaginationService.currentPage === 1"
+        >
+          <mat-icon class="cursor-pointer">arrow_back</mat-icon>
+        </button>
+        <div class="flex-grow"></div>
+        <button
+          class="font-bold py-2 px-4 rounded-r text-white 2xl:mx-[5%]"
+          (click)="masterCardsPaginationService.nextPage()"
+          [hidden]="
+            masterCardsPaginationService.currentPage ===
+            masterCardsPaginationService.totalPages
+          "
+        >
+          <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
+        </button>
+      </div>
+      <div
+        class="flex flex-wrap justify-center lg:space-x-20 space-x-10 items-stretch my-12"
+      >
+        @for(masterCard of masterCardsPaginationService.paginatedItems; track
+        masterCard.id) {
+        <div
+          class="flex flex-col bg-white rounded-3xl shadow-gray-500 shadow-lg items-center w-64 lg:w-72 2xl:w-80 max-md:w-60 py-5 hover:bg-gray-200 cursor-pointer"
+          routerLink="/single-card"
+          (click)="changeCardType(masterCard.type)"
+        >
+          <div class="flex flex-col relative items-center">
+            <app-image
+              class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
+              [src]="masterCard.image"
+              alt="single-card"
+            />
+            <div
+              class="absolute top-10 left-[10%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
+            >
+              <app-image
+                class="w-4 h-4 pointer-events-none"
+                src="favicon.ico"
+                alt="Quantum Trust Logo"
+              />
+              <p
+                [ngClass]="{
+                  'text-black': masterCard.image === 'mastercard-standard.webp'
+                }"
+                class="font-salsa text-xxs leading-none pt-2 pl-2"
+              >
+                Quantum Trust
+              </p>
+            </div>
+            <p
+              class="font-courier text-xs text-silver self-start text-shadow absolute z-20 top-[56%] md:text-base max-sm:!text-xs max-md:top-[55%] left-[11%] 2xl:text-xl"
+            >
+              1234 5678 9012 3456
+            </p>
+            <p
+              class="font-courier text-xxs text-silver self-start text-shadow absolute z-20 top-[64%] max-sm:!text-xxs max-md:top-[65.5%] xl:top-[67%] left-[11%] 2xl:!text-xl 2xl:top-[69%]"
+            >
+              01/24
+            </p>
+            <p
+              class="font-courier text-xxs text-silver self-start text-shadow absolute z-20 top-[69%] max-sm:!text-xxs max-md:top-[69%] xl:top-[72%] left-[11%] 2xl:!text-xl 2xl:top-[75%]"
+            >
+              A.MILLER
+            </p>
+          </div>
+          <p class="font-salsa font-normal text-black text-3xl">
+            MASTERCARD {{ masterCard.type }}
+          </p>
+          <p class="font-roboto font-light text-black text-2xl w-[80%]">
+            {{ masterCard.description }}
+          </p>
+        </div>
+        }
+      </div>
+    </div>
+    <button
+      class="border border-white text-white font-salsa rounded-3xl py-2 px-10 max-md:px-5 max-md:py-1 hover:bg-gray-600 bg-own-gray mx-5"
+      routerLink="/open-account"
+      routerLinkActive="active"
+    >
+      Zamów kartę
+    </button>
+  </div>
 </div>

@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 import { CustomAlertComponent } from './custom-alert.component';
+import { CustomAlertModule } from './custom-alert.module';
 
 describe('CustomAlertComponent', () => {
   let component: CustomAlertComponent;
@@ -20,7 +21,7 @@ describe('CustomAlertComponent', () => {
       imports: [
         CommonModule,
         MatProgressBarModule,
-        CustomAlertComponent,
+        CustomAlertModule,
         BrowserAnimationsModule,
       ],
       providers: [

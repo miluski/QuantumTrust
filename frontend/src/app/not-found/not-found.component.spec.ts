@@ -5,9 +5,10 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ProductTypesService } from '../../services/product-types.service';
-import { FooterComponent } from '../footer/footer.component';
-import { HeaderComponent } from '../header/header.component';
+import { FooterModule } from '../footer/footer.module';
+import { HeaderModule } from '../header/header.module';
 import { NotFoundComponent } from './not-found.component';
+import { NotFoundModule } from './not-found.module';
 
 describe('NotFoundComponent', () => {
   let component: NotFoundComponent;
@@ -42,9 +43,9 @@ describe('NotFoundComponent', () => {
     );
     await TestBed.configureTestingModule({
       imports: [
-        HeaderComponent,
-        FooterComponent,
-        NotFoundComponent,
+        HeaderModule,
+        FooterModule,
+        NotFoundModule,
         CommonModule,
         BrowserAnimationsModule,
       ],

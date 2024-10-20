@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { GlobalTransactionsFiltersService } from '../../services/global-transactions-filters.service';
 import { GlobalTransactionsFiltersComponent } from './global-transactions-filters.component';
+import { GlobalTransactionsFiltersModule } from './global-transactions-filters.module';
 
 describe('GlobalTransactionsFiltersComponent', () => {
   let component: GlobalTransactionsFiltersComponent;
@@ -14,7 +15,7 @@ describe('GlobalTransactionsFiltersComponent', () => {
       ['setAppliedFilter']
     );
     await TestBed.configureTestingModule({
-      imports: [GlobalTransactionsFiltersComponent, CommonModule],
+      imports: [GlobalTransactionsFiltersModule, CommonModule],
       providers: [
         {
           provide: GlobalTransactionsFiltersService,

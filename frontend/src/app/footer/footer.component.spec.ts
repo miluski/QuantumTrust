@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { FooterComponent } from './footer.component';
+import { FooterModule } from './footer.module';
 
 describe('FooterComponent', () => {
   let component: FooterComponent;
@@ -25,10 +26,12 @@ describe('FooterComponent', () => {
       'AppInformationStatesService',
       ['changeTabName', 'changeTransactionsArrayLength']
     );
-    appInformationStatesServiceSpy.currentTabName = of('SingleAccountTransactions');
+    appInformationStatesServiceSpy.currentTabName = of(
+      'SingleAccountTransactions'
+    );
     appInformationStatesServiceSpy.currentTransactionsArrayLength = of(25);
     await TestBed.configureTestingModule({
-      imports: [FooterComponent],
+      imports: [FooterModule],
       providers: [
         { provide: ProductTypesService, useValue: productTypesServiceSpy },
         {

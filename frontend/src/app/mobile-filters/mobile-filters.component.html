@@ -1,11 +1,16 @@
-<div *ngIf="isOpened" class="flex flex-col z-50 inset-0 fixed bg-black w-screen h-screen overflow-y-auto">
-    <div class="flex flex-row w-[85%] self-center p-5">
-        <p class="font-roboto font-medium text-lg text-white">Filtry</p>
-        <div class="flex flex-grow"></div>
-        <i class="fa-solid fa-x text-lg text-white hover:text-gray-400 cursor-pointer"
-            (click)="filtersService.setIsMobileFiltersOpened(false)"></i>
-    </div>
-    <app-sort-expansion [transactionsArray]="transactionsArray" />
-    <app-duration-expansion [transactionsArray]="transactionsArray" />
-    <app-status-expansion [transactionsArray]="transactionsArray" />
+<div
+  *ngIf="isOpened"
+  class="flex flex-col z-50 inset-0 fixed bg-black w-screen h-screen overflow-y-auto"
+>
+  <div class="flex flex-row w-[85%] self-center p-5">
+    <p class="font-roboto font-medium text-lg text-white">Filtry</p>
+    <div class="flex flex-grow"></div>
+    <i
+      class="fa-solid fa-x text-lg text-white hover:text-gray-400 cursor-pointer"
+      (click)="filtersService.setIsMobileFiltersOpened(false)"
+    ></i>
+  </div>
+  <app-sort-expansion [transactionsArray]="transactionsArray" />
+  <app-duration-expansion [transactionsArray]="transactionsArray" />
+  <app-status-expansion [transactionsArray]="transactionsArray" />
 </div>

@@ -8,6 +8,7 @@ import { ItemSelectionService } from '../../services/item-selection.service';
 import { Account } from '../../types/account';
 import { Transaction } from '../../types/transaction';
 import { SingleAccountTransactionsComponent } from './single-account-transactions.component';
+import { SingleAccountTransactionsModule } from './single-account-transactions.module';
 
 describe('SingleAccountTransactionsComponent', () => {
   let component: SingleAccountTransactionsComponent;
@@ -41,7 +42,7 @@ describe('SingleAccountTransactionsComponent', () => {
       }
     );
     await TestBed.configureTestingModule({
-      imports: [SingleAccountTransactionsComponent],
+      imports: [SingleAccountTransactionsModule],
       providers: [
         { provide: ItemSelectionService, useValue: itemSelectionServiceSpy },
         {

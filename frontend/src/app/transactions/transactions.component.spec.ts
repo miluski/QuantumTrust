@@ -14,6 +14,7 @@ import { Transaction } from '../../types/transaction';
 import { mockCards } from '../../utils/mock-cards';
 import { mockTransactions } from '../../utils/mock-transactions';
 import { TransactionsComponent } from './transactions.component';
+import { TransactionsModule } from './transactions.module';
 
 declare global {
   namespace jasmine {
@@ -76,11 +77,11 @@ describe('TransactionsComponent', () => {
     );
     const convertServiceSpy = jasmine.createSpyObj('ConvertService', [
       'getNumberWithSpacesBetweenThousands',
-      'getShortenedAccountId'
+      'getShortenedAccountId',
     ]);
     await TestBed.configureTestingModule({
       imports: [
-        TransactionsComponent,
+        TransactionsModule,
         MatPaginatorModule,
         MatTableModule,
         MatTooltipModule,

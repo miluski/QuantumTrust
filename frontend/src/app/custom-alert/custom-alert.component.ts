@@ -1,6 +1,4 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 
@@ -12,7 +10,6 @@ import { AlertService } from '../../services/alert.service';
  * @templateUrl ./custom-alert.component.html
  * @styleUrls ./custom-alert.component.css
  * @animations AnimationsProvider.animations
- * @imports CommonModule, MatProgressBarModule
  *
  * @property {('info' | 'warning' | 'error')} alertType - The type of the alert to display.
  * @property {string} alertTitle - The title of the alert.
@@ -28,8 +25,6 @@ import { AlertService } from '../../services/alert.service';
   templateUrl: './custom-alert.component.html',
   styleUrls: ['./custom-alert.component.css'],
   animations: [AnimationsProvider.animations],
-  imports: [CommonModule, MatProgressBarModule],
-  standalone: true,
 })
 export class CustomAlertComponent implements OnInit {
   @Input() alertType!: 'info' | 'warning' | 'error';

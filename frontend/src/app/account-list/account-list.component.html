@@ -1,38 +1,68 @@
-<div class="flex-grow flex justify-center text-center bg-black text-white w-full">
-    <div *ngIf='tabName == "Konta"' class="flex flex-col h-full space-y-10 mt-10 justify-center items-center w-[85%]">
-        @for (account of accountsObjectsArray; track account.id) {
-        <div class="max-md:w-[85%]">
-            <div class="flex flex-row max-xl:flex-col items-center">
-                <img src={{account.image}}
-                    class="h-auto hidden max-xl:block rounded-xl border border-gray-500 p-1 pointer-events-none" />
-                <img *ngIf="isAccountIdEven(account.id)" src={{account.image}}
-                    class="md:m-10 w-[45%] h-auto max-xl:hidden rounded-xl border border-gray-500 p-1 pointer-events-none" />
-                <div class="flex flex-col m-10 w-full">
-                    <p [ngClass]="{'text-own-gray' : isAccountIdEven(account.id), 'text-white' : !isAccountIdEven(account.id)}"
-                        class="font-walter max-md:text-5xl text-7xl text-wrap text-left">{{account.advertismentText}}
-                    </p>
-                    <div [ngClass]="{'border-white': !isAccountIdEven(account.id), 'border-own-gray' : isAccountIdEven(account.id)}"
-                        class="border-l-4 flex flex-col">
-                        <p class="font-roboto font-light text-2xl text-white mx-5 pl-5 text-left">
-                            {{account.advertismentContent}}</p>
-                        <div class="flex flex-row w-full">
-                            <button
-                                class="border border-white text-white font-salsa rounded-lg py-2 px-1 hover:bg-gray-500 mx-5 max-md:w-[30%] w-[35%]"
-                                routerLink="/open-account" routerLinkActive="active">
-                                Otwórz konto
-                            </button>
-                            <a class="py-2 font-salsa font-normal max-md:w-[70%] text-xl w-[65%] cursor-pointer"
-                                routerLink="/single-account" routerLinkActive="active"
-                                (click)="changeAccountType(account.type)">Dowiedz się
-                                więcej
-                                -></a>
-                        </div>
-                    </div>
-                </div>
-                <img *ngIf="!isAccountIdEven(account.id)" src={{account.image}}
-                    class="m-10 w-[45%] h-auto max-xl:hidden rounded-xl border border-gray-500 p-1 pointer-events-none" />
+<div
+  class="flex-grow flex justify-center text-center bg-black text-white w-full"
+  *ngIf="tabName === 'Konta'"
+>
+  <div
+    class="flex flex-col h-full space-y-10 mt-10 justify-center items-center w-[85%]"
+  >
+    @for (account of accountsObjectsArray; track account.id) {
+    <div class="max-md:w-[85%]">
+      <div class="flex flex-row max-xl:flex-col items-center">
+        <app-image
+          [src]="account.image"
+          class="h-auto hidden max-xl:block rounded-xl border border-gray-500 p-1 pointer-events-none"
+        />
+        <app-image
+          *ngIf="isAccountIdEven(account.id)"
+          [src]="account.image"
+          class="md:m-10 w-[45%] h-auto max-xl:hidden rounded-xl border border-gray-500 p-1 pointer-events-none"
+        />
+        <div class="flex flex-col m-10 w-full">
+          <p
+            [ngClass]="{
+              'text-own-gray': isAccountIdEven(account.id),
+              'text-white': !isAccountIdEven(account.id)
+            }"
+            class="font-walter max-md:text-5xl text-7xl text-wrap text-left"
+          >
+            {{ account.advertismentText }}
+          </p>
+          <div
+            [ngClass]="{
+              'border-white': !isAccountIdEven(account.id),
+              'border-own-gray': isAccountIdEven(account.id)
+            }"
+            class="border-l-4 flex flex-col"
+          >
+            <p
+              class="font-roboto font-light text-2xl text-white mx-5 pl-5 text-left"
+            >
+              {{ account.advertismentContent }}
+            </p>
+            <div class="flex flex-row w-full">
+              <button
+                class="border border-white text-white font-salsa rounded-lg py-2 px-1 hover:bg-gray-500 mx-5 max-md:w-[30%] w-[35%]"
+                routerLink="/open-account"
+                routerLinkActive="active"
+              >
+                Otwórz konto
+              </button>
+              <a
+                class="py-2 font-salsa font-normal max-md:w-[70%] text-xl w-[65%] cursor-pointer"
+                routerLink="/single-account"
+                (click)="changeAccountType(account.type)"
+                >Dowiedz się więcej -></a
+              >
             </div>
+          </div>
         </div>
-        }
+        <app-image
+          *ngIf="!isAccountIdEven(account.id)"
+          [src]="account.image"
+          class="md:m-10 w-[45%] h-auto max-xl:hidden rounded-xl border border-gray-500 p-1 pointer-events-none"
+        />
+      </div>
     </div>
+    }
+  </div>
 </div>

@@ -9,6 +9,7 @@ import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { OpenDepositComponent } from './open-deposit.component';
+import { OpenDepositModule } from './open-deposit.module';
 
 describe('OpenDepositComponent', () => {
   let component: OpenDepositComponent;
@@ -36,7 +37,7 @@ describe('OpenDepositComponent', () => {
       'validateInput',
     ]);
     await TestBed.configureTestingModule({
-      imports: [FormsModule, MatIconModule, OpenDepositComponent],
+      imports: [FormsModule, MatIconModule, OpenDepositModule],
       providers: [
         { provide: UserService, useValue: userServiceSpy },
         { provide: ConvertService, useValue: convertServiceSpy },

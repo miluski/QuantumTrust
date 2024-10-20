@@ -3,13 +3,8 @@ import {
   Breakpoints,
   BreakpointState,
 } from '@angular/cdk/layout';
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FiltersService } from '../../services/filters.service';
-import { DepositListComponent } from '../deposit-list/deposit-list.component';
-import { DurationExpansionComponent } from '../duration-expansion/duration-expansion.component';
-import { SortExpansionComponent } from '../sort-expansion/sort-expansion.component';
-import { StatusExpansionComponent } from '../status-expansion/status-expansion.component';
 import { Transaction } from '../../types/transaction';
 
 /**
@@ -19,13 +14,6 @@ import { Transaction } from '../../types/transaction';
  *
  * @selector 'app-mobile-filters'
  * @templateUrl './mobile-filters.component.html'
- * @imports [
- *   CommonModule,
- *   SortExpansionComponent,
- *   DurationExpansionComponent,
- *   StatusExpansionComponent,
- *   DepositListComponent
- * ]
  *
  * @property {Transaction[][]} transactionsArray - An array of transaction arrays passed as input.
  * @property {boolean} isOpened - A flag indicating whether the mobile filters are opened.
@@ -40,14 +28,6 @@ import { Transaction } from '../../types/transaction';
 @Component({
   selector: 'app-mobile-filters',
   templateUrl: './mobile-filters.component.html',
-  imports: [
-    CommonModule,
-    SortExpansionComponent,
-    DurationExpansionComponent,
-    StatusExpansionComponent,
-    DepositListComponent,
-  ],
-  standalone: true,
 })
 export class MobileFiltersComponent implements OnInit {
   @Input() transactionsArray!: Transaction[][];

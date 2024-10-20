@@ -1,7 +1,4 @@
-import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ConvertService } from '../../services/convert.service';
 import { PaginationService } from '../../services/pagination.service';
@@ -10,7 +7,6 @@ import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { TransferFlags } from '../../types/transfer-flags';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
 /**
  * @fileoverview NewTransferComponent handles the creation of new transfers.
@@ -21,13 +17,6 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
  * @selector app-new-transfer
  * @templateUrl ./new-transfer.component.html
  * @animations [AnimationsProvider.animations]
- * @imports [
- *   VerificationCodeComponent,
- *   MatIconModule,
- *   CommonModule,
- *   FormsModule,
- * ]
- * @standalone true
  *
  * @class NewTransferComponent
  * @implements OnInit
@@ -61,13 +50,6 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   selector: 'app-new-transfer',
   templateUrl: './new-transfer.component.html',
   animations: [AnimationsProvider.animations],
-  imports: [
-    VerificationCodeComponent,
-    MatIconModule,
-    CommonModule,
-    FormsModule,
-  ],
-  standalone: true,
 })
 export class NewTransferComponent implements OnInit {
   public transferTitle!: string;

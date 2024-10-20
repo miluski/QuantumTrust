@@ -4,8 +4,9 @@ export const visaCardsObjectsArray: Card[] = [
   {
     id: 1,
     type: 'STANDARD',
-    description: 'Idealna karta do zakupów z programem lojalnościowym i ubezpieczeniami.',
-    image: 'visa-standard.png',
+    description:
+      'Idealna karta do zakupów z programem lojalnościowym i ubezpieczeniami.',
+    image: 'visa-standard.webp',
     publisher: 'Visa',
     benefits: [
       'Możliwość wygodnych płatności w ponad 200 krajach',
@@ -14,18 +15,19 @@ export const visaCardsObjectsArray: Card[] = [
       'Możliwość szybkiej wymiany i zastrzeżenia starej karty w przypadku jej zgubienia',
     ],
     limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
-    backImage: 'visa-back.png',
+    backImage: 'visa-back.webp',
     showingCardSite: 'front',
     fees: {
       release: 0,
-      monthly: 10
-    }
+      monthly: 10,
+    },
   },
   {
     id: 2,
     type: 'STUDENT',
-    description: 'Bezpieczne i wygodne płatności dla studentów z ofertami specjalnymi i zniżkami.',
-    image: 'visa-student.png',
+    description:
+      'Bezpieczne i wygodne płatności dla studentów z ofertami specjalnymi i zniżkami.',
+    image: 'visa-student.webp',
     publisher: 'Visa',
     benefits: [
       'Zniżki na zakupy w wybranych sklepach',
@@ -36,18 +38,19 @@ export const visaCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [15000, 10], cashTransactions: [7000, 5] },
     ],
-    backImage: 'visa-back.png',
+    backImage: 'visa-back.webp',
     showingCardSite: 'front',
     fees: {
       release: 0,
-      monthly: 0
-    }
+      monthly: 0,
+    },
   },
   {
     id: 3,
     type: 'PODRÓŻNIK',
-    description: 'Wygodne płatności bez prowizji wraz z korzystną ofertą ubezpieczeń na całym świecie.',
-    image: 'visa-travel.png',
+    description:
+      'Wygodne płatności bez prowizji wraz z korzystną ofertą ubezpieczeń na całym świecie.',
+    image: 'visa-travel.webp',
     publisher: 'Visa',
     benefits: [
       'Brak prowizji za płatności zagraniczne',
@@ -58,18 +61,19 @@ export const visaCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [20000, 15], cashTransactions: [10000, 8] },
     ],
-    backImage: 'visa-back.png',
+    backImage: 'visa-back.webp',
     showingCardSite: 'front',
     fees: {
       release: 0,
-      monthly: 5
-    }
+      monthly: 5,
+    },
   },
   {
     id: 4,
     type: 'BIZNES',
-    description: 'Ekskluzywna karta z dodatkowymi korzyściami i usługami premium.',
-    image: 'visa-business.png',
+    description:
+      'Ekskluzywna karta z dodatkowymi korzyściami i usługami premium.',
+    image: 'visa-business.webp',
     publisher: 'Visa',
     benefits: [
       'Dostęp do ekskluzywnych ofert i zniżek',
@@ -80,11 +84,11 @@ export const visaCardsObjectsArray: Card[] = [
     limits: [
       { internetTransactions: [100000, 5], cashTransactions: [50000, 3] },
     ],
-    backImage: 'visa-back.png',
+    backImage: 'visa-back.webp',
     showingCardSite: 'front',
     fees: {
       release: 100,
-      monthly: 20
-    }
+      monthly: 20,
+    },
   },
 ];

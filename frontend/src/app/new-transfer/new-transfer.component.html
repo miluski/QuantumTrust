@@ -1,125 +1,220 @@
-<div class="flex-col flex justify-center text-center bg-black text-white w-screen">
-    @if(shakeStateService.siteNumber === 1){
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
-        <p class="font-roboto font-medium text-lg text-white pt-2">Wybór konta</p>
-        <p class="font-roboto font-light text-md text-white">Wybierz konto, z którego zrealizujesz przelew</p>
+<div
+  class="flex-col flex justify-center text-center bg-black text-white w-screen"
+>
+  @if(shakeStateService.siteNumber === 1){
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
+    <p class="font-roboto font-medium text-lg text-white pt-2">Wybór konta</p>
+    <p class="font-roboto font-light text-md text-white">
+      Wybierz konto, z którego zrealizujesz przelew
+    </p>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div
+    class="flex flex-row w-screen h-full lg:space-x-10 2xl:space-x-32 relative justify-center border-none py-6"
+  >
+    <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
+      <button
+        class="sm:ml-10 font-bold px-4 rounded-l text-white max-sm:px-2"
+        (click)="paginationService.previousPage()"
+      >
+        <mat-icon class="cursor-pointer">arrow_back</mat-icon>
+      </button>
+      <div class="flex-grow"></div>
+      <button
+        class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2"
+        (click)="paginationService.nextPage()"
+      >
+        <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
+      </button>
     </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-row w-screen h-full lg:space-x-10 2xl:space-x-32 relative justify-center border-none py-6">
-        <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
-            <button class="sm:ml-10 font-bold px-4 rounded-l text-white max-sm:px-2"
-                (click)="paginationService.previousPage()">
-                <mat-icon class="cursor-pointer">arrow_back</mat-icon>
-            </button>
-            <div class="flex-grow"></div>
-            <button class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2"
-                (click)="paginationService.nextPage()">
-                <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
-            </button>
-        </div>
-        @for(account of paginationService.paginatedItems; track account.id) {
-        <div class="flex flex-col bg-gray-500 rounded-3xl p-3 h-64 lg:w-64 w-72 xl:w-72 2xl:w-80 justify-center"
-            [ngClass]="{'blur-xxs': account.id !== currentSelectedAccount.id}">
-            <div class="flex flex-row w-full items-center justify-between mb-6">
-                <p class="font-roboto font-medium text-2xl text-white pt-5 md:w-1/2 md:text-left xl:text-nowrap">Konto
-                    {{convertService.getPolishAccountType(account.type)}}
-                </p>
-                <img class="rounded-2xl lg:w-16 lg:h-14 w-24 h-20 border border-black pointer-events-none"
-                    src={{account.image}} alt="single-account-image" />
-            </div>
-            <p class="font-roboto font-normal text-2xl text-black mb-6">
-                {{convertService.getShortenedAccountId(account.id)}}</p>
-            <div class="flex flex-row max-md:space-x-2 space-x-1">
-                <p class="font-roboto font-normal text-lg max-md:text-xl text-black">Saldo: </p>
-                <p class="font-roboto font-normal text-lg max-md:text-xl text-green-500">
-                    {{convertService.getNumberWithSpacesBetweenThousands(account.balance ?? 0)}}
-                    {{account.currency}}
-                </p>
-            </div>
-        </div>
-        }
-    </div>
-    <div class="flex flex-col w-full">
-        <p class="font-roboto font-medium text-xl text-white py-2 text-center lg:pl-12 2xl:pl-36">Wybrano konto:</p>
-        <p class="font-roboto font-light text-lg text-white text-center lg:pl-12 2xl:pl-36">Konto
-            {{convertService.getPolishAccountType(currentSelectedAccount.type)}}</p>
-        <p class="font-roboto font-light text-lg text-white py-2 text-center lg:pl-12 2xl:pl-36">
-            {{currentSelectedAccount.id}}</p>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
-        <p class="font-roboto font-medium text-lg text-white pt-2">Kwota</p>
-        <p class="font-roboto font-light text-md text-white w-3/4">Wybierz kwotę, którą chcesz przelać. Pamiętaj, nie
-            może ona
-            przekraczać dostępnego salda wybranego konta bankowego.</p>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="w-screen flex flex-col items-center py-12">
-        <div class="flex flex-col lg:w-3/4 items-center space-y-5 max-md:w-[85%] md:w-[65%]">
-            <p class="font-roboto font-medium text-xl text-left self-start">Kwota przelewu</p>
-            <div class="w-full flex flex-col items-center space-y-5">
-                <div class="relative max-sm:w-full w-1/2 2xl:w-1/4 self-center">
-                    <input class="bg-white text-green-600 p-2 w-full rounded-md no-arrows font-roboto font-medium"
-                        type="number" min="1" max="{{currentSelectedAccount.balance}}" [value]="currentTransferAmount"
-                        [(ngModel)]="transferAmount" #initialCapitalInput="ngModel" required />
-                    <span
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-medium text-green-600">
-                        {{currentSelectedAccount.currency}}
-                    </span>
-                </div>
-                <input type="range" min={{1}} max="{{currentSelectedAccount.balance}}" step={{0.1}}
-                    [value]="currentTransferAmount" [(ngModel)]="transferAmount"
-                    class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb select-none">
-                <div class="flex justify-between w-full mt-2">
-                    <span class="text-white">min. 1 {{currentSelectedAccount.currency}}</span>
-                    <span class="text-white">max.
-                        {{convertService.getNumberWithSpacesBetweenThousands(currentSelectedAccount.balance)}}
-                        {{currentSelectedAccount.currency}}</span>
-                </div>
-                @if(transferFlags.isTransferAmountValid === false) {
-                <p class="font-roboto font-light text-red-500 text-sm pt-5">Kwota przelewu jest nieprawidłowa.</p>
-                }
-            </div>
-        </div>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
-        <p class="font-roboto font-medium text-lg text-white pt-2">Informacje techniczne</p>
-        <p class="font-roboto font-light text-md text-white w-3/4">Wprowadź tytuł przelewu oraz numer konta odbiorcy.
+    @for(account of paginationService.paginatedItems; track account.id) {
+    <div
+      class="flex flex-col bg-gray-500 rounded-3xl p-3 h-64 lg:w-64 w-72 xl:w-72 2xl:w-80 justify-center"
+      [ngClass]="{ 'blur-xxs': account.id !== currentSelectedAccount.id }"
+    >
+      <div class="flex flex-row w-full items-center justify-between mb-6">
+        <p
+          class="font-roboto font-medium text-2xl text-white pt-5 md:w-1/2 md:text-left xl:text-nowrap"
+        >
+          Konto
+          {{ convertService.getPolishAccountType(account.type) }}
         </p>
+        <app-image
+          classString="rounded-2xl lg:w-16 lg:h-14 w-24 h-20 border border-black pointer-events-none"
+          [src]="account.image"
+          alt="single-account-image"
+        />
+      </div>
+      <p class="font-roboto font-normal text-2xl text-black mb-6">
+        {{ convertService.getShortenedAccountId(account.id) }}
+      </p>
+      <div class="flex flex-row max-md:space-x-2 space-x-1">
+        <p class="font-roboto font-normal text-lg max-md:text-xl text-black">
+          Saldo:
+        </p>
+        <p
+          class="font-roboto font-normal text-lg max-md:text-xl text-green-500"
+        >
+          {{
+            convertService.getNumberWithSpacesBetweenThousands(
+              account.balance ?? 0
+            )
+          }}
+          {{ account.currency }}
+        </p>
+      </div>
     </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-col lg:flex-row justify-between py-12 w-screen max-lg:space-y-5">
-        <div class="flex flex-col z-20 w-[85%] lg:w-1/2 items-center justify-center self-center">
-            <p class="font-roboto font-light text-md text-left lg:w-100 max-lg:self-start">Tytuł przelewu</p>
-            <input
-                class="max-lg:w-full !bg-white lg:!w-100 w-[85%] text-black p-2 rounded-md no-arrows font-roboto font-light"
-                type="text" placeholder="np. Na urodziny" [(ngModel)]="transferTitle" required />
-            @if(transferFlags.isTransferTitleValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5">Wprowadzony tytuł jest nieprawidłowy.</p>
-            }
+    }
+  </div>
+  <div class="flex flex-col w-full">
+    <p
+      class="font-roboto font-medium text-xl text-white py-2 text-center lg:pl-12 2xl:pl-36"
+    >
+      Wybrano konto:
+    </p>
+    <p
+      class="font-roboto font-light text-lg text-white text-center lg:pl-12 2xl:pl-36"
+    >
+      Konto
+      {{ convertService.getPolishAccountType(currentSelectedAccount.type) }}
+    </p>
+    <p
+      class="font-roboto font-light text-lg text-white py-2 text-center lg:pl-12 2xl:pl-36"
+    >
+      {{ currentSelectedAccount.id }}
+    </p>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
+    <p class="font-roboto font-medium text-lg text-white pt-2">Kwota</p>
+    <p class="font-roboto font-light text-md text-white w-3/4">
+      Wybierz kwotę, którą chcesz przelać. Pamiętaj, nie może ona przekraczać
+      dostępnego salda wybranego konta bankowego.
+    </p>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="w-screen flex flex-col items-center py-12">
+    <div
+      class="flex flex-col lg:w-3/4 items-center space-y-5 max-md:w-[85%] md:w-[65%]"
+    >
+      <p class="font-roboto font-medium text-xl text-left self-start">
+        Kwota przelewu
+      </p>
+      <div class="w-full flex flex-col items-center space-y-5">
+        <div class="relative max-sm:w-full w-1/2 2xl:w-1/4 self-center">
+          <input
+            class="bg-white text-green-600 p-2 w-full rounded-md no-arrows font-roboto font-medium"
+            type="number"
+            min="1"
+            max="{{ currentSelectedAccount.balance }}"
+            [value]="currentTransferAmount"
+            [(ngModel)]="transferAmount"
+            #initialCapitalInput="ngModel"
+            required
+          />
+          <span
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-medium text-green-600"
+          >
+            {{ currentSelectedAccount.currency }}
+          </span>
         </div>
-        <div class="flex flex-col w-full lg:w-1/2">
-            <div class="relative self-center justify-center flex flex-col lg:w-100 w-[85%]">
-                <p class="font-roboto font-light text-md text-left">Numer konta odbiorcy</p>
-                <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="text"
-                    placeholder="np. PL 49 1020 2222 3333 4444 0000 0002" [(ngModel)]="transferReceiverAccountId"
-                    required />
-            </div>
-            @if(transferFlags.isTransferReceiverAccountNumberValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5">Wprowadzony numer konta jest nieprawidłowy.</p>
-            }
+        <input
+          type="range"
+          min="{{ 1 }}"
+          max="{{ currentSelectedAccount.balance }}"
+          step="{{ 0.1 }}"
+          [value]="currentTransferAmount"
+          [(ngModel)]="transferAmount"
+          class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb select-none"
+        />
+        <div class="flex justify-between w-full mt-2">
+          <span class="text-white"
+            >min. 1 {{ currentSelectedAccount.currency }}</span
+          >
+          <span class="text-white"
+            >max.
+            {{
+              convertService.getNumberWithSpacesBetweenThousands(
+                currentSelectedAccount.balance
+              )
+            }}
+            {{ currentSelectedAccount.currency }}</span
+          >
         </div>
+        @if(transferFlags.isTransferAmountValid === false) {
+        <p class="font-roboto font-light text-red-500 text-sm pt-5">
+          Kwota przelewu jest nieprawidłowa.
+        </p>
+        }
+      </div>
     </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <button
-        class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8"
-        [@shake]="shakeStateService.shakeState" (click)="handleButtonClick()">
-        Zrealizuj przelew
-    </button>
-    }
-    @else {
-    <app-verification-code actionType="Potwierdzenie przelewu" />
-    }
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
+    <p class="font-roboto font-medium text-lg text-white pt-2">
+      Informacje techniczne
+    </p>
+    <p class="font-roboto font-light text-md text-white w-3/4">
+      Wprowadź tytuł przelewu oraz numer konta odbiorcy.
+    </p>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div
+    class="flex flex-col lg:flex-row justify-between py-12 w-screen max-lg:space-y-5"
+  >
+    <div
+      class="flex flex-col z-20 w-[85%] lg:w-1/2 items-center justify-center self-center"
+    >
+      <p
+        class="font-roboto font-light text-md text-left lg:w-100 max-lg:self-start"
+      >
+        Tytuł przelewu
+      </p>
+      <input
+        class="max-lg:w-full !bg-white lg:!w-100 w-[85%] text-black p-2 rounded-md no-arrows font-roboto font-light"
+        type="text"
+        placeholder="np. Na urodziny"
+        [(ngModel)]="transferTitle"
+        required
+      />
+      @if(transferFlags.isTransferTitleValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5">
+        Wprowadzony tytuł jest nieprawidłowy.
+      </p>
+      }
+    </div>
+    <div class="flex flex-col w-full lg:w-1/2">
+      <div
+        class="relative self-center justify-center flex flex-col lg:w-100 w-[85%]"
+      >
+        <p class="font-roboto font-light text-md text-left">
+          Numer konta odbiorcy
+        </p>
+        <input
+          class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+          type="text"
+          placeholder="np. PL 49 1020 2222 3333 4444 0000 0002"
+          [(ngModel)]="transferReceiverAccountId"
+          required
+        />
+      </div>
+      @if(transferFlags.isTransferReceiverAccountNumberValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5">
+        Wprowadzony numer konta jest nieprawidłowy.
+      </p>
+      }
+    </div>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <button
+    class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8"
+    [@shake]="shakeStateService.shakeState"
+    (click)="handleButtonClick()"
+  >
+    Zrealizuj przelew
+  </button>
+  } @else {
+  <app-verification-code actionType="Potwierdzenie przelewu" />
+  }
 </div>

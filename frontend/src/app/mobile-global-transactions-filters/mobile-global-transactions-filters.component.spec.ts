@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { GlobalTransactionsFiltersService } from '../../services/global-transactions-filters.service';
 import { MobileGlobalTransactionsFiltersComponent } from './mobile-global-transactions-filters.component';
+import { MobileGlobalTransactionsFiltersModule } from './mobile-global-transactions-filters.module';
 
 describe('MobileGlobalTransactionsFiltersComponent', () => {
   let component: MobileGlobalTransactionsFiltersComponent;
@@ -11,7 +12,7 @@ describe('MobileGlobalTransactionsFiltersComponent', () => {
       ['setAppliedFilter']
     );
     TestBed.configureTestingModule({
-      imports: [MobileGlobalTransactionsFiltersComponent],
+      imports: [MobileGlobalTransactionsFiltersModule],
       providers: [
         {
           provide: GlobalTransactionsFiltersService,

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { AvatarService } from '../../services/avatar.service';
@@ -7,6 +6,7 @@ import { ShakeStateService } from '../../services/shake-state.service';
 import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { AccountSettingsComponent } from './account-settings.component';
+import { AccountSettingsModule } from './account-settings.module';
 
 describe('AccountSettingsComponent', () => {
   let component: AccountSettingsComponent;
@@ -33,7 +33,7 @@ describe('AccountSettingsComponent', () => {
       'validateSelectedAvatarSize',
     ]);
     await TestBed.configureTestingModule({
-      imports: [AccountSettingsComponent, FormsModule, BrowserAnimationsModule],
+      imports: [AccountSettingsModule, BrowserAnimationsModule],
       providers: [
         { provide: AvatarService, useValue: mockAvatarService },
         { provide: UserService, useValue: mockUserService },

@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { FiltersService } from '../../services/filters.service';
 import { SortExpansionComponent } from './sort-expansion.component';
+import { SortExpansionModule } from './sort-expansion.module';
 
 describe('SortExpansionComponent', () => {
   let component: SortExpansionComponent;
@@ -23,12 +24,7 @@ describe('SortExpansionComponent', () => {
       canSetAbsoluteStyle: jasmine.createSpy('canSetAbsoluteStyle'),
     };
     await TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        FormsModule,
-        MatRadioModule,
-        SortExpansionComponent,
-      ],
+      imports: [CommonModule, FormsModule, MatRadioModule, SortExpansionModule],
       providers: [
         { provide: FiltersService, useValue: filtersServiceMock },
         {

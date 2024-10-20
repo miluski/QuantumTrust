@@ -1,8 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
-import { FooterComponent } from '../footer/footer.component';
-import { HeaderComponent } from '../header/header.component';
 
 /**
  * NotFoundComponent is a standalone Angular component that displays a "not found" page.
@@ -13,7 +10,6 @@ import { HeaderComponent } from '../header/header.component';
  * @imports [HeaderComponent, FooterComponent, CommonModule]
  *
  * @class NotFoundComponent
- * @implements OnInit
  *
  * @property {boolean} isDrawerOpened - Indicates whether the drawer is opened.
  *
@@ -25,8 +21,6 @@ import { HeaderComponent } from '../header/header.component';
 @Component({
   selector: 'app-not-found',
   templateUrl: './not-found.component.html',
-  imports: [HeaderComponent, FooterComponent, CommonModule],
-  standalone: true,
 })
 export class NotFoundComponent implements OnInit {
   public isDrawerOpened: boolean = false;
