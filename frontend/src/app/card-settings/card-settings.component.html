@@ -29,7 +29,8 @@
           [@rotateCard]="card.showingCardSite"
         >
           <app-image
-            class="object-cover w-full h-full shadow-gray-400 shadow-sm rounded-2xl z-10 pointer-events-none"
+            class="w-full h-full z-10"
+            ownClass="w-full h-full object-cover shadow-gray-400 shadow-sm rounded-2xl pointer-events-none"
             [ngClass]="{ 'opacity-50': card.status === 'suspended' }"
             [src]="
               card.showingCardSite === 'front' ? card.image : card.backImage
@@ -41,7 +42,8 @@
             class="absolute top-1 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
           >
             <app-image
-              class="w-4 h-4 pointer-events-none"
+              class="w-4 h-4"
+              ownClass="w-full h-full pointer-events-none"
               src="favicon.ico"
               alt="Quantum Trust Logo"
             />

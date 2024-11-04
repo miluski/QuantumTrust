@@ -7,6 +7,7 @@ import { Step } from '../../types/step';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { BOTTOM_INFORMATION, TOP_INFORMATION } from '../../utils/enums';
 import { singleDepositStepsArray } from '../../utils/steps-objects-arrays';
+import { MediaService } from '../../services/media-service.service';
 
 /**
  * @fileoverview SingleDepositComponent is a standalone Angular component that handles the logic for a single deposit view.
@@ -57,7 +58,8 @@ export class SingleDepositComponent implements OnInit {
   public depositType: string = 'timely';
   constructor(
     private productTypesService: ProductTypesService,
-    public convertService: ConvertService
+    public convertService: ConvertService,
+    public mediaService: MediaService
   ) {}
   ngOnInit(): void {
     this.productTypesService.currentDepositType.subscribe(

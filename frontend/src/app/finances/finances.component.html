@@ -59,7 +59,8 @@
             {{ convertService.getPolishAccountType(account.type) }}
           </p>
           <app-image
-            class="rounded-2xl max-sm:w-16 max-sm:h-14 w-28 h-24 border border-black pointer-events-none"
+            class="max-sm:w-16 max-sm:h-14 w-28 h-24"
+            ownClass="rounded-2xl border border-black pointer-events-none h-full w-full"
             [src]="account.image"
             alt="single-account-image"
           />
@@ -305,7 +306,8 @@
           "
         >
           <app-image
-            class="object-cover max-sm:h-44 w-80 h-48 shadow-gray-400 shadow-sm rounded-2xl my-10 z-10 pointer-events-none"
+            class="max-sm:h-44 w-80 h-48 my-10 z-10"
+            ownClass="object-cover shadow-gray-400 shadow-sm rounded-2xl pointer-events-none w-full h-full"
             [ngClass]="{ 'opacity-50': card.status === 'suspended' }"
             [src]="
               card.showingCardSite === 'front' ? card.image : card.backImage

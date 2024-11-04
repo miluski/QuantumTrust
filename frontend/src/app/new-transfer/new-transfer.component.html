@@ -35,13 +35,14 @@
     >
       <div class="flex flex-row w-full items-center justify-between mb-6">
         <p
-          class="font-roboto font-medium text-2xl text-white pt-5 md:w-1/2 md:text-left xl:text-nowrap"
+          class="font-roboto font-medium text-2xl text-white pt-5 md:w-1/2 md:text-left 2xl:text-nowrap max-2xl:text-center"
         >
           Konto
           {{ convertService.getPolishAccountType(account.type) }}
         </p>
         <app-image
-          classString="rounded-2xl lg:w-16 lg:h-14 w-24 h-20 border border-black pointer-events-none"
+          class="lg:w-16 lg:h-14 w-24 h-20"
+          ownClass="rounded-2xl w-full h-full border border-black pointer-events-none"
           [src]="account.image"
           alt="single-account-image"
         />

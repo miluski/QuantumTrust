@@ -22,25 +22,22 @@
         (change)="onFileSelected($event)"
         style="display: none"
       />
-      <ng-container
-        *ngIf="!avatarService.actualAvatarError; else noAvatar"
-        class="self-center"
+      @if(!avatarService.avatarError) {
+      <app-image
+        class="min-w-12 w-12 h-12"
+        ownClass="rounded-full pointer-events-none w-full h-full"
+        alt="user-avatar"
+        [src]="avatarUrl"
+        [error]="avatarService.setTemporaryAvatarError(true)"
+      />
+      } @else {
+      <div
+        class="rounded-full min-w-12 w-12 h-12 flex items-center justify-center text-white"
+        [style.background-color]="avatarService.avatarColor"
       >
-        <app-image
-          classString="rounded-full min-w-16 w-16 h-16 pointer-events-none"
-          alt="user-avatar"
-          [src]="avatarUrl"
-          (error)="avatarService.setTemporaryAvatarError(true)"
-        />
-      </ng-container>
-      <ng-template #noAvatar>
-        <div
-          class="rounded-full min-w-16 w-16 h-16 flex items-center justify-center text-white"
-          [style.background-color]="avatarService.avatarColor"
-        >
-          {{ avatarService.getInitials() }}
-        </div>
-      </ng-template>
+        {{ avatarService.getInitials() }}
+      </div>
+      }
       <div class="flex flex-col text-left mx-5">
         <p class="font-roboto font-medium text-xl max-sm:text-lg text-white">
           Zdjęcie profilowe

@@ -20,7 +20,8 @@
               "
             >
               <app-image
-                class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
+                class="w-auto h-44 my-10 z-10"
+                ownClass="w-auto h-full object-cover rounded-md shadow-gray-400 shadow-sm pointer-events-none"
                 [src]="
                   visaCardObject.showingCardSite === 'front'
                     ? visaCardObject.image
@@ -33,7 +34,8 @@
                 class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
               >
                 <app-image
-                  class="w-4 h-4 pointer-events-none"
+                  class="w-4 h-4"
+                  ownClass="w-full h-full pointer-events-none"
                   src="favicon.ico"
                   alt="Quantum Trust Logo"
                 />
@@ -87,7 +89,8 @@
               "
             >
               <app-image
-                class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
+                class="w-auto h-44 my-10 z-10"
+                ownClass="w-auto h-full object-cover rounded-md shadow-gray-400 shadow-sm pointer-events-none"
                 [src]="
                   mastercardObject.showingCardSite === 'front'
                     ? mastercardObject.image
@@ -100,7 +103,8 @@
                 class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
               >
                 <app-image
-                  class="w-4 h-4 pointer-events-none"
+                  class="w-4 h-4"
+                  ownClass="w-full h-full pointer-events-none"
                   src="favicon.ico"
                   alt="Quantum Trust Logo"
                 />
