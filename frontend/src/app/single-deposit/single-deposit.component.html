@@ -3,7 +3,7 @@
   <main class="flex-col flex justify-center bg-black text-white w-screen">
     <div
       class="relative flex flex-row w-full py-32 bg-cover bg-center bg-opacity-25 my-12 px-10 sm:px-14 justify-center"
-      [style.backgroundImage]="'url(' + depositObject.image + ')'"
+      [style.backgroundImage]="'url(' + mediaService.getPhotoUrl(depositObject.image) + ')'"
     >
       <div class="absolute inset-0 bg-black opacity-40 z-10 h-full"></div>
       <div

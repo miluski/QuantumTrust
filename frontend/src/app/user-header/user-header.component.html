@@ -69,7 +69,8 @@
         <button class="w-full">
           @if(!avatarService.avatarError) {
           <app-image
-            class="rounded-full min-w-12 w-12 h-12 pointer-events-none"
+            class="min-w-12 w-12 h-12"
+            ownClass="rounded-full pointer-events-none w-full h-full"
             alt="user-avatar"
             [src]="user.avatarUrl"
             [error]="handleAvatarError()"

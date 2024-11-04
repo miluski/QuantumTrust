@@ -41,7 +41,8 @@
         >
           <div class="flex flex-col relative items-center">
             <app-image
-              class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
+              class="w-[85%] h-auto my-10 z-10"
+              ownClass="border border-gray-300 rounded-md shadow-gray-400 shadow-sm pointer-events-none w-full h-full object-cover"
               [src]="visaCard.image"
               alt="single-card"
             />
@@ -49,7 +50,8 @@
               class="absolute top-10 left-[10%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
             >
               <app-image
-                class="w-4 h-4 pointer-events-none"
+                class="w-4 h-4"
+                ownClass="pointer-events-none w-full h-full"
                 src="favicon.ico"
                 alt="Quantum Trust Logo"
               />
@@ -121,7 +123,8 @@
         >
           <div class="flex flex-col relative items-center">
             <app-image
-              class="object-cover w-[85%] h-auto border border-gray-300 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
+              class="object-cover w-[85%] h-auto my-10 z-10"
+              ownClass="border border-gray-300 rounded-md shadow-gray-400 shadow-sm pointer-events-none w-full h-full"
               [src]="masterCard.image"
               alt="single-card"
             />
@@ -129,7 +132,8 @@
               class="absolute top-10 left-[10%] flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
             >
               <app-image
-                class="w-4 h-4 pointer-events-none"
+                class="w-4 h-4"
+                ownClass="pointer-events-none w-full h-full"
                 src="favicon.ico"
                 alt="Quantum Trust Logo"
               />

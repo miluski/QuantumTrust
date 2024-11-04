@@ -12,7 +12,8 @@
           {{ convertService.getPolishAccountType(accountType).toUpperCase() }}
         </p>
         <app-image
-          class="md:hidden block my-12 h-64 w-[75%] max-sm:w-full self-center rounded-lg pointer-events-none"
+          class="md:hidden block my-12 h-64 w-[75%] max-sm:w-full"
+          ownClass="rounded-lg pointer-events-none self-center w-full h-full"
           [src]="accountObject.image"
         />
         <ul class="list-disc text-left self-center space-y-5">
@@ -31,7 +32,8 @@
         </a>
       </div>
       <app-image
-        class="max-md:hidden w-auto md:h-52 md:w-auto lg:h-64 xl:h-80 rounded-lg pointer-events-none"
+        class="max-md:hidden w-auto md:h-52 md:w-auto lg:h-64 xl:h-80"
+        ownClass="w-full h-full rounded-lg pointer-events-none"
         [src]="accountObject.image"
       />
     </div>
@@ -106,7 +108,8 @@
           (click)="changeAccountType(account.type)"
         >
           <app-image
-            class="object-cover h-52 w-auto border rounded-md my-10 pointer-events-none"
+            class="h-52 w-auto border rounded-md my-10 pointer-events-none"
+            ownClass="object-cover h-52 w-auto "
             [src]="account.image"
           />
           <p

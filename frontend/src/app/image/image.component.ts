@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
+import { MediaService } from '../../services/media-service.service';
 
 /**
  * @component ImageComponent
@@ -34,13 +35,17 @@ import { AnimationsProvider } from '../../providers/animations.provider';
 export class ImageComponent {
   @Input() src!: string;
   @Input() alt!: string;
-  @Input() class!: string;
+  @Input() ownClass!: string;
   @Input() click!: () => void;
   @Input() error!: void;
   @Input() ngClass!: Record<string, any>;
   private isLoaded: boolean = false;
+  constructor(protected mediaService: MediaService) {}
   get canRender(): boolean {
-    return this.isLoaded;
+    return (
+      this.mediaService.getPhotoUrl(this.src) !== 'PHOTO_LOADING_SKELETON' ||
+      this.isLoaded
+    );
   }
   onload(): void {
     this.isLoaded = true;
