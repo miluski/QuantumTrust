@@ -10,7 +10,7 @@ RUN npm install -g @angular/cli
 
 RUN npm install
 
-RUN ng build
+RUN npm run build:ssr
 
 FROM node:18-alpine
 
@@ -24,4 +24,4 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 443
 
-CMD ["sh", "-c", "node /app/server/main.server.mjs && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "node /app/server/main.js && nginx -g 'daemon off;'"]
