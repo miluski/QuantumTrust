@@ -11,6 +11,7 @@ import { Step } from '../../types/step';
 import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 import { singleAccountStepsArray } from '../../utils/steps-objects-arrays';
 import { SingleAccountComponent } from './single-account.component';
+import { SingleAccountModule } from './single-account.module';
 
 describe('SingleAccountComponent', () => {
   let component: SingleAccountComponent;
@@ -39,14 +40,19 @@ describe('SingleAccountComponent', () => {
     productTypesServiceSpy.currentDepositType = of('instant');
     const appInformationStatesServiceSpy = jasmine.createSpyObj(
       'AppInformationStatesService',
-      ['changeTabName', 'changeTransactionsArrayLength', 'observeBreakpoints', 'changeDrawer']
+      [
+        'changeTabName',
+        'changeTransactionsArrayLength',
+        'observeBreakpoints',
+        'changeDrawer',
+      ]
     );
     appInformationStatesServiceSpy.currentTabName = of(
       'SingleAccountTransactions'
     );
     appInformationStatesServiceSpy.currentTransactionsArrayLength = of(25);
     await TestBed.configureTestingModule({
-      imports: [SingleAccountComponent, BrowserAnimationsModule],
+      imports: [SingleAccountModule, BrowserAnimationsModule],
       providers: [
         { provide: ProductTypesService, useValue: productTypesServiceSpy },
         { provide: PaginationService, useValue: paginationServiceSpy },

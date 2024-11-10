@@ -1,8 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
-import { MatDividerModule } from '@angular/material/divider';
-import { RouterModule } from '@angular/router';
+import { NgModel } from '@angular/forms';
 import { ConvertService } from '../../services/convert.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { Deposit } from '../../types/deposit';
@@ -10,9 +7,7 @@ import { Step } from '../../types/step';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { BOTTOM_INFORMATION, TOP_INFORMATION } from '../../utils/enums';
 import { singleDepositStepsArray } from '../../utils/steps-objects-arrays';
-import { FooterComponent } from '../footer/footer.component';
-import { HeaderComponent } from '../header/header.component';
-import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
+import { MediaService } from '../../services/media.service';
 
 /**
  * @fileoverview SingleDepositComponent is a standalone Angular component that handles the logic for a single deposit view.
@@ -21,16 +16,6 @@ import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.compo
  * @component
  * @selector app-single-deposit
  * @templateUrl ./single-deposit.component.html
- * @imports [
- *   MatDividerModule,
- *   HeaderComponent,
- *   FooterComponent,
- *   FormsModule,
- *   CommonModule,
- *   RouterModule,
- *   ScrollArrowUpComponent
- * ]
- *
  * @class SingleDepositComponent
  * @implements OnInit
  *
@@ -60,16 +45,6 @@ import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.compo
 @Component({
   selector: 'app-single-deposit',
   templateUrl: './single-deposit.component.html',
-  imports: [
-    MatDividerModule,
-    HeaderComponent,
-    FooterComponent,
-    FormsModule,
-    CommonModule,
-    RouterModule,
-    ScrollArrowUpComponent,
-  ],
-  standalone: true,
 })
 export class SingleDepositComponent implements OnInit {
   @Input() steps: Step[] = singleDepositStepsArray;
@@ -83,7 +58,8 @@ export class SingleDepositComponent implements OnInit {
   public depositType: string = 'timely';
   constructor(
     private productTypesService: ProductTypesService,
-    public convertService: ConvertService
+    public convertService: ConvertService,
+    public mediaService: MediaService
   ) {}
   ngOnInit(): void {
     this.productTypesService.currentDepositType.subscribe(

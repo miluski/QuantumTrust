@@ -10,8 +10,9 @@ import { ShakeStateService } from '../../services/shake-state.service';
 import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
+import { VerificationCodeModule } from '../verification-code/verification-code.module';
 import { NewTransferComponent } from './new-transfer.component';
+import { NewTransferModule } from './new-transfer.module';
 
 describe('NewTransferComponent', () => {
   let component: NewTransferComponent;
@@ -47,8 +48,8 @@ describe('NewTransferComponent', () => {
         CommonModule,
         FormsModule,
         MatIconModule,
-        VerificationCodeComponent,
-        NewTransferComponent,
+        VerificationCodeModule,
+        NewTransferModule,
         BrowserAnimationsModule,
       ],
       providers: [

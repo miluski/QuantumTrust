@@ -1,16 +1,10 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatDividerModule } from '@angular/material/divider';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
-import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
-import { FooterComponent } from '../footer/footer.component';
-import { HeaderComponent } from '../header/header.component';
 
 /**
  * @fileoverview VerificationCodeComponent handles the verification code input and validation process.
@@ -20,9 +14,7 @@ import { HeaderComponent } from '../header/header.component';
  * @component
  * @selector app-verification-code
  * @templateUrl ./verification-code.component.html
- * @imports CommonModule, FormsModule, RouterModule, MatDividerModule, HeaderComponent, FooterComponent, CustomAlertComponent
  * @animations AnimationsProvider.animations
- * @standalone true
  *
  * @class VerificationCodeComponent
  * @property {string} actionType - The type of action being performed (e.g., 'Logowanie', 'Otwieranie konta').
@@ -49,17 +41,7 @@ import { HeaderComponent } from '../header/header.component';
 @Component({
   selector: 'app-verification-code',
   templateUrl: './verification-code.component.html',
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    MatDividerModule,
-    HeaderComponent,
-    FooterComponent,
-    CustomAlertComponent,
-  ],
   animations: [AnimationsProvider.animations],
-  standalone: true,
 })
 export class VerificationCodeComponent {
   @Input() actionType!: string;

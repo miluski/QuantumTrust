@@ -1,17 +1,40 @@
 services:
-  angular-app:
+  quantum-trust-database:
+    image: postgres:latest
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    networks:
+      - quantum-trust-network
+    restart: always
+
+  quantum-trust-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - /Users/maksymiliansowula/Documents/Studia/Inzynierka/QuantumTrust/media:/media
+    depends_on:
+      - quantum-trust-database
+    networks:
+      - quantum-trust-network
+    restart: always
+
+  quantum-trust-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "80:80"
-      - "443:443"
     volumes:
-      - ./certs:/etc/letsencrypt
-      - ./frontend/node_modules:/app/node_modules
+      - "./certs:/etc/letsencrypt"
     depends_on:
       - certbot
-    command: /bin/sh -c "while [ ! -f /etc/letsencrypt/live/quantum-trust.cc/fullchain.pem ]; do echo 'Waiting for certificates...'; sleep 1; done && nginx -g 'daemon off;'"
+    ports:
+      - "443:443"
+    networks:
+      - quantum-trust-network
     restart: always
 
   certbot:
@@ -20,3 +43,7 @@ services:
       - ./certs:/etc/letsencrypt
     entrypoint: /bin/sh -c "certbot renew; sleep 12h & wait $${!};"
     restart: always
+
+networks:
+  quantum-trust-network:
+    driver: bridge

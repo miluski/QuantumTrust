@@ -3,6 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { GuestHeaderComponent } from './guest-header.component';
+import { GuestHeaderModule } from './guest-header.module';
 
 describe('GuestHeaderComponent', () => {
   let component: GuestHeaderComponent;
@@ -19,7 +20,7 @@ describe('GuestHeaderComponent', () => {
   };
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GuestHeaderComponent],
+      imports: [GuestHeaderModule],
       providers: [
         { provide: Router, useValue: mockRouter },
         {

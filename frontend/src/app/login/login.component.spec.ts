@@ -9,11 +9,12 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
 import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
-import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
-import { FooterComponent } from '../footer/footer.component';
-import { HeaderComponent } from '../header/header.component';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
+import { CustomAlertModule } from '../custom-alert/custom-alert.module';
+import { FooterModule } from '../footer/footer.module';
+import { HeaderModule } from '../header/header.module';
+import { VerificationCodeModule } from '../verification-code/verification-code.module';
 import { LoginComponent } from './login.component';
+import { LoginModule } from './login.module';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -28,17 +29,17 @@ describe('LoginComponent', () => {
     const alertServiceSpy = jasmine.createSpyObj('AlertService', ['showAlert']);
     await TestBed.configureTestingModule({
       imports: [
-        LoginComponent,
+        LoginModule,
         CommonModule,
         FormsModule,
         RouterModule,
         MatDividerModule,
         MatFormFieldModule,
         MatIconModule,
-        HeaderComponent,
-        FooterComponent,
-        VerificationCodeComponent,
-        CustomAlertComponent,
+        HeaderModule,
+        FooterModule,
+        VerificationCodeModule,
+        CustomAlertModule,
         BrowserAnimationsModule,
       ],
       providers: [

@@ -2,28 +2,26 @@ FROM node:alpine AS build
 
 WORKDIR /app
 
-COPY package.json ./
-
 COPY . .
 
-RUN rm -rf node_modules package-lock.json
+RUN rm -rf package-lock.json node_modules
+
+RUN npm install -g @angular/cli
 
 RUN npm install
 
-RUN npm run build --prod
+RUN npm run build:ssr
 
-FROM nginx:alpine
+FROM node:18-alpine
 
-RUN apk add --no-cache fail2ban
+RUN apk add --no-cache nginx
 
-COPY --from=build /app/dist/frontend /usr/share/nginx/html
+COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
+COPY --from=build /app/dist/frontend/server /app/server
+COPY --from=build /app/dist/frontend/browser /dist/frontend/browser
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY jail.conf /etc/fail2ban/jail.conf
-COPY nginx-http-auth.conf /etc/fail2ban/filter.d/nginx-http-auth.conf
-
-EXPOSE 80
 EXPOSE 443
 
-CMD ["sh", "-c", "fail2ban-client start && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "node /app/server/main.js && nginx -g 'daemon off;'"]

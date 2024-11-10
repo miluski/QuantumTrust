@@ -1,53 +1,91 @@
 <app-header />
 <div class="flex flex-col m-0 p-0 overflow-hidden scroll-smooth">
-    @if(shakeStateService.siteNumber === 1) {
-    <main class="flex-col flex text-center bg-black text-white w-screen items-center justify-center">
-        <div class="flex flex-row my-12 bg-white rounded-3xl shadow-gray-500 shadow-lg w-[85%] 2xl:w-[70%] 2xl:h-full">
-            <div class="login-mobile flex flex-col justify-center items-center lg:w-[50%] w-full rounded-3xl">
-                <p class="font-roboto font-extrabold text-5xl text-black pt-24 z-20">Logowanie</p>
-                <div class="flex flex-col lg:w-[75%] w-[80%] z-20 mb-6">
-                    <p class="text-left font-roboto font-light text-sm text-black w-full">Identyfikator</p>
-                    <input
-                        class="no-arrows font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
-                        type="number" min="9999999" max="99999999" placeholder="12345678"
-                        [(ngModel)]="userAccount.identifier" />
-                    @if(userAccountFlags.isIdentifierValid === false) {
-                    <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wprowadzony identyfikator jest
-                        nieprawidłowy.
-                    </p>
-                    }
-                </div>
-                <div class="flex flex-col mb-12 lg:w-[75%] w-[80%] z-20">
-                    <p class="text-left font-roboto font-light text-sm text-black w-full">Hasło</p>
-                    <input
-                        class="font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
-                        type="password" placeholder="************" [(ngModel)]="userAccount.password" />
-                    @if(userAccountFlags.isPasswordValid === false) {
-                    <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">Wprowadzone hasło jest
-                        nieprawidłowe.</p>
-                    }
-                </div>
-                <button
-                    class="lg:w-[75%] w-[80%] lg:mb-10 mb-10 border text-3xl border-white text-white font-salsa rounded-full py-5 hover:bg-gray-600 bg-own-gray mx-5 self-center z-20"
-                    (click)="verifyData()" [@shake]="shakeStateService.shakeState">
-                    Dalej
-                </button>
-                <mat-divider class="lg:w-[75%] w-[80%] !border-t-gray-300 my-5 z-20 max-lg:!border-t-gray-400" />
-                <div class="flex flex-row py-10 space-x-2 z-20">
-                    <p class="font-roboto font-normal lg:text-2xl text-xl text-black">Nie masz konta?</p>
-                    <a class="font-roboto font-bold lg:text-2xl text-xl text-gray-400 hover:text-gray-200"
-                        routerLink="/open-account" routerLinkActive="active">Załóż je!</a>
-                </div>
-            </div>
-            <img class="max-lg:hidden block rounded-r-3xl w-[50%] opacity-30 pointer-events-none"
-                src="login-background.png" alt="login-background" />
+  @if(shakeStateService.siteNumber === 1) {
+  <main
+    class="flex-col flex text-center bg-black text-white w-screen items-center justify-center"
+  >
+    <div
+      class="flex flex-row my-12 bg-white rounded-3xl shadow-gray-500 shadow-lg w-[85%] 2xl:w-[70%] 2xl:h-full"
+    >
+      <div
+        class="login-mobile flex flex-col justify-center items-center lg:w-[50%] w-full rounded-3xl"
+      >
+        <p class="font-roboto font-extrabold text-5xl text-black pt-24 z-20">
+          Logowanie
+        </p>
+        <div class="flex flex-col lg:w-[75%] w-[80%] z-20 mb-6">
+          <p class="text-left font-roboto font-light text-sm text-black w-full">
+            Identyfikator
+          </p>
+          <input
+            class="no-arrows font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
+            type="number"
+            min="9999999"
+            max="99999999"
+            placeholder="12345678"
+            [(ngModel)]="userAccount.identifier"
+          />
+          @if(userAccountFlags.isIdentifierValid === false) {
+          <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">
+            Wprowadzony identyfikator jest nieprawidłowy.
+          </p>
+          }
         </div>
-    </main>
-    }
-    @else {
-    <app-verification-code actionType="Logowanie" />
-    }
+        <div class="flex flex-col mb-12 lg:w-[75%] w-[80%] z-20">
+          <p class="text-left font-roboto font-light text-sm text-black w-full">
+            Hasło
+          </p>
+          <input
+            class="font-roboto font-light text-sm text-black rounded-lg px-5 py-2 w-full border border-gray-200 max-lg:border-gray-400 max-lg:bg-transparent"
+            type="password"
+            placeholder="************"
+            [(ngModel)]="userAccount.password"
+          />
+          @if(userAccountFlags.isPasswordValid === false) {
+          <p class="font-roboto font-light text-red-500 text-sm pt-5 -pb-5">
+            Wprowadzone hasło jest nieprawidłowe.
+          </p>
+          }
+        </div>
+        <button
+          class="lg:w-[75%] w-[80%] lg:mb-10 mb-10 border text-3xl border-white text-white font-salsa rounded-full py-5 hover:bg-gray-600 bg-own-gray mx-5 self-center z-20"
+          (click)="verifyData()"
+          [@shake]="shakeStateService.shakeState"
+        >
+          Dalej
+        </button>
+        <mat-divider
+          class="lg:w-[75%] w-[80%] !border-t-gray-300 my-5 z-20 max-lg:!border-t-gray-400"
+        />
+        <div class="flex flex-row py-10 space-x-2 z-20">
+          <p class="font-roboto font-normal lg:text-2xl text-xl text-black">
+            Nie masz konta?
+          </p>
+          <button
+            class="font-roboto font-bold lg:text-2xl text-xl text-gray-400 hover:text-gray-200 pb-5"
+            routerLink="/open-account"
+            routerLinkActive="active"
+          >
+            Załóż je!
+          </button>
+        </div>
+      </div>
+      <app-image
+        class="max-lg:hidden block w-[50%]"
+        ownClass="w-full h-full rounded-r-3xl opacity-30 pointer-events-none"
+        src="login-background.webp"
+        alt="login-background"
+      />
+    </div>
+  </main>
+  } @else {
+  <app-verification-code actionType="Logowanie" />
+  }
 </div>
-<app-custom-alert [alertType]="alertService.alertType" [alertTitle]="alertService.alertTitle"
-[alertContent]="alertService.alertContent" [alertService]="alertService" />
+<app-custom-alert
+  [alertType]="alertService.alertType"
+  [alertTitle]="alertService.alertTitle"
+  [alertContent]="alertService.alertContent"
+  [alertService]="alertService"
+/>
 <app-footer />

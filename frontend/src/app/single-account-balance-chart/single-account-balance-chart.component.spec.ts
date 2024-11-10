@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Chart, registerables } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { SingleAccountBalanceChartComponent } from './single-account-balance-chart.component';
+import { SingleAccountBalanceChartModule } from './single-account-balance-chart.module';
 
 describe('SingleAccountBalanceChartComponent', () => {
   let component: SingleAccountBalanceChartComponent;
@@ -14,7 +15,7 @@ describe('SingleAccountBalanceChartComponent', () => {
       imports: [
         CommonModule,
         BaseChartDirective,
-        SingleAccountBalanceChartComponent,
+        SingleAccountBalanceChartModule,
       ],
       providers: [ChangeDetectorRef],
     }).compileComponents();

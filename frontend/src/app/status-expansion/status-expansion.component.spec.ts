@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { FiltersService } from '../../services/filters.service';
 import { StatusExpansionComponent } from './status-expansion.component';
+import { StatusExpansionModule } from './status-expansion.module';
 
 describe('StatusExpansionComponent', () => {
   let component: StatusExpansionComponent;
@@ -26,7 +27,7 @@ describe('StatusExpansionComponent', () => {
         CommonModule,
         MatRadioButton,
         MatExpansionModule,
-        StatusExpansionComponent,
+        StatusExpansionModule,
       ],
       providers: [
         { provide: FiltersService, useValue: filtersServiceMock },

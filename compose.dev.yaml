@@ -1,0 +1,39 @@
+services:
+  quantum-trust-database:
+    image: postgres:latest
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    networks:
+      - quantum-trust-network
+    restart: always
+
+  quantum-trust-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - /Users/maksymiliansowula/Documents/Studia/Inzynierka/QuantumTrust/media:/media
+    depends_on:
+      - quantum-trust-database
+    networks:
+      - quantum-trust-network
+
+  quantum-trust-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend/src:/app/src
+    networks:
+      - quantum-trust-network
+    ports:
+      - "4200:4200"
+    restart: always
+
+networks:
+  quantum-trust-network:
+    driver: bridge

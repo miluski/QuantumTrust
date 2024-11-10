@@ -1,8 +1,4 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatDividerModule } from '@angular/material/divider';
-import { RouterModule } from '@angular/router';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 import { ShakeStateService } from '../../services/shake-state.service';
@@ -10,11 +6,6 @@ import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
-import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
-import { FooterComponent } from '../footer/footer.component';
-import { HeaderComponent } from '../header/header.component';
-import { ScrollArrowUpComponent } from '../scroll-arrow-up/scroll-arrow-up.component';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
 /**
  * GuestOpenAccountComponent is responsible for handling the guest account opening process.
@@ -24,18 +15,6 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
  * @selector 'app-guest-open-account'
  * @templateUrl './guest-open-account.component.html'
  * @animations [AnimationsProvider.animations]
- * @imports [
- *   HeaderComponent,
- *   FooterComponent,
- *   VerificationCodeComponent,
- *   ScrollArrowUpComponent,
- *   CustomAlertComponent,
- *   CommonModule,
- *   RouterModule,
- *   FormsModule,
- *   MatDividerModule,
- * ]
- * @standalone true
  *
  * @method verifyData Verifies the user data by validating various fields and setting the shake state.
  * @method setIsContactDataValid Validates the contact data (email and phone number) of the user account.
@@ -50,18 +29,6 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   selector: 'app-guest-open-account',
   templateUrl: './guest-open-account.component.html',
   animations: [AnimationsProvider.animations],
-  imports: [
-    HeaderComponent,
-    FooterComponent,
-    VerificationCodeComponent,
-    ScrollArrowUpComponent,
-    CustomAlertComponent,
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    MatDividerModule,
-  ],
-  standalone: true,
 })
 export class GuestOpenAccountComponent {
   public shakeStateService: ShakeStateService = new ShakeStateService();
@@ -135,7 +102,9 @@ export class GuestOpenAccountComponent {
     const isSomeDataInvalid: boolean = this.validationFlags.some(
       (flag: boolean) => flag === false
     );
-    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid ? 'shake' : 'none');
+    this.shakeStateService.setCurrentShakeState(
+      isSomeDataInvalid ? 'shake' : 'none'
+    );
   }
   private get validationFlags(): boolean[] {
     return [

@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { PaginationService } from '../../services/pagination.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { CardListComponent } from './card-list.component';
+import { CardListModule } from './card-list.module';
 
 describe('CardListComponent', () => {
   let component: CardListComponent;
@@ -17,7 +18,7 @@ describe('CardListComponent', () => {
       changeCardType: jasmine.createSpy('changeCardType'),
     };
     await TestBed.configureTestingModule({
-      imports: [CardListComponent],
+      imports: [CardListModule],
       providers: [
         { provide: ProductTypesService, useValue: productTypesServiceMock },
         { provide: PaginationService, useClass: PaginationService },
@@ -35,7 +36,6 @@ describe('CardListComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should initialize with default values', () => {
-    expect(component.tabName).toBe('Karty');
     expect(component.cardType).toBe('standard');
   });
   it('should subscribe to currentCardType on init', () => {

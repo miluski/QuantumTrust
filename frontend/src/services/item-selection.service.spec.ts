@@ -13,7 +13,7 @@ describe('ItemSelectionService', () => {
       id: '1',
       advertismentText: 'Ad Text 1',
       advertismentContent: 'Content 1',
-      image: 'image1.png',
+      image: 'image1.webp',
       type: 'Checking',
       benefits: [],
       balance: 1000,
@@ -23,7 +23,7 @@ describe('ItemSelectionService', () => {
       id: '2',
       advertismentText: 'Ad Text 2',
       advertismentContent: 'Content 2',
-      image: 'image2.png',
+      image: 'image2.webp',
       type: 'Savings',
       benefits: [],
       balance: 2000,
@@ -35,8 +35,8 @@ describe('ItemSelectionService', () => {
       id: 1,
       type: 'Credit',
       description: 'Credit Card 1',
-      image: 'card1.png',
-      backImage: 'back1.png',
+      image: 'card1.webp',
+      backImage: 'back1.webp',
       benefits: ['Cashback'],
       limits: [],
       fees: { release: 10, monthly: 5 },
@@ -50,8 +50,8 @@ describe('ItemSelectionService', () => {
       id: 2,
       type: 'Debit',
       description: 'Debit Card 2',
-      image: 'card2.png',
-      backImage: 'back2.png',
+      image: 'card2.webp',
+      backImage: 'back2.webp',
       benefits: ['No fees'],
       limits: [],
       fees: { release: 5, monthly: 2 },
@@ -143,23 +143,23 @@ describe('ItemSelectionService', () => {
     });
   });
   it('should set user cards array from userService', async () => {
-    await service['setUserCardsArray'](); 
+    await service['setUserCardsArray']();
     expect(service.userCards).toEqual(mockCards);
   });
   it('should filter transactions by selected account', async () => {
     const account = mockAccounts[0];
     service.setSelectedAccount(account);
     const transactions = await service.getUserTransactions('account');
-    expect(transactions.length).toBe(3); 
+    expect(transactions.length).toBe(3);
     expect(transactions[0].accountNumber).toBe('1');
-    expect(transactions[2].accountNumber).toBe(1); 
+    expect(transactions[2].accountNumber).toBe(1);
   });
   it('should filter transactions by selected card', async () => {
     const card = mockCards[0];
     service.setSelectedCard(card);
     const transactions = await service.getUserTransactions('card');
-    expect(transactions.length).toBe(1); 
-    expect(transactions[0].accountNumber).toBe(1); 
+    expect(transactions.length).toBe(1);
+    expect(transactions[0].accountNumber).toBe(1);
   });
   it('should return true if transaction account ID matches selected item ID', () => {
     const account = mockAccounts[0];
@@ -208,7 +208,7 @@ describe('ItemSelectionService', () => {
     expect(result).toBeFalse();
   });
   it('should return false if account ID assigned to card does not match selected account ID', () => {
-    const account = mockAccounts[1]; 
+    const account = mockAccounts[1];
     service.setSelectedAccount(account);
     const transaction: Transaction = {
       id: 3,

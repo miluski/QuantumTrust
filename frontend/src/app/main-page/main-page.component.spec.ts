@@ -7,6 +7,7 @@ import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { MainPageComponent } from './main-page.component';
+import { MainPageModule } from './main-page.module';
 
 describe('MainPageComponent', () => {
   let component: MainPageComponent;
@@ -38,7 +39,7 @@ describe('MainPageComponent', () => {
     );
     appInformationStatesServiceMock.currentTransactionsArrayLength = of(25);
     await TestBed.configureTestingModule({
-      imports: [MainPageComponent, BrowserAnimationsModule],
+      imports: [MainPageModule, BrowserAnimationsModule],
       providers: [
         {
           provide: AppInformationStatesService,

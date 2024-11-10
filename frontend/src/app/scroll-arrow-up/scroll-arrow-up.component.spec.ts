@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { WindowEventsService } from '../../services/window-events.service';
 import { ScrollArrowUpComponent } from './scroll-arrow-up.component';
+import { ScrollArrowUpModule } from './scroll-arrow-up.module';
 
 describe('ScrollArrowUpComponent', () => {
   let component: ScrollArrowUpComponent;
@@ -19,7 +20,7 @@ describe('ScrollArrowUpComponent', () => {
       imports: [
         CommonModule,
         MatTooltipModule,
-        ScrollArrowUpComponent,
+        ScrollArrowUpModule,
         BrowserAnimationsModule,
       ],
       providers: [

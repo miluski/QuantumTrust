@@ -1,135 +1,226 @@
-<div class="flex-col flex justify-center text-center bg-black text-white w-screen">
-    @if(shakeStateService.siteNumber === 1) {
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
-        <p class="font-roboto font-medium text-lg text-white pt-2">Ustawienia konta</p>
-        <p class="font-roboto font-light text-md text-white">Zmień dane opisujące twoje konto.</p>
+<div
+  class="flex-col flex justify-center text-center bg-black text-white w-screen"
+>
+  @if(shakeStateService.siteNumber === 1) {
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
+    <p class="font-roboto font-medium text-lg text-white pt-2">
+      Ustawienia konta
+    </p>
+    <p class="font-roboto font-light text-md text-white">
+      Zmień dane opisujące twoje konto.
+    </p>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div
+    class="flex max-sm:flex-col max-sm:space-y-5 max-sm:items-center flex-row w-full justify-between p-10"
+  >
+    <div class="flex flex-row">
+      <input
+        type="file"
+        #fileInput
+        (change)="onFileSelected($event)"
+        style="display: none"
+      />
+      @if(!avatarService.avatarError) {
+      <app-image
+        class="min-w-12 w-12 h-12"
+        ownClass="rounded-full pointer-events-none w-full h-full"
+        alt="user-avatar"
+        [src]="avatarUrl"
+        [error]="avatarService.setTemporaryAvatarError(true)"
+      />
+      } @else {
+      <div
+        class="rounded-full min-w-12 w-12 h-12 flex items-center justify-center text-white"
+        [style.background-color]="avatarService.avatarColor"
+      >
+        {{ avatarService.getInitials() }}
+      </div>
+      }
+      <div class="flex flex-col text-left mx-5">
+        <p class="font-roboto font-medium text-xl max-sm:text-lg text-white">
+          Zdjęcie profilowe
+        </p>
+        <p
+          class="font-roboto font-light text-lg max-sm:text-base text-white text-nowrap"
+        >
+          PNG, JPEG poniżej 1MB
+        </p>
+        @if(userAccountFlags.isAvatarValid === false) {
+        <p class="font-roboto font-light text-red-500 text-sm">
+          {{ avatarError }}
+        </p>
+        }
+      </div>
     </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex max-sm:flex-col max-sm:space-y-5 max-sm:items-center flex-row w-full justify-between p-10">
-        <div class="flex flex-row">
-            <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" />
-            <ng-container *ngIf="!avatarService.actualAvatarError; else noAvatar" class="self-center">
-                <img class="rounded-full min-w-16 w-16 h-16 pointer-events-none" alt="user-avatar" [src]="avatarUrl"
-                    (error)="avatarService.setTemporaryAvatarError(true)" />
-            </ng-container>
-            <ng-template #noAvatar>
-                <div class="rounded-full min-w-16 w-16 h-16 flex items-center justify-center text-white"
-                    [style.background-color]="avatarService.avatarColor">
-                    {{ avatarService.getInitials() }}
-                </div>
-            </ng-template>
-            <div class="flex flex-col text-left mx-5">
-                <p class="font-roboto font-medium text-xl max-sm:text-lg text-white">Zdjęcie profilowe</p>
-                <p class="font-roboto font-light text-lg max-sm:text-base text-white text-nowrap">PNG, JPEG poniżej 1MB
-                </p>
-                @if(userAccountFlags.isAvatarValid === false) {
-                <p class="font-roboto font-light text-red-500 text-sm">{{avatarError}}</p>
-                }
-            </div>
-        </div>
-        <button
-            class="border border-white text-white font-salsa rounded-md hover:bg-gray-500 min-h-10 max-h-10 px-2 self-center"
-            (click)="fileInput.click()">
-            Dodaj nowe zdjęcie
-        </button>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <p class="flex flex-col w-full px-10 items-start text-left font-roboto font-medium text-xl text-white pt-6">
-        Imię i nazwisko</p>
-    <div class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12">
-        <div class="flex flex-col lg:w-100 text-left">
-            <p class="font-roboto font-light text-md">Imię</p>
-            <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="text"
-                [value]="userObject.name" [(ngModel)]="userObject.name" (ngModelChange)="validateName()" />
-            @if(userAccountFlags.isNameValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzone imię jest nieprawidłowe!
-            </p>
-            }
-        </div>
-        <div class="flex flex-col lg:w-100">
-            <p class="font-roboto font-light text-md text-left">Nazwisko</p>
-            <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="text"
-                [value]="userObject.surname" [(ngModel)]="userObject.surname" (ngModelChange)="validateSurname()" />
-            @if(userAccountFlags.isSurnameValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzone nazwisko jest
-                nieprawidłowe!</p>
-            }
-        </div>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <p class="flex flex-col w-full px-10 items-start text-left font-roboto font-medium text-xl text-white pt-6">
-        Dane kontaktowe</p>
-    <div class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12">
-        <div class="flex flex-col lg:w-100 text-left">
-            <p class="font-roboto font-light text-md">Adres email</p>
-            <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="text"
-                [value]="userObject.email" [(ngModel)]="userObject.email" (ngModelChange)="validateEmail()" />
-            @if(userAccountFlags.isEmailValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzony adres email jest
-                nieprawidłowy!</p>
-            }
-        </div>
-        <div class="flex flex-col lg:w-100">
-            <p class="font-roboto font-light text-md text-left">Numer telefonu</p>
-            <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="text"
-                [value]="userObject.phoneNumber" [(ngModel)]="userObject.phoneNumber"
-                (ngModelChange)="validatePhoneNumber()" />
-            @if(userAccountFlags.isPhoneNumberValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzony numer telefonu jest
-                nieprawidłowy!</p>
-            }
-        </div>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <p class="flex flex-col w-full px-10 items-start text-left font-roboto font-medium text-xl text-white pt-6">
-        Adres zamieszkania</p>
-    <div class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12">
-        <div class="flex flex-col lg:w-100 text-left">
-            <p class="font-roboto font-light text-md">Ulica i numer domu/mieszkania</p>
-            <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="text"
-                [value]="userObject.address" [(ngModel)]="userObject.address" (ngModelChange)="validateAddress()" />
-            @if(userAccountFlags.isAddressValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzony adres jest
-                nieprawidłowy!</p>
-            }
-        </div>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
-    <p class="flex flex-col w-full px-10 items-start text-left font-roboto font-medium text-xl text-white pt-6">
-        Hasło</p>
-    <div class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12">
-        <div class="flex flex-col lg:w-100 text-left">
-            <p class="font-roboto font-light text-md">Aktualne hasło</p>
-            <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="password"
-                placeholder="************" [(ngModel)]="actualPassword" (ngModelChange)="validatePassword()" />
-            @if(userAccountFlags.isPasswordValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzone aktualne hasło jest
-                nieprawidłowe!</p>
-            }
-        </div>
-        <div class="flex flex-col lg:w-100">
-            <p class="font-roboto font-light text-md text-left">Nowe hasło</p>
-            <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light" type="password"
-                placeholder="************" [(ngModel)]="userObject.repeatedPassword"
-                (ngModelChange)="validateNewPassword()" />
-            @if(userAccountFlags.isRepeatedPasswordValid === false) {
-            <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">Wprowadzone nowe hasło jest
-                nieprawidłowe!</p>
-            }
-        </div>
-    </div>
-    <div class="w-screen bg-white h-[1px]"></div>
     <button
-        class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-14 pt-6"
-        (click)="handleSaveButtonClick()" [@shake]="shakeStateService.shakeState">
-        Zapisz
+      class="border border-white text-white font-salsa rounded-md hover:bg-gray-500 min-h-10 max-h-10 px-2 self-center"
+      (click)="fileInput.click()"
+    >
+      Dodaj nowe zdjęcie
     </button>
-    @if(isNotDataChanged === true) {
-    <p class="font-roboto font-light text-red-500 text-sm pb-5">Nie zmieniono żadnej danej!</p>
-    }
-    }
-    @else {
-    <app-verification-code actionType="Zmiana ustawień konta" />
-    }
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <p
+    class="flex flex-col w-full px-10 items-start text-left font-roboto font-medium text-xl text-white pt-6"
+  >
+    Imię i nazwisko
+  </p>
+  <div
+    class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12"
+  >
+    <div class="flex flex-col lg:w-100 text-left">
+      <p class="font-roboto font-light text-md">Imię</p>
+      <input
+        class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+        type="text"
+        [value]="userObject.name"
+        [(ngModel)]="userObject.name"
+        (ngModelChange)="validateName()"
+      />
+      @if(userAccountFlags.isNameValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
+        Wprowadzone imię jest nieprawidłowe!
+      </p>
+      }
+    </div>
+    <div class="flex flex-col lg:w-100">
+      <p class="font-roboto font-light text-md text-left">Nazwisko</p>
+      <input
+        class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+        type="text"
+        [value]="userObject.surname"
+        [(ngModel)]="userObject.surname"
+        (ngModelChange)="validateSurname()"
+      />
+      @if(userAccountFlags.isSurnameValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
+        Wprowadzone nazwisko jest nieprawidłowe!
+      </p>
+      }
+    </div>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <p
+    class="flex flex-col w-full px-10 items-start text-left font-roboto font-medium text-xl text-white pt-6"
+  >
+    Dane kontaktowe
+  </p>
+  <div
+    class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12"
+  >
+    <div class="flex flex-col lg:w-100 text-left">
+      <p class="font-roboto font-light text-md">Adres email</p>
+      <input
+        class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+        type="text"
+        [value]="userObject.email"
+        [(ngModel)]="userObject.email"
+        (ngModelChange)="validateEmail()"
+      />
+      @if(userAccountFlags.isEmailValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
+        Wprowadzony adres email jest nieprawidłowy!
+      </p>
+      }
+    </div>
+    <div class="flex flex-col lg:w-100">
+      <p class="font-roboto font-light text-md text-left">Numer telefonu</p>
+      <input
+        class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+        type="text"
+        [value]="userObject.phoneNumber"
+        [(ngModel)]="userObject.phoneNumber"
+        (ngModelChange)="validatePhoneNumber()"
+      />
+      @if(userAccountFlags.isPhoneNumberValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
+        Wprowadzony numer telefonu jest nieprawidłowy!
+      </p>
+      }
+    </div>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <p
+    class="flex flex-col w-full px-10 items-start text-left font-roboto font-medium text-xl text-white pt-6"
+  >
+    Adres zamieszkania
+  </p>
+  <div
+    class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12"
+  >
+    <div class="flex flex-col lg:w-100 text-left">
+      <p class="font-roboto font-light text-md">
+        Ulica i numer domu/mieszkania
+      </p>
+      <input
+        class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+        type="text"
+        [value]="userObject.address"
+        [(ngModel)]="userObject.address"
+        (ngModelChange)="validateAddress()"
+      />
+      @if(userAccountFlags.isAddressValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
+        Wprowadzony adres jest nieprawidłowy!
+      </p>
+      }
+    </div>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <p
+    class="flex flex-col w-full px-10 items-start text-left font-roboto font-medium text-xl text-white pt-6"
+  >
+    Hasło
+  </p>
+  <div
+    class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12"
+  >
+    <div class="flex flex-col lg:w-100 text-left">
+      <p class="font-roboto font-light text-md">Aktualne hasło</p>
+      <input
+        class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+        type="password"
+        placeholder="************"
+        [(ngModel)]="actualPassword"
+        (ngModelChange)="validatePassword()"
+      />
+      @if(userAccountFlags.isPasswordValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
+        Wprowadzone aktualne hasło jest nieprawidłowe!
+      </p>
+      }
+    </div>
+    <div class="flex flex-col lg:w-100">
+      <p class="font-roboto font-light text-md text-left">Nowe hasło</p>
+      <input
+        class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+        type="password"
+        placeholder="************"
+        [(ngModel)]="userObject.repeatedPassword"
+        (ngModelChange)="validateNewPassword()"
+      />
+      @if(userAccountFlags.isRepeatedPasswordValid === false) {
+      <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
+        Wprowadzone nowe hasło jest nieprawidłowe!
+      </p>
+      }
+    </div>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <button
+    class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-14 pt-6"
+    (click)="handleSaveButtonClick()"
+    [@shake]="shakeStateService.shakeState"
+  >
+    Zapisz
+  </button>
+  @if(isNotDataChanged === true) {
+  <p class="font-roboto font-light text-red-500 text-sm pb-5">
+    Nie zmieniono żadnej danej!
+  </p>
+  } } @else {
+  <app-verification-code actionType="Zmiana ustawień konta" />
+  }
 </div>

@@ -8,6 +8,9 @@ import { ProductTypesService } from '../../services/product-types.service';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { UnauthorizedComponent } from './unauthorized.component';
+import { HeaderModule } from '../header/header.module';
+import { FooterModule } from '../footer/footer.module';
+import { UnauthorizedModule } from './unauthorized.module';
 
 describe('UnauthorizedComponent', () => {
   let component: UnauthorizedComponent;
@@ -44,9 +47,9 @@ describe('UnauthorizedComponent', () => {
       imports: [
         CommonModule,
         BrowserAnimationsModule,
-        HeaderComponent,
-        FooterComponent,
-        UnauthorizedComponent,
+        HeaderModule,
+        FooterModule,
+        UnauthorizedModule,
       ],
       providers: [
         {

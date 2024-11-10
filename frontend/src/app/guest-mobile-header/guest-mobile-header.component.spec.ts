@@ -5,6 +5,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { GuestMobileHeaderComponent } from './guest-mobile-header.component';
+import { GuestMobileHeaderModule } from './guest-mobile-header.module';
 
 describe('GuestMobileHeaderComponent', () => {
   let component: GuestMobileHeaderComponent;
@@ -23,7 +24,7 @@ describe('GuestMobileHeaderComponent', () => {
   };
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GuestMobileHeaderComponent, BrowserAnimationsModule],
+      imports: [GuestMobileHeaderModule, BrowserAnimationsModule],
       providers: [
         { provide: Router, useValue: mockRouter },
         {

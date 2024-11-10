@@ -1,19 +1,10 @@
-import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { MatRadioButton } from '@angular/material/radio';
-import { RouterModule } from '@angular/router';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
 import { FiltersService } from '../../services/filters.service';
 import { ItemSelectionService } from '../../services/item-selection.service';
 import { Account } from '../../types/account';
 import { Transaction } from '../../types/transaction';
-import { DurationExpansionComponent } from '../duration-expansion/duration-expansion.component';
-import { MobileFiltersComponent } from '../mobile-filters/mobile-filters.component';
-import { SearchBarComponent } from '../search-bar/search-bar.component';
-import { SingleAccountBalanceChartComponent } from '../single-account-balance-chart/single-account-balance-chart.component';
-import { SortExpansionComponent } from '../sort-expansion/sort-expansion.component';
-import { StatusExpansionComponent } from '../status-expansion/status-expansion.component';
 
 /**
  * Component for displaying and managing single account transactions.
@@ -21,19 +12,6 @@ import { StatusExpansionComponent } from '../status-expansion/status-expansion.c
  * @component
  * @selector app-single-account-transactions
  * @templateUrl ./single-account-transactions.component.html
- * @imports [
- *   CommonModule,
- *   RouterModule,
- *   SingleAccountBalanceChartComponent,
- *   SortExpansionComponent,
- *   DurationExpansionComponent,
- *   StatusExpansionComponent,
- *   SearchBarComponent,
- *   MobileFiltersComponent,
- *   MatRadioButton,
- *   DatePipe,
- * ]
- * @standalone true
  *
  * @class SingleAccountTransactionsComponent
  * @implements OnInit
@@ -61,19 +39,6 @@ import { StatusExpansionComponent } from '../status-expansion/status-expansion.c
 @Component({
   selector: 'app-single-account-transactions',
   templateUrl: './single-account-transactions.component.html',
-  imports: [
-    CommonModule,
-    RouterModule,
-    SingleAccountBalanceChartComponent,
-    SortExpansionComponent,
-    DurationExpansionComponent,
-    StatusExpansionComponent,
-    SearchBarComponent,
-    MobileFiltersComponent,
-    MatRadioButton,
-    DatePipe,
-  ],
-  standalone: true,
 })
 export class SingleAccountTransactionsComponent implements OnInit {
   public dailyTransactions!: Transaction[][];

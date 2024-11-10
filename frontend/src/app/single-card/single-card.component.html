@@ -1,122 +1,210 @@
 <app-header />
 <div class="flex flex-col m-0 p-0 overflow-hidden scroll-smooth">
-    <main class="flex-col flex justify-center bg-black text-white w-screen">
-        <p class="font-walter text-7xl max-md:text-4xl self-center py-12">KARTA {{visaCardObject.type}}</p>
-        <div class="flex flex-row items-center justify-center w-screen mb-12">
-            <div class="flex flex-col justify-center w-full">
-                <div class="flex flex-row max-md:flex-col w-full md:space-x-20 mb-12">
-                    <div class="flex flex-col items-center md:w-[50%] max-md:mb-12">
-                        <p class="font-roboto font-normal text-3xl">VISA {{visaCardObject.type}}</p>
-                        <div class="flex flex-col relative items-center cursor-pointer z-30"
-                            [@rotateCard]="visaCardObject.showingCardSite"
-                            (click)="visaCardObject.showingCardSite = visaCardObject.showingCardSite === 'front' ? 'back' : 'front'">
-                            <img class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
-                                [src]="visaCardObject.showingCardSite === 'front' ? visaCardObject.image : visaCardObject.backImage"
-                                alt="single-card">
-                            @if(visaCardObject.showingCardSite === 'front') {
-                            <div
-                                class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                                <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
-                                <p class="font-salsa text-xxs leading-none pt-2 pl-2">Quantum Trust</p>
-                            </div>
-                            <p
-                                class="font-courier text-silver text-lg self-start text-shadow absolute z-20 bottom-16 pb-2.5 left-8">
-                                1234 5678 9012 3456</p>
-                            <p
-                                class="font-courier text-silver self-start text-shadow absolute z-20 bottom-12 pb-1 left-28">
-                                01/24
-                            </p>
-                            <p
-                                class="font-courier text-silver self-start text-sm text-shadow absolute z-20 bottom-6 pb-2.5 left-8">
-                                A.MILLER
-                            </p>
-                            }
-                            @if(visaCardObject.showingCardSite === 'back') {
-                            <p
-                                class="absolute font-roboto font-normal text-xs text-black top-20 pt-5 z-30 counter-rotate left-24 pr-2.5">
-                                123</p>
-                            }
-                        </div>
-                        <ul class="md:w-[60%] w-3/4 space-y-5 font-roboto font-light text-xl list-disc">
-                            @for(benefit of visaCardObject.benefits; track benefit) {
-                            <li>{{benefit}}</li>
-                            }
-                        </ul>
-                    </div>
-                    <div class="flex flex-col items-center md:w-[50%]">
-                        <p class="font-roboto font-normal text-3xl">MASTERCARD {{mastercardObject.type}}</p>
-                        <div class="flex flex-col relative items-center cursor-pointer z-30"
-                            [@rotateCard]="mastercardObject.showingCardSite"
-                            (click)="mastercardObject.showingCardSite = mastercardObject.showingCardSite === 'front' ? 'back' : 'front'">
-                            <img class="object-cover w-auto h-44 rounded-md my-10 z-10 shadow-gray-400 shadow-sm pointer-events-none"
-                                [src]="mastercardObject.showingCardSite === 'front' ? mastercardObject.image : mastercardObject.backImage"
-                                alt="single-card">
-                            @if(mastercardObject.showingCardSite === 'front') {
-                            <div
-                                class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20">
-                                <img class="w-4 h-4 pointer-events-none" src="icon.png" alt="Quantum Trust Logo" />
-                                <p class="font-salsa text-xxs leading-none pt-2 pl-2" [ngClass]="{
-                                    'text-black': mastercardObject.image === 'mastercard-standard.png'}">Quantum Trust
-                                </p>
-                            </div>
-                            <p
-                                class="font-courier text-silver text-lg self-start text-shadow absolute z-20 bottom-16 pb-2.5 left-3">
-                                1234 5678 9012 3456</p>
-                            <p
-                                class="font-courier text-silver self-start text-shadow absolute z-20 bottom-8 pb-2.5 left-3">
-                                01/24
-                            </p>
-                            <p
-                                class="font-courier text-silver self-start text-sm text-shadow absolute z-20 bottom-5 pb-2.5 left-3">
-                                A.MILLER
-                            </p>
-                            }
-                            @if(mastercardObject.showingCardSite === 'back') {
-                            <p
-                                class="absolute font-roboto font-normal text-xs text-black top-20 pt-6 z-30 counter-rotate left-24 pr-2">
-                                123</p>
-                            }
-                        </div>
-                        <ul class="md:w-[60%] w-3/4 space-y-5 font-roboto font-light text-xl list-disc">
-                            @for(benefit of mastercardObject.benefits; track benefit) {
-                            <li>{{benefit}}</li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-                <button
-                    class="border border-white text-white font-salsa rounded-3xl py-2 px-10 max-md:px-5 max-md:py-1 hover:bg-gray-600 bg-own-gray mx-5 self-center xl:w-[15%]"
-                    routerLink="/login" routerLinkActive="active">
-                    Zamów kartę
-                </button>
-            </div>
-        </div>
-        <mat-divider class="shadow-inner shadow-gray-500" />
-        <div class="flex flex-col w-screen justify-center items-center my-12">
-            <p class="font-roboto font-extrabold text-4xl max-md:text-2xl text-center max-md:pb-6">NAJCZĘŚCIEJ ZADAWANE
-                PYTANIA (FAQ)</p>
-            @for(qaPair of questionsAndAnswersPairs; track qaPair) {
-            <mat-divider class="shadow-inner shadow-gray-500 w-[85%] max-sm:w-[95%]" />
-            <div class="flex flex-row justify-center items-center space-x-5 mt-5 w-[85%] max-sm:w-[95%] pt-3 relative">
-                <div class="flex flex-col w-screen h-auto md:items-center justify-center">
-                    <p [ngClass]="{'text-gray-500': qaPair.isOpened}"
-                        class="font-roboto font-semibold text-xl max-sm:text-base pb-2 max-md:self-center max-sm:w-[70%]">
-                        {{qaPair.content}}</p>
-                    @if(qaPair.isOpened) {
-                    <p class="font-roboto font-light text-xl max-sm:text-base pb-2 w-[70%] max-md:pl-5"
-                        [innerHTML]="qaPair.answer"></p>
-                    }
-                </div>
-                <p class="font-roboto font-light text-4xl text-white border rounded-full px-3 py-1 cursor-pointer right-0 absolute hover:text-gray-400 hover:border-gray-400 min-w-12 h-auto text-center"
-                    [ngClass]="{'text-gray-500 border-gray-500 hover:text-white hover:border-white':qaPair.isOpened}"
-                    (click)='changeStateOfQuestionAnswer(qaPair.id)'>
-                    {{qaPair.isOpened ? "-" : "+"}}
+  <main class="flex-col flex justify-center bg-black text-white w-screen">
+    <p class="font-walter text-7xl max-md:text-4xl self-center py-12">
+      KARTA {{ visaCardObject.type }}
+    </p>
+    <div class="flex flex-row items-center justify-center w-screen mb-12">
+      <div class="flex flex-col justify-center w-full">
+        <div class="flex flex-row max-md:flex-col w-full md:space-x-20 mb-12">
+          <div class="flex flex-col items-center md:w-[50%] max-md:mb-12">
+            <p class="font-roboto font-normal text-3xl">
+              VISA {{ visaCardObject.type }}
+            </p>
+            <div
+              class="flex flex-col relative items-center cursor-pointer z-30"
+              [@rotateCard]="visaCardObject.showingCardSite"
+              (click)="
+                visaCardObject.showingCardSite =
+                  visaCardObject.showingCardSite === 'front' ? 'back' : 'front'
+              "
+            >
+              <app-image
+                class="w-auto h-44 my-10 z-10"
+                ownClass="w-auto h-full object-cover rounded-md shadow-gray-400 shadow-sm pointer-events-none"
+                [src]="
+                  visaCardObject.showingCardSite === 'front'
+                    ? visaCardObject.image
+                    : visaCardObject.backImage
+                "
+                alt="single-card"
+              />
+              @if(visaCardObject.showingCardSite === 'front') {
+              <div
+                class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
+              >
+                <app-image
+                  class="w-4 h-4"
+                  ownClass="w-full h-full pointer-events-none"
+                  src="favicon.ico"
+                  alt="Quantum Trust Logo"
+                />
+                <p class="font-salsa text-xxs leading-none pt-2 pl-2">
+                  Quantum Trust
                 </p>
+              </div>
+              <p
+                class="font-courier text-silver text-lg self-start text-shadow absolute z-20 bottom-16 pb-2.5 left-8"
+              >
+                1234 5678 9012 3456
+              </p>
+              <p
+                class="font-courier text-silver self-start text-shadow absolute z-20 bottom-12 pb-1 left-28"
+              >
+                01/24
+              </p>
+              <p
+                class="font-courier text-silver self-start text-sm text-shadow absolute z-20 bottom-6 pb-2.5 left-8"
+              >
+                A.MILLER
+              </p>
+              } @if(visaCardObject.showingCardSite === 'back') {
+              <p
+                class="absolute font-roboto font-normal text-xs text-black top-20 pt-5 z-30 counter-rotate left-24 pr-2.5"
+              >
+                123
+              </p>
+              }
             </div>
-            <mat-divider class="shadow-inner shadow-gray-500 w-[85%] max-sm:w-[95%]" />
-            }
+            <ul
+              class="md:w-[60%] w-3/4 space-y-5 font-roboto font-light text-xl list-disc"
+            >
+              @for(benefit of visaCardObject.benefits; track benefit) {
+              <li>{{ benefit }}</li>
+              }
+            </ul>
+          </div>
+          <div class="flex flex-col items-center md:w-[50%]">
+            <p class="font-roboto font-normal text-3xl">
+              MASTERCARD {{ mastercardObject.type }}
+            </p>
+            <div
+              class="flex flex-col relative items-center cursor-pointer z-30"
+              [@rotateCard]="mastercardObject.showingCardSite"
+              (click)="
+                mastercardObject.showingCardSite =
+                  mastercardObject.showingCardSite === 'front'
+                    ? 'back'
+                    : 'front'
+              "
+            >
+              <app-image
+                class="w-auto h-44 my-10 z-10"
+                ownClass="w-auto h-full object-cover rounded-md shadow-gray-400 shadow-sm pointer-events-none"
+                [src]="
+                  mastercardObject.showingCardSite === 'front'
+                    ? mastercardObject.image
+                    : mastercardObject.backImage
+                "
+                alt="single-card"
+              />
+              @if(mastercardObject.showingCardSite === 'front') {
+              <div
+                class="absolute top-10 left-2 flex flex-row items-center p-2 bg-opacity-75 rounded-md z-20"
+              >
+                <app-image
+                  class="w-4 h-4"
+                  ownClass="w-full h-full pointer-events-none"
+                  src="favicon.ico"
+                  alt="Quantum Trust Logo"
+                />
+                <p
+                  class="font-salsa text-xxs leading-none pt-2 pl-2"
+                  [ngClass]="{
+                    'text-black':
+                      mastercardObject.image === 'mastercard-standard.webp'
+                  }"
+                >
+                  Quantum Trust
+                </p>
+              </div>
+              <p
+                class="font-courier text-silver text-lg self-start text-shadow absolute z-20 bottom-16 pb-2.5 left-3"
+              >
+                1234 5678 9012 3456
+              </p>
+              <p
+                class="font-courier text-silver self-start text-shadow absolute z-20 bottom-8 pb-2.5 left-3"
+              >
+                01/24
+              </p>
+              <p
+                class="font-courier text-silver self-start text-sm text-shadow absolute z-20 bottom-5 pb-2.5 left-3"
+              >
+                A.MILLER
+              </p>
+              } @if(mastercardObject.showingCardSite === 'back') {
+              <p
+                class="absolute font-roboto font-normal text-xs text-black top-20 pt-6 z-30 counter-rotate left-24 pr-2"
+              >
+                123
+              </p>
+              }
+            </div>
+            <ul
+              class="md:w-[60%] w-3/4 space-y-5 font-roboto font-light text-xl list-disc"
+            >
+              @for(benefit of mastercardObject.benefits; track benefit) {
+              <li>{{ benefit }}</li>
+              }
+            </ul>
+          </div>
         </div>
-    </main>
+        <button
+          class="border border-white text-white font-salsa rounded-3xl py-2 px-10 max-md:px-5 max-md:py-1 hover:bg-gray-600 bg-own-gray mx-5 self-center xl:w-[15%]"
+          routerLink="/login"
+        >
+          Zamów kartę
+        </button>
+      </div>
+    </div>
+    <mat-divider class="shadow-inner shadow-gray-500" />
+    <div class="flex flex-col w-screen justify-center items-center my-12">
+      <p
+        class="font-roboto font-extrabold text-4xl max-md:text-2xl text-center max-md:pb-6"
+      >
+        NAJCZĘŚCIEJ ZADAWANE PYTANIA (FAQ)
+      </p>
+      @for(qaPair of questionsAndAnswersPairs; track qaPair) {
+      <mat-divider
+        class="shadow-inner shadow-gray-500 w-[85%] max-sm:w-[95%]"
+      />
+      <div
+        class="flex flex-row justify-center items-center space-x-5 mt-5 w-[85%] max-sm:w-[95%] pt-3 relative"
+      >
+        <div
+          class="flex flex-col w-screen h-auto md:items-center justify-center"
+        >
+          <p
+            [ngClass]="{ 'text-gray-500': qaPair.isOpened }"
+            class="font-roboto font-semibold text-xl max-sm:text-base pb-2 max-md:self-center max-sm:w-[70%]"
+          >
+            {{ qaPair.content }}
+          </p>
+          @if(qaPair.isOpened) {
+          <p
+            class="font-roboto font-light text-xl max-sm:text-base pb-2 w-[70%] max-md:pl-5"
+            [innerHTML]="qaPair.answer"
+          ></p>
+          }
+        </div>
+        <p
+          class="font-roboto font-light text-4xl text-white border rounded-full px-3 py-1 cursor-pointer right-0 absolute hover:text-gray-400 hover:border-gray-400 min-w-12 h-auto text-center"
+          [ngClass]="{
+            'text-gray-500 border-gray-500 hover:text-white hover:border-white':
+              qaPair.isOpened
+          }"
+          (click)="changeStateOfQuestionAnswer(qaPair.id)"
+        >
+          {{ qaPair.isOpened ? "-" : "+" }}
+        </p>
+      </div>
+      <mat-divider
+        class="shadow-inner shadow-gray-500 w-[85%] max-sm:w-[95%]"
+      />
+      }
+    </div>
+  </main>
 </div>
 <app-scroll-arrow-up />
 <app-footer />

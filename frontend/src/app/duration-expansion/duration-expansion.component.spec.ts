@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { FiltersService } from '../../services/filters.service';
 import { DurationExpansionComponent } from './duration-expansion.component';
+import { DurationExpansionModule } from './duration-expansion.module';
 
 describe('DurationExpansionComponent', () => {
   let component: DurationExpansionComponent;
@@ -30,7 +31,7 @@ describe('DurationExpansionComponent', () => {
         FormsModule,
         MatExpansionModule,
         MatRadioButton,
-        DurationExpansionComponent,
+        DurationExpansionModule,
       ],
       providers: [
         { provide: FiltersService, useValue: filtersServiceMock },

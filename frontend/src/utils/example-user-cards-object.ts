@@ -7,19 +7,19 @@ export const userCards: Card[] = [
     type: 'STANDARD',
     publisher: 'Visa',
     description: '',
-    image: 'visa-standard.png',
+    image: 'visa-standard.webp',
     benefits: [],
     limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
     pin: 7890,
     cvcCode: 123,
     expirationDate: '12/25',
     showingCardSite: 'front',
-    backImage: 'visa-back.png',
+    backImage: 'visa-back.webp',
     fees: {
       release: 0,
-      monthly: 0
+      monthly: 0,
     },
-    status: 'suspended'
+    status: 'suspended',
   },
   {
     id: 7890123456789012,
@@ -27,7 +27,7 @@ export const userCards: Card[] = [
     type: 'PODRÓŻNIK',
     publisher: 'Mastercard',
     description: '',
-    image: 'mastercard-travel.png',
+    image: 'mastercard-travel.webp',
     benefits: [],
     limits: [
       { internetTransactions: [20000, 15], cashTransactions: [10000, 8] },
@@ -36,12 +36,12 @@ export const userCards: Card[] = [
     cvcCode: 456,
     expirationDate: '05/27',
     showingCardSite: 'front',
-    backImage: 'mastercard-travel-back.png',
+    backImage: 'mastercard-travel-back.webp',
     fees: {
       release: 0,
-      monthly: 0
+      monthly: 0,
     },
-    status: 'unsuspended'
+    status: 'unsuspended',
   },
   {
     id: 3456789012345678,
@@ -49,7 +49,7 @@ export const userCards: Card[] = [
     type: 'PODRÓŻNIK',
     publisher: 'Visa',
     description: '',
-    image: 'visa-travel.png',
+    image: 'visa-travel.webp',
     benefits: [],
     limits: [
       { internetTransactions: [20000, 15], cashTransactions: [10000, 8] },
@@ -58,12 +58,12 @@ export const userCards: Card[] = [
     cvcCode: 789,
     expirationDate: '10/29',
     showingCardSite: 'front',
-    backImage: 'visa-back.png',
+    backImage: 'visa-back.webp',
     fees: {
       release: 0,
-      monthly: 0
+      monthly: 0,
     },
-    status: 'unsuspended'
+    status: 'unsuspended',
   },
   {
     id: 2345678901234567,
@@ -71,7 +71,7 @@ export const userCards: Card[] = [
     type: 'STANDARD',
     publisher: 'Mastercard',
     description: '',
-    image: 'mastercard-standard.png',
+    image: 'mastercard-standard.webp',
     benefits: [],
     limits: [
       { internetTransactions: [15000, 10], cashTransactions: [7000, 5] },
@@ -80,12 +80,12 @@ export const userCards: Card[] = [
     cvcCode: 102,
     expirationDate: '08/26',
     showingCardSite: 'front',
-    backImage: 'mastercard-standard-back.png',
+    backImage: 'mastercard-standard-back.webp',
     fees: {
       release: 0,
-      monthly: 0
+      monthly: 0,
     },
-    status: 'suspended'
+    status: 'suspended',
   },
   {
     id: 4567890123456789,
@@ -93,7 +93,7 @@ export const userCards: Card[] = [
     type: 'BIZNES',
     publisher: 'Visa',
     description: '',
-    image: 'visa-business.png',
+    image: 'visa-business.webp',
     benefits: [],
     limits: [
       { internetTransactions: [30000, 20], cashTransactions: [15000, 10] },
@@ -102,12 +102,12 @@ export const userCards: Card[] = [
     cvcCode: 345,
     expirationDate: '11/28',
     showingCardSite: 'front',
-    backImage: 'visa-back.png',
+    backImage: 'visa-back.webp',
     fees: {
       release: 0,
-      monthly: 0
+      monthly: 0,
     },
-    status: 'unsuspended'
+    status: 'unsuspended',
   },
   {
     id: 5678901234567890,
@@ -115,7 +115,7 @@ export const userCards: Card[] = [
     type: 'BIZNES',
     publisher: 'Mastercard',
     description: '',
-    image: 'mastercard-business.png',
+    image: 'mastercard-business.webp',
     benefits: [],
     limits: [
       { internetTransactions: [35000, 25], cashTransactions: [20000, 12] },
@@ -124,12 +124,12 @@ export const userCards: Card[] = [
     cvcCode: 678,
     expirationDate: '03/30',
     showingCardSite: 'front',
-    backImage: 'mastercard-business-back.png',
+    backImage: 'mastercard-business-back.webp',
     fees: {
       release: 0,
-      monthly: 0
+      monthly: 0,
     },
-    status: 'unsuspended'
+    status: 'unsuspended',
   },
   {
     id: 6789012345678901,
@@ -137,19 +137,19 @@ export const userCards: Card[] = [
     type: 'STUDENT',
     publisher: 'Visa',
     description: '',
-    image: 'visa-student.png',
+    image: 'visa-student.webp',
     benefits: [],
     limits: [{ internetTransactions: [5000, 3], cashTransactions: [2000, 2] }],
     pin: 2345,
     cvcCode: 901,
     expirationDate: '07/24',
     showingCardSite: 'front',
-    backImage: 'visa-back.png',
+    backImage: 'visa-back.webp',
     fees: {
       release: 0,
-      monthly: 0
+      monthly: 0,
     },
-    status: 'unsuspended'
+    status: 'unsuspended',
   },
   {
     id: 7890123456789013,
@@ -157,18 +157,18 @@ export const userCards: Card[] = [
     type: 'STUDENT',
     publisher: 'Mastercard',
     description: '',
-    image: 'mastercard-student.png',
+    image: 'mastercard-student.webp',
     benefits: [],
     limits: [{ internetTransactions: [6000, 4], cashTransactions: [2500, 3] }],
     pin: 3456,
     cvcCode: 234,
     expirationDate: '09/25',
     showingCardSite: 'front',
-    backImage: 'mastercard-student-back.png',
+    backImage: 'mastercard-student-back.webp',
     fees: {
       release: 0,
-      monthly: 0
+      monthly: 0,
     },
-    status: 'unsuspended'
+    status: 'unsuspended',
   },
 ];

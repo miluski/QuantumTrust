@@ -9,6 +9,7 @@ import { Account } from '../../types/account';
 import { Card } from '../../types/card';
 import { Transaction } from '../../types/transaction';
 import { FinancesComponent } from './finances.component';
+import { FinancesModule } from './finances.module';
 
 describe('FinancesComponent', () => {
   let component: FinancesComponent;
@@ -36,7 +37,7 @@ describe('FinancesComponent', () => {
       'getGroupedUserTransactions',
     ]);
     await TestBed.configureTestingModule({
-      imports: [FinancesComponent, BrowserAnimationsModule],
+      imports: [FinancesModule, BrowserAnimationsModule],
       providers: [
         { provide: UserService, useValue: userServiceSpy },
         {

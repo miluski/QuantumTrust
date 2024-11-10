@@ -1,0 +1,17 @@
+<div *ngIf="canRender; else loadingSkeleton" [class]="ownClass">
+  <img
+    [src]="mediaService.getPhotoUrl(src)"
+    [alt]="alt"
+    [class]="ownClass"
+    (load)="onload()"
+    (error)="onerror()"
+    onclick="onclick"
+  />
+</div>
+<ng-template #loadingSkeleton>
+  <div
+    class="w-14 h-8 bg-transparent animate-pulse flex items-center justify-center"
+  >
+    <span class="loader"></span>
+  </div>
+</ng-template>

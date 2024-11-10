@@ -1,12 +1,9 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   MatPaginator,
-  MatPaginatorIntl,
-  MatPaginatorModule,
+  MatPaginatorIntl
 } from '@angular/material/paginator';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { PolishPaginatorProvider } from '../../providers/polish-paginator.provider';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
@@ -15,9 +12,6 @@ import { UserService } from '../../services/user.service';
 import { Card } from '../../types/card';
 import { TableTransaction } from '../../types/table-transaction';
 import { Transaction } from '../../types/transaction';
-import { GlobalTransactionsFiltersComponent } from '../global-transactions-filters/global-transactions-filters.component';
-import { MobileGlobalTransactionsFiltersComponent } from '../mobile-global-transactions-filters/mobile-global-transactions-filters.component';
-import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 /**
  * @fileoverview TransactionsComponent is responsible for displaying and managing user transactions.
@@ -27,20 +21,10 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
  * @selector app-transactions
  * @templateUrl ./transactions.component.html
  * @styleUrl ./transactions.component.css
- * @imports [
- *   CommonModule,
- *   MatTableModule,
- *   MatPaginatorModule,
- *   MatTooltipModule,
- *   SearchBarComponent,
- *   GlobalTransactionsFiltersComponent,
- *   MobileGlobalTransactionsFiltersComponent,
- * ]
  * @providers [
  *   { provide: MatPaginatorIntl, useClass: PolishPaginatorProvider },
  *   DatePipe,
  * ]
- * @standalone true
  *
  * @class TransactionsComponent
  * @implements OnInit
@@ -74,20 +58,10 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.css',
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatTooltipModule,
-    SearchBarComponent,
-    GlobalTransactionsFiltersComponent,
-    MobileGlobalTransactionsFiltersComponent,
-  ],
   providers: [
     { provide: MatPaginatorIntl, useClass: PolishPaginatorProvider },
     DatePipe,
   ],
-  standalone: true,
 })
 export class TransactionsComponent implements OnInit {
   public userTransactions!: Transaction[];

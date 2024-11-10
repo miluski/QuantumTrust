@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
@@ -14,10 +13,9 @@ import { UserAccount } from '../../types/user-account';
  * @component
  * @selector app-user-mobile-header
  * @templateUrl ./user-mobile-header.component.html
- * @imports CommonModule, RouterModule, MatDrawer
  *
  * @class UserMobileHeaderComponent
- * @implements OnInit, AfterViewInit
+ * @implements OnInit, AfterViewInit, ImageComponent
  *
  * @property {MatDrawer} drawer - The drawer component reference.
  * @property {string} currentRoute - The current route of the application.
@@ -39,8 +37,6 @@ import { UserAccount } from '../../types/user-account';
 @Component({
   selector: 'app-user-mobile-header',
   templateUrl: './user-mobile-header.component.html',
-  imports: [CommonModule, RouterModule, MatDrawer],
-  standalone: true,
 })
 export class UserMobileHeaderComponent {
   @ViewChild('drawer') drawer!: MatDrawer;

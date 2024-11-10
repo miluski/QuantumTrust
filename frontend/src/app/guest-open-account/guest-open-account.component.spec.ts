@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '../../services/alert.service';
 import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
 import { GuestOpenAccountComponent } from './guest-open-account.component';
-import { ActivatedRoute } from '@angular/router';
+import { GuestOpenAccountModule } from './guest-open-account.module';
 
 describe('GuestOpenAccountComponent', () => {
   let component: GuestOpenAccountComponent;
@@ -32,7 +33,7 @@ describe('GuestOpenAccountComponent', () => {
       'setCurrentShakeState',
     ]);
     await TestBed.configureTestingModule({
-      imports: [GuestOpenAccountComponent, BrowserAnimationsModule],
+      imports: [GuestOpenAccountModule, BrowserAnimationsModule],
       providers: [
         { provide: VerificationService, useValue: verificationServiceSpy },
         { provide: AlertService, useValue: alertServiceSpy },

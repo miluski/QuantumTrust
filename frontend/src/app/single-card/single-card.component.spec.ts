@@ -9,6 +9,7 @@ import { ProductTypesService } from '../../services/product-types.service';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 import { SingleCardComponent } from './single-card.component';
+import { SingleCardModule } from './single-card.module';
 
 describe('SingleCardComponent', () => {
   let component: SingleCardComponent;
@@ -16,7 +17,7 @@ describe('SingleCardComponent', () => {
   let productTypesService: jasmine.SpyObj<ProductTypesService>;
   beforeEach(async () => {
     const productTypesServiceSpy = jasmine.createSpyObj('ProductTypesService', [
-      'changeCardType'
+      'changeCardType',
     ]);
     const paginationServiceSpy = jasmine.createSpyObj('PaginationService', [
       'onResize',
@@ -46,7 +47,7 @@ describe('SingleCardComponent', () => {
     );
     appInformationStatesServiceSpy.currentTransactionsArrayLength = of(25);
     await TestBed.configureTestingModule({
-      imports: [SingleCardComponent, BrowserAnimationsModule],
+      imports: [SingleCardModule, BrowserAnimationsModule],
       providers: [
         { provide: ProductTypesService, useValue: productTypesServiceSpy },
         { provide: PaginationService, useValue: paginationServiceSpy },
@@ -66,8 +67,9 @@ describe('SingleCardComponent', () => {
     spyOn<any>(component, 'getVisaCardObject').and.returnValue({
       id: 1,
       type: 'STANDARD',
-      description: 'Idealna karta do zakupów z programem lojalnościowym i ubezpieczeniami.',
-      image: 'visa-standard.png',
+      description:
+        'Idealna karta do zakupów z programem lojalnościowym i ubezpieczeniami.',
+      image: 'visa-standard.webp',
       publisher: 'Visa',
       benefits: [
         'Możliwość wygodnych płatności w ponad 200 krajach',
@@ -75,27 +77,32 @@ describe('SingleCardComponent', () => {
         'Dodatkowy poziom zabezpieczeń przy płatnościach online za pomocą technologii Verified by VISA',
         'Możliwość szybkiej wymiany i zastrzeżenia starej karty w przypadku jej zgubienia',
       ],
-      limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
-      backImage: 'visa-back.png',
+      limits: [
+        { internetTransactions: [10000, 5], cashTransactions: [5000, 3] },
+      ],
+      backImage: 'visa-back.webp',
       showingCardSite: 'front',
       fees: {
         release: 0,
-        monthly: 10
-      }
+        monthly: 10,
+      },
     });
     spyOn<any>(component, 'getMastercardObject').and.returnValue({
       id: 5,
       type: 'STANDARD',
-      description: 'Karta Mastercard z podstawowymi funkcjami płatniczymi i bezpieczeństwem.',
-      image: 'mastercard-standard.png',
-      backImage: 'mastercard-standard-back.png',
+      description:
+        'Karta Mastercard z podstawowymi funkcjami płatniczymi i bezpieczeństwem.',
+      image: 'mastercard-standard.webp',
+      backImage: 'mastercard-standard-back.webp',
       benefits: [
         'Globalne wsparcie w przypadku awarii',
         'Unikalny program priceless cities dający dostęp do wyjątkowych wydarzeń i ofert na całym świecie',
         'Wygodne płatności zbliżeniowej dzięki technologii Tap & Go™',
         'Bezpieczeństwo transakcji online zapewnione za pomocą technologii Mastercard secure code',
       ],
-      limits: [{ internetTransactions: [10000, 5], cashTransactions: [5000, 3] }],
+      limits: [
+        { internetTransactions: [10000, 5], cashTransactions: [5000, 3] },
+      ],
       publisher: 'Mastercard',
       showingCardSite: 'front',
       fees: {

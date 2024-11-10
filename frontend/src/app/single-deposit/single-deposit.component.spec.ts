@@ -7,6 +7,7 @@ import { ProductTypesService } from '../../services/product-types.service';
 import { Deposit } from '../../types/deposit';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { SingleDepositComponent } from './single-deposit.component';
+import { SingleDepositModule } from './single-deposit.module';
 
 describe('SingleDepositComponent', () => {
   let component: SingleDepositComponent;
@@ -22,7 +23,7 @@ describe('SingleDepositComponent', () => {
       'getMonths',
     ]);
     await TestBed.configureTestingModule({
-      imports: [FormsModule, SingleDepositComponent],
+      imports: [FormsModule, SingleDepositModule],
       providers: [
         { provide: ProductTypesService, useValue: productTypesServiceSpy },
         { provide: ConvertService, useValue: convertServiceSpy },

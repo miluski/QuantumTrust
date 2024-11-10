@@ -7,6 +7,7 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
 import { VerificationCodeComponent } from './verification-code.component';
+import { VerificationCodeModule } from './verification-code.module';
 
 describe('VerificationCodeComponent', () => {
   let component: VerificationCodeComponent;
@@ -40,7 +41,7 @@ describe('VerificationCodeComponent', () => {
       show: jasmine.createSpy('show'),
     };
     await TestBed.configureTestingModule({
-      imports: [VerificationCodeComponent, BrowserAnimationsModule],
+      imports: [VerificationCodeModule, BrowserAnimationsModule],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: VerificationService, useValue: mockVerificationService },

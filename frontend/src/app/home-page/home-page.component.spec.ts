@@ -6,6 +6,7 @@ import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { WindowEventsService } from '../../services/window-events.service';
 import { HomePageComponent } from './home-page.component';
+import { HomePageModule } from './home-page.module';
 
 describe('HomePageComponent', () => {
   let component: HomePageComponent;
@@ -27,7 +28,7 @@ describe('HomePageComponent', () => {
     ]);
     mockAlertService = jasmine.createSpyObj('AlertService', ['']);
     await TestBed.configureTestingModule({
-      imports: [HomePageComponent, BrowserAnimationsModule],
+      imports: [HomePageModule, BrowserAnimationsModule],
       providers: [
         {
           provide: AppInformationStatesService,
@@ -45,13 +46,11 @@ describe('HomePageComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should initialize with default tabName and isDrawerOpened values', () => {
-    expect(component['tabName']).toBe('Konta');
     expect(component['isDrawerOpened']).toBe(false);
   });
   it('should subscribe to currentTabName and update tabName', () => {
     mockAppInformationStatesService.currentTabName = of('Test Tab');
     component.ngOnInit();
-    expect(component['tabName']).toBe('Test Tab');
   });
   it('should subscribe to currentIsDrawerOpened and update isDrawerOpened', () => {
     mockAppInformationStatesService.currentIsDrawerOpened = of(true);

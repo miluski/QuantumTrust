@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { SearchBarComponent } from './search-bar.component';
 import { FiltersService } from '../../services/filters.service';
 import { GlobalTransactionsFiltersService } from '../../services/global-transactions-filters.service';
 import { Transaction } from '../../types/transaction';
+import { SearchBarComponent } from './search-bar.component';
+import { SearchBarModule } from './search-bar.module';
 
 describe('SearchBarComponent', () => {
   let component: SearchBarComponent;
@@ -21,7 +22,7 @@ describe('SearchBarComponent', () => {
       ['setAppliedFilter']
     );
     await TestBed.configureTestingModule({
-      imports: [FormsModule, MatTooltipModule, SearchBarComponent],
+      imports: [FormsModule, MatTooltipModule, SearchBarModule],
       providers: [
         { provide: FiltersService, useValue: filtersServiceSpy },
         {

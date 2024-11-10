@@ -1,7 +1,5 @@
-import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { NgModel } from '@angular/forms';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ConvertService } from '../../services/convert.service';
 import { PaginationService } from '../../services/pagination.service';
@@ -11,59 +9,58 @@ import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { Deposit } from '../../types/deposit';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
-import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 
 /**
  * @component OpenDepositComponent
  * @description This component handles the opening of a deposit account. It includes functionalities for setting user accounts, validating account numbers and initial capital, and handling pagination and UI interactions.
- * 
+ *
  * @property {Account[]} userAccounts - Array of user accounts.
  * @property {Deposit} deposit - The deposit object being managed.
  * @property {boolean} isAccountNumberValid - Flag indicating if the account number is valid.
  * @property {boolean} isInitialCapitalValid - Flag indicating if the initial capital is valid.
  * @property {ShakeStateService} shakeStateService - Service to manage shake state.
- * 
+ *
  * @constructor
  * @param {ConvertService} convertService - Service for conversion operations.
  * @param {PaginationService} paginationService - Service for pagination operations.
  * @param {VerificationService} verificationService - Service for verification operations.
  * @param {UserService} userService - Service for user operations.
- * 
+ *
  * @method onResize - Handles window resize events.
  * @param {UIEvent} event - The resize event.
- * 
+ *
  * @method ngOnInit - Lifecycle hook that is called after data-bound properties are initialized.
- * 
+ *
  * @method setUserAccounts - Asynchronously sets the user accounts.
- * 
+ *
  * @method setDepositEndDate - Sets the end date for the deposit based on its duration.
- * 
+ *
  * @method setDepositAccountNumber - Sets the deposit account number based on user input.
  * @param {Event} event - The input event.
- * 
+ *
  * @method getValueWithCurrency - Returns a value with the current currency.
  * @param {number} multiplier - The multiplier for the value.
  * @returns {string} - The value with the currency.
- * 
+ *
  * @method getLimit - Calculates the limit based on the multiplier.
  * @param {number} multiplier - The multiplier for the limit.
  * @returns {number} - The calculated limit.
- * 
+ *
  * @method handleButtonClick - Handles the button click event and sets the shake state.
- * 
+ *
  * @getter monthsDescription - Returns a description of the deposit duration in months.
  * @returns {string} - The description of the deposit duration.
- * 
+ *
  * @getter currentCurrency - Returns the current currency of the actual account.
  * @returns {string} - The current currency.
- * 
+ *
  * @getter currentSelectedDepositType - Returns the type of the currently selected deposit.
  * @returns {string} - The type of the currently selected deposit.
- * 
+ *
  * @method getIsInitialCapitalValid - Validates the initial capital input.
  * @param {NgModel} initialCapitalInput - The initial capital input model.
  * @returns {boolean} - Whether the initial capital is valid.
- * 
+ *
  * @method getActualAccount - Returns the actual account based on the assigned account number.
  * @returns {Account | undefined} - The actual account or undefined if not found.
  */
@@ -71,13 +68,6 @@ import { VerificationCodeComponent } from '../verification-code/verification-cod
   selector: 'app-open-deposit',
   templateUrl: './open-deposit.component.html',
   animations: [AnimationsProvider.animations],
-  imports: [
-    VerificationCodeComponent,
-    CommonModule,
-    MatIconModule,
-    FormsModule,
-  ],
-  standalone: true,
 })
 export class OpenDepositComponent implements OnInit {
   public userAccounts!: Account[];
@@ -142,7 +132,9 @@ export class OpenDepositComponent implements OnInit {
   handleButtonClick(): void {
     const isSomeDataInvalid: boolean =
       !this.isAccountNumberValid || !this.isInitialCapitalValid;
-    this.shakeStateService.setCurrentShakeState(isSomeDataInvalid ? 'shake' : 'none');
+    this.shakeStateService.setCurrentShakeState(
+      isSomeDataInvalid ? 'shake' : 'none'
+    );
   }
   get monthsDescription(): string {
     const monthsCount: number = this.convertService.getMonths(
