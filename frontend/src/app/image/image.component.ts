@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
-import { MediaService } from '../../services/media-service.service';
+import { MediaService } from '../../services/media.service';
 
 /**
  * @component ImageComponent

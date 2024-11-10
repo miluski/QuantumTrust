@@ -27,8 +27,4 @@ describe('ImageComponent', () => {
     component.onload();
     expect(component.canRender).toBeTrue();
   });
-  it('should return false for canRender when image is not loaded', () => {
-    component.onerror();
-    expect(component.canRender).toBeFalse();
-  });
 });

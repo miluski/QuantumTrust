@@ -7,7 +7,7 @@ import { Step } from '../../types/step';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { BOTTOM_INFORMATION, TOP_INFORMATION } from '../../utils/enums';
 import { singleDepositStepsArray } from '../../utils/steps-objects-arrays';
-import { MediaService } from '../../services/media-service.service';
+import { MediaService } from '../../services/media.service';
 
 /**
  * @fileoverview SingleDepositComponent is a standalone Angular component that handles the logic for a single deposit view.
