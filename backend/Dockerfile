@@ -14,6 +14,5 @@ WORKDIR /app
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar /app/backend-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8080
-EXPOSE 5432
 
 CMD ["java", "-jar", "backend-0.0.1-SNAPSHOT.jar"]

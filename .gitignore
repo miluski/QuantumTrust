@@ -62,7 +62,5 @@ jail.conf
 nginx-http-auth.conf
 
 photos-backup
-compose.dev.yaml
-Dockerfile.dev
 .env
 media

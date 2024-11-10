@@ -21,27 +21,17 @@ services:
       - quantum-trust-database
     networks:
       - quantum-trust-network
-    restart: always
 
   quantum-trust-frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
-      - "./certs:/etc/letsencrypt"
-    depends_on:
-      - certbot
-    ports:
-      - "443:443"
+      - ./frontend/src:/app/src
     networks:
       - quantum-trust-network
-    restart: always
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certs:/etc/letsencrypt
-    entrypoint: /bin/sh -c "certbot renew; sleep 12h & wait $${!};"
+    ports:
+      - "4200:4200"
     restart: always
 
 networks:
