@@ -23,6 +23,7 @@ public class UserMapper {
     public User convertToUser(UserDto userDto) {
         return User
                 .builder()
+                .id(userDto.getId())
                 .address(userDto.getAddress())
                 .avatarPath(userDto.getAvatarPath())
                 .documentSerie(userDto.getDocumentSerie())

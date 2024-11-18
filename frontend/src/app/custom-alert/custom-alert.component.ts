@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 
@@ -26,14 +26,14 @@ import { AlertService } from '../../services/alert.service';
   styleUrls: ['./custom-alert.component.css'],
   animations: [AnimationsProvider.animations],
 })
-export class CustomAlertComponent implements OnInit {
+export class CustomAlertComponent implements AfterViewInit {
   @Input() alertType!: 'info' | 'warning' | 'error';
   @Input() alertTitle!: string;
   @Input() alertContent!: string;
   @Input() progressBarBorderColor!: string;
   @Input() alertService!: AlertService;
   public alertIcon!: string;
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     switch (this.alertType) {
       case 'info':
       default:

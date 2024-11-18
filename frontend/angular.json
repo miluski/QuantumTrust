@@ -61,6 +61,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "ssl": true,
+            "sslKey": "../certs-dev/ssl-key.pem",
+            "sslCert": "../certs-dev/ssl-cert.pem",
             "buildTarget": "frontend:build"
           },
           "configurations": {
@@ -122,7 +125,7 @@
               "outputHashing": "media",
               "fileReplacements": [
                 {
-                  "replace": "environment.development.ts",
+                  "replace": "src/environments/environment.development.ts",
                   "with": "src/environments/environment.ts"
                 }
               ],

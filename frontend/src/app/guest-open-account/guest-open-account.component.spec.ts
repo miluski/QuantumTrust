@@ -56,12 +56,12 @@ describe('GuestOpenAccountComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should initialize user account and account with default values', () => {
-    expect(component.userAccount.identityDocumentType).toBe('Dowód Osobisty');
+    expect(component.userAccount.documentType).toBe('Dowód Osobisty');
     expect(component.account.type).toBe('Konto osobiste');
     expect(component.account.currency).toBe('PLN');
   });
   it('should validate contact data', () => {
-    component.userAccount.email = 'test@example.com';
+    component.userAccount.emailAddress = 'test@example.com';
     component.userAccount.phoneNumber = 123456789;
     verificationService.validateEmail.and.returnValue(true);
     verificationService.validatePhoneNumber.and.returnValue(true);
@@ -77,7 +77,7 @@ describe('GuestOpenAccountComponent', () => {
   });
   it('should validate full name', () => {
     component.userAccount.name = 'John';
-    component.userAccount.surname = 'Doe';
+    component.userAccount.lastName = 'Doe';
     verificationService.validateFirstName.and.returnValue(true);
     verificationService.validateLastName.and.returnValue(true);
     component['setIsFullNameValid']();
@@ -87,9 +87,9 @@ describe('GuestOpenAccountComponent', () => {
     expect(component.userAccountFlags.isSurnameValid).toBeTrue();
   });
   it('should validate identity data', () => {
-    component.userAccount.pesel = 12345678901;
-    component.userAccount.identityDocumentType = 'Dowód Osobisty';
-    component.userAccount.identityDocumentSerie = 'ABC123456';
+    component.userAccount.peselNumber = 12345678901;
+    component.userAccount.documentType = 'Dowód Osobisty';
+    component.userAccount.documentSerie = 'ABC123456';
     component.userAccount.address = '123 Main St';
     verificationService.validatePESEL.and.returnValue(true);
     verificationService.validateIdentityDocumentType.and.returnValue(true);

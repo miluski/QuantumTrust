@@ -10,7 +10,7 @@ describe('AvatarService', () => {
     userServiceStub = {
       userAccount: {
         name: 'John',
-        surname: 'Doe',
+        lastName: 'Doe',
       } as UserAccount,
     };
     TestBed.configureTestingModule({

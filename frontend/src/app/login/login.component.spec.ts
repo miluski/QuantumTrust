@@ -61,7 +61,7 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
   it('should validate identifier and password on verifyData call', () => {
-    component.userAccount.identifier = 1;
+    component.userAccount.id = 1;
     component.userAccount.password = 'testPassword';
     verificationService.validateIdentifier.and.returnValue(true);
     verificationService.validatePassword.and.returnValue(true);
