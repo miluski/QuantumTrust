@@ -45,20 +45,6 @@ describe('AccountSettingsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AccountSettingsComponent);
     component = fixture.componentInstance;
-    mockUserService.userAccount = {
-      name: 'John',
-      surname: 'Doe',
-      email: 'john.doe@example.com',
-      phoneNumber: 123456789,
-      address: '123 Main St',
-      password: 'password',
-      repeatedPassword: 'password',
-      identifier: 12345678,
-      pesel: 12345678901,
-      identityDocumentType: 'Dowód osobisty',
-      identityDocumentSerie: 'AB 123456',
-      avatarUrl: 'http://example.com/avatar.jpg',
-    };
     mockAvatarService.currentTemporaryAvatarUrl = of('');
     fixture.detectChanges();
   });
@@ -71,19 +57,19 @@ describe('AccountSettingsComponent', () => {
     expect(component.avatarUrl).toBe('new-avatar-url');
   });
   it('should validate name correctly', () => {
-    component.userObject.name = 'Jane';
+    component.userObject.firstName = 'Jane';
     mockVerificationService.validateFirstName.and.returnValue(true);
     component.validateName();
     expect(component.userAccountFlags.isNameValid).toBeTrue();
   });
   it('should validate surname correctly', () => {
-    component.userObject.surname = 'Smith';
+    component.userObject.lastName = 'Smith';
     mockVerificationService.validateLastName.and.returnValue(true);
     component.validateSurname();
     expect(component.userAccountFlags.isSurnameValid).toBeTrue();
   });
   it('should validate email correctly', () => {
-    component.userObject.email = 'jane.smith@example.com';
+    component.userObject.emailAddress = 'jane.smith@example.com';
     mockVerificationService.validateEmail.and.returnValue(true);
     component.validateEmail();
     expect(component.userAccountFlags.isEmailValid).toBeTrue();

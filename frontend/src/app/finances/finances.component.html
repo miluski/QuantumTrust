@@ -359,8 +359,8 @@
               'bottom-4 pb-4 left-3.5': card.publisher === 'Mastercard'
             }"
           >
-            {{ userAccount.name.substring(0, 1).toUpperCase() }}.{{
-              userAccount.surname.toUpperCase()
+            {{ userAccount.firstName.substring(0, 1).toUpperCase() }}.{{
+              userAccount.lastName.toUpperCase()
             }}
           </p>
           } @if(card.showingCardSite === 'back') {

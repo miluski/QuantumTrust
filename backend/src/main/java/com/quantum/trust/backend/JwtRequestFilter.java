@@ -1,6 +1,7 @@
 package com.quantum.trust.backend;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final UserAuthService userAuthService;
     private final TokenBucketService tokenBucketService;
+    private final List<String> allowedUris;
 
     @Autowired
     public JwtRequestFilter(TokenService tokenService, UserAuthService userAuthService,
@@ -33,13 +35,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         this.tokenService = tokenService;
         this.userAuthService = userAuthService;
         this.tokenBucketService = tokenBucketService;
+        this.allowedUris = List.of("/api/media/public", "/api/auth/login", "/api/auth/login/verification/send-email",
+                "/api/auth/register/verification/send-email",
+                "/api/auth/register");
     }
 
     @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (request.getRequestURI().contains("/api/media/public")) {
+        boolean isAllowedUri = this.allowedUris.stream().anyMatch(request.getRequestURI()::contains);
+        if (isAllowedUri) {
             filterChain.doFilter(request, response);
             return;
         }

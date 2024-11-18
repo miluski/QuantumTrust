@@ -7,7 +7,8 @@
     "build": "ng build && gulp optimizeCSS",
     "watch": "gulp watch && ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:QuantumTrust": "node dist/quantum-trust/server/server.mjs"
+    "serve:ssr:QuantumTrust": "node dist/quantum-trust/server/server.mjs",
+    "build:ssr": "ng build --configuration production && ng run frontend:server:production"
   },
   "private": true,
   "dependencies": {
@@ -17,15 +18,17 @@
     "@angular/compiler": "^18.2.11",
     "@angular/core": "^18.2.11",
     "@angular/forms": "^18.2.11",
-    "@angular/material": "^18.2.9",
+    "@angular/material": "^18.2.11",
     "@angular/platform-browser": "^18.2.11",
     "@angular/platform-browser-dynamic": "^18.2.11",
     "@angular/platform-server": "^18.2.11",
     "@angular/router": "^18.2.11",
     "@angular/ssr": "^18.2.11",
     "chart.js": "^4.3.0",
+    "crypto-js": "^4.2.0",
     "express": "^4.18.2",
     "ng2-charts": "^6.0.1",
+    "ngx-cookie-service": "^18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
@@ -34,6 +37,7 @@
     "@angular-devkit/build-angular": "^18.2.11",
     "@angular/cli": "^18.2.11",
     "@angular/compiler-cli": "^18.2.11",
+    "@types/crypto-js": "^4.2.2",
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",

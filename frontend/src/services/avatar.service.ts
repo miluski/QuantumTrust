@@ -56,7 +56,7 @@ export class AvatarService {
     return this.temporaryAvatarError.getValue();
   }
   getInitials(): string {
-    const initials = this.user.name.charAt(0) + this.user.surname.charAt(0);
+    const initials = this.user.firstName.charAt(0) + this.user.lastName.charAt(0);
     return initials.toUpperCase();
   }
   private getRandomColor(): string {

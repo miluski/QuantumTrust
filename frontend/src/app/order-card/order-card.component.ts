@@ -186,9 +186,9 @@ export class OrderCardComponent implements OnInit {
   }
   get ownerFullName(): string {
     return (
-      this.userService.userAccount.name.substring(0, 1) +
+      this.userService.userAccount.firstName.substring(0, 1) +
       '.' +
-      this.userService.userAccount.surname.toUpperCase()
+      this.userService.userAccount.lastName.toUpperCase()
     );
   }
   get cardTypeWithPublisher(): string {

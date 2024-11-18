@@ -32,12 +32,14 @@ export class AlertService {
   public alertTitle!: string;
   public show(): void {
     this.secondsLeftToClose = 30;
+    this.progressValue = 100;
     this.isOpened = true;
     const interval = setInterval(() => {
-      if (this.secondsLeftToClose <= 0) {
-        this.close();
+      if (this.secondsLeftToClose <= 1) {
         this.secondsLeftToClose = 30;
+        this.progressValue = 100;
         clearInterval(interval);
+        this.close();
       } else {
         this.secondsLeftToClose--;
         this.updateProgress();

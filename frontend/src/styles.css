@@ -53,9 +53,9 @@
   inset-block-start: 0;
   inline-size: 100%;
   block-size: 100%;
-  opacity: 0.4;
+  opacity: 0.2;
   z-index: 10;
-  background-image: url("/open-account-background.webp");
+  background-image: url("https://192.168.0.11:8443/api/media/public/open-account-background.webp");
   background-repeat: no-repeat;
   background-position: 50% 0;
   background-size: cover;
@@ -78,7 +78,7 @@
   block-size: 100%;
   opacity: 0.2;
   z-index: 10;
-  background-image: url("/login-background.webp");
+  background-image: url("https://192.168.0.11:8443/api/media/public/login-background.webp");
   background-repeat: no-repeat;
   background-position: 50% 0;
   background-size: cover;
