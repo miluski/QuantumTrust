@@ -64,3 +64,8 @@ nginx-http-auth.conf
 photos-backup
 .env
 media
+environments
+certs-dev
+*.csr
+*.p12
+*.crt

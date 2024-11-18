@@ -12,16 +12,13 @@ RUN npm install
 
 RUN npm run build:ssr
 
-FROM node:18-alpine
-
-RUN apk add --no-cache nginx
+FROM nginx:alpine
 
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 COPY --from=build /app/dist/frontend/server /app/server
-COPY --from=build /app/dist/frontend/browser /dist/frontend/browser
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 443
 
-CMD ["sh", "-c", "node /app/server/main.js && nginx -g 'daemon off;'"]
+CMD ["nginx", "-g", "daemon off;"]

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 import { ShakeStateService } from '../../services/shake-state.service';
+import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { UserAccount } from '../../types/user-account';
@@ -37,9 +38,10 @@ export class GuestOpenAccountComponent {
   public account: Account = new Account();
   constructor(
     private verificationService: VerificationService,
+    private userService: UserService,
     protected alertService: AlertService
   ) {
-    this.userAccount.identityDocumentType = 'Dowód Osobisty';
+    this.userAccount.documentType = 'Dowód Osobisty';
     this.account.type = 'Konto osobiste';
     this.account.currency = 'PLN';
   }
@@ -53,7 +55,7 @@ export class GuestOpenAccountComponent {
   }
   private setIsContactDataValid(): void {
     this.userAccountFlags.isEmailValid = this.verificationService.validateEmail(
-      this.userAccount.email
+      this.userAccount.emailAddress
     );
     this.userAccountFlags.isPhoneNumberValid =
       this.verificationService.validatePhoneNumber(
@@ -62,22 +64,20 @@ export class GuestOpenAccountComponent {
   }
   private setIsFullNameValid(): void {
     this.userAccountFlags.isNameValid =
-      this.verificationService.validateFirstName(this.userAccount.name);
+      this.verificationService.validateFirstName(this.userAccount.firstName);
     this.userAccountFlags.isSurnameValid =
-      this.verificationService.validateLastName(this.userAccount.surname);
+      this.verificationService.validateLastName(this.userAccount.lastName);
   }
   private setIsIdentityDataValid(): void {
     this.userAccountFlags.isPeselValid = this.verificationService.validatePESEL(
-      this.userAccount.pesel
+      this.userAccount.peselNumber
     );
     this.userAccountFlags.isIdentityDocumentTypeValid =
       this.verificationService.validateIdentityDocumentType(
-        this.userAccount.identityDocumentType
+        this.userAccount.documentType
       );
     this.userAccountFlags.isIdentityDocumentSerieValid =
-      this.verificationService.validateDocument(
-        this.userAccount.identityDocumentSerie
-      );
+      this.verificationService.validateDocument(this.userAccount.documentSerie);
     this.userAccountFlags.isAddressValid =
       this.verificationService.validateAddress(this.userAccount.address);
   }
@@ -102,6 +102,12 @@ export class GuestOpenAccountComponent {
     const isSomeDataInvalid: boolean = this.validationFlags.some(
       (flag: boolean) => flag === false
     );
+    if (isSomeDataInvalid === false) {
+      this.userService.operation = 'register';
+      this.userService.sendVerificationEmail(this.userAccount.emailAddress);
+      this.userService.setRegisteringUserAccount(this.userAccount);
+      this.userService.setRegisteringAccount(this.account);
+    }
     this.shakeStateService.setCurrentShakeState(
       isSomeDataInvalid ? 'shake' : 'none'
     );

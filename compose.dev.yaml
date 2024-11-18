@@ -14,9 +14,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8443:8443"
     volumes:
       - /Users/maksymiliansowula/Documents/Studia/Inzynierka/QuantumTrust/media:/media
+      - /Users/maksymiliansowula/Documents/Studia/Inzynierka/QuantumTrust/certs:/certs
     depends_on:
       - quantum-trust-database
     networks:
@@ -28,6 +29,7 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./frontend/src:/app/src
+      - /Users/maksymiliansowula/Documents/Studia/Inzynierka/QuantumTrust/certs-dev:/certs-dev
     networks:
       - quantum-trust-network
     ports:

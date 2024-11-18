@@ -1,12 +1,12 @@
 export class UserAccount {
-  identifier!: number;
-  email!: string;
+  id!: number;
+  emailAddress!: string;
   phoneNumber!: number;
-  name!: string;
-  surname!: string;
-  pesel!: number;
-  identityDocumentType!: string;
-  identityDocumentSerie!: string;
+  firstName!: string;
+  lastName!: string;
+  peselNumber!: number;
+  documentType!: string;
+  documentSerie!: string;
   avatarUrl!: string;
   address!: string;
   password!: string;

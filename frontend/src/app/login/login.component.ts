@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 import { ShakeStateService } from '../../services/shake-state.service';
+import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
@@ -31,11 +32,12 @@ export class LoginComponent {
   public userAccount: UserAccount = new UserAccount();
   constructor(
     private verificationService: VerificationService,
+    private userService: UserService,
     protected alertService: AlertService
   ) {}
   verifyData(): void {
     this.userAccountFlags.isIdentifierValid =
-      this.verificationService.validateIdentifier(this.userAccount.identifier);
+      this.verificationService.validateIdentifier(this.userAccount.id);
     this.userAccountFlags.isPasswordValid =
       this.verificationService.validatePassword(this.userAccount.password);
     this.setCanShake();
@@ -44,6 +46,13 @@ export class LoginComponent {
     const isSomeDataInvalid: boolean =
       this.userAccountFlags.isIdentifierValid === false ||
       this.userAccountFlags.isPasswordValid === false;
+    if (isSomeDataInvalid === false) {
+      this.userService.operation = 'login';
+      this.userService.sendVerificationEmail(
+        this.userAccount.id.toString()
+      );
+      this.userService.setLoggingUserAccount(this.userAccount);
+    }
     this.shakeStateService.setCurrentShakeState(
       isSomeDataInvalid ? 'shake' : 'none'
     );

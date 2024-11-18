@@ -91,21 +91,23 @@ export class AccountSettingsComponent implements OnInit {
     );
   }
   validateName(): void {
-    if (this.userObject.name !== this.userService.userAccount.name) {
+    if (this.userObject.firstName !== this.userService.userAccount.firstName) {
       this.userAccountFlags.isNameValid =
-        this.verificationService.validateFirstName(this.userObject.name);
+        this.verificationService.validateFirstName(this.userObject.firstName);
     }
   }
   validateSurname(): void {
-    if (this.userObject.surname !== this.userService.userAccount.surname) {
+    if (this.userObject.lastName !== this.userService.userAccount.lastName) {
       this.userAccountFlags.isSurnameValid =
-        this.verificationService.validateLastName(this.userObject.surname);
+        this.verificationService.validateLastName(this.userObject.lastName);
     }
   }
   validateEmail(): void {
-    if (this.userObject.email !== this.userService.userAccount.email) {
+    if (
+      this.userObject.emailAddress !== this.userService.userAccount.emailAddress
+    ) {
       this.userAccountFlags.isEmailValid =
-        this.verificationService.validateEmail(this.userObject.email);
+        this.verificationService.validateEmail(this.userObject.emailAddress);
     }
   }
   validatePhoneNumber(): void {
@@ -164,9 +166,10 @@ export class AccountSettingsComponent implements OnInit {
   }
   public get isSomeDataNotEqualWithOriginal(): boolean {
     return (
-      this.userObject.name !== this.userService.userAccount.name ||
-      this.userObject.surname !== this.userService.userAccount.surname ||
-      this.userObject.email !== this.userService.userAccount.email ||
+      this.userObject.firstName !== this.userService.userAccount.firstName ||
+      this.userObject.lastName !== this.userService.userAccount.lastName ||
+      this.userObject.emailAddress !==
+        this.userService.userAccount.emailAddress ||
       this.userObject.phoneNumber !==
         this.userService.userAccount.phoneNumber ||
       this.userObject.address !== this.userService.userAccount.address ||

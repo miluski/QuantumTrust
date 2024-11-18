@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { ConvertService } from '../../services/convert.service';
+import { MediaService } from '../../services/media.service';
 import { ProductTypesService } from '../../services/product-types.service';
 import { Deposit } from '../../types/deposit';
 import { Step } from '../../types/step';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { BOTTOM_INFORMATION, TOP_INFORMATION } from '../../utils/enums';
 import { singleDepositStepsArray } from '../../utils/steps-objects-arrays';
-import { MediaService } from '../../services/media.service';
 
 /**
  * @fileoverview SingleDepositComponent is a standalone Angular component that handles the logic for a single deposit view.
@@ -77,9 +77,6 @@ export class SingleDepositComponent implements OnInit {
     this.depositObject = this.getDepositObject();
   }
   calculateProfit(): void {
-    if (this.isInitialCapitalInValid) {
-      return;
-    }
     const monthsCount: number = this.convertService.getMonths(this.interval);
     if (this.depositObject.type !== 'progressive') {
       this.profit = Math.round(
@@ -97,7 +94,9 @@ export class SingleDepositComponent implements OnInit {
       }
       this.profit = Math.round(totalProfit);
     }
-    this.profit = Math.round(this.profit * 0.83);
+    this.profit = this.isInitialCapitalInValid
+      ? 0
+      : Math.round(this.profit * 0.83);
   }
   getIsInitialCapitalInvalid(initialCapitalInput: NgModel): boolean {
     this.isInitialCapitalInValid =

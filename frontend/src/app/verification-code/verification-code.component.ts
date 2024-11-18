@@ -4,6 +4,7 @@ import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ShakeStateService } from '../../services/shake-state.service';
+import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 
 /**
@@ -45,43 +46,69 @@ import { VerificationService } from '../../services/verification.service';
 })
 export class VerificationCodeComponent {
   @Input() actionType!: string;
+
   public verificationCode!: number;
   public isVerificationCodeValid!: boolean;
   public shakeStateService: ShakeStateService = new ShakeStateService();
+
   constructor(
     private router: Router,
     private verificationService: VerificationService,
     private appInformationStatesService: AppInformationStatesService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private userService: UserService
   ) {}
+
   handleButtonClick(): void {
-    this.isVerificationCodeValid =
-      this.verificationService.validateVerificationCode(this.verificationCode);
-    if (!this.isVerificationCodeValid) {
-      this.shakeStateService.setCurrentShakeState('shake');
-      return;
-    }
+    this.validateVerificationCode();
     const isOpeningAccount = this.actionType === 'Otwieranie konta';
     const isLoggingIn = this.actionType === 'Logowanie';
     const isNotOnMainPage = this.router.url !== '/main-page';
-    if ((isOpeningAccount && isNotOnMainPage) || isLoggingIn) {
-      this.alertService.progressValue = 100;
-      this.setAlertCredentials('info', 'Sukces!', 'positive');
-      this.alertService.show();
-      this.router.navigateByUrl(this.buttonLink);
+    const isUserLoggedIn: boolean =
+      !((isOpeningAccount && isNotOnMainPage) || isLoggingIn);
+    if (this.isVerificationCodeValid) {
+      const isOperationFinalized: boolean =
+        this.userService.finalizeOperation();
+      isOperationFinalized
+        ? this.showPositiveAlert(isUserLoggedIn)
+        : this.showNegativeAlert();
     } else {
-      this.alertService.progressValue = 100;
-      this.setAlertCredentials('info', 'Sukces!', 'positive');
-      this.alertService.show();
-      this.changeTabName('Finanse');
+      this.showNegativeAlert();
     }
   }
+
+  validateVerificationCode(): void {
+    this.isVerificationCodeValid =
+      this.verificationService.validateVerificationCode(
+        this.verificationCode
+      ) && this.userService.getIsCodeValid(this.verificationCode.toString());
+    if (!this.isVerificationCodeValid) {
+      this.shakeStateService.setCurrentShakeState('shake');
+    }
+  }
+
+  showPositiveAlert(isUserLoggedIn: boolean): void {
+    this.alertService.progressValue = 100;
+    this.setAlertCredentials('info', 'Sukces!', 'positive');
+    this.alertService.show();
+    isUserLoggedIn
+      ? this.changeTabName('Finanse')
+      : this.router.navigateByUrl(this.buttonLink);
+  }
+
+  showNegativeAlert(): void {
+    this.alertService.progressValue = 100;
+    this.setAlertCredentials('error', 'Błąd!', 'negative');
+    this.alertService.show();
+  }
+
   handleRedirectButtonClick(): void {
     this.actionType === 'Logowanie' ||
     (this.actionType === 'Otwieranie konta' && this.router.url !== '/main-page')
       ? null
       : this.changeTabName('Finanse');
   }
+
   get redirectText(): string {
     switch (this.actionType) {
       case 'Logowanie':
@@ -94,6 +121,7 @@ export class VerificationCodeComponent {
         return 'Powrót do finansów!';
     }
   }
+
   get redirectLink(): string {
     switch (this.actionType) {
       case 'Logowanie':
@@ -104,6 +132,7 @@ export class VerificationCodeComponent {
         return '/main-page';
     }
   }
+
   get buttonText(): string {
     switch (this.actionType) {
       case 'Logowanie':
@@ -114,6 +143,7 @@ export class VerificationCodeComponent {
         return 'Zatwierdź';
     }
   }
+
   get ask(): string {
     switch (this.actionType) {
       case 'Logowanie':
@@ -126,6 +156,7 @@ export class VerificationCodeComponent {
         return 'Zabłądziłeś?';
     }
   }
+
   public setAlertCredentials(
     alertType: 'info' | 'warning' | 'error',
     alertTitle: string,
@@ -181,9 +212,7 @@ export class VerificationCodeComponent {
         break;
     }
   }
-  public changeTabName(tabName: string) {
-    this.appInformationStatesService.changeTabName(tabName);
-  }
+
   private get buttonLink(): string {
     switch (this.actionType) {
       case 'Logowanie':
@@ -193,5 +222,9 @@ export class VerificationCodeComponent {
       default:
         return '/main-page';
     }
+  }
+
+  public changeTabName(tabName: string) {
+    this.appInformationStatesService.changeTabName(tabName);
   }
 }
