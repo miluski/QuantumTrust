@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MediaService {
-
     @Value("${media.dir}")
     private String baseDir;
 

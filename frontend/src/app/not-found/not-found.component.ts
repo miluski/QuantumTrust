@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 
 /**
@@ -25,7 +26,8 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 export class NotFoundComponent implements OnInit {
   public isDrawerOpened: boolean = false;
   constructor(
-    private appInformationStatesService: AppInformationStatesService
+    private appInformationStatesService: AppInformationStatesService,
+    protected alertService: AlertService
   ) {}
   ngOnInit(): void {
     this.appInformationStatesService.currentIsDrawerOpened.subscribe(

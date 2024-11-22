@@ -45,7 +45,7 @@ export class UserMobileHeaderComponent {
   public user: UserAccount = new UserAccount();
   constructor(
     router: Router,
-    userService: UserService,
+    private userService: UserService,
     private appInformationStatesService: AppInformationStatesService,
     protected avatarService: AvatarService
   ) {
@@ -62,6 +62,7 @@ export class UserMobileHeaderComponent {
     this.appInformationStatesService.changeDrawer(this.drawer);
   }
   changeTabName(tabName: string) {
+    this.userService.logout();
     this.appInformationStatesService.changeTabName(tabName);
   }
   toggleDrawer(): void {

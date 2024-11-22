@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { catchError, Observable, ObservableInput, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../environments/environment.development';
 import { Account } from '../types/account';
 import { Card } from '../types/card';
@@ -30,7 +30,7 @@ export class UserService {
     private httpClient: HttpClient
   ) {}
 
-  finalizeOperation(): boolean {
+  async finalizeOperation(): Promise<boolean> {
     switch (this.operation) {
       case 'register':
         return this.register();
@@ -41,33 +41,51 @@ export class UserService {
     }
   }
 
-  register(): boolean {
-    const request: Observable<Object> = this.httpClient.post(
+  async register(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
       `${environment.apiUrl}/auth/register`,
       {
         encryptedAccountDto: this.registeringAccount,
         encryptedUserDto: this.registeringUserAccount,
+      },
+      {
+        observe: 'response',
       }
     );
-    request.subscribe();
-    request.pipe(catchError(this.handleRegisterError));
-    return true;
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
   }
 
-  login(): boolean {
+  async login(): Promise<boolean> {
     const loginData: string = this.loginData;
-    const request: Observable<Object> = this.httpClient.post(
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
       `${environment.apiUrl}/auth/login`,
       {
         loginData,
       },
       {
-        withCredentials: true,
+        observe: 'response',
       }
     );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  logout(): void {
+    const request: Observable<Object> = this.httpClient.post(
+      `${environment.apiUrl}/auth/logout`,
+      {},
+      { withCredentials: true }
+    );
     request.subscribe();
-    request.pipe(catchError(this.handleRegisterError));
-    return true;
   }
 
   sendVerificationEmail(data: string): void {
@@ -76,15 +94,9 @@ export class UserService {
         ? `${environment.apiUrl}/auth/login/verification/send-email`
         : `${environment.apiUrl}/auth/register/verification/send-email`;
     const encryptedData: string = this.cryptoService.encryptData(data);
-    const request: Observable<Object> = this.httpClient.post(
-      endpoint,
-      {
-        encryptedData,
-      },
-      {
-        withCredentials: true,
-      }
-    );
+    const request: Observable<Object> = this.httpClient.post(endpoint, {
+      encryptedData,
+    });
     request.subscribe();
     this.setVerificationCode();
   }
@@ -94,6 +106,9 @@ export class UserService {
   }
 
   setLoggingUserAccount(loggingUserAccount: UserAccount): void {
+    loggingUserAccount.password = this.cryptoService.encryptData(
+      loggingUserAccount.password
+    );
     this.loginData = this.cryptoService.encryptData(
       JSON.stringify(loggingUserAccount)
     );
@@ -108,6 +123,19 @@ export class UserService {
   }
 
   setRegisteringUserAccount(registeringUserAccount: UserAccount): void {
+    registeringUserAccount.address = this.cryptoService.encryptData(
+      registeringUserAccount.address
+    );
+    registeringUserAccount.documentSerie = this.cryptoService.encryptData(
+      registeringUserAccount.documentSerie
+    );
+    registeringUserAccount.documentType = this.cryptoService.encryptData(
+      registeringUserAccount.documentType
+    );
+    registeringUserAccount.repeatedPassword = '';
+    registeringUserAccount.password = this.cryptoService.encryptData(
+      registeringUserAccount.password
+    );
     this.registeringUserAccount = this.cryptoService.encryptData(
       JSON.stringify(registeringUserAccount)
     );
@@ -145,10 +173,6 @@ export class UserService {
     userAccount.phoneNumber = 123456789;
     userAccount.password = 'Test@12345678';
     return userAccount;
-  }
-
-  private handleRegisterError(error: HttpErrorResponse): ObservableInput<any> {
-    return throwError(() => new Error('Server response code: ' + error.status));
   }
 
   private getAccountImage(accountType: string) {

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
 import { environment } from '../environments/environment';
-import { sourceMapsEnabled } from 'node:process';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +11,7 @@ export class CryptoService {
   public encryptData(data: Object): string {
     const iv: CryptoJS.lib.WordArray = CryptoJS.lib.WordArray.random(16);
     const encrypted: CryptoJS.lib.CipherParams = CryptoJS.AES.encrypt(
-      JSON.stringify(data), 
+      JSON.stringify(data),
       this.key,
       {
         iv: iv,
@@ -46,7 +45,7 @@ export class CryptoService {
         }
       );
       const decryptedValue: string = decrypted.toString(CryptoJS.enc.Utf8);
-      return JSON.parse(decryptedValue); 
+      return JSON.parse(decryptedValue);
     } catch (e) {
       console.error(e);
       return '';

@@ -8,15 +8,13 @@ import { environment } from '../environments/environment.development';
 export class MediaService {
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-  ) {
-  }
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   getPhotoUrl(photoName: string): string {
     if (isPlatformServer(this.platformId)) {
       return 'PHOTO_LOADING_SKELETON';
     }
-
     return `${environment.apiUrl}/media/public/${photoName}`;
   }
 

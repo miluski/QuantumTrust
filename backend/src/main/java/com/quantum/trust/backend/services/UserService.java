@@ -1,5 +1,7 @@
 package com.quantum.trust.backend.services;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quantum.trust.backend.mappers.AccountMapper;
@@ -22,6 +23,7 @@ import com.quantum.trust.backend.repositories.AccountRepository;
 import com.quantum.trust.backend.repositories.UserRepository;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -69,14 +71,8 @@ public class UserService {
             ResponseEntity<?> accountResponse = this.createUserAccount(encryptedUserDto);
             boolean isAccountProperlySaved = accountResponse.getStatusCode().equals(HttpStatus.OK);
             if (isAccountProperlySaved) {
-                String decryptedAccountDto = this.cryptoService.decryptData(encryptedAccountDto);
-                decryptedAccountDto = decryptedAccountDto.replace("\\", "\"");
-                AccountDto accountDto = objectMapper.readValue(decryptedAccountDto, AccountDto.class);
-                Account account = this.accountMapper.convertToAccount(accountDto);
+                Account account = this.getUserAccountObject(encryptedAccountDto);
                 TransactionDto transactionDto = this.transactionService.createStartTransactionDto(account);
-                account.setUser(this.savedAccount);
-                this.validationService.validateAccountObject(account);
-                account.setBalance(this.transactionService.getInitialAmount(account));
                 this.accountRepository.save(account);
                 this.transactionService.saveNewTransaction(transactionDto);
                 return ResponseEntity.status(HttpStatus.OK).build();
@@ -92,6 +88,7 @@ public class UserService {
     public ResponseEntity<?> createUserAccount(String encryptedUserDto) {
         try {
             User user = this.getUser(encryptedUserDto);
+            user.setPassword(this.cryptoService.decryptData(user.getPassword()));
             this.validationService.validateUserObject(user);
             user.setPassword(this.cryptoService.getEncryptedPassword(user.getPassword()));
             this.savedAccount = this.userRepository.save(user);
@@ -103,33 +100,31 @@ public class UserService {
         }
     }
 
+    private Account getUserAccountObject(String encryptedAccountDto) throws Exception {
+        String decryptedAccountDto = this.cryptoService.decryptData(encryptedAccountDto);
+        decryptedAccountDto = decryptedAccountDto.replace("\\", "\"");
+        AccountDto accountDto = objectMapper.readValue(decryptedAccountDto, AccountDto.class);
+        Account account = this.accountMapper.convertToAccount(accountDto);
+        account.setUser(this.savedAccount);
+        this.validationService.validateAccountObject(account);
+        account.setBalance(this.transactionService.getInitialAmount(account));
+        return account;
+    }
+
     public ResponseEntity<?> login(String encryptedUserDto, HttpServletResponse httpServletResponse) {
         try {
             JsonNode jsonNode = this.objectMapper.readTree(encryptedUserDto);
             String loginData = jsonNode.get("loginData").asText();
             User user = this.getUser(loginData);
             this.validationService.validateLoginUserObject(user);
+            user.setPassword(this.cryptoService.decryptData(user.getPassword()));
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword());
             this.authenticationManager.authenticate(authentication);
-            String accessToken = this.tokenService.generateToken(user.getId().toString(), "access");
-            String refreshToken = this.tokenService.generateToken(user.getId().toString(), "refresh");
-            Cookie accessTokenCookie = this.cookieService.generateCookie("ACCESS_TOKEN", accessToken, true, 60);
-            Cookie refreshTokenCookie = this.cookieService.generateCookie("REFRESH_TOKEN", refreshToken, true, 300);
-            httpServletResponse.addCookie(accessTokenCookie);
-            httpServletResponse.addCookie(refreshTokenCookie);
+            this.addTokensToResponse(httpServletResponse, user.getId().toString());
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    public boolean isEmailExists(String userEmail) {
-        try {
-            User user = this.userRepository.findByEmailAddress(userEmail);
-            return true && user != null;
-        } catch (NullPointerException e) {
-            return false;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
@@ -138,11 +133,84 @@ public class UserService {
             String decryptedUserDto = this.cryptoService.decryptData(encryptedUserDto);
             decryptedUserDto = decryptedUserDto.replace("\\", "\"");
             UserDto userDto = objectMapper.readValue(decryptedUserDto, UserDto.class);
-            User user = this.userMapper.convertToUser(userDto);
-            return user;
-        } catch (JsonProcessingException e) {
+            return this.userMapper.convertToUser(userDto);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean isEmailExists(String encryptedEmail) {
+        try {
+            String userEmail = this.cryptoService.decryptData(encryptedEmail);
+            User user = this.userRepository.findByEmailAddress(userEmail);
+            return true && user != null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public ResponseEntity<?> isIdentifierExists(String encryptedId) {
+        try {
+            String decryptedId = this.cryptoService.decryptData(encryptedId);
+            Optional<User> user = this.userRepository.findById(Long.valueOf(decryptedId));
+            return user.isPresent() ? ResponseEntity.status(HttpStatus.OK).build()
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<?> refreshToken(HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        String refreshToken = this.cookieService.getCookieValue(httpServletRequest, "REFRESH_TOKEN");
+        return refreshToken != null ? this.newTokensPair(refreshToken, httpServletResponse)
+                : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    private boolean getIsIdentifierFromTokenExists(String identificatorFromToken) {
+        try {
+            Optional<User> userFromToken = this.userRepository.findById(Long.valueOf(identificatorFromToken));
+            return userFromToken.isPresent();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private ResponseEntity<?> newTokensPair(String refreshToken, HttpServletResponse httpServletResponse) {
+        String identificatorFromToken = this.tokenService.getIdentificatorFromToken(refreshToken);
+        boolean isIdentifierFromTokenValid = this.getIsIdentifierFromTokenExists(identificatorFromToken);
+        boolean isRefreshTokenValid = this.tokenService.validateToken(refreshToken, identificatorFromToken);
+        if (isIdentifierFromTokenValid && isRefreshTokenValid) {
+            this.addTokensToResponse(httpServletResponse, identificatorFromToken);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    private void addTokensToResponse(HttpServletResponse httpServletResponse, String userId) {
+        String accessToken = this.tokenService.generateToken(userId, "access");
+        String refreshToken = this.tokenService.generateToken(userId, "refresh");
+        Cookie accessTokenCookie = this.cookieService.generateCookie("ACCESS_TOKEN", accessToken, true, 60);
+        Cookie refreshTokenCookie = this.cookieService.generateCookie("REFRESH_TOKEN", refreshToken, true, 300);
+        httpServletResponse.addCookie(accessTokenCookie);
+        httpServletResponse.addCookie(refreshTokenCookie);
+    }
+
+    public ResponseEntity<?> removeTokens(HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        String refreshToken = this.cookieService.getCookieValue(httpServletRequest, "REFRESH_TOKEN");
+        String identificatorFromToken = this.tokenService.getIdentificatorFromToken(refreshToken);
+        String accessToken = this.tokenService.generateToken(identificatorFromToken, "access");
+        String newRefreshToken = this.tokenService.generateToken(identificatorFromToken, "refresh");
+        Cookie accessTokenCookie = this.cookieService.generateCookie("ACCESS_TOKEN", accessToken, true, 0);
+        Cookie refreshTokenCookie = this.cookieService.generateCookie("REFRESH_TOKEN", newRefreshToken, true, 0);
+        httpServletResponse.addCookie(accessTokenCookie);
+        httpServletResponse.addCookie(refreshTokenCookie);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

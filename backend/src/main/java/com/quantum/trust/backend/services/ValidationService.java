@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quantum.trust.backend.model.entities.Account;
@@ -12,16 +13,23 @@ import com.quantum.trust.backend.model.entities.User;
 
 @Service
 public class ValidationService {
+    private final CryptoService cryptoService;
 
-    public void validateUserObject(User user) throws IllegalArgumentException {
+    @Autowired
+    public ValidationService(CryptoService cryptoService) {
+        this.cryptoService = cryptoService;
+    }
+
+    public void validateUserObject(User user) throws Exception {
         boolean isEmailValid = this.validateEmail(user.getEmailAddress());
         boolean isPhoneNumberValid = this.validatePhoneNumber(user.getPhoneNumber());
         boolean isFirstNameValid = this.validateFirstName(user.getFirstName());
         boolean isLastNameValid = this.validateLastName(user.getLastName());
-        boolean isPeselValid = this.validatePESEL(String.valueOf(user.getPeselNumber()));
-        boolean isIdentityDocumentTypeValid = this.validateIdentityDocumentType(user.getDocumentType());
-        boolean isDocumentValid = this.validateDocument(user.getDocumentSerie());
-        boolean isAddressValid = this.validateAddress(user.getAddress());
+        boolean isPeselValid = this.validatePESEL(this.cryptoService.decryptData(user.getPeselNumber()));
+        boolean isIdentityDocumentTypeValid = this
+                .validateIdentityDocumentType(this.cryptoService.decryptData(user.getDocumentType()));
+        boolean isDocumentValid = this.validateDocument(this.cryptoService.decryptData(user.getDocumentSerie()));
+        boolean isAddressValid = this.validateAddress(this.cryptoService.decryptData(user.getAddress()));
         boolean isPasswordValid = this.validatePassword(user.getPassword());
         if (!(isEmailValid && isPhoneNumberValid && isFirstNameValid && isLastNameValid && isPeselValid
                 && isIdentityDocumentTypeValid && isDocumentValid && isAddressValid && isPasswordValid)) {
@@ -29,9 +37,9 @@ public class ValidationService {
         }
     }
 
-    public void validateLoginUserObject(User user) throws IllegalArgumentException {
+    public void validateLoginUserObject(User user) throws Exception {
         Long userId = user.getId();
-        boolean isPasswordValid = this.validatePassword(user.getPassword());
+        boolean isPasswordValid = this.validatePassword(this.cryptoService.decryptData(user.getPassword()));
         boolean isIdentifierValid = userId >= 1000000 && userId != null;
         if (!(isPasswordValid && isIdentifierValid)) {
             throw new IllegalArgumentException("Logging User object is invalid");

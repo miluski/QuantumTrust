@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quantum.trust.backend.model.entities.User;
@@ -46,14 +45,15 @@ public class VerificationService {
             HttpServletResponse httpServletResponse) {
         try {
             JsonNode jsonNode = this.objectMapper.readTree(encryptedObject);
-            String decryptedEmail = this.cryptoService.decryptData(jsonNode.get("encryptedData").asText());
-            boolean isUserExists = this.userService.isEmailExists(decryptedEmail);
+            String encryptedEmail = jsonNode.get("encryptedData").asText();
+            String decryptedEmail = this.cryptoService.decryptData(encryptedEmail);
+            boolean isUserExists = this.userService.isEmailExists(encryptedEmail);
             if (isUserExists) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
                 return this.sendVerificationCode(decryptedEmail, "rejestrację", httpServletResponse);
             }
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -80,16 +80,24 @@ public class VerificationService {
         boolean isEmailValid = this.validationService.validateEmail(email);
         if (isEmailValid) {
             this.verificationCode = this.generateSixDigitCode();
-            boolean isSendedSuccessfull = this.emailService.sendVerificationCode(email, verificationCode, operation);
-            String encryptedCode = this.cryptoService.encryptData(this.verificationCode);
-            Cookie responseCookie = this.cookieService.generateCookie("VERIFICATION_CODE", encryptedCode, false,
-                    30);
-            httpServletResponse.addCookie(responseCookie);
-            return isSendedSuccessfull ? ResponseEntity.status(HttpStatus.OK).build()
-                    : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            try {
+                this.emailService.sendVerificationCode(email, this.verificationCode, operation);
+                this.addVerificationCodeCookie(httpServletResponse);
+                return ResponseEntity.status(HttpStatus.OK).build();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
+    }
+
+    private void addVerificationCodeCookie(HttpServletResponse httpServletResponse) throws Exception {
+        String encryptedCode = this.cryptoService.encryptData(this.verificationCode);
+        Cookie responseCookie = this.cookieService.generateCookie("VERIFICATION_CODE", encryptedCode, false,
+                30);
+        httpServletResponse.addCookie(responseCookie);
     }
 
     private String generateSixDigitCode() {

@@ -19,45 +19,19 @@ public class EmailService {
     @Value("${resend.api.key}")
     private String resendApiKey;
 
-    public boolean sendVerificationCode(String userEmail, String verificationCode, String operation) {
-        try {
-            String htmlTemplate = this.getHtmlTemplate("verification-code");
-            htmlTemplate = htmlTemplate.replace("{{CODE}}", verificationCode);
-            htmlTemplate = htmlTemplate.replace("{{OPERATION}}", operation);
-            return this.sendEmail(userEmail, "Kod uwierzytelniający", htmlTemplate);
-        } catch (ResendException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void sendVerificationCode(String userEmail, String verificationCode, String operation)
+            throws ResendException {
+        String htmlTemplate = this.getHtmlTemplate("verification-code");
+        htmlTemplate = htmlTemplate.replace("{{CODE}}", verificationCode);
+        htmlTemplate = htmlTemplate.replace("{{OPERATION}}", operation);
+        this.sendEmail(userEmail, "Kod uwierzytelniający", htmlTemplate);
     }
 
-    public boolean sendIdentificator(User user) {
-        try {
-            String htmlTemplate = this.getHtmlTemplate("identificator");
-            htmlTemplate = htmlTemplate.replace("{{IDENTIFICATOR}}", user.getId().toString());
-            return this.sendEmail(user.getEmailAddress(), "Twój osobisty identyfikator do konta QuantumTrust",
-                    htmlTemplate);
-        } catch (ResendException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private boolean sendEmail(String userEmail, String subject, String htmlTemplate) throws ResendException {
-        if (!htmlTemplate.equals("")) {
-            Resend resend = new Resend(resendApiKey);
-            CreateEmailOptions params = CreateEmailOptions.builder()
-                    .from("QuantumTrust <noreply@quantum-trust.cc>")
-                    .to(userEmail)
-                    .subject(subject)
-                    .html(htmlTemplate)
-                    .build();
-            resend.emails().send(params);
-            return true;
-        } else {
-            System.out.println("Bad html template");
-            return false;
-        }
+    public void sendIdentificator(User user) throws ResendException {
+        String htmlTemplate = this.getHtmlTemplate("identificator");
+        htmlTemplate = htmlTemplate.replace("{{IDENTIFICATOR}}", user.getId().toString());
+        this.sendEmail(user.getEmailAddress(), "Twój osobisty identyfikator do konta QuantumTrust",
+                htmlTemplate);
     }
 
     private String getHtmlTemplate(String templateType) {
@@ -71,4 +45,18 @@ public class EmailService {
         }
     }
 
+    private void sendEmail(String userEmail, String subject, String htmlTemplate) throws ResendException {
+        if (!htmlTemplate.equals("")) {
+            Resend resend = new Resend(resendApiKey);
+            CreateEmailOptions params = CreateEmailOptions.builder()
+                    .from("QuantumTrust <contact@quantum-trust.cc>")
+                    .to(userEmail)
+                    .subject(subject)
+                    .html(htmlTemplate)
+                    .build();
+            resend.emails().send(params);
+        } else {
+            throw new ResendException("Bad html template");
+        }
+    }
 }

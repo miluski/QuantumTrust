@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * MainPageComponent is the main component for the application's main page.
