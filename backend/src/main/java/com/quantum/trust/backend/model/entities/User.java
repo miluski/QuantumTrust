@@ -41,7 +41,7 @@ public class User {
     private String lastName;
 
     @Column(name = "pesel_number", nullable = false)
-    private Long peselNumber;
+    private String peselNumber;
 
     @Column(name = "document_type", nullable = false)
     private String documentType;
@@ -57,5 +57,4 @@ public class User {
 
     @Column(name = "avatar_path", nullable = true)
     private String avatarPath;
-
 }

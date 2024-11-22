@@ -24,23 +24,29 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ShakeStateService {
+  public currentSiteNumber: number = 1;
   private currentShakeState: 'shake' | 'none' | '' = '';
-  private currentSiteNumber: number = 1;
+
   public setCurrentShakeState(state: 'shake' | 'none' | ''): void {
     this.currentShakeState = state;
     this.changeSiteIfNeccessary();
     this.resetShakeState();
   }
+
   get shakeState(): 'shake' | 'none' | '' {
     return this.currentShakeState;
   }
+
   get siteNumber(): number {
     return this.currentSiteNumber;
   }
+
   private changeSiteIfNeccessary(): void {
     this.currentShakeState === 'none' ? this.currentSiteNumber++ : null;
   }
+
   private resetShakeState(): void {
     setTimeout(() => (this.currentShakeState = 'none'), 500);
   }
+  
 }

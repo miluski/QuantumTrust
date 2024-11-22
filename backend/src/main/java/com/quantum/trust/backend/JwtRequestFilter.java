@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.quantum.trust.backend.services.CookieService;
 import com.quantum.trust.backend.services.TokenBucketService;
 import com.quantum.trust.backend.services.TokenService;
 import com.quantum.trust.backend.services.UserAuthService;
@@ -23,21 +24,27 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-
     private final TokenService tokenService;
+    private final CookieService cookieService;
     private final UserAuthService userAuthService;
     private final TokenBucketService tokenBucketService;
     private final List<String> allowedUris;
 
+    private String token;
+    private String authHeader;
+    private String identificator;
+    private HttpServletRequest request;
+
     @Autowired
-    public JwtRequestFilter(TokenService tokenService, UserAuthService userAuthService,
+    public JwtRequestFilter(TokenService tokenService, CookieService cookieService, UserAuthService userAuthService,
             TokenBucketService tokenBucketService) {
         this.tokenService = tokenService;
         this.userAuthService = userAuthService;
         this.tokenBucketService = tokenBucketService;
+        this.cookieService = cookieService;
         this.allowedUris = List.of("/api/media/public", "/api/auth/login", "/api/auth/login/verification/send-email",
                 "/api/auth/register/verification/send-email",
-                "/api/auth/register");
+                "/api/auth/register", "/api/user/id", "/api/user/email", "/api/auth/refresh-token");
     }
 
     @SuppressWarnings("null")
@@ -49,27 +56,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        final String authHeader = request.getHeader("Authorization");
-        String token = null;
-        String identificator = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            identificator = this.tokenService.getIdentificatorFromToken(token);
-
-            if (token != null && !tokenBucketService.tryConsume()) {
-                response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-                response.getWriter().write("Too many requests. Try again later.");
-                return;
-            }
+        this.setCredentials(request);
+        if (this.token != null && !tokenBucketService.tryConsume()) {
+            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+            response.getWriter().write("Too many requests. Try again later.");
+            return;
         }
         if (identificator != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userAuthService.loadUserByUsername(identificator);
             if (tokenService.validateToken(token, identificator)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                this.setAuthentication();
             } else {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.getWriter().write("Unauthorized");
@@ -77,5 +72,39 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void setCredentials(HttpServletRequest request) {
+        this.request = request;
+        this.authHeader = this.getAuthHeader(request);
+        this.setToken();
+        this.setIdentificator();
+    }
+
+    private String getAuthHeader(HttpServletRequest request) {
+        boolean isRequestLogout = request.getRequestURI().contains("/api/auth/logout");
+        return "Bearer "
+                + this.cookieService.getCookieValue(request, isRequestLogout ? "REFRESH_TOKEN" : "ACCESS_TOKEN");
+    }
+
+    private void setToken() {
+        if (this.authHeader != null && this.authHeader.startsWith("Bearer ")) {
+            this.token = this.authHeader.substring(7);
+        }
+    }
+
+    private void setIdentificator() {
+        if (this.authHeader != null && this.authHeader.startsWith("Bearer ")) {
+            this.identificator = this.tokenService.getIdentificatorFromToken(this.token);
+        }
+    }
+
+    private void setAuthentication() {
+        UserDetails userDetails = this.userAuthService.loadUserByUsername(this.identificator);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        usernamePasswordAuthenticationToken
+                .setDetails(new WebAuthenticationDetailsSource().buildDetails(this.request));
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 }

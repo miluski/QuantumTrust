@@ -1,6 +1,14 @@
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
+import { CryptoService } from '../../services/crypto.service';
 import { ShakeStateService } from '../../services/shake-state.service';
 import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
@@ -36,15 +44,19 @@ export class GuestOpenAccountComponent {
   public userAccountFlags: UserAccountFlags = new UserAccountFlags();
   public userAccount: UserAccount = new UserAccount();
   public account: Account = new Account();
+
   constructor(
     private verificationService: VerificationService,
     private userService: UserService,
+    private cryptoService: CryptoService,
+    private httpClient: HttpClient,
     protected alertService: AlertService
   ) {
     this.userAccount.documentType = 'Dowód Osobisty';
     this.account.type = 'Konto osobiste';
     this.account.currency = 'PLN';
   }
+
   verifyData(): void {
     this.setIsContactDataValid();
     this.setIsAccountDataValid();
@@ -53,6 +65,7 @@ export class GuestOpenAccountComponent {
     this.setIsPasswordValid();
     this.setCanShake();
   }
+
   private setIsContactDataValid(): void {
     this.userAccountFlags.isEmailValid = this.verificationService.validateEmail(
       this.userAccount.emailAddress
@@ -62,15 +75,17 @@ export class GuestOpenAccountComponent {
         String(this.userAccount.phoneNumber)
       );
   }
+
   private setIsFullNameValid(): void {
     this.userAccountFlags.isNameValid =
       this.verificationService.validateFirstName(this.userAccount.firstName);
     this.userAccountFlags.isSurnameValid =
       this.verificationService.validateLastName(this.userAccount.lastName);
   }
+
   private setIsIdentityDataValid(): void {
     this.userAccountFlags.isPeselValid = this.verificationService.validatePESEL(
-      this.userAccount.peselNumber
+      this.userAccount.peselNumber as number
     );
     this.userAccountFlags.isIdentityDocumentTypeValid =
       this.verificationService.validateIdentityDocumentType(
@@ -81,6 +96,7 @@ export class GuestOpenAccountComponent {
     this.userAccountFlags.isAddressValid =
       this.verificationService.validateAddress(this.userAccount.address);
   }
+
   private setIsPasswordValid(): void {
     this.userAccountFlags.isPasswordValid =
       this.verificationService.validatePassword(this.userAccount.password);
@@ -90,6 +106,7 @@ export class GuestOpenAccountComponent {
         this.userAccount.password
       );
   }
+
   private setIsAccountDataValid(): void {
     this.userAccountFlags.isAccountCurrencyValid =
       this.verificationService.validateAccountCurrency(
@@ -98,20 +115,23 @@ export class GuestOpenAccountComponent {
     this.userAccountFlags.isAccountTypeValid =
       this.verificationService.validateAccountType(this.account.type);
   }
-  private setCanShake(): void {
+
+  private async setCanShake(): Promise<void> {
     const isSomeDataInvalid: boolean = this.validationFlags.some(
       (flag: boolean) => flag === false
     );
-    if (isSomeDataInvalid === false) {
+    const isUserNotExists: boolean = await this.getIsUserNotExists();
+    if (isSomeDataInvalid === false && isUserNotExists) {
       this.userService.operation = 'register';
       this.userService.sendVerificationEmail(this.userAccount.emailAddress);
       this.userService.setRegisteringUserAccount(this.userAccount);
       this.userService.setRegisteringAccount(this.account);
     }
     this.shakeStateService.setCurrentShakeState(
-      isSomeDataInvalid ? 'shake' : 'none'
+      isSomeDataInvalid || isUserNotExists === false ? 'shake' : 'none'
     );
   }
+
   private get validationFlags(): boolean[] {
     return [
       this.userAccountFlags.isEmailValid,
@@ -127,5 +147,49 @@ export class GuestOpenAccountComponent {
       this.userAccountFlags.isAccountCurrencyValid,
       this.userAccountFlags.isAccountTypeValid,
     ];
+  }
+
+  private getIsUserNotExists(): Promise<boolean> {
+    const encryptedEmail: string = this.cryptoService.encryptData(
+      this.userAccount.emailAddress
+    );
+    const encodedEmail: string = encodeURIComponent(encryptedEmail);
+    const request: Observable<HttpResponse<Object>> = this.httpClient.get(
+      `${environment.apiUrl}/user/email?email=${encodedEmail}`,
+      { observe: 'response' }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: () => {
+          this.showAlert();
+          resolve(false);
+        },
+        error: (response: HttpErrorResponse) => {
+          if (response.status !== 404) {
+            this.showUnexpectedErrorAlert();
+          }
+          resolve(response.status === 404);
+        },
+      });
+    });
+  }
+
+  private showAlert(): void {
+    this.alertService.alertContent =
+      'Użytkownik o podanym adresie email już istnieje.';
+    this.alertService.alertIcon = 'fa-circle-xmark';
+    this.alertService.alertTitle = 'Błąd';
+    this.alertService.alertType = 'error';
+    this.alertService.progressBarBorderColor = '#fca5a5';
+    this.alertService.show();
+  }
+
+  private showUnexpectedErrorAlert(): void {
+    this.alertService.alertContent = 'Wystąpił nieoczekiwany problem.';
+    this.alertService.alertIcon = 'fa-circle-exclamation';
+    this.alertService.alertTitle = 'Ostrzeżenie';
+    this.alertService.alertType = 'warning';
+    this.alertService.progressBarBorderColor = '#fde047';
+    this.alertService.show();
   }
 }

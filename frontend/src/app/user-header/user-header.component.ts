@@ -46,9 +46,9 @@ export class UserHeaderComponent implements OnInit {
   public isMenuVisible: boolean = false;
   constructor(
     router: Router,
-    userService: UserService,
     private appInformationStatesService: AppInformationStatesService,
     private cdr: ChangeDetectorRef,
+    private userService: UserService,
     protected avatarService: AvatarService
   ) {
     this.currentRoute = router.url;
@@ -63,6 +63,7 @@ export class UserHeaderComponent implements OnInit {
     this.cdr.detectChanges();
   }
   changeTabName(tabName: string) {
+    this.userService.logout();
     this.appInformationStatesService.changeTabName(tabName);
   }
   toggleDrawer(): void {

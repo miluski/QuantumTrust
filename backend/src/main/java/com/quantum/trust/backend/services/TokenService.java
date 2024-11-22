@@ -17,7 +17,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class TokenService {
-
     @Value("${jwt.secret}")
     private String jwtSecret;
     @Value("${jwt.expiration}")
@@ -77,5 +76,4 @@ public class TokenService {
     private Key getKey() {
         return new SecretKeySpec(jwtSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
     }
-
 }

@@ -339,10 +339,5 @@
   }
 </div>
 <app-scroll-arrow-up />
-<app-custom-alert
-  [alertType]="alertService.alertType"
-  [alertTitle]="alertService.alertTitle"
-  [alertContent]="alertService.alertContent"
-  [alertService]="alertService"
-/>
+<app-custom-alert [alertService]="alertService" />
 <app-footer />

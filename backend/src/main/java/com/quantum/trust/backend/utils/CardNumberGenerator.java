@@ -7,7 +7,6 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
 public class CardNumberGenerator implements IdentifierGenerator {
-
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) {
         Random random = new Random();

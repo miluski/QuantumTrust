@@ -3,11 +3,13 @@
   class="fixed bottom-5 right-5 pt-2 z-[1000] rounded-xl max-sm:w-[85%] sm:w-2/3 lg:w-1/3"
   [@slideInFromTop]
   [ngClass]="{
-    'bg-red-400': alertType === 'error',
-    'bg-green-400': alertType === 'info',
-    'bg-yellow-400': alertType === 'warning'
+    'bg-red-400': alertService.alertType === 'error',
+    'bg-green-400': alertService.alertType === 'info',
+    'bg-yellow-400': alertService.alertType === 'warning'
   }"
-  [ngStyle]="{ '--progress-bar-border-color': progressBarBorderColor }"
+  [ngStyle]="{
+    '--progress-bar-border-color': alertService.progressBarBorderColor
+  }"
 >
   <i
     class="absolute top-2 right-2 fa-solid fa-x hover:text-gray-400 text-white cursor-pointer font-extrabold"
@@ -16,16 +18,20 @@
   <div
     class="flex flex-row w-[95%] h-full items-center justify-center space-x-5 mx-5 mt-5"
   >
-    <i class="fa-solid {{ alertIcon }} text-5xl text-white"></i>
+    <i class="fa-solid {{ alertService.alertIcon }} text-5xl text-white"></i>
     <div class="flex flex-col w-full text-left">
-      <p class="font-roboto text-xl text-white font-bold">{{ alertTitle }}</p>
-      <p class="font-roboto text-xl text-white font-base">{{ alertContent }}</p>
+      <p class="font-roboto text-xl text-white font-bold">
+        {{ alertService.alertTitle }}
+      </p>
+      <p class="font-roboto text-xl text-white font-base">
+        {{ alertService.alertContent }}
+      </p>
     </div>
   </div>
   <mat-progress-bar
     class="!h-10"
     mode="determinate"
     [value]="alertService.progressValue"
-    [color]="progressBarBorderColor"
+    [color]="alertService.progressBarBorderColor"
   ></mat-progress-bar>
 </div>
