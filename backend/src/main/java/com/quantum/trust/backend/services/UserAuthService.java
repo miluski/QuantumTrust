@@ -14,7 +14,6 @@ import com.quantum.trust.backend.repositories.UserRepository;
 
 @Service
 public class UserAuthService implements UserDetailsService {
-
     private final UserRepository userRepository;
 
     @Autowired
@@ -31,5 +30,4 @@ public class UserAuthService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.get().getId().toString(),
                 user.get().getPassword(), new ArrayList<>());
     }
-
 }

@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.quantum.trust.backend.services.CookieService;
 import com.quantum.trust.backend.services.TokenBucketService;
 import com.quantum.trust.backend.services.TokenService;
 import com.quantum.trust.backend.services.UserAuthService;
@@ -30,60 +31,18 @@ import jakarta.servlet.http.HttpServletRequest;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final TokenService tokenService;
+    private final CookieService cookieService;
     private final UserAuthService userAuthService;
     private final TokenBucketService tokenBucketService;
 
     @Autowired
-    public SecurityConfig(TokenService tokenService, UserAuthService userAuthService,
+    public SecurityConfig(TokenService tokenService, CookieService cookieService, UserAuthService userAuthService,
             TokenBucketService tokenBucketService) {
         this.tokenService = tokenService;
+        this.cookieService = cookieService;
         this.userAuthService = userAuthService;
         this.tokenBucketService = tokenBucketService;
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors((customizer) -> customizer.configurationSource(this.getCorsConfigurationSource()))
-                .authorizeHttpRequests((customizer) -> customizer
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/auth/register").permitAll()
-                        .requestMatchers("/api/auth/login/verification/send-email").permitAll()
-                        .requestMatchers("/api/auth/register/verification/send-email").permitAll()
-                        .requestMatchers("/api/media/public/**").permitAll()
-                        .requestMatchers("/api/auth/test/tokens").permitAll()
-                        .anyRequest().authenticated())
-                .addFilterBefore(this.getJwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((customizer) -> customizer.authenticationEntryPoint(
-                        (request, response, exception) -> {
-                            response.sendError(HttpStatus.UNAUTHORIZED.value());
-                            exception.printStackTrace();
-                        }));
-        return httpSecurity.build();
-    }
-
-    private Filter getJwtRequestFilter() {
-        return new JwtRequestFilter(tokenService, userAuthService, tokenBucketService);
-    }
-
-    private CorsConfigurationSource getCorsConfigurationSource() {
-        return new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(
-                    @SuppressWarnings("null") HttpServletRequest httpServletRequest) {
-                CorsConfiguration corsConfiguration = new CorsConfiguration();
-                corsConfiguration.setAllowCredentials(true);
-                corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
-                corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
-                corsConfiguration.setAllowedOrigins(Arrays.asList("https://192.168.0.11:4200"));
-                corsConfiguration.addExposedHeader("Set-Cookie");
-                corsConfiguration.setMaxAge(5L);
-                return corsConfiguration;
-            }
-        };
     }
 
     @Bean
@@ -97,5 +56,51 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new Argon2PasswordEncoder(16, 32, 1, 4096, 3);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors((customizer) -> customizer.configurationSource(this.getCorsConfigurationSource()))
+                .authorizeHttpRequests((customizer) -> customizer
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/login/verification/send-email").permitAll()
+                        .requestMatchers("/api/auth/register/verification/send-email").permitAll()
+                        .requestMatchers("/api/user/id").permitAll()
+                        .requestMatchers("/api/user/email").permitAll()
+                        .requestMatchers("/api/auth/refresh-token").permitAll()
+                        .requestMatchers("/api/media/public/**").permitAll()
+                        .requestMatchers("/api/auth/test/tokens").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(this.getJwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling((customizer) -> customizer.authenticationEntryPoint(
+                        (request, response, exception) -> {
+                            response.sendError(HttpStatus.UNAUTHORIZED.value());
+                            exception.printStackTrace();
+                        }));
+        return httpSecurity.build();
+    }
+
+    private CorsConfigurationSource getCorsConfigurationSource() {
+        return new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(
+                    @SuppressWarnings("null") HttpServletRequest httpServletRequest) {
+                CorsConfiguration corsConfiguration = new CorsConfiguration();
+                corsConfiguration.setAllowCredentials(true);
+                corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
+                corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
+                corsConfiguration.setAllowedOrigins(Arrays.asList("https://192.168.0.18:4200"));
+                corsConfiguration.addExposedHeader("Set-Cookie");
+                corsConfiguration.setMaxAge(5L);
+                return corsConfiguration;
+            }
+        };
+    }
+
+    private Filter getJwtRequestFilter() {
+        return new JwtRequestFilter(tokenService, cookieService, userAuthService, tokenBucketService);
     }
 }

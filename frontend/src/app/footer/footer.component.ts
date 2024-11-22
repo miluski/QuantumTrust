@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ProductTypesService } from '../../services/product-types.service';
+import { UserService } from '../../services/user.service';
 
 /**
  * @fileoverview FooterComponent is a standalone Angular component that manages the footer section of the application.
@@ -44,6 +45,7 @@ export class FooterComponent {
   public currentTabName!: string;
   public currentTransactionsArrayLength!: number;
   constructor(
+    private userService: UserService,
     private productTypesService: ProductTypesService,
     private appInformationStatesService: AppInformationStatesService
   ) {}
@@ -75,6 +77,7 @@ export class FooterComponent {
     this.productTypesService.changeDepositType(depositType);
   }
   changeTabName(tabName: string): void {
+    this.userService.logout();
     this.appInformationStatesService.changeTabName(tabName);
   }
   get canBeSticky(): boolean {

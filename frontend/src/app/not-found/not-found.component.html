@@ -1,9 +1,13 @@
 <app-header />
 <div class="flex flex-col h-[75vh] m-0 p-0 scroll-smooth">
-    <main class="flex-grow flex flex-col justify-center text-center bg-black text-white w-full px-5">
-        <p class="text-white font-roboto font-normal text-3xl">404</p>
-        <p class="text-white font-roboto font-light text-xl">Strona na którą próbujesz wejść nie została znaleziona.
-        </p>
-    </main>
+  <main
+    class="flex-grow flex flex-col justify-center text-center bg-black text-white w-full px-5"
+  >
+    <p class="text-white font-roboto font-normal text-3xl">404</p>
+    <p class="text-white font-roboto font-light text-xl">
+      Strona na którą próbujesz wejść nie została znaleziona.
+    </p>
+  </main>
 </div>
+<app-custom-alert [alertService]="alertService" />
 <app-footer />

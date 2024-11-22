@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/media")
 public class FileDownloadController {
-
     @Autowired
     private MediaService mediaService;
 

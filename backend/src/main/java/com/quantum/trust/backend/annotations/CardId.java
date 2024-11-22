@@ -15,5 +15,4 @@ import com.quantum.trust.backend.utils.CardNumberGenerator;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ FIELD, METHOD })
 public @interface CardId {
-
 }

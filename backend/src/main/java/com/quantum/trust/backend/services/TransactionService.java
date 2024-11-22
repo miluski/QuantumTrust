@@ -19,6 +19,7 @@ import com.quantum.trust.backend.repositories.TransactionRepository;
 public class TransactionService {
     private final TransactionMapper transactionMapper;
     private final TransactionRepository transactionRepository;
+    
     private static final Map<String, Float> exchangeRates = new HashMap<>();
 
     static {

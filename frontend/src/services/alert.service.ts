@@ -24,21 +24,30 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AlertService {
-  private secondsLeftToClose = 30;
-  public isOpened = false;
-  public progressValue = 100;
+  private secondsLeftToClose: number = 30;
+  private interval!: NodeJS.Timeout;
+  public isOpened: boolean = false;
+  public progressValue: number = 100;
   public alertType!: 'info' | 'warning' | 'error';
   public alertContent!: string;
   public alertTitle!: string;
+  public alertIcon!: string;
+  public progressBarBorderColor!: string;
+
   public show(): void {
-    this.secondsLeftToClose = 30;
-    this.progressValue = 100;
+    this.resetCredentials();
+    this.runIntervalFn();
     this.isOpened = true;
-    const interval = setInterval(() => {
+  }
+
+  public close(): void {
+    this.isOpened = false;
+  }
+
+  private runIntervalFn(): void {
+    this.interval = setInterval(() => {
       if (this.secondsLeftToClose <= 1) {
-        this.secondsLeftToClose = 30;
-        this.progressValue = 100;
-        clearInterval(interval);
+        this.resetCredentials();
         this.close();
       } else {
         this.secondsLeftToClose--;
@@ -46,10 +55,14 @@ export class AlertService {
       }
     }, 1000);
   }
-  public close(): void {
-    this.isOpened = false;
-  }
+
   private updateProgress(): void {
     this.progressValue = (this.secondsLeftToClose / 30) * 100;
+  }
+
+  private resetCredentials(): void {
+    this.interval ? clearInterval(this.interval) : null;
+    this.secondsLeftToClose = 30;
+    this.progressValue = 100;
   }
 }

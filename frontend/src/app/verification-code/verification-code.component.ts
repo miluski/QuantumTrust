@@ -59,16 +59,18 @@ export class VerificationCodeComponent {
     private userService: UserService
   ) {}
 
-  handleButtonClick(): void {
+  async handleButtonClick(): Promise<void> {
     this.validateVerificationCode();
     const isOpeningAccount = this.actionType === 'Otwieranie konta';
     const isLoggingIn = this.actionType === 'Logowanie';
     const isNotOnMainPage = this.router.url !== '/main-page';
-    const isUserLoggedIn: boolean =
-      !((isOpeningAccount && isNotOnMainPage) || isLoggingIn);
+    const isUserLoggedIn: boolean = !(
+      (isOpeningAccount && isNotOnMainPage) ||
+      isLoggingIn
+    );
     if (this.isVerificationCodeValid) {
       const isOperationFinalized: boolean =
-        this.userService.finalizeOperation();
+        await this.userService.finalizeOperation();
       isOperationFinalized
         ? this.showPositiveAlert(isUserLoggedIn)
         : this.showNegativeAlert();
@@ -89,17 +91,30 @@ export class VerificationCodeComponent {
 
   showPositiveAlert(isUserLoggedIn: boolean): void {
     this.alertService.progressValue = 100;
-    this.setAlertCredentials('info', 'Sukces!', 'positive');
+    this.setAlertCredentials(
+      'info',
+      'Sukces!',
+      'fa-circle-info',
+      '#276749',
+      'positive'
+    );
     this.alertService.show();
     isUserLoggedIn
       ? this.changeTabName('Finanse')
-      : this.router.navigateByUrl(this.buttonLink);
+      : setTimeout(() => this.router.navigateByUrl(this.buttonLink), 500);
   }
 
   showNegativeAlert(): void {
     this.alertService.progressValue = 100;
-    this.setAlertCredentials('error', 'Błąd!', 'negative');
+    this.setAlertCredentials(
+      'error',
+      'Błąd!',
+      'fa-circle-xmark',
+      '#fca5a5',
+      'negative'
+    );
     this.alertService.show();
+    setTimeout(() => this.router.navigate(['/home-page']), 500);
   }
 
   handleRedirectButtonClick(): void {
@@ -160,10 +175,14 @@ export class VerificationCodeComponent {
   public setAlertCredentials(
     alertType: 'info' | 'warning' | 'error',
     alertTitle: string,
+    alertIcon: string,
+    progressBarBorderColor: string,
     triggerType: 'positive' | 'negative'
   ): void {
     this.alertService.alertType = alertType;
     this.alertService.alertTitle = alertTitle;
+    this.alertService.progressBarBorderColor = progressBarBorderColor;
+    this.alertService.alertIcon = alertIcon;
     switch (this.actionType) {
       case 'Logowanie':
         this.alertService.alertContent =

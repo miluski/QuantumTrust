@@ -1,7 +1,9 @@
 package com.quantum.trust.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,12 +13,12 @@ import com.quantum.trust.backend.model.dto.EncryptedDto;
 import com.quantum.trust.backend.services.UserService;
 import com.quantum.trust.backend.services.VerificationService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
     private final UserService userService;
     private final VerificationService verificationService;
 
@@ -24,6 +26,11 @@ public class AuthController {
     public AuthController(VerificationService verificationService, UserService userService) {
         this.verificationService = verificationService;
         this.userService = userService;
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> isAccessTokenPresentAndValid() {
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/login/verification/send-email")
@@ -38,14 +45,26 @@ public class AuthController {
         return this.verificationService.handleRegisterVerification(encryptedEmail, httpServletResponse);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody String encryptedUserDto, HttpServletResponse httpServletResponse) {
+        return this.userService.login(encryptedUserDto, httpServletResponse);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody EncryptedDto encryptedDto) {
         return this.userService.registerNewAccount(encryptedDto.getEncryptedUserDto(),
                 encryptedDto.getEncryptedAccountDto());
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody String encryptedUserDto, HttpServletResponse httpServletResponse) {
-        return this.userService.login(encryptedUserDto, httpServletResponse);
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        return this.userService.refreshToken(httpServletRequest, httpServletResponse);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> handleLogout(HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        return this.userService.removeTokens(httpServletRequest, httpServletResponse);
     }
 }
