@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ShakeStateService } from '../../services/shake-state.service';
+import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
 import { UserAccountFlags } from '../../types/user-account-flags';
@@ -41,7 +42,8 @@ export class UserOpenAccountComponent {
 
   constructor(
     private appInformationStatesService: AppInformationStatesService,
-    private verificationService: VerificationService
+    private verificationService: VerificationService,
+    private userService: UserService
   ) {
     this.account = new Account();
     this.account.type = 'personal';
@@ -68,6 +70,13 @@ export class UserOpenAccountComponent {
     const isSomeDataInvalid: boolean =
       this.userAccountFlags.isAccountCurrencyValid === false ||
       this.userAccountFlags.isAccountTypeValid === false;
+    if (isSomeDataInvalid === false) {
+      this.userService.operation = 'logged-user-open-account';
+      this.userService.setOpeningBankAccount(this.account);
+      this.userService.sendVerificationEmail(
+        'otworzenie nowego konta bankowego'
+      );
+    }
     this.shakeStateService.setCurrentShakeState(
       isSomeDataInvalid ? 'shake' : 'none'
     );

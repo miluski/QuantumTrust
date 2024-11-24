@@ -98,14 +98,14 @@ export class FinancesComponent implements OnInit {
     this.accountsPaginationService = new PaginationService();
   }
 
-  public ngOnInit(): void {
-    this.initializeUserData();
-  }
-
   @HostListener('window:resize', ['$event'])
   public onResize(event: UIEvent): void {
     this.accountsPaginationService.onResize(event);
     this.cardPaginationService.onResize(event);
+  }
+
+  public ngOnInit(): void {
+    this.initializeUserData();
   }
 
   public initializeUserData(): void {
@@ -121,6 +121,7 @@ export class FinancesComponent implements OnInit {
       if (newAccountsArray.length >= 1) {
         this.userAccounts = newAccountsArray;
         this.accountsPaginationService.setPaginatedArray(this.userAccounts);
+        this.handleWidthChange();
       }
     });
   }
@@ -139,6 +140,7 @@ export class FinancesComponent implements OnInit {
         this.userCards = newUserCards;
         this.cardPaginationService.setPaginatedArray(this.userCards);
         this.cardPaginationService.setLargeBreakpointItemsPerPage(4);
+        this.handleWidthChange();
       }
     });
   }

@@ -14,6 +14,7 @@ import com.quantum.trust.backend.model.entities.User;
 import com.quantum.trust.backend.repositories.UserRepository;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -24,6 +25,7 @@ public class VerificationService {
     private final CryptoService cryptoService;
     private final CookieService cookieService;
     private final EmailService emailService;
+    private final TokenService tokenService;
     private final UserService userService;
     private final ValidationService validationService;
     private final UserRepository userRepository;
@@ -31,13 +33,14 @@ public class VerificationService {
     @Autowired
     public VerificationService(CryptoService cryptoService, ValidationService validationService,
             ObjectMapper objectMapper, CookieService cookieService, UserService userService,
-            EmailService emailService, UserRepository userRepository) {
+            EmailService emailService, TokenService tokenService, UserRepository userRepository) {
         this.cryptoService = cryptoService;
         this.validationService = validationService;
         this.objectMapper = objectMapper;
         this.cookieService = cookieService;
         this.userService = userService;
         this.emailService = emailService;
+        this.tokenService = tokenService;
         this.userRepository = userRepository;
     }
 
@@ -66,6 +69,25 @@ public class VerificationService {
             Optional<User> user = this.userRepository.findById(Long.valueOf(decryptedId));
             if (user.isPresent()) {
                 return this.sendVerificationCode(user.get().getEmailAddress(), "logowanie", httpServletResponse);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<?> handleOperationVerification(String encryptedOperation,
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
+            JsonNode jsonNode = this.objectMapper.readTree(encryptedOperation);
+            String decryptedOperation = this.cryptoService.decryptData(jsonNode.get("encryptedData").asText());
+            String token = this.cookieService.getCookieValue(httpServletRequest, "ACCESS_TOKEN");
+            String identificatorFromToken = this.tokenService.getIdentificatorFromToken(token);
+            Optional<User> user = this.userRepository.findById(Long.valueOf(identificatorFromToken));
+            if (user.isPresent()) {
+                return this.sendVerificationCode(user.get().getEmailAddress(), decryptedOperation, httpServletResponse);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }

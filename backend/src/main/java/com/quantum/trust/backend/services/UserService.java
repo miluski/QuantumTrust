@@ -92,7 +92,7 @@ public class UserService {
 
     public ResponseEntity<?> saveNewBankAccount(String encryptedAccountDto) {
         try {
-            Account account = this.getUserAccountObject(encryptedAccountDto);
+            Account account = this.getUserAccountObject(encryptedAccountDto, false);
             this.savedUserBankAccount = this.accountRepository.save(account);
             TransactionDto transactionDto = this.transactionService.createStartTransactionDto(account);
             this.transactionService.saveNewTransaction(transactionDto);
@@ -100,6 +100,24 @@ public class UserService {
         } catch (Exception e) {
             this.deleteUserAccount();
             this.deleteUserBankAccount();
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<?> saveNewBankAccount(HttpServletRequest httpServletRequest, String encryptedAccountDto) {
+        try {
+            String token = this.cookieService.getCookieValue(httpServletRequest, "ACCESS_TOKEN");
+            String identificatorFromToken = this.tokenService.getIdentificatorFromToken(token);
+            Optional<User> user = this.userRepository.findById(Long.valueOf(identificatorFromToken));
+            if (user.isEmpty()) {
+                throw new Exception("User not found");
+            }
+            this.savedUserAccount = user.get();
+            Account account = this.getUserAccountObject(encryptedAccountDto, true);
+            this.savedUserBankAccount = this.accountRepository.save(account);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -185,6 +203,19 @@ public class UserService {
                 : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
+    private Account getUserAccountObject(String encryptedAccountDto, boolean isForLoggedUser) throws Exception {
+        String decryptedAccountDto = this.cryptoService.decryptData(encryptedAccountDto);
+        decryptedAccountDto = decryptedAccountDto.replace("\\", "\"");
+        AccountDto accountDto = objectMapper.readValue(decryptedAccountDto, AccountDto.class);
+        Account account = this.accountMapper.convertToAccount(accountDto);
+        account.setUser(this.savedUserAccount);
+        this.validationService.validateAccountObject(account);
+        if (isForLoggedUser == false) {
+            account.setBalance(this.transactionService.getInitialAmount(account));
+        }
+        return account;
+    }
+
     private User getUser(String encryptedUserDto) {
         try {
             String decryptedUserDto = this.cryptoService.decryptData(encryptedUserDto);
@@ -195,17 +226,6 @@ public class UserService {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private Account getUserAccountObject(String encryptedAccountDto) throws Exception {
-        String decryptedAccountDto = this.cryptoService.decryptData(encryptedAccountDto);
-        decryptedAccountDto = decryptedAccountDto.replace("\\", "\"");
-        AccountDto accountDto = objectMapper.readValue(decryptedAccountDto, AccountDto.class);
-        Account account = this.accountMapper.convertToAccount(accountDto);
-        account.setUser(this.savedUserAccount);
-        this.validationService.validateAccountObject(account);
-        account.setBalance(this.transactionService.getInitialAmount(account));
-        return account;
     }
 
     private ResponseEntity<?> newTokensPair(String refreshToken, HttpServletResponse httpServletResponse) {
