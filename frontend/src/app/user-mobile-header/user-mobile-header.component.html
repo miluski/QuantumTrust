@@ -20,7 +20,7 @@
           class="min-w-12 w-12 h-12 self-center"
           ownClass="rounded-full pointer-events-none w-full h-full"
           alt="user-avatar"
-          [src]="user.avatarUrl"
+          [src]="avatarUrl"
           (error)="avatarService.avatarError = true"
         />
         } @else {
@@ -32,7 +32,7 @@
         </div>
         }
         <p class="font-roboto font-light text-xl text-white text-nowrap">
-          {{ user.firstName }} {{ user.lastName }}
+          {{ userFullName }}
         </p>
       </div>
       <p

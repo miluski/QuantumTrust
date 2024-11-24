@@ -1,87 +1,101 @@
+import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
 import { MatDrawer } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
-import { UserAccount } from '../../types/user-account';
+import { ImageModule } from '../image/image.module';
 import { UserMobileHeaderComponent } from './user-mobile-header.component';
-import { UserMobileHeaderModule } from './user-mobile-header.module';
 
 describe('UserMobileHeaderComponent', () => {
   let component: UserMobileHeaderComponent;
   let fixture: ComponentFixture<UserMobileHeaderComponent>;
-  let mockRouter: any;
-  let mockUserService: any;
-  let mockAppInformationStatesService: any;
-  let mockAvatarService: any;
+  let mockRouter = { url: '/main-page' };
+  let mockAppInformationStatesService = {
+    currentTabName: of('Finanse'),
+    changeTabName: jasmine.createSpy('changeTabName'),
+    toggleDrawer: jasmine.createSpy('toggleDrawer'),
+    observeBreakpoints: jasmine.createSpy('observeBreakpoints'),
+    changeDrawer: jasmine.createSpy('changeDrawer'),
+  };
+  let mockUserService = {};
+  let mockAvatarService = {
+    avatarError: false,
+    getInitials: jasmine.createSpy('getInitials'),
+  };
+  let mockChangeDetectorRef = {
+    detectChanges: jasmine.createSpy('detectChanges'),
+  };
+
   beforeEach(async () => {
-    mockRouter = {
-      url: '/main-page',
-      events: of({}),
-      navigate: jasmine.createSpy('navigate'),
-    };
-    mockUserService = {
-      userAccount: new UserAccount(),
-    };
-    mockAppInformationStatesService = {
-      currentTabName: of('Konta'),
-      observeBreakpoints: jasmine.createSpy('observeBreakpoints'),
-      changeDrawer: jasmine.createSpy('changeDrawer'),
-      changeTabName: jasmine.createSpy('changeTabName'),
-      toggleDrawer: jasmine.createSpy('toggleDrawer'),
-    };
-    mockAvatarService = {};
     await TestBed.configureTestingModule({
-      imports: [UserMobileHeaderModule, BrowserAnimationsModule],
+      imports: [ImageModule, MatIconModule, MatDrawer, BrowserAnimationsModule],
+      declarations: [UserMobileHeaderComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: UserService, useValue: mockUserService },
         {
           provide: AppInformationStatesService,
           useValue: mockAppInformationStatesService,
         },
+        { provide: UserService, useValue: mockUserService },
         { provide: AvatarService, useValue: mockAvatarService },
-        { provide: ActivatedRoute, useValue: {} },
+        { provide: ChangeDetectorRef, useValue: mockChangeDetectorRef },
       ],
     }).compileComponents();
+
+    fixture = TestBed.createComponent(UserMobileHeaderComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
+
   beforeEach(() => {
     fixture = TestBed.createComponent(UserMobileHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('should initialize currentRoute and user in constructor', () => {
+
+  it('should initialize tabName and currentRoute in constructor', () => {
+    expect(component.tabName).toBe('Finanse');
     expect(component.currentRoute).toBe('/main-page');
-    expect(component.user).toBe(mockUserService.userAccount);
   });
+
   it('should subscribe to currentTabName on ngOnInit', () => {
     component.ngOnInit();
-    expect(component.tabName).toBe('Konta');
+    expect(component.tabName).toBe('Finanse');
     expect(
       mockAppInformationStatesService.observeBreakpoints
     ).toHaveBeenCalled();
   });
-  it('should set drawer reference on ngAfterViewInit', () => {
+
+  it('should call changeDrawer on ngAfterViewInit', () => {
     component.drawer = {} as MatDrawer;
     component.ngAfterViewInit();
     expect(mockAppInformationStatesService.changeDrawer).toHaveBeenCalledWith(
       component.drawer
     );
   });
-  it('should change tab name', () => {
-    const newTabName = 'New Tab';
-    component.changeTabName(newTabName);
+
+  it('should return avatar URL from userService', () => {
+    const avatarSrc = component.avatarUrl;
+    expect(avatarSrc).toBe('');
+  });
+
+  it('should only call changeTabName when tabName is not "Konta"', () => {
+    component.changeTabName('Other Tab');
     expect(mockAppInformationStatesService.changeTabName).toHaveBeenCalledWith(
-      newTabName
+      'Other Tab'
     );
   });
-  it('should toggle drawer', () => {
+
+  it('should call toggleDrawer on toggleDrawer', () => {
     component.toggleDrawer();
     expect(mockAppInformationStatesService.toggleDrawer).toHaveBeenCalled();
   });

@@ -3,67 +3,121 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 import { ConvertService } from '../../services/convert.service';
 import { FiltersService } from '../../services/filters.service';
 import { ItemSelectionService } from '../../services/item-selection.service';
+import { UserService } from '../../services/user.service';
 import { Account } from '../../types/account';
 import { Transaction } from '../../types/transaction';
 
 /**
- * Component for displaying and managing single account transactions.
+ * @component SingleAccountTransactionsComponent
+ * @description This component is responsible for displaying and managing transactions for a single account.
  *
- * @component
  * @selector app-single-account-transactions
  * @templateUrl ./single-account-transactions.component.html
  *
  * @class SingleAccountTransactionsComponent
  * @implements OnInit
  *
- * @property {Transaction[][]} dailyTransactions - Grouped daily transactions.
- * @property {Account} account - The account associated with the transactions.
- * @property {Transaction[]} accountTransactions - List of transactions for the account.
- * @property {number} totalIncomingBalance - Total incoming balance.
- * @property {number} totalOutgoingBalance - Total outgoing balance.
+ * @property {Account} account - The account object containing account details.
+ * @property {number} totalIncomingBalance - The total incoming balance for the account.
+ * @property {number} totalOutgoingBalance - The total outgoing balance for the account.
+ * @property {Transaction[]} accountTransactions - Array of transactions related to the account.
+ * @property {Transaction[][]} dailyTransactions - Array of daily grouped transactions.
  *
  * @constructor
- * @param {ItemSelectionService} itemSelectionService - Service for item selection.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {ItemSelectionService} itemSelectionService - Service to manage item selection.
+ * @param {UserService} userService - Service to manage user data.
  * @param {ChangeDetectorRef} changeDetectorRef - Service to detect changes.
- * @param {AppInformationStatesService} appInformationStatesService - Service for app state management.
- * @param {FiltersService} filtersService - Service for filtering transactions.
- * @param {ConvertService} convertService - Service for currency conversion.
+ * @param {FiltersService} filtersService - Service to manage filters.
+ * @param {ConvertService} convertService - Service to handle data conversion.
  *
- * @method ngOnInit - Initializes the component and loads account transactions.
- * @method initializeAccountTransactions - Loads and processes account transactions.
- * @method calculateBalances - Calculates the total incoming and outgoing balances.
- * @method calculateTotalIncomingBalance - Calculates the total incoming balance for a given transaction.
- * @method calculateTotalOutgoingBalance - Calculates the total outgoing balance for a given transaction.
- * @method convertCurrency - Converts a given amount from one currency to another.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Resets selected filters and initializes account transactions.
+ * @method initializeAccountTransactions - Initializes account transactions by subscribing to the currentAccount observable.
+ * @method convertCurrency - Converts the amount from one currency to another.
+ * @param {number} amount - The amount to be converted.
+ * @param {string} fromCurrency - The currency to convert from.
+ * @param {string} toCurrency - The currency to convert to.
+ * @returns {number} - Returns the converted amount.
+ * @method calculateBalances - Calculates the total incoming and outgoing balances for the account.
+ * @method setUserTransactions - Sets the user transactions by subscribing to the userTransactions observable.
+ * @method setTransactionsDetails - Sets the details of the transactions, including grouping and sorting.
+ * @method calculateTotalIncomingBalance - Calculates the total incoming balance for a transaction.
+ * @param {Transaction} transaction - The transaction object.
+ * @method calculateTotalOutgoingBalance - Calculates the total outgoing balance for a transaction.
+ * @param {Transaction} transaction - The transaction object.
  */
 @Component({
   selector: 'app-single-account-transactions',
   templateUrl: './single-account-transactions.component.html',
 })
 export class SingleAccountTransactionsComponent implements OnInit {
+  public account: Account;
+  public totalIncomingBalance: number;
+  public totalOutgoingBalance: number;
+  public accountTransactions: Transaction[];
   public dailyTransactions!: Transaction[][];
-  public account: Account = new Account();
-  public accountTransactions: Transaction[] = [];
-  public totalIncomingBalance: number = 0;
-  public totalOutgoingBalance: number = 0;
+
   constructor(
-    private itemSelectionService: ItemSelectionService,
-    private changeDetectorRef: ChangeDetectorRef,
     private appInformationStatesService: AppInformationStatesService,
+    private itemSelectionService: ItemSelectionService,
+    private userService: UserService,
+    private changeDetectorRef: ChangeDetectorRef,
     protected filtersService: FiltersService,
     public convertService: ConvertService
-  ) {}
-  ngOnInit(): void {
+  ) {
+    this.account = new Account();
+    this.accountTransactions = [];
+    this.totalIncomingBalance = 0;
+    this.totalOutgoingBalance = 0;
+  }
+
+  public ngOnInit(): void {
     this.filtersService.resetSelectedFilters();
     this.initializeAccountTransactions();
     this.changeDetectorRef.detectChanges();
   }
-  async initializeAccountTransactions(): Promise<void> {
-    this.itemSelectionService.currentAccount.subscribe(
+
+  public initializeAccountTransactions(): void {
+    this.itemSelectionService?.currentAccount?.subscribe(
       (account: Account) => (this.account = account)
     );
-    this.accountTransactions =
-      await this.itemSelectionService.getUserTransactions('account');
+    this.setUserTransactions();
+  }
+
+  public convertCurrency(
+    amount: number,
+    fromCurrency: string,
+    toCurrency: string
+  ): number {
+    const conversionRate = this.convertService.getConversionRate(
+      fromCurrency,
+      toCurrency
+    );
+    return parseFloat((amount * conversionRate).toFixed(2));
+  }
+
+  public setUserTransactions(): void {
+      this.userService?.userTransactions?.subscribe(
+        (newUserTransactions: Transaction[]) => {
+          if (newUserTransactions.length >= 1) {
+            this.accountTransactions = newUserTransactions.filter(
+              (transaction: Transaction) =>
+                this.itemSelectionService.isAccountIdAssignedToCardEqualToItemId(
+                  'account',
+                  transaction
+                ) ||
+                this.itemSelectionService.isTransactionAccountIdEqualToItemId(
+                  'account',
+                  transaction
+                )
+            );
+            this.setTransactionsDetails();
+          }
+        }
+      );
+  }
+
+  public setTransactionsDetails(): void {
     this.dailyTransactions = this.convertService.getGroupedUserTransactions(
       this.accountTransactions
     );
@@ -76,24 +130,15 @@ export class SingleAccountTransactionsComponent implements OnInit {
     );
     this.calculateBalances();
   }
+
   public calculateBalances(): void {
     this.accountTransactions.forEach((transaction: Transaction) => {
       this.calculateTotalIncomingBalance(transaction);
       this.calculateTotalOutgoingBalance(transaction);
     });
   }
-  public convertCurrency(
-    amount: number,
-    fromCurrency: string,
-    toCurrency: string
-  ): number {
-    const conversionRate = this.convertService.getConversionRate(
-      fromCurrency,
-      toCurrency
-    );
-    return parseFloat((amount * conversionRate).toFixed(2));
-  }
-  private calculateTotalIncomingBalance(transaction: Transaction): void {
+
+  public calculateTotalIncomingBalance(transaction: Transaction): void {
     this.totalIncomingBalance +=
       transaction.type === 'incoming' && transaction.status === 'settled'
         ? this.convertCurrency(
@@ -103,7 +148,8 @@ export class SingleAccountTransactionsComponent implements OnInit {
           )
         : 0;
   }
-  private calculateTotalOutgoingBalance(transaction: Transaction): void {
+
+  public calculateTotalOutgoingBalance(transaction: Transaction): void {
     this.totalOutgoingBalance +=
       transaction.type === 'outgoing' && transaction.status === 'settled'
         ? this.convertCurrency(

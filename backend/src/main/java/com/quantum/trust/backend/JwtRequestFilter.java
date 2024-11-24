@@ -82,9 +82,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private String getAuthHeader(HttpServletRequest request) {
-        boolean isRequestLogout = request.getRequestURI().contains("/api/auth/logout");
+        boolean isRequestCanBeVerifiedWithAnyToken = request.getRequestURI().contains("/api/auth/logout")
+                || request.getRequestURI().contains("/api/check");
         return "Bearer "
-                + this.cookieService.getCookieValue(request, isRequestLogout ? "REFRESH_TOKEN" : "ACCESS_TOKEN");
+                + this.cookieService.getCookieValue(request,
+                        isRequestCanBeVerifiedWithAnyToken ? "REFRESH_TOKEN" : "ACCESS_TOKEN");
     }
 
     private void setToken() {

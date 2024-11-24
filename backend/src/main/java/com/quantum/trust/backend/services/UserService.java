@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quantum.trust.backend.mappers.AccountMapper;
 import com.quantum.trust.backend.mappers.UserMapper;
 import com.quantum.trust.backend.model.dto.AccountDto;
+import com.quantum.trust.backend.model.dto.EncryptedDto;
 import com.quantum.trust.backend.model.dto.TransactionDto;
 import com.quantum.trust.backend.model.dto.UserDto;
 import com.quantum.trust.backend.model.entities.Account;
@@ -28,7 +29,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class UserService {
-    private User savedAccount;
+    private User savedUserAccount;
+    private Account savedUserBankAccount;
 
     private final UserMapper userMapper;
     private final AccountMapper accountMapper;
@@ -67,22 +69,9 @@ public class UserService {
     }
 
     public ResponseEntity<?> registerNewAccount(String encryptedUserDto, String encryptedAccountDto) {
-        try {
-            ResponseEntity<?> accountResponse = this.createUserAccount(encryptedUserDto);
-            boolean isAccountProperlySaved = accountResponse.getStatusCode().equals(HttpStatus.OK);
-            if (isAccountProperlySaved) {
-                Account account = this.getUserAccountObject(encryptedAccountDto);
-                TransactionDto transactionDto = this.transactionService.createStartTransactionDto(account);
-                this.accountRepository.save(account);
-                this.transactionService.saveNewTransaction(transactionDto);
-                return ResponseEntity.status(HttpStatus.OK).build();
-            } else {
-                return accountResponse;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        ResponseEntity<?> accountResponse = this.createUserAccount(encryptedUserDto);
+        boolean isAccountProperlySaved = accountResponse.getStatusCode().equals(HttpStatus.OK);
+        return isAccountProperlySaved ? this.saveNewBankAccount(encryptedAccountDto) : accountResponse;
     }
 
     public ResponseEntity<?> createUserAccount(String encryptedUserDto) {
@@ -91,24 +80,49 @@ public class UserService {
             user.setPassword(this.cryptoService.decryptData(user.getPassword()));
             this.validationService.validateUserObject(user);
             user.setPassword(this.cryptoService.getEncryptedPassword(user.getPassword()));
-            this.savedAccount = this.userRepository.save(user);
+            this.savedUserAccount = this.userRepository.save(user);
             this.emailService.sendIdentificator(user);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
+            this.deleteUserAccount();
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    private Account getUserAccountObject(String encryptedAccountDto) throws Exception {
-        String decryptedAccountDto = this.cryptoService.decryptData(encryptedAccountDto);
-        decryptedAccountDto = decryptedAccountDto.replace("\\", "\"");
-        AccountDto accountDto = objectMapper.readValue(decryptedAccountDto, AccountDto.class);
-        Account account = this.accountMapper.convertToAccount(accountDto);
-        account.setUser(this.savedAccount);
-        this.validationService.validateAccountObject(account);
-        account.setBalance(this.transactionService.getInitialAmount(account));
-        return account;
+    public ResponseEntity<?> saveNewBankAccount(String encryptedAccountDto) {
+        try {
+            Account account = this.getUserAccountObject(encryptedAccountDto);
+            this.savedUserBankAccount = this.accountRepository.save(account);
+            TransactionDto transactionDto = this.transactionService.createStartTransactionDto(account);
+            this.transactionService.saveNewTransaction(transactionDto);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            this.deleteUserAccount();
+            this.deleteUserBankAccount();
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<?> getUserAccountObject(HttpServletRequest httpServletRequest) {
+        try {
+            String accessToken = this.cookieService.getCookieValue(httpServletRequest, "ACCESS_TOKEN");
+            String identificatorFromToken = this.tokenService.getIdentificatorFromToken(accessToken);
+            Optional<User> retrievedUser = this.userRepository.findById(Long.valueOf(identificatorFromToken));
+            if (retrievedUser.isPresent()) {
+                UserDto userDto = this.userMapper.convertToUserDto(retrievedUser.get());
+                String encryptedUserObject = this.cryptoService.encryptData(userDto);
+                EncryptedDto encryptedDto = new EncryptedDto();
+                encryptedDto.setEncryptedData(encryptedUserObject);
+                return ResponseEntity.status(HttpStatus.OK).body(encryptedDto);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     public ResponseEntity<?> login(String encryptedUserDto, HttpServletResponse httpServletResponse) {
@@ -128,16 +142,17 @@ public class UserService {
         }
     }
 
-    private User getUser(String encryptedUserDto) {
-        try {
-            String decryptedUserDto = this.cryptoService.decryptData(encryptedUserDto);
-            decryptedUserDto = decryptedUserDto.replace("\\", "\"");
-            UserDto userDto = objectMapper.readValue(decryptedUserDto, UserDto.class);
-            return this.userMapper.convertToUser(userDto);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public ResponseEntity<?> removeTokens(HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        String refreshToken = this.cookieService.getCookieValue(httpServletRequest, "REFRESH_TOKEN");
+        String identificatorFromToken = this.tokenService.getIdentificatorFromToken(refreshToken);
+        String accessToken = this.tokenService.generateToken(identificatorFromToken, "access");
+        String newRefreshToken = this.tokenService.generateToken(identificatorFromToken, "refresh");
+        Cookie accessTokenCookie = this.cookieService.generateCookie("ACCESS_TOKEN", accessToken, true, 0);
+        Cookie refreshTokenCookie = this.cookieService.generateCookie("REFRESH_TOKEN", newRefreshToken, true, 0);
+        httpServletResponse.addCookie(accessTokenCookie);
+        httpServletResponse.addCookie(refreshTokenCookie);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public boolean isEmailExists(String encryptedEmail) {
@@ -170,14 +185,27 @@ public class UserService {
                 : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    private boolean getIsIdentifierFromTokenExists(String identificatorFromToken) {
+    private User getUser(String encryptedUserDto) {
         try {
-            Optional<User> userFromToken = this.userRepository.findById(Long.valueOf(identificatorFromToken));
-            return userFromToken.isPresent();
+            String decryptedUserDto = this.cryptoService.decryptData(encryptedUserDto);
+            decryptedUserDto = decryptedUserDto.replace("\\", "\"");
+            UserDto userDto = objectMapper.readValue(decryptedUserDto, UserDto.class);
+            return this.userMapper.convertToUser(userDto);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
+    }
+
+    private Account getUserAccountObject(String encryptedAccountDto) throws Exception {
+        String decryptedAccountDto = this.cryptoService.decryptData(encryptedAccountDto);
+        decryptedAccountDto = decryptedAccountDto.replace("\\", "\"");
+        AccountDto accountDto = objectMapper.readValue(decryptedAccountDto, AccountDto.class);
+        Account account = this.accountMapper.convertToAccount(accountDto);
+        account.setUser(this.savedUserAccount);
+        this.validationService.validateAccountObject(account);
+        account.setBalance(this.transactionService.getInitialAmount(account));
+        return account;
     }
 
     private ResponseEntity<?> newTokensPair(String refreshToken, HttpServletResponse httpServletResponse) {
@@ -192,6 +220,16 @@ public class UserService {
         }
     }
 
+    private boolean getIsIdentifierFromTokenExists(String identificatorFromToken) {
+        try {
+            Optional<User> userFromToken = this.userRepository.findById(Long.valueOf(identificatorFromToken));
+            return userFromToken.isPresent();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private void addTokensToResponse(HttpServletResponse httpServletResponse, String userId) {
         String accessToken = this.tokenService.generateToken(userId, "access");
         String refreshToken = this.tokenService.generateToken(userId, "refresh");
@@ -201,16 +239,19 @@ public class UserService {
         httpServletResponse.addCookie(refreshTokenCookie);
     }
 
-    public ResponseEntity<?> removeTokens(HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse) {
-        String refreshToken = this.cookieService.getCookieValue(httpServletRequest, "REFRESH_TOKEN");
-        String identificatorFromToken = this.tokenService.getIdentificatorFromToken(refreshToken);
-        String accessToken = this.tokenService.generateToken(identificatorFromToken, "access");
-        String newRefreshToken = this.tokenService.generateToken(identificatorFromToken, "refresh");
-        Cookie accessTokenCookie = this.cookieService.generateCookie("ACCESS_TOKEN", accessToken, true, 0);
-        Cookie refreshTokenCookie = this.cookieService.generateCookie("REFRESH_TOKEN", newRefreshToken, true, 0);
-        httpServletResponse.addCookie(accessTokenCookie);
-        httpServletResponse.addCookie(refreshTokenCookie);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    private void deleteUserAccount() {
+        try {
+            this.userRepository.delete(savedUserAccount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteUserBankAccount() {
+        try {
+            this.accountRepository.delete(savedUserBankAccount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

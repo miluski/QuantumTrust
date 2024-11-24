@@ -8,22 +8,24 @@ import { FiltersService } from '../../services/filters.service';
 import { Transaction } from '../../types/transaction';
 
 /**
- * MobileFiltersComponent is a standalone Angular component that provides
- * a set of filters for mobile views. It observes breakpoint changes to
- * determine if the filters should be opened or closed.
+ * @component MobileFiltersComponent
+ * @description This component is responsible for displaying and managing the mobile filters for transactions.
  *
- * @selector 'app-mobile-filters'
- * @templateUrl './mobile-filters.component.html'
+ * @selector app-mobile-filters
+ * @templateUrl ./mobile-filters.component.html
  *
- * @property {Transaction[][]} transactionsArray - An array of transaction arrays passed as input.
- * @property {boolean} isOpened - A flag indicating whether the mobile filters are opened.
+ * @class MobileFiltersComponent
+ * @implements OnInit
+ *
+ * @property {Transaction[][]} transactionsArray - An array of arrays of transactions.
+ * @property {boolean} isOpened - Flag indicating if the mobile filters are opened.
  *
  * @constructor
- * @param {BreakpointObserver} breakpointObserver - Service to observe media query breakpoints.
- * @param {FiltersService} filtersService - Service to manage filter states.
+ * @param {BreakpointObserver} breakpointObserver - Service to observe breakpoints.
+ * @param {FiltersService} filtersService - Service to manage filters.
  *
- * @method ngOnInit - Initializes the component and subscribes to filter state changes.
- * @method observeBreakpoints - Observes breakpoint changes and updates the filter state accordingly.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentIsMobileFiltersOpened observable and observes breakpoints.
+ * @method observeBreakpoints - Observes breakpoints to manage the state of mobile filters.
  */
 @Component({
   selector: 'app-mobile-filters',
@@ -31,12 +33,17 @@ import { Transaction } from '../../types/transaction';
 })
 export class MobileFiltersComponent implements OnInit {
   @Input() transactionsArray!: Transaction[][];
-  public isOpened: boolean = false;
+
+  public isOpened: boolean;
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     protected filtersService: FiltersService
-  ) {}
-  ngOnInit(): void {
+  ) {
+    this.isOpened = false;
+  }
+
+  public ngOnInit(): void {
     this.filtersService.currentIsMobileFiltersOpened.subscribe(
       (isOpened: boolean) => {
         this.isOpened = isOpened;
@@ -44,7 +51,8 @@ export class MobileFiltersComponent implements OnInit {
     );
     this.observeBreakpoints();
   }
-  observeBreakpoints(): void {
+
+  public observeBreakpoints(): void {
     this.breakpointObserver
       .observe([Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
       .subscribe((result: BreakpointState) => {

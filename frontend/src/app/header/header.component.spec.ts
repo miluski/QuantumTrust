@@ -11,6 +11,7 @@ describe('HeaderComponent', () => {
   let fixture: ComponentFixture<HeaderComponent>;
   let mockRouter: any;
   let mockAppInformationStatesService: any;
+
   beforeEach(async () => {
     mockRouter = {
       url: '/test-route',
@@ -24,6 +25,7 @@ describe('HeaderComponent', () => {
       observeBreakpoints: jasmine.createSpy('observeBreakpoints'),
       changeDrawer: jasmine.createSpy('changeDrawer'),
     };
+
     await TestBed.configureTestingModule({
       imports: [HeaderModule, BrowserAnimationsModule],
       providers: [
@@ -38,28 +40,32 @@ describe('HeaderComponent', () => {
         },
       ],
     }).compileComponents();
-  });
-  beforeEach(() => {
+
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize tabName on ngOnInit', () => {
     component.ngOnInit();
     expect(component.tabName).toBe('Test Tab');
   });
+
   it('should call changeTabName on AppInformationStatesService when changeTabName is called', () => {
     component.changeTabName('new-tab');
     expect(mockAppInformationStatesService.changeTabName).toHaveBeenCalledWith(
       'new-tab'
     );
   });
+
   it('should return true for isGuestPart if currentRoute is not /main-page', () => {
     expect(component.isGuestPart()).toBeTrue();
   });
+
   it('should return false for isGuestPart if currentRoute is /main-page', () => {
     mockRouter.url = '/main-page';
     component = new HeaderComponent(

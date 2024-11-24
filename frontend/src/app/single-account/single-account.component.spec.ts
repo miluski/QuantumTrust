@@ -12,6 +12,7 @@ import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 import { singleAccountStepsArray } from '../../utils/steps-objects-arrays';
 import { SingleAccountComponent } from './single-account.component';
 import { SingleAccountModule } from './single-account.module';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('SingleAccountComponent', () => {
   let component: SingleAccountComponent;
@@ -19,6 +20,7 @@ describe('SingleAccountComponent', () => {
   let productTypesService: jasmine.SpyObj<ProductTypesService>;
   let paginationService: jasmine.SpyObj<PaginationService>;
   let convertService: jasmine.SpyObj<ConvertService>;
+
   beforeEach(async () => {
     const productTypesServiceSpy = jasmine.createSpyObj('ProductTypesService', [
       'currentAccountType',
@@ -51,6 +53,7 @@ describe('SingleAccountComponent', () => {
       'SingleAccountTransactions'
     );
     appInformationStatesServiceSpy.currentTransactionsArrayLength = of(25);
+
     await TestBed.configureTestingModule({
       imports: [SingleAccountModule, BrowserAnimationsModule],
       providers: [
@@ -62,8 +65,10 @@ describe('SingleAccountComponent', () => {
           useValue: appInformationStatesServiceSpy,
         },
         { provide: ActivatedRoute, useValue: {} },
+        provideHttpClient()
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(SingleAccountComponent);
     component = fixture.componentInstance;
     productTypesService = TestBed.inject(
@@ -79,24 +84,29 @@ describe('SingleAccountComponent', () => {
     productTypesService.currentAccountType = of('personal');
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize with default values', () => {
     expect(component.accountType).toBe('personal');
     expect(component.steps).toEqual(singleAccountStepsArray);
   });
+
   it('should set account object on init', () => {
     const expectedAccount = accountsObjectsArray.find(
       (account) => account.type === 'personal'
     ) as Account;
     expect(component.accountObject).toEqual(expectedAccount);
   });
+
   it('should call setAccountsArray on init', () => {
     spyOn(component as any, 'setAccountsArray');
     component.ngOnInit();
     expect((component as any).setAccountsArray).toHaveBeenCalled();
   });
+
   it('should update account type and call setAccountsArray when changeAccountType is called', () => {
     spyOn(component as any, 'setAccountsArray');
     component.changeAccountType('business');
@@ -105,15 +115,18 @@ describe('SingleAccountComponent', () => {
     );
     expect((component as any).setAccountsArray).toHaveBeenCalled();
   });
+
   it('should call paginationService.onResize on window resize', () => {
     const event = new UIEvent('resize');
     component.onResize(event);
     expect(paginationService.onResize).toHaveBeenCalledWith(event);
   });
+
   it('should return step id in trackById', () => {
     const step: Step = { id: 1, instruction: '', description: '' };
     expect(component.trackById(step)).toBe(1);
   });
+
   it('should set account object and update paginated array in setAccountsArray', () => {
     const expectedAccount = accountsObjectsArray.find(
       (account) => account.type === 'personal'
@@ -129,6 +142,7 @@ describe('SingleAccountComponent', () => {
       window.innerWidth
     );
   });
+
   it('should get account object based on account type', () => {
     const expectedAccount = accountsObjectsArray.find(
       (account) => account.type === 'personal'

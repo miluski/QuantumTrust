@@ -9,11 +9,13 @@ import { FooterModule } from '../footer/footer.module';
 import { HeaderModule } from '../header/header.module';
 import { NotFoundComponent } from './not-found.component';
 import { NotFoundModule } from './not-found.module';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('NotFoundComponent', () => {
   let component: NotFoundComponent;
   let fixture: ComponentFixture<NotFoundComponent>;
   let appInformationStatesService: AppInformationStatesService;
+
   beforeEach(async () => {
     const mockRouter = {
       url: '/test-route',
@@ -41,6 +43,7 @@ describe('NotFoundComponent', () => {
     mockAppInformationStatesService.currentTabName = of(
       'SingleAccountTransactions'
     );
+
     await TestBed.configureTestingModule({
       imports: [
         HeaderModule,
@@ -66,19 +69,24 @@ describe('NotFoundComponent', () => {
           provide: ActivatedRoute,
           useValue: {},
         },
+        provideHttpClient()
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(NotFoundComponent);
     component = fixture.componentInstance;
     appInformationStatesService = TestBed.inject(AppInformationStatesService);
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize isDrawerOpened to false', () => {
     expect(component.isDrawerOpened).toBeFalse();
   });
+
   it('should subscribe to currentIsDrawerOpened and update isDrawerOpened', () => {
     const newDrawerState = true;
     (appInformationStatesService.currentIsDrawerOpened as any) =

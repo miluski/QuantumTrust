@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TokenBucketService {
-    private final int capacity = 25;
-    private final int refillTokens = 1;
-    private final long refillIntervalMillis = 2000;
-
     private AtomicInteger tokens;
     private Instant lastRefillTime;
+
+    private final int capacity = 1000;
+    private final int refillTokens = 1;
+    private final long refillIntervalMillis = 2000;
 
     public TokenBucketService() {
         this.tokens = new AtomicInteger(this.capacity);

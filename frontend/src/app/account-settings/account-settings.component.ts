@@ -8,11 +8,9 @@ import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 
 /**
- * @fileoverview AccountSettingsComponent is responsible for managing user account settings.
- * It includes functionalities for validating and updating user information such as name, surname, email, phone number, address, and password.
- * It also handles avatar selection and validation.
+ * @component AccountSettingsComponent
+ * @description This component is responsible for managing user account settings, including avatar, personal information, and password.
  *
- * @component
  * @selector app-account-settings
  * @templateUrl ./account-settings.component.html
  * @animations [AnimationsProvider.animations]
@@ -20,33 +18,39 @@ import { UserAccountFlags } from '../../types/user-account-flags';
  * @class AccountSettingsComponent
  * @implements OnInit
  *
- * @property {boolean} isNotDataChanged - Indicates if the data has not been changed.
- * @property {UserAccount} userObject - Stores the user account information.
- * @property {string} actualPassword - Stores the actual password.
- * @property {string} avatarUrl - Stores the URL of the avatar.
- * @property {string} avatarError - Stores the error message related to avatar validation.
- * @property {ShakeStateService} shakeStateService - Service to manage shake state.
- * @property {UserAccountFlags} userAccountFlags - Flags to indicate the validity of user account fields.
+ * @property {string} avatarUrl - The URL of the user's avatar.
+ * @property {string} avatarError - Error message related to avatar upload.
+ * @property {string} actualPassword - The current password of the user.
+ * @property {UserAccount} userObject - The user account object containing user details.
+ * @property {boolean} isNotDataChanged - Flag indicating if the data has not been changed.
+ * @property {UserAccountFlags} userAccountFlags - Flags indicating the validation status of user account fields.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
  *
  * @constructor
- * @param {VerificationService} verificationService - Service for verification operations.
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
  * @param {UserService} userService - Service to manage user data.
- * @param {AvatarService} avatarService - Service to manage avatar operations.
+ * @param {AvatarService} avatarService - Service to manage user avatar.
  *
- * @method ngOnInit - Initializes the component and subscribes to avatar URL changes.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentTemporaryAvatarUrl observable.
  * @method onFileSelected - Handles the file selection event for avatar upload.
- * @method handleSaveButtonClick - Handles the save button click event and validates the data.
+ * @param {Event} event - The file selection event.
+ * @method handleSaveButtonClick - Handles the save button click event.
  * @method validateName - Validates the user's first name.
- * @method validateSurname - Validates the user's surname.
- * @method validateEmail - Validates the user's email.
+ * @method validateSurname - Validates the user's last name.
+ * @method validateEmail - Validates the user's email address.
  * @method validatePhoneNumber - Validates the user's phone number.
  * @method validateAddress - Validates the user's address.
- * @method validatePassword - Validates the user's password.
- * @method validateRepeatedPassword - Validates the repeated password.
- * @method isAvatarValid - Validates the selected avatar.
- * @method changeAvatarUrl - Changes the avatar URL.
+ * @method validatePassword - Validates the user's current password.
+ * @method validateNewPassword - Validates the user's new password.
+ * @method changeAvatarUrl - Changes the user's avatar URL.
+ * @param {Blob} avatar - The new avatar file.
  * @method isSomeDataNotEqualWithOriginal - Checks if some data is not equal to the original data.
- * @method validationFlags - Returns an array of validation flags.
+ * @returns {boolean} - Returns true if some data is not equal to the original data, otherwise false.
+ * @method validationFlags - Gets the validation flags for the user account fields.
+ * @returns {boolean[]} - Returns an array of validation flags.
+ * @method isAvatarValid - Checks if the avatar is valid.
+ * @param {Blob} avatar - The avatar file to be checked.
+ * @returns {boolean} - Returns true if the avatar is valid, otherwise false.
  */
 @Component({
   selector: 'app-account-settings',
@@ -54,26 +58,34 @@ import { UserAccountFlags } from '../../types/user-account-flags';
   animations: [AnimationsProvider.animations],
 })
 export class AccountSettingsComponent implements OnInit {
-  public isNotDataChanged!: boolean;
+  public avatarUrl: string;
+  public avatarError: string;
+  public actualPassword: string;
   public userObject: UserAccount;
-  public actualPassword: string = '';
-  public avatarUrl: string = '';
-  public avatarError: string = '';
-  public shakeStateService: ShakeStateService = new ShakeStateService();
-  public userAccountFlags: UserAccountFlags = new UserAccountFlags();
+  public isNotDataChanged!: boolean;
+  public userAccountFlags: UserAccountFlags;
+  public shakeStateService: ShakeStateService;
+
   constructor(
     private verificationService: VerificationService,
     private userService: UserService,
     protected avatarService: AvatarService
   ) {
     this.userObject = { ...userService.userAccount };
+    this.avatarUrl = '';
+    this.avatarError = '';
+    this.actualPassword = '';
+    this.userAccountFlags = new UserAccountFlags();
+    this.shakeStateService = new ShakeStateService();
   }
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     this.avatarService.currentTemporaryAvatarUrl.subscribe(
       (avatarUrl: string) => (this.avatarUrl = avatarUrl)
     );
   }
-  onFileSelected(event: Event): void {
+
+  public onFileSelected(event: Event): void {
     const input: HTMLInputElement = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const avatar: Blob = input.files[0];
@@ -81,7 +93,8 @@ export class AccountSettingsComponent implements OnInit {
       this.userAccountFlags.isAvatarValid ? this.changeAvatarUrl(avatar) : null;
     }
   }
-  handleSaveButtonClick(): void {
+
+  public handleSaveButtonClick(): void {
     const isSomeDataInvalid: boolean = this.validationFlags.some(
       (flag: boolean) => flag === false
     );
@@ -90,19 +103,22 @@ export class AccountSettingsComponent implements OnInit {
       isSomeDataInvalid || this.isNotDataChanged ? 'shake' : 'none'
     );
   }
-  validateName(): void {
+
+  public validateName(): void {
     if (this.userObject.firstName !== this.userService.userAccount.firstName) {
       this.userAccountFlags.isNameValid =
         this.verificationService.validateFirstName(this.userObject.firstName);
     }
   }
-  validateSurname(): void {
+
+  public validateSurname(): void {
     if (this.userObject.lastName !== this.userService.userAccount.lastName) {
       this.userAccountFlags.isSurnameValid =
         this.verificationService.validateLastName(this.userObject.lastName);
     }
   }
-  validateEmail(): void {
+
+  public validateEmail(): void {
     if (
       this.userObject.emailAddress !== this.userService.userAccount.emailAddress
     ) {
@@ -110,7 +126,8 @@ export class AccountSettingsComponent implements OnInit {
         this.verificationService.validateEmail(this.userObject.emailAddress);
     }
   }
-  validatePhoneNumber(): void {
+
+  public validatePhoneNumber(): void {
     if (
       this.userObject.phoneNumber !== this.userService.userAccount.phoneNumber
     ) {
@@ -120,20 +137,23 @@ export class AccountSettingsComponent implements OnInit {
         );
     }
   }
-  validateAddress(): void {
+
+  public validateAddress(): void {
     if (this.userObject.address !== this.userService.userAccount.address) {
       this.userAccountFlags.isAddressValid =
         this.verificationService.validateAddress(this.userObject.address);
     }
   }
-  validatePassword(): void {
+
+  public validatePassword(): void {
     if (this.actualPassword !== '') {
       this.userAccountFlags.isPasswordValid =
         this.verificationService.validatePassword(this.actualPassword) &&
         this.userObject.password === this.actualPassword;
     }
   }
-  validateNewPassword(): void {
+
+  public validateNewPassword(): void {
     if (this.actualPassword !== '') {
       this.userAccountFlags.isRepeatedPasswordValid =
         this.verificationService.validatePassword(
@@ -141,6 +161,7 @@ export class AccountSettingsComponent implements OnInit {
         );
     }
   }
+
   public changeAvatarUrl(avatar: Blob): void {
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
@@ -151,19 +172,7 @@ export class AccountSettingsComponent implements OnInit {
     };
     reader.readAsDataURL(avatar);
   }
-  private isAvatarValid(avatar: Blob): boolean {
-    const isTypeValid: boolean =
-      this.verificationService.validateSelectedAvatarType(avatar);
-    const isSizeValid: boolean =
-      this.verificationService.validateSelectedAvatarSize(avatar);
-    this.avatarError =
-      isTypeValid === false
-        ? 'Wybrany typ pliku jest nieprawidłowy.'
-        : isSizeValid === false
-        ? 'Rozmiar pliku jest za duży.'
-        : '';
-    return isTypeValid && isSizeValid;
-  }
+
   public get isSomeDataNotEqualWithOriginal(): boolean {
     return (
       this.userObject.firstName !== this.userService.userAccount.firstName ||
@@ -177,6 +186,7 @@ export class AccountSettingsComponent implements OnInit {
       this.userAccountFlags.isAvatarValid === true
     );
   }
+
   public get validationFlags(): boolean[] {
     return [
       this.userAccountFlags.isEmailValid,
@@ -188,5 +198,19 @@ export class AccountSettingsComponent implements OnInit {
       this.userAccountFlags.isPasswordValid,
       this.userAccountFlags.isAvatarValid,
     ];
+  }
+
+  private isAvatarValid(avatar: Blob): boolean {
+    const isTypeValid: boolean =
+      this.verificationService.validateSelectedAvatarType(avatar);
+    const isSizeValid: boolean =
+      this.verificationService.validateSelectedAvatarSize(avatar);
+    this.avatarError =
+      isTypeValid === false
+        ? 'Wybrany typ pliku jest nieprawidłowy.'
+        : isSizeValid === false
+        ? 'Rozmiar pliku jest za duży.'
+        : '';
+    return isTypeValid && isSizeValid;
   }
 }

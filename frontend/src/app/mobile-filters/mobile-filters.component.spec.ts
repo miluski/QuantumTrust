@@ -15,6 +15,7 @@ describe('MobileFiltersComponent', () => {
   let fixture: ComponentFixture<MobileFiltersComponent>;
   let breakpointObserver: jasmine.SpyObj<BreakpointObserver>;
   let filtersService: jasmine.SpyObj<FiltersService>;
+
   beforeEach(async () => {
     breakpointObserver = jasmine.createSpyObj('BreakpointObserver', [
       'observe',
@@ -35,6 +36,7 @@ describe('MobileFiltersComponent', () => {
         actualSelectedFilters: ['Domyślnie'],
       }
     );
+
     await TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -49,28 +51,34 @@ describe('MobileFiltersComponent', () => {
         { provide: FiltersService, useValue: filtersService },
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(MobileFiltersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize with isOpened set to true', () => {
     fixture.detectChanges();
     expect(component.isOpened).toBeTrue();
   });
+
   it('should subscribe to filter state changes on init', () => {
     filtersService.currentIsMobileFiltersOpened = of(true);
     fixture.detectChanges();
     expect(component.isOpened).toBeTrue();
   });
+
   it('should observe breakpoints and update filter state accordingly', () => {
     const breakpointState: BreakpointState = { matches: true, breakpoints: {} };
     breakpointObserver.observe.and.returnValue(of(breakpointState));
     fixture.detectChanges();
     expect(filtersService.setIsMobileFiltersOpened).toHaveBeenCalledWith(false);
   });
+
   it('should not update filter state if breakpoints do not match', () => {
     const breakpointState: BreakpointState = {
       matches: false,

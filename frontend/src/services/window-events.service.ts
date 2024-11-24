@@ -1,34 +1,42 @@
 import { Injectable } from '@angular/core';
 
 /**
- * @fileoverview WindowEventsService manages window-related events such as pulsing and scrolling.
- * It provides functionalities to start a pulsing animation and to smoothly scroll to the top of the page.
- *
- * @service
- * @providedIn root
- *
  * @class WindowEventsService
- * @property {number} duration - The duration of the scroll animation in milliseconds.
- * @property {string} pulseState - The current state of the pulsing animation ('start' or 'end').
+ * @description This service is responsible for managing window events such as pulsing and scrolling to the top.
  *
- * @method startPulsing - Starts a pulsing animation that alternates the pulseState between 'start' and 'end' every second.
- * @method scrollToTop - Smoothly scrolls the window to the top over a duration.
- * @method easeInOutCubic - Easing function for smooth scrolling.
+ * @providedIn 'root'
+ *
+ * @property {number} duration - The duration for the scroll animation.
+ * @property {string} pulseState - The current state of the pulsing animation.
+ *
+ * @constructor
+ *
+ * @method startPulsing - Starts the pulsing animation by toggling the pulse state every second.
+ * @method scrollToTop - Scrolls the window to the top with a smooth animation.
+ * @method easeInOutCubic - Easing function for the scroll animation.
  * @param {number} t - The current time progress of the animation.
- * @returns {number} - The eased value.
+ * @returns {number} - Returns the eased value.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class WindowEventsService {
-  private duration: number = 2000;
-  public pulseState: string = 'start';
-  startPulsing(): void {
+  private duration: number;
+
+  public pulseState: string;
+
+  constructor() {
+    this.duration = 2000;
+    this.pulseState = 'start';
+  }
+
+  public startPulsing(): void {
     setInterval(() => {
       this.pulseState = this.pulseState === 'start' ? 'end' : 'start';
     }, 1000);
   }
-  scrollToTop(): void {
+
+  public scrollToTop(): void {
     if (window.scrollY === 0) {
       return;
     }
@@ -44,6 +52,7 @@ export class WindowEventsService {
     };
     window.requestAnimationFrame(scrollStep);
   }
+
   private easeInOutCubic(t: number): number {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }

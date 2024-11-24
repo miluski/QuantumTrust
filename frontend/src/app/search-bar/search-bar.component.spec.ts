@@ -12,6 +12,7 @@ describe('SearchBarComponent', () => {
   let fixture: ComponentFixture<SearchBarComponent>;
   let filtersService: FiltersService;
   let globalTransactionsFiltersService: GlobalTransactionsFiltersService;
+
   beforeEach(async () => {
     const filtersServiceSpy = jasmine.createSpyObj('FiltersService', [
       'setSearchPhrase',
@@ -21,6 +22,7 @@ describe('SearchBarComponent', () => {
       'GlobalTransactionsFiltersService',
       ['setAppliedFilter']
     );
+
     await TestBed.configureTestingModule({
       imports: [FormsModule, MatTooltipModule, SearchBarModule],
       providers: [
@@ -31,6 +33,7 @@ describe('SearchBarComponent', () => {
         },
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(SearchBarComponent);
     component = fixture.componentInstance;
     filtersService = TestBed.inject(FiltersService);
@@ -38,27 +41,32 @@ describe('SearchBarComponent', () => {
       GlobalTransactionsFiltersService
     );
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should update search phrase and call setSearchPhrase on changeSearchPhrase', () => {
     const event = { target: { value: 'test' } } as unknown as Event;
     component.changeSearchPhrase(event);
     expect(component['searchPhrase']).toBe('test');
     expect(filtersService.setSearchPhrase).toHaveBeenCalledWith('test');
   });
+
   it('should call onSearch on Enter key press in onKeydown', () => {
     spyOn(component, 'onSearch');
     const event = new KeyboardEvent('keydown', { key: 'Enter' });
     component.onKeydown(event);
     expect(component.onSearch).toHaveBeenCalled();
   });
+
   it('should not call onSearch on non-Enter key press in onKeydown', () => {
     spyOn(component, 'onSearch');
     const event = new KeyboardEvent('keydown', { key: 'A' });
     component.onKeydown(event);
     expect(component.onSearch).not.toHaveBeenCalled();
   });
+
   it('should call setAppliedFilter on global filterServiceType in onSearch', () => {
     component.filterServiceType = 'global';
     component['searchPhrase'] = 'test';
@@ -70,6 +78,7 @@ describe('SearchBarComponent', () => {
       'test'
     );
   });
+
   it('should call applyFilters on non-global filterServiceType in onSearch', () => {
     component.filterServiceType = 'non-global';
     component.transactionsArray = [[{ id: 1, amount: 100 } as Transaction]];

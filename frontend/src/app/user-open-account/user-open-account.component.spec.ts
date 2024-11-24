@@ -10,6 +10,7 @@ describe('UserOpenAccountComponent', () => {
   let component: UserOpenAccountComponent;
   let appInformationStatesService: AppInformationStatesService;
   let verificationService: VerificationService;
+
   beforeEach(() => {
     appInformationStatesService = jasmine.createSpyObj(
       'AppInformationStatesService',
@@ -19,6 +20,7 @@ describe('UserOpenAccountComponent', () => {
       'validateAccountCurrency',
       'validateAccountType',
     ]);
+
     TestBed.configureTestingModule({
       imports: [UserOpenAccountModule],
       providers: [
@@ -29,13 +31,16 @@ describe('UserOpenAccountComponent', () => {
         { provide: VerificationService, useValue: verificationService },
       ],
     }).compileComponents();
+
     const fixture = TestBed.createComponent(UserOpenAccountComponent);
     component = fixture.componentInstance;
   });
+
   it('should have initial account and userAccountFlags', () => {
     expect(component.account).toEqual(jasmine.any(Account));
     expect(component.userAccountFlags).toEqual(jasmine.any(UserAccountFlags));
   });
+
   it('should change tab name', () => {
     const tabName = 'newTab';
     component.changeTabName(tabName);
@@ -43,6 +48,7 @@ describe('UserOpenAccountComponent', () => {
       tabName
     );
   });
+
   it('should verify data and set shake state', () => {
     (
       verificationService.validateAccountCurrency as jasmine.Spy

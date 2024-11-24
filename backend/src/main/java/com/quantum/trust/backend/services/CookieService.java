@@ -18,9 +18,12 @@ public class CookieService {
     }
 
     public String getCookieValue(HttpServletRequest httpServletRequest, String cookieName) {
-        for (Cookie cookie : httpServletRequest.getCookies()) {
-            if (cookieName.equals(cookie.getName())) {
-                return cookie.getValue();
+        Cookie[] cookies = httpServletRequest.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : httpServletRequest.getCookies()) {
+                if (cookieName.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
             }
         }
         return null;

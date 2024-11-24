@@ -13,6 +13,7 @@ describe('StatusExpansionComponent', () => {
   let fixture: ComponentFixture<StatusExpansionComponent>;
   let filtersService: FiltersService;
   let appInformationStatesService: AppInformationStatesService;
+
   beforeEach(async () => {
     const filtersServiceMock = {
       currentExpansionFlagsArray: of([false, false, true]),
@@ -22,6 +23,7 @@ describe('StatusExpansionComponent', () => {
     const appInformationStatesServiceMock = {
       canSetAbsoluteStyle: jasmine.createSpy('canSetAbsoluteStyle'),
     };
+
     await TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -37,24 +39,30 @@ describe('StatusExpansionComponent', () => {
         },
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(StatusExpansionComponent);
     component = fixture.componentInstance;
     filtersService = TestBed.inject(FiltersService);
     appInformationStatesService = TestBed.inject(AppInformationStatesService);
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize with correct values', () => {
     expect(component.isExpanded).toBeTrue();
   });
+
   it('should return true if the option is selected', () => {
     expect(component.isChecked('Domyślnie')).toBe('true');
   });
+
   it('should return false if the option is not selected', () => {
     expect(component.isChecked('Blokada')).toBe('false');
   });
+
   it('should change the selected option', () => {
     component.changeCheckedOption('Blokada');
     expect(filtersService.setSelectedFilters).toHaveBeenCalledWith([

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.quantum.trust.backend.model.dto.EncryptedDto;
+import com.quantum.trust.backend.model.dto.EncryptedRegistrationDto;
 import com.quantum.trust.backend.services.UserService;
 import com.quantum.trust.backend.services.VerificationService;
 
@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<?> isAccessTokenPresentAndValid() {
+    public ResponseEntity<?> isTokenPresentAndValid() {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -51,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody EncryptedDto encryptedDto) {
+    public ResponseEntity<?> registerUser(@RequestBody EncryptedRegistrationDto encryptedDto) {
         return this.userService.registerNewAccount(encryptedDto.getEncryptedUserDto(),
                 encryptedDto.getEncryptedAccountDto());
     }

@@ -1,9 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  MatPaginator,
-  MatPaginatorIntl
-} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { PolishPaginatorProvider } from '../../providers/polish-paginator.provider';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
@@ -14,10 +11,9 @@ import { TableTransaction } from '../../types/table-transaction';
 import { Transaction } from '../../types/transaction';
 
 /**
- * @fileoverview TransactionsComponent is responsible for displaying and managing user transactions.
- * It fetches user transactions and cards, maps them into a table format, and handles pagination and sorting.
+ * @component TransactionsComponent
+ * @description This component is responsible for displaying and managing user transactions.
  *
- * @component
  * @selector app-transactions
  * @templateUrl ./transactions.component.html
  * @styleUrl ./transactions.component.css
@@ -26,33 +22,45 @@ import { Transaction } from '../../types/transaction';
  *   DatePipe,
  * ]
  *
+ *
  * @class TransactionsComponent
  * @implements OnInit
  *
- * @method ngOnInit Lifecycle hook that is called after data-bound properties of a directive are initialized.
- * @method changeTabName Changes the name of the current tab.
- * @param tabName The new name of the tab.
- * @method setUserTransactions Fetches and sets user transactions and cards, then maps them into table transactions.
- * @method setUserCards Fetches and sets user cards.
- * @method mapUserTransactionsIntoTableTransactions Maps user transactions into table transactions and sets the paginator.
- * @method setPaginator Sets the paginator for the table data source.
- * @method setTableTransactionFields Sets the fields of a table transaction based on a user transaction.
- * @param transaction The user transaction.
- * @param tableTransaction The table transaction.
- * @method setAccountNumber Sets the account number for a table transaction.
- * @param transaction The user transaction.
- * @param tableTransaction The table transaction.
- * @method setAmountWithCurrency Sets the amount with currency for a table transaction.
- * @param transaction The user transaction.
- * @param tableTransaction The table transaction.
- * @method setDateAndHour Sets the date and hour for a table transaction.
- * @param transaction The user transaction.
- * @param tableTransaction The table transaction.
- * @method sortTableTransactionsArray Sorts the table transactions array by date.
- * @method changeDateFormat Changes the date format of the table transactions.
- * @method getAccountIdAssignedToCard Gets the account ID assigned to a card.
- * @param cardId The card ID.
- * @returns The account ID assigned to the card.
+ * @property {Card[]} userCards - Array of user cards.
+ * @property {string[]} displayedColumns - Array of columns to be displayed in the transactions table.
+ * @property {Transaction[]} userTransactions - Array of user transactions.
+ *
+ * @constructor
+ * @param {UserService} userService - Service to manage user data.
+ * @param {DatePipe} datePipe - Service to format dates.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {GlobalTransactionsFiltersService} globalTransactionsFiltersService - Service to manage global transactions filters.
+ * @param {ConvertService} convertService - Service to handle data conversion.
+ *
+ * @method ngOnInit - Lifecycle hook that initializes the component.
+ * @method changeTabName - Changes the current tab name using the appInformationStatesService.
+ * @param {string} tabName - The new tab name to be set.
+ * @method setUserTransactions - Sets the user transactions by subscribing to the userTransactions observable.
+ * @method setUserCards - Sets the user cards by subscribing to the userCards observable.
+ * @method mapUserTransactionsIntoTableTransactions - Maps user transactions into table transactions.
+ * @method setPaginator - Sets the paginator for the table data source.
+ * @method setTableTransactionFields - Sets the fields of a table transaction based on a user transaction.
+ * @param {Transaction} transaction - The user transaction object.
+ * @param {TableTransaction} tableTransaction - The table transaction object.
+ * @method setAccountNumber - Sets the account number for a table transaction.
+ * @param {Transaction} transaction - The user transaction object.
+ * @param {TableTransaction} tableTransaction - The table transaction object.
+ * @method setAmountWithCurrency - Sets the amount with currency for a table transaction.
+ * @param {Transaction} transaction - The user transaction object.
+ * @param {TableTransaction} tableTransaction - The table transaction object.
+ * @method setDateAndHour - Sets the date and hour for a table transaction.
+ * @param {Transaction} transaction - The user transaction object.
+ * @param {TableTransaction} tableTransaction - The table transaction object.
+ * @method sortTableTransactionsArray - Sorts the table transactions array by date.
+ * @method changeDateFormat - Changes the date format for the table transactions.
+ * @method getAccountIdAssignedToCard - Gets the account ID assigned to a card.
+ * @param {number} cardId - The ID of the card.
+ * @returns {string} - Returns the account ID assigned to the card.
  */
 @Component({
   selector: 'app-transactions',
@@ -64,37 +72,56 @@ import { Transaction } from '../../types/transaction';
   ],
 })
 export class TransactionsComponent implements OnInit {
-  public userTransactions!: Transaction[];
-  public userCards!: Card[];
-  public displayedColumns: string[] = [
-    'Tytuł',
-    'Data i godzina',
-    'Numer konta',
-    'Kwota',
-    'Status',
-  ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  public userCards!: Card[];
+  public displayedColumns: string[];
+  public userTransactions!: Transaction[];
+
   constructor(
     private userService: UserService,
     private datePipe: DatePipe,
     private appInformationStatesService: AppInformationStatesService,
     protected globalTransactionsFiltersService: GlobalTransactionsFiltersService,
     protected convertService: ConvertService
-  ) {}
-  ngOnInit(): void {
+  ) {
+    this.displayedColumns = [
+      'Tytuł',
+      'Data i godzina',
+      'Numer konta',
+      'Kwota',
+      'Status',
+    ];
+  }
+
+  public ngOnInit(): void {
     this.setUserTransactions();
   }
-  changeTabName(tabName: string): void {
+
+  public changeTabName(tabName: string): void {
     this.appInformationStatesService.changeTabName(tabName);
   }
-  async setUserTransactions(): Promise<void> {
-    this.userTransactions = await this.userService.getUserTransactionsArray();
-    await this.setUserCards();
-    this.mapUserTransactionsIntoTableTransactions();
+
+  public setUserTransactions(): void {
+    this.userService.userTransactions.subscribe(
+      (newUserTransactions: Transaction[]) => {
+        if (newUserTransactions.length >= 1) {
+          this.userTransactions = newUserTransactions;
+          this.setUserCards();
+          this.mapUserTransactionsIntoTableTransactions();
+        }
+      }
+    );
   }
-  async setUserCards(): Promise<void> {
-    this.userCards = await this.userService.getUserCardsArray();
+
+  public setUserCards(): void {
+    this.userService.userCards.subscribe((newUserCards: Card[]) => {
+      if (newUserCards.length >= 1) {
+        this.userCards = newUserCards;
+      }
+    });
   }
+
   public mapUserTransactionsIntoTableTransactions(): void {
     this.globalTransactionsFiltersService.tableDataSource.data = [];
     this.userTransactions.forEach((transaction: Transaction) => {
@@ -111,10 +138,12 @@ export class TransactionsComponent implements OnInit {
     );
     this.setPaginator();
   }
+
   public setPaginator(): void {
     this.globalTransactionsFiltersService.tableDataSource.paginator =
       this.paginator;
   }
+
   public setTableTransactionFields(
     transaction: Transaction,
     tableTransaction: TableTransaction
@@ -126,15 +155,17 @@ export class TransactionsComponent implements OnInit {
     tableTransaction.title = transaction.title;
     tableTransaction.type = transaction.type;
   }
+
   public setAccountNumber(
     transaction: Transaction,
     tableTransaction: TableTransaction
   ): void {
-    tableTransaction.accountNumber =
-      typeof transaction.accountNumber === 'string'
-        ? transaction.accountNumber
-        : this.getAccountIdAssignedToCard(transaction.accountNumber);
+    tableTransaction.assignedAccountNumber =
+      typeof transaction.assignedAccountNumber === 'string'
+        ? transaction.assignedAccountNumber
+        : this.getAccountIdAssignedToCard(transaction.assignedAccountNumber);
   }
+
   public setAmountWithCurrency(
     transaction: Transaction,
     tableTransaction: TableTransaction
@@ -146,6 +177,7 @@ export class TransactionsComponent implements OnInit {
       ' ' +
       transaction.currency;
   }
+
   public setDateAndHour(
     transaction: Transaction,
     tableTransaction: TableTransaction
@@ -155,6 +187,7 @@ export class TransactionsComponent implements OnInit {
       hour: transaction.hour,
     };
   }
+
   public sortTableTransactionsArray(): void {
     this.globalTransactionsFiltersService.tableDataSource.data.sort(
       (
@@ -165,6 +198,7 @@ export class TransactionsComponent implements OnInit {
         new Date(firstTransaction.dateAndHour.date).getTime()
     );
   }
+
   public changeDateFormat(): void {
     const dateFormatRegex = /^\d{2}\.\d{2}\.\d{4}$/;
     this.globalTransactionsFiltersService.tableDataSource.data.forEach(
@@ -179,10 +213,11 @@ export class TransactionsComponent implements OnInit {
       }
     );
   }
+
   public getAccountIdAssignedToCard(cardId: number): string {
     const foundedCard: Card = this.userCards.find(
-      (card: Card) => card.id === cardId
+      (card: Card) => Number(card.id) === cardId
     ) as Card;
-    return foundedCard.assignedAccountId ?? '';
+    return foundedCard.assignedAccountNumber ?? '';
   }
 }

@@ -14,6 +14,7 @@ describe('DurationExpansionComponent', () => {
   let fixture: ComponentFixture<DurationExpansionComponent>;
   let filtersService: FiltersService;
   let appInformationStatesService: AppInformationStatesService;
+
   beforeEach(async () => {
     const filtersServiceMock = {
       resetSelectedFilters: jasmine.createSpy('resetSelectedFilters'),
@@ -25,6 +26,7 @@ describe('DurationExpansionComponent', () => {
       'AppInformationService',
       ['canSetAbsoluteStyle']
     );
+
     await TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -41,23 +43,28 @@ describe('DurationExpansionComponent', () => {
         },
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(DurationExpansionComponent);
     component = fixture.componentInstance;
     filtersService = TestBed.inject(FiltersService);
     appInformationStatesService = TestBed.inject(AppInformationStatesService);
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize with default values', () => {
     expect(component.isExpanded).toBeTrue();
     expect(component.options.length).toBe(6);
   });
+
   it('should check if an option is selected', () => {
     expect(component.isChecked('Ostatni tydzień')).toBe('true');
     expect(component.isChecked('Ostatni miesiąc')).toBe('false');
   });
+  
   it('should change the selected option', () => {
     component.changeCheckedOption('Ostatni miesiąc');
     expect(filtersService.setSelectedFilters).toHaveBeenCalledWith([

@@ -22,6 +22,7 @@ describe('GuestMobileHeaderComponent', () => {
     changeTabName: jasmine.createSpy('changeTabName'),
     toggleDrawer: jasmine.createSpy('toggleDrawer'),
   };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GuestMobileHeaderModule, BrowserAnimationsModule],
@@ -37,28 +38,32 @@ describe('GuestMobileHeaderComponent', () => {
         },
       ],
     }).compileComponents();
-  });
-  beforeEach(() => {
+
     fixture = TestBed.createComponent(GuestMobileHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize currentRoute with router url', () => {
     expect(component.currentRoute).toBe('/test-route');
   });
+
   it('should subscribe to currentTabName on init', () => {
     component.ngOnInit();
     expect(component.tabName).toBe('Test Tab');
   });
+
   it('should call observeBreakpoints on init', () => {
     component.ngOnInit();
     expect(
       mockAppInformationStatesService.observeBreakpoints
     ).toHaveBeenCalled();
   });
+
   it('should call changeDrawer after view init', () => {
     component.drawer = {} as MatDrawer;
     component.ngAfterViewInit();
@@ -66,6 +71,7 @@ describe('GuestMobileHeaderComponent', () => {
       component.drawer
     );
   });
+
   it('should call changeTabName with the correct parameter', () => {
     const tabName = 'New Tab';
     component.changeTabName(tabName);
@@ -73,6 +79,7 @@ describe('GuestMobileHeaderComponent', () => {
       tabName
     );
   });
+
   it('should call toggleDrawer', () => {
     component.toggleDrawer();
     expect(mockAppInformationStatesService.toggleDrawer).toHaveBeenCalled();

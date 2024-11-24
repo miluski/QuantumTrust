@@ -7,28 +7,27 @@ import { Account } from '../../types/account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 
 /**
- * @fileoverview UserOpenAccountComponent is a standalone Angular component that allows users to open a new account.
- * It includes functionality for verifying account data and managing the current tab name.
+ * @component UserOpenAccountComponent
+ * @description This component is responsible for managing the process of opening a new account for authenticated users.
  *
- * @component
  * @selector app-user-open-account
  * @templateUrl ./user-open-account.component.html
- * @animations AnimationsProvider.animations
+ * @animations [AnimationsProvider.animations]
  *
  * @class UserOpenAccountComponent
  *
- * @property {Account} account - The account information being created.
- * @property {UserAccountFlags} userAccountFlags - Flags indicating the validity of the account data.
+ * @property {Account} account - The account object containing account details.
+ * @property {UserAccountFlags} userAccountFlags - Flags indicating the validation status of user account fields.
  * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
  *
  * @constructor
- * @param {AppInformationStatesService} appInformationStatesService - The service managing application state information.
- * @param {VerificationService} verificationService - The service providing data verification methods.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
  *
- * @method changeTabName - Changes the current tab name.
- * @param {string} tabName - The new tab name.
- * @method verifyData - Verifies the account data.
- * @method setCanShake - Sets the shake state based on the validity of the account data.
+ * @method changeTabName - Changes the current tab name using the appInformationStatesService.
+ * @param {string} tabName - The new tab name to be set.
+ * @method verifyData - Verifies the user data by setting validation flags.
+ * @method setCanShake - Sets the shake state based on the validation flags.
  */
 @Component({
   selector: 'app-user-open-account',
@@ -36,20 +35,26 @@ import { UserAccountFlags } from '../../types/user-account-flags';
   animations: [AnimationsProvider.animations],
 })
 export class UserOpenAccountComponent {
-  public account: Account = new Account();
-  public userAccountFlags: UserAccountFlags = new UserAccountFlags();
-  public shakeStateService: ShakeStateService = new ShakeStateService();
+  public account: Account;
+  public userAccountFlags: UserAccountFlags;
+  public shakeStateService: ShakeStateService;
+
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     private verificationService: VerificationService
   ) {
-    this.account.type = 'Konto osobiste';
+    this.account = new Account();
+    this.account.type = 'personal';
     this.account.currency = 'PLN';
+    this.userAccountFlags = new UserAccountFlags();
+    this.shakeStateService = new ShakeStateService();
   }
-  changeTabName(tabName: string): void {
+
+  public changeTabName(tabName: string): void {
     this.appInformationStatesService.changeTabName(tabName);
   }
-  verifyData(): void {
+
+  public verifyData(): void {
     this.userAccountFlags.isAccountCurrencyValid =
       this.verificationService.validateAccountCurrency(
         this.account.currency as string
@@ -58,6 +63,7 @@ export class UserOpenAccountComponent {
       this.verificationService.validateAccountType(this.account.type);
     this.setCanShake();
   }
+
   private setCanShake(): void {
     const isSomeDataInvalid: boolean =
       this.userAccountFlags.isAccountCurrencyValid === false ||

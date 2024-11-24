@@ -3,6 +3,7 @@ package com.quantum.trust.backend.model.dto;
 import java.io.Serializable;
 
 import com.quantum.trust.backend.model.entities.Account;
+import com.quantum.trust.backend.model.entities.Card;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,8 @@ public class TransactionDto implements Serializable {
     private String hour;
     private String title;
     private Account account;
+    private Card card;
+    private String assignedAccountNumber;
     private String type;
     private Float amount;
     private String currency;

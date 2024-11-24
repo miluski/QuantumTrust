@@ -39,6 +39,10 @@ public class Transaction {
     @JoinColumn(name = "assignedAccountId", referencedColumnName = "id")
     private Account account;
 
+    @ManyToOne
+    @JoinColumn(name = "assignedCardId", referencedColumnName = "id")
+    private Card card;
+
     @Column(name = "type", nullable = false)
     private String type;
 

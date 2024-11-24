@@ -1,8 +1,10 @@
 <div class="flex flex-row w-full bg-black justify-end">
-    <div class='flex flex-row text-center items-center w-1/10 
-        bg-black text-white px-4 py-3 rounded-full cursor-pointer text-2xl 
-        border border-white hover:border-gray-400 hover:text-gray-400 hover:shadow-gray-500 hover:shadow-md mx-10'
-        [@pulseAnimation]="windowEventsService.pulseState" (click)="scrollToTop()" matTooltip="Przejdź na górę strony">
-        <i class="fa-solid fa-arrow-up"></i>
-    </div>
+  <div
+    class="flex flex-row text-center items-center w-1/10 bg-black text-white px-4 py-3 rounded-full cursor-pointer text-2xl border border-white hover:border-gray-400 hover:text-gray-400 hover:shadow-gray-500 hover:shadow-md mx-10"
+    [@pulseAnimation]="windowEventsService.pulseState"
+    (click)="scrollToTop()"
+    matTooltip="Przejdź na górę strony"
+  >
+    <i class="fa-solid fa-arrow-up"></i>
+  </div>
 </div>

@@ -3,93 +3,92 @@ import { NgModel } from '@angular/forms';
 import { Account } from '../types/account';
 
 /**
- * @fileoverview VerificationService provides various validation methods for user inputs.
- * It includes methods to validate identifiers, passwords, emails, phone numbers, names, PESEL, documents, addresses, account types, currencies, and more.
- *
- * @service
- * @providedIn root
- *
  * @class VerificationService
- * @method validateIdentifier - Validates an identifier.
- * @param {number} identifier - The identifier to validate.
- * @returns {boolean} - True if the identifier is valid, false otherwise.
- * @method validatePassword - Validates a password.
- * @param {string} password - The password to validate.
- * @returns {boolean} - True if the password is valid, false otherwise.
- * @method validateRepeatedPassword - Validates if the repeated password matches the original password.
- * @param {string} repeatedPassword - The repeated password.
+ * @description This service is responsible for validating various user inputs and data.
+ *
+ * @providedIn 'root'
+ *
+ * @method validateIdentifier - Validates the identifier.
+ * @param {number} identifier - The identifier to be validated.
+ * @returns {boolean} - Returns true if the identifier is valid, otherwise false.
+ * @method validatePassword - Validates the password.
+ * @param {string} password - The password to be validated.
+ * @returns {boolean} - Returns true if the password is valid, otherwise false.
+ * @method validateRepeatedPassword - Validates the repeated password.
+ * @param {string} repeatedPassword - The repeated password to be validated.
  * @param {string} password - The original password.
- * @returns {boolean} - True if the passwords match, false otherwise.
- * @method validateVerificationCode - Validates a verification code.
- * @param {number} verificationCode - The verification code to validate.
- * @returns {boolean} - True if the verification code is valid, false otherwise.
- * @method validateEmail - Validates an email address.
- * @param {string} email - The email address to validate.
- * @returns {boolean} - True if the email address is valid, false otherwise.
- * @method validatePhoneNumber - Validates a phone number.
- * @param {string} phoneNumber - The phone number to validate.
- * @returns {boolean} - True if the phone number is valid, false otherwise.
- * @method validateFirstName - Validates a first name.
- * @param {string} firstName - The first name to validate.
- * @returns {boolean} - True if the first name is valid, false otherwise.
- * @method validateLastName - Validates a last name.
- * @param {string} lastName - The last name to validate.
- * @returns {boolean} - True if the last name is valid, false otherwise.
- * @method validatePESEL - Validates a PESEL number.
- * @param {number} pesel - The PESEL number to validate.
- * @returns {boolean} - True if the PESEL number is valid, false otherwise.
- * @method validateIdentityDocumentType - Validates an identity document type.
- * @param {string} documentType - The document type to validate.
- * @returns {boolean} - True if the document type is valid, false otherwise.
- * @method validateDocument - Validates a document.
- * @param {string} document - The document to validate.
- * @returns {boolean} - True if the document is valid, false otherwise.
- * @method validateAddress - Validates an address.
- * @param {string} address - The address to validate.
- * @returns {boolean} - True if the address is valid, false otherwise.
- * @method validateAccountType - Validates an account type.
- * @param {string} accountType - The account type to validate.
- * @returns {boolean} - True if the account type is valid, false otherwise.
- * @method validateAccountCurrency - Validates an account currency.
- * @param {string} accountCurrency - The account currency to validate.
- * @returns {boolean} - True if the account currency is valid, false otherwise.
- * @method validateSelectedAccount - Validates if the selected account exists in the valid accounts array.
+ * @returns {boolean} - Returns true if the repeated password matches the original password, otherwise false.
+ * @method validateVerificationCode - Validates the verification code.
+ * @param {number} verificationCode - The verification code to be validated.
+ * @returns {boolean} - Returns true if the verification code is valid, otherwise false.
+ * @method validateEmail - Validates the email address.
+ * @param {string} email - The email address to be validated.
+ * @returns {boolean} - Returns true if the email address is valid, otherwise false.
+ * @method validatePhoneNumber - Validates the phone number.
+ * @param {string} phoneNumber - The phone number to be validated.
+ * @returns {boolean} - Returns true if the phone number is valid, otherwise false.
+ * @method validateFirstName - Validates the first name.
+ * @param {string} firstName - The first name to be validated.
+ * @returns {boolean} - Returns true if the first name is valid, otherwise false.
+ * @method validateLastName - Validates the last name.
+ * @param {string} lastName - The last name to be validated.
+ * @returns {boolean} - Returns true if the last name is valid, otherwise false.
+ * @method validatePESEL - Validates the PESEL number.
+ * @param {number} pesel - The PESEL number to be validated.
+ * @returns {boolean} - Returns true if the PESEL number is valid, otherwise false.
+ * @method validateIdentityDocumentType - Validates the identity document type.
+ * @param {string} documentType - The document type to be validated.
+ * @returns {boolean} - Returns true if the document type is valid, otherwise false.
+ * @method validateDocument - Validates the document.
+ * @param {string} document - The document to be validated.
+ * @returns {boolean} - Returns true if the document is valid, otherwise false.
+ * @method validateAddress - Validates the address.
+ * @param {string} address - The address to be validated.
+ * @returns {boolean} - Returns true if the address is valid, otherwise false.
+ * @method validateAccountType - Validates the account type.
+ * @param {string} accountType - The account type to be validated.
+ * @returns {boolean} - Returns true if the account type is valid, otherwise false.
+ * @method validateAccountCurrency - Validates the account currency.
+ * @param {string} accountCurrency - The account currency to be validated.
+ * @returns {boolean} - Returns true if the account currency is valid, otherwise false.
+ * @method validateSelectedAccount - Validates the selected account.
  * @param {Account[]} validAccountsArray - The array of valid accounts.
- * @param {string} selectedAccountNumber - The selected account number to validate.
- * @returns {boolean} - True if the selected account exists, false otherwise.
- * @method validateTransferTitle - Validates a transfer title.
- * @param {string} title - The transfer title to validate.
- * @returns {boolean} - True if the transfer title is valid, false otherwise.
- * @method validateReceiverAccountId - Validates a receiver account ID.
- * @param {string} accountId - The receiver account ID to validate.
- * @param {string} senderAccountId - The sender account ID.
- * @returns {boolean} - True if the receiver account ID is valid, false otherwise.
- * @method validateOperationAmount - Validates an operation amount.
- * @param {number} operationAmount - The operation amount to validate.
- * @param {Account} account - The account to validate against.
- * @returns {boolean} - True if the operation amount is valid, false otherwise.
- * @method validateSelectedAvatarType - Validates the type of the selected avatar.
- * @param {Blob} avatar - The avatar to validate.
- * @returns {boolean} - True if the avatar type is valid, false otherwise.
- * @method validateSelectedAvatarSize - Validates the size of the selected avatar.
- * @param {Blob} avatar - The avatar to validate.
- * @returns {boolean} - True if the avatar size is valid, false otherwise.
- * @method validateInput - Validates an input field.
- * @param {NgModel} input - The input field to validate.
- * @returns {boolean} - True if the input field is valid, false otherwise.
+ * @param {string} selectedAccountNumber - The selected account number to be validated.
+ * @returns {boolean} - Returns true if the selected account is valid, otherwise false.
+ * @method validateTransferTitle - Validates the transfer title.
+ * @param {string} title - The transfer title to be validated.
+ * @returns {boolean} - Returns true if the transfer title is valid, otherwise false.
+ * @method validateReceiverAccountId - Validates the receiver's account ID.
+ * @param {string} accountId - The receiver's account ID to be validated.
+ * @param {string} senderAccountId - The sender's account ID.
+ * @returns {boolean} - Returns true if the receiver's account ID is valid, otherwise false.
+ * @method validateOperationAmount - Validates the operation amount.
+ * @param {number} operationAmount - The operation amount to be validated.
+ * @param {Account} account - The account to be validated against.
+ * @returns {boolean} - Returns true if the operation amount is valid, otherwise false.
+ * @method validateSelectedAvatarType - Validates the selected avatar type.
+ * @param {Blob} avatar - The avatar to be validated.
+ * @returns {boolean} - Returns true if the avatar type is valid, otherwise false.
+ * @method validateSelectedAvatarSize - Validates the selected avatar size.
+ * @param {Blob} avatar - The avatar to be validated.
+ * @returns {boolean} - Returns true if the avatar size is valid, otherwise false.
+ * @method validateInput - Validates the input.
+ * @param {NgModel} input - The input to be validated.
+ * @returns {boolean} - Returns true if the input is valid, otherwise false.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class VerificationService {
-  validateIdentifier(identifier: number): boolean {
+  public validateIdentifier(identifier: number): boolean {
     return (
       identifier < 99999999 &&
       identifier > 9999999 &&
       Number.isInteger(identifier)
     );
   }
-  validatePassword(password: string): boolean {
+
+  public validatePassword(password: string): boolean {
     const passwordPattern =
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*[\/\+\-_;,.!@#$%^&*()]).{12,32}$/;
     return (
@@ -99,28 +98,33 @@ export class VerificationService {
       passwordPattern.test(password)
     );
   }
-  validateRepeatedPassword(
+
+  public validateRepeatedPassword(
     repeatedPassword: string,
     password: string
   ): boolean {
     return repeatedPassword === password;
   }
-  validateVerificationCode(verificationCode: number): boolean {
+
+  public validateVerificationCode(verificationCode: number): boolean {
     return (
       verificationCode < 999999 &&
       verificationCode > 99999 &&
       Number.isInteger(verificationCode)
     );
   }
-  validateEmail(email: string): boolean {
+
+  public validateEmail(email: string): boolean {
     const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     return email !== undefined && emailPattern.test(email);
   }
-  validatePhoneNumber(phoneNumber: string): boolean {
+
+  public validatePhoneNumber(phoneNumber: string): boolean {
     const phonePattern = /^\+?\d{9,12}$/;
     return phoneNumber !== undefined && phonePattern.test(phoneNumber);
   }
-  validateFirstName(firstName: string): boolean {
+
+  public validateFirstName(firstName: string): boolean {
     return (
       firstName !== undefined &&
       firstName.length <= 50 &&
@@ -128,7 +132,8 @@ export class VerificationService {
       firstName !== ''
     );
   }
-  validateLastName(lastName: string): boolean {
+
+  public validateLastName(lastName: string): boolean {
     const lastNamePattern = /^[a-zA-Z]+([ -]?[a-zA-Z]+)*$/;
     return (
       lastName !== undefined &&
@@ -138,17 +143,20 @@ export class VerificationService {
       lastNamePattern.test(lastName)
     );
   }
-  validatePESEL(pesel: number): boolean {
+
+  public validatePESEL(pesel: number): boolean {
     const peselPattern = /^\d{11}$/;
     return pesel !== undefined && peselPattern.test(pesel.toString());
   }
-  validateIdentityDocumentType(documentType: string): boolean {
+
+  public validateIdentityDocumentType(documentType: string): boolean {
     return (
       (documentType !== undefined && documentType === 'Dowód Osobisty') ||
       documentType === 'Paszport'
     );
   }
-  validateDocument(document: string): boolean {
+
+  public validateDocument(document: string): boolean {
     const documentPattern = /^[A-Z]{3}\s\d{6}$/;
     return (
       document !== undefined &&
@@ -156,21 +164,24 @@ export class VerificationService {
       documentPattern.test(document)
     );
   }
-  validateAddress(address: string): boolean {
+
+  public validateAddress(address: string): boolean {
     const addressPattern =
-      /^[A-Za-z0-9'\.\-\s\,]/;
+      /^[A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+(?: [A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+)* \d+(?:\/\d+)?(?:, [A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+)+$/;
     return address !== undefined && addressPattern.test(address);
   }
-  validateAccountType(accountType: string): boolean {
+
+  public validateAccountType(accountType: string): boolean {
     return (
-      accountType === 'Konto osobiste' ||
-      accountType === 'Konto dla młodych' ||
-      accountType === 'Konto wielowalutowe' ||
-      accountType === 'Konto rodzinne' ||
-      accountType === 'Konto senior'
+      accountType === 'personal' ||
+      accountType === 'young' ||
+      accountType === 'multiCurrency' ||
+      accountType === 'family' ||
+      accountType === 'oldPeople'
     );
   }
-  validateAccountCurrency(accountCurrency: string): boolean {
+
+  public validateAccountCurrency(accountCurrency: string): boolean {
     const validCurrencies = [
       'PLN',
       'EUR',
@@ -183,7 +194,8 @@ export class VerificationService {
     ];
     return validCurrencies.includes(accountCurrency);
   }
-  validateSelectedAccount(
+
+  public validateSelectedAccount(
     validAccountsArray: Account[],
     selectedAccountNumber: string
   ): boolean {
@@ -191,10 +203,12 @@ export class VerificationService {
       (account: Account) => account.id === selectedAccountNumber
     );
   }
-  validateTransferTitle(title: string): boolean {
+
+  public validateTransferTitle(title: string): boolean {
     return title !== undefined && title.length >= 10 && title.length <= 50;
   }
-  validateReceiverAccountId(
+
+  public validateReceiverAccountId(
     accountId: string,
     senderAccountId: string
   ): boolean {
@@ -205,22 +219,29 @@ export class VerificationService {
       accountId !== senderAccountId
     );
   }
-  validateOperationAmount(operationAmount: number, account: Account): boolean {
+
+  public validateOperationAmount(
+    operationAmount: number,
+    account: Account
+  ): boolean {
     return (
       !isNaN(operationAmount) &&
       operationAmount >= 1 &&
       operationAmount <= (account.balance as number)
     );
   }
-  validateSelectedAvatarType(avatar: Blob): boolean {
+
+  public validateSelectedAvatarType(avatar: Blob): boolean {
     const validTypes: string[] = ['image/png', 'image/jpeg'];
     return validTypes.includes(avatar.type);
   }
-  validateSelectedAvatarSize(avatar: Blob): boolean {
+
+  public validateSelectedAvatarSize(avatar: Blob): boolean {
     const maxSize: number = 1024 * 1024;
     return avatar.size <= maxSize;
   }
-  validateInput(input: NgModel): boolean {
+
+  public validateInput(input: NgModel): boolean {
     const isInvalid: boolean = input.invalid === true;
     const isDirty: boolean = input.dirty === true;
     const isTouched: boolean = input.touched === true;
