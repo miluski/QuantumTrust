@@ -45,6 +45,14 @@ public class AuthController {
         return this.verificationService.handleRegisterVerification(encryptedEmail, httpServletResponse);
     }
 
+    @PostMapping("/operation/verification/send-email")
+    public ResponseEntity<?> sendOperationVerificationEmail(@RequestBody String encryptedOperation,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+        return this.verificationService.handleOperationVerification(encryptedOperation, httpServletRequest,
+                httpServletResponse);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody String encryptedUserDto, HttpServletResponse httpServletResponse) {
         return this.userService.login(encryptedUserDto, httpServletResponse);

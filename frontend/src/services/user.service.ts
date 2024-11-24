@@ -19,7 +19,7 @@ import { CryptoService } from './crypto.service';
 })
 export class UserService {
   private loginData!: string;
-  private registeringAccount!: string;
+  private openingBankAccount!: string;
   private registeringUserAccount!: string;
   private currentUserAccount!: UserAccount;
   private userCardsSubject: BehaviorSubject<Card[]>;
@@ -68,7 +68,9 @@ export class UserService {
     const endpoint: string =
       this.operation === 'login'
         ? `${environment.apiUrl}/auth/login/verification/send-email`
-        : `${environment.apiUrl}/auth/register/verification/send-email`;
+        : this.operation === 'register'
+        ? `${environment.apiUrl}/auth/register/verification/send-email`
+        : `${environment.apiUrl}/auth/operation/verification/send-email`;
     const encryptedData: string = this.cryptoService.encryptData(data);
     const request: Observable<Object> = this.httpClient.post(endpoint, {
       encryptedData,
@@ -112,27 +114,11 @@ export class UserService {
     this.setUserTransactionsArray();
   }
 
-  public openNewBankAccount(encryptedAccountDto: string): void {
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/user/account/open`,
-      {
-        encryptedAccountDto: encryptedAccountDto,
-      },
-      {
-        observe: 'response',
-      }
-    );
-    request.subscribe({
-      next: (response) => response.status === 200,
-      error: () => false,
-    });
-  }
-
-  public setRegisteringAccount(registeringAccount: Account): void {
-    registeringAccount.balance = 0.0;
-    registeringAccount.image = this.getAccountImage(registeringAccount.type);
-    this.registeringAccount = this.cryptoService.encryptData(
-      JSON.stringify(registeringAccount)
+  public setOpeningBankAccount(openingBankAccount: Account): void {
+    openingBankAccount.balance = 0.0;
+    openingBankAccount.image = this.getAccountImage(openingBankAccount.type);
+    this.openingBankAccount = this.cryptoService.encryptData(
+      JSON.stringify(openingBankAccount)
     );
   }
 
@@ -160,6 +146,8 @@ export class UserService {
         return this.register();
       case 'login':
         return this.login();
+      case 'logged-user-open-account':
+        return this.openNewBankAccount();
       default:
         return false;
     }
@@ -169,7 +157,7 @@ export class UserService {
     const request: Observable<HttpResponse<Object>> = this.httpClient.post(
       `${environment.apiUrl}/auth/register`,
       {
-        encryptedAccountDto: this.registeringAccount,
+        encryptedAccountDto: this.openingBankAccount,
         encryptedUserDto: this.registeringUserAccount,
       },
       {
@@ -191,6 +179,22 @@ export class UserService {
       {
         loginData,
       },
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  public async openNewBankAccount(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/user/account/open`,
+      this.openingBankAccount,
       {
         observe: 'response',
       }
@@ -321,16 +325,16 @@ export class UserService {
 
   private getAccountImage(accountType: string) {
     switch (accountType) {
-      case 'Konto osobiste':
+      case 'personal':
       default:
         return 'first-account.webp';
-      case 'Konto dla młodych':
+      case 'young':
         return 'second-account.webp';
-      case 'Konto wielowalutowe':
+      case 'multiCurrency':
         return 'third-account.webp';
-      case 'Konto rodzinne':
+      case 'family':
         return 'fourth-account.webp';
-      case 'Konto senior':
+      case 'oldPeople':
         return 'fifth-account.webp';
     }
   }

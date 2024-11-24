@@ -144,7 +144,7 @@ export class GuestOpenAccountComponent {
       this.userService.operation = 'register';
       this.userService.sendVerificationEmail(this.userAccount.emailAddress);
       this.userService.setRegisteringUserAccount(this.userAccount);
-      this.userService.setRegisteringAccount(this.account);
+      this.userService.setOpeningBankAccount(this.account);
     }
     this.shakeStateService.setCurrentShakeState(
       isSomeDataInvalid || isUserNotExists === false ? 'shake' : 'none'
