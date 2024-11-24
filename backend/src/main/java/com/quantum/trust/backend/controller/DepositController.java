@@ -3,6 +3,8 @@ package com.quantum.trust.backend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +25,11 @@ public class DepositController {
     @GetMapping("/user/all")
     public ResponseEntity<?> getAllUserDeposits(HttpServletRequest httpServletRequest) {
         return this.depositService.getAllUserDeposits(httpServletRequest);
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<?> openNewDeposit(HttpServletRequest httpServletRequest,
+            @RequestBody String encryptedDepositDto) {
+        return this.depositService.saveNewDeposit(httpServletRequest, encryptedDepositDto);
     }
 }

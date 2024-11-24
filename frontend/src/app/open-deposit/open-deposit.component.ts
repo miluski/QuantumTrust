@@ -79,6 +79,7 @@ export class OpenDepositComponent implements OnInit {
     protected userService: UserService
   ) {
     this.deposit = new Deposit();
+    this.setDepositEndDate();
     this.isAccountNumberValid = true;
     this.isInitialCapitalValid = true;
     this.shakeStateService = new ShakeStateService();
@@ -94,6 +95,7 @@ export class OpenDepositComponent implements OnInit {
     this.paginationService.setPaginatedArray(depositsObjectArray);
     this.paginationService.handleWidthChange(window.innerWidth, 3, 3);
     this.setUserAccounts();
+    this.deposit.balance = this.getLimit(100);
   }
 
   public setUserAccounts(): void {
@@ -126,6 +128,7 @@ export class OpenDepositComponent implements OnInit {
       this.deposit.assignedAccountNumber = this.isAccountNumberValid
         ? target.value
         : this.deposit.assignedAccountNumber;
+      this.deposit.balance = this.getLimit(100);
     }
   }
 
@@ -138,13 +141,20 @@ export class OpenDepositComponent implements OnInit {
       this.currentCurrency,
       multiplier
     );
-    this.deposit.balance = multiplier === 100 ? limit : this.deposit.balance;
     return limit;
   }
 
   public handleButtonClick(): void {
     const isSomeDataInvalid: boolean =
       !this.isAccountNumberValid || !this.isInitialCapitalValid;
+    if (isSomeDataInvalid === false) {
+      this.deposit.type = this.currentSelectedDepositType;
+      this.deposit.currency = this.currentCurrency;
+      this.deposit.percent = Number(this.currentSelectedDepositPercent);
+      this.userService.operation = 'open-deposit';
+      this.userService.setOpeningDeposit(this.deposit);
+      this.userService.sendVerificationEmail('otworzenie nowej lokaty');
+    }
     this.shakeStateService.setCurrentShakeState(
       isSomeDataInvalid ? 'shake' : 'none'
     );
@@ -152,7 +162,8 @@ export class OpenDepositComponent implements OnInit {
 
   public getIsInitialCapitalValid(initialCapitalInput: NgModel): boolean {
     this.isInitialCapitalValid =
-      !this.verificationService.validateInput(initialCapitalInput);
+      !this.verificationService.validateInput(initialCapitalInput) &&
+      initialCapitalInput.value <= (this.getActualAccount()?.balance ?? -1);
     return this.isInitialCapitalValid;
   }
 
@@ -177,6 +188,12 @@ export class OpenDepositComponent implements OnInit {
     return this.paginationService.paginatedItems[1]
       ? this.paginationService.paginatedItems[1].type
       : this.paginationService.paginatedItems[0].type;
+  }
+
+  public get currentSelectedDepositPercent(): string {
+    return this.paginationService.paginatedItems[1]
+      ? this.paginationService.paginatedItems[1].percent
+      : this.paginationService.paginatedItems[0].percent;
   }
 
   private getActualAccount(): Account | undefined {
