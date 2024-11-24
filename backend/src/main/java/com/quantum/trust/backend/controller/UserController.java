@@ -59,7 +59,8 @@ public class UserController {
     }
 
     @PostMapping("/account/open")
-    public ResponseEntity<?> openNewAccount(@RequestBody String encryptedAccountDto) {
-        return this.userService.saveNewBankAccount(encryptedAccountDto);
+    public ResponseEntity<?> openNewAccount(@RequestBody String encryptedAccountDto,
+            HttpServletRequest httpServletRequest) {
+        return this.userService.saveNewBankAccount(httpServletRequest, encryptedAccountDto);
     }
 }
