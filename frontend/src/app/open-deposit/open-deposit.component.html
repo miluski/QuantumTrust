@@ -130,7 +130,6 @@
             type="number"
             min="{{ getLimit(100) }}"
             max="{{ getLimit(10000) }}"
-            value="{{ deposit.balance }}"
             [(ngModel)]="deposit.balance"
             #initialCapitalInput="ngModel"
             required
@@ -152,6 +151,9 @@
           </div>
           <div *ngIf="initialCapitalInput.errors?.['max']">
             Maksymalna wartość to {{ getValueWithCurrency(10000) }}
+          </div>
+          <div>
+            Nie masz minimalnej ilości pieniędzy na wybranym koncie.
           </div>
         </div>
       </div>

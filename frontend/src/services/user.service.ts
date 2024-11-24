@@ -19,6 +19,7 @@ import { CryptoService } from './crypto.service';
 })
 export class UserService {
   private loginData!: string;
+  private openingDeposit!: string;
   private openingBankAccount!: string;
   private registeringUserAccount!: string;
   private currentUserAccount!: UserAccount;
@@ -122,6 +123,12 @@ export class UserService {
     );
   }
 
+  public setOpeningDeposit(openingDeposit: Deposit): void {
+    this.openingDeposit = this.cryptoService.encryptData(
+      JSON.stringify(openingDeposit)
+    );
+  }
+
   public getIsCodeValid(typedVerificationCode: string): boolean {
     const encryptedCode: string = this.cookieService.get('VERIFICATION_CODE');
     const verificationCode: string =
@@ -148,6 +155,8 @@ export class UserService {
         return this.login();
       case 'logged-user-open-account':
         return this.openNewBankAccount();
+      case 'open-deposit':
+        return this.openNewDeposit();
       default:
         return false;
     }
@@ -195,6 +204,22 @@ export class UserService {
     const request: Observable<HttpResponse<Object>> = this.httpClient.post(
       `${environment.apiUrl}/user/account/open`,
       this.openingBankAccount,
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  public async openNewDeposit(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/deposits/new`,
+      this.openingDeposit,
       {
         observe: 'response',
       }
