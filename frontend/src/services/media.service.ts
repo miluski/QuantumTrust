@@ -11,7 +11,7 @@ export class MediaService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  getPhotoUrl(photoName: string): string {
+  public getPhotoUrl(photoName: string): string {
     if (isPlatformServer(this.platformId)) {
       return 'PHOTO_LOADING_SKELETON';
     }

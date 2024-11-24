@@ -3,99 +3,121 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Transaction } from '../types/transaction';
 
 /**
- * @fileoverview FiltersService manages the state and application of filters for transactions.
- * It provides functionalities to open/close mobile filters, set and reset selected filters, and apply various filters to transactions.
- *
- * @service
- * @providedIn root
- *
  * @class FiltersService
- * @property {BehaviorSubject<boolean>} isMobileFiltersOpened - The state of mobile filters (opened or closed).
- * @property {BehaviorSubject<boolean[]>} expansionFlagsArray - The expansion state of filter menus.
- * @property {BehaviorSubject<string[]>} selectedFilters - The currently selected filters.
- * @property {BehaviorSubject<string>} searchPhrase - The current search phrase.
- * @property {Transaction[][]} originalTransactionsArray - The original array of transactions.
- * @property {Observable<boolean>} currentIsMobileFiltersOpened - Observable for the state of mobile filters.
- * @property {Observable<boolean[]>} currentExpansionFlagsArray - Observable for the expansion state of filter menus.
- * @property {Observable<string[]>} currentSelectedFilters - Observable for the currently selected filters.
- * @property {Observable<string>} currentSearchPhrase - Observable for the current search phrase.
+ * @description This service is responsible for managing filters for transactions, including search phrases, selected filters, and mobile filters state.
  *
- * @method resetSelectedFilters - Resets the selected filters to default values.
+ * @providedIn 'root'
+ *
+ * @property {BehaviorSubject<string>} searchPhrase - The search phrase for filtering transactions.
+ * @property {BehaviorSubject<string[]>} selectedFilters - The selected filters for sorting and filtering transactions.
+ * @property {BehaviorSubject<boolean>} isMobileFiltersOpened - The state of the mobile filters (opened or closed).
+ * @property {BehaviorSubject<boolean[]>} expansionFlagsArray - The expansion flags array for managing the state of filter menus.
+ * @property {Observable<string>} currentSearchPhrase - Observable for the current search phrase.
+ * @property {Transaction[][]} originalTransactionsArray - The original array of transactions.
+ * @property {Observable<string[]>} currentSelectedFilters - Observable for the current selected filters.
+ * @property {Observable<boolean>} currentIsMobileFiltersOpened - Observable for the current state of mobile filters.
+ * @property {Observable<boolean[]>} currentExpansionFlagsArray - Observable for the current expansion flags array.
+ *
+ * @constructor
+ *
+ * @method resetSelectedFilters - Resets the selected filters and search phrase.
  * @method applyFilters - Applies the selected filters to the transactions array.
- * @param {boolean} isExpanded - Indicates whether the filter menu is expanded.
- * @param {Transaction[][]} transactionsArray - The array of transactions to filter.
- * @method setIsMobileFiltersOpened - Sets the state of mobile filters (opened or closed).
- * @param {boolean} isMobileFiltersOpened - The new state of mobile filters.
+ * @param {boolean} isExpanded - Flag indicating if the filter menu is expanded.
+ * @param {Transaction[][]} transactionsArray - The array of transactions to be filtered.
+ * @method setIsMobileFiltersOpened - Sets the state of the mobile filters.
+ * @param {boolean} isMobileFiltersOpened - The new state of the mobile filters.
  * @method setOriginalTransactionsArray - Sets the original array of transactions.
- * @param {Transaction[][]} transactionsArray - The original array of transactions.
+ * @param {Transaction[][]} transactionsArray - The array of transactions to be set as the original array.
  * @method setSelectedFilters - Sets the selected filters.
  * @param {string[]} selectedFilters - The new selected filters.
  * @method setSearchPhrase - Sets the search phrase.
  * @param {string} searchPhrase - The new search phrase.
- * @method changeMenuState - Changes the state of a filter menu (expanded or collapsed).
- * @param {boolean} isExpanded - Indicates whether the menu is expanded.
- * @param {number} menuNumber - The number of the menu to change.
+ * @method changeMenuState - Changes the state of the filter menu.
+ * @param {boolean} isExpanded - Flag indicating if the filter menu is expanded.
+ * @param {number} menuNumber - The number of the menu to be changed.
  * @method sortByDate - Sorts the transactions array by date.
- * @param {Transaction[][]} transactionArray - The array of transactions to sort.
+ * @param {Transaction[][]} transactionArray - The array of transactions to be sorted.
  * @param {'asc' | 'desc'} sortType - The type of sorting (ascending or descending).
+ * @method actualSelectedFilters - Getter method to get the current selected filters.
+ * @returns {string[]} - Returns the current selected filters.
+ * @method filterBySearchPhrase - Filters the transactions array by the search phrase.
+ * @param {Transaction[][]} transactionArray - The array of transactions to be filtered.
+ * @method applySortFilter - Applies the sort filter to the transactions array.
+ * @param {boolean} isExpanded - Flag indicating if the filter menu is expanded.
+ * @param {Transaction[][]} transactionsArray - The array of transactions to be sorted.
+ * @method applyDurationFilter - Applies the duration filter to the transactions array.
+ * @param {boolean} isExpanded - Flag indicating if the filter menu is expanded.
+ * @param {Transaction[][]} transactionsArray - The array of transactions to be filtered by duration.
+ * @method applyStatusFilter - Applies the status filter to the transactions array.
+ * @param {boolean} isExpanded - Flag indicating if the filter menu is expanded.
+ * @param {Transaction[][]} transactionsArray - The array of transactions to be filtered by status.
  * @method sortByTransactionAmount - Sorts the transactions array by transaction amount.
- * @param {Transaction[][]} transactionArray - The array of transactions to sort.
+ * @param {Transaction[][]} transactionArray - The array of transactions to be sorted.
  * @param {'asc' | 'desc'} sortType - The type of sorting (ascending or descending).
  * @method filterByStatus - Filters the transactions array by status.
- * @param {Transaction[][]} transactionArray - The array of transactions to filter.
+ * @param {Transaction[][]} transactionArray - The array of transactions to be filtered.
  * @param {'blockade' | 'settled'} status - The status to filter by.
- * @method filterByDate - Filters the transactions array by date duration.
- * @param {Transaction[][]} transactionArray - The array of transactions to filter.
- * @param {'day' | 'week' | 'month' | 'half-year' | 'year'} dateDuration - The date duration to filter by.
- * @method replaceArray - Replaces the contents of the target transaction array with the contents of the replacing transaction array.
- * @param {Transaction[][]} transactionArray - The target transaction array to be replaced.
- * @param {Transaction[][]} replacingTransactionArray - The replacing transaction array.
- * @throws {TypeError} - If the replacing transaction array is not iterable.
- * @method getDuration - Returns the date object for the given date duration.
- * @param {'day' | 'week' | 'month' | 'half-year' | 'year'} dateDuration - The date duration.
- * @returns {Date} - The date object for the given date duration.
- * @method handleMenuExpansion - Handles the expansion state of a filter menu.
- * @param {boolean} isExpanded - Indicates whether the menu is expanded.
- * @param {number} menuNumber - The number of the menu to change.
- * @method expandMenu - Expands the specified filter menu.
- * @param {number} menuNumber - The number of the menu to expand.
- * @method closeMenu - Closes the specified filter menu.
- * @param {number} menuNumber - The number of the menu to close.
- *
- * @constructor
- * @param {Router} router - Angular Router service for navigation.
- * @param {BreakpointObserver} breakpointObserver - Service to observe screen size breakpoints.
+ * @method filterByDate - Filters the transactions array by date.
+ * @param {Transaction[][]} transactionArray - The array of transactions to be filtered.
+ * @param {'day' | 'week' | 'month' | 'half-year' | 'year'} dateDuration - The duration to filter by.
+ * @method replaceArray - Replaces the transactions array with another array.
+ * @param {Transaction[][]} transactionArray - The array of transactions to be replaced.
+ * @param {Transaction[][]} replacingTransactionArray - The array of transactions to replace with.
+ * @method getDuration - Gets the duration date based on the date duration.
+ * @param {'day' | 'week' | 'month' | 'half-year' | 'year'} dateDuration - The duration to get the date for.
+ * @returns {Date} - Returns the duration date.
+ * @method handleMenuExpansion - Handles the expansion of the filter menu.
+ * @param {boolean} isExpanded - Flag indicating if the filter menu is expanded.
+ * @param {number} menuNumber - The number of the menu to be expanded.
+ * @method expandMenu - Expands the filter menu.
+ * @param {number} menuNumber - The number of the menu to be expanded.
+ * @method closeMenu - Closes the filter menu.
+ * @param {number} menuNumber - The number of the menu to be closed.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class FiltersService {
-  private isMobileFiltersOpened: BehaviorSubject<boolean> = new BehaviorSubject(
-    false
-  );
-  private expansionFlagsArray: BehaviorSubject<boolean[]> = new BehaviorSubject<
-    boolean[]
-  >([false, false, false]);
-  private selectedFilters: BehaviorSubject<string[]> = new BehaviorSubject([
-    'Domyślnie',
-    'Domyślnie',
-    'Domyślnie',
-  ]);
-  private searchPhrase: BehaviorSubject<string> = new BehaviorSubject('');
+  private searchPhrase: BehaviorSubject<string>;
+  private selectedFilters: BehaviorSubject<string[]>;
+  private isMobileFiltersOpened: BehaviorSubject<boolean>;
+  private expansionFlagsArray: BehaviorSubject<boolean[]>;
+
+  public currentSearchPhrase: Observable<string>;
   public originalTransactionsArray!: Transaction[][];
-  public currentIsMobileFiltersOpened: Observable<boolean> =
-    this.isMobileFiltersOpened.asObservable();
-  public currentExpansionFlagsArray: Observable<boolean[]> =
-    this.expansionFlagsArray.asObservable();
-  public currentSelectedFilters: Observable<string[]> =
-    this.selectedFilters.asObservable();
-  public currentSearchPhrase: Observable<string> =
-    this.searchPhrase.asObservable();
-  resetSelectedFilters(): void {
+  public currentSelectedFilters: Observable<string[]>;
+  public currentIsMobileFiltersOpened: Observable<boolean>;
+  public currentExpansionFlagsArray: Observable<boolean[]>;
+
+  constructor() {
+    this.searchPhrase = new BehaviorSubject('');
+    this.selectedFilters = new BehaviorSubject([
+      'Domyślnie',
+      'Domyślnie',
+      'Domyślnie',
+    ]);
+    this.isMobileFiltersOpened = new BehaviorSubject(false);
+    this.expansionFlagsArray = new BehaviorSubject<boolean[]>([
+      false,
+      false,
+      false,
+    ]);
+    this.currentSearchPhrase = this.searchPhrase.asObservable();
+    this.currentSelectedFilters = this.selectedFilters.asObservable();
+    this.currentExpansionFlagsArray = this.expansionFlagsArray.asObservable();
+    this.currentIsMobileFiltersOpened =
+      this.isMobileFiltersOpened.asObservable();
+  }
+
+  public resetSelectedFilters(): void {
     this.setSelectedFilters(['Domyślnie', 'Domyślnie', 'Domyślnie']);
     this.setSearchPhrase('');
   }
-  applyFilters(isExpanded: boolean, transactionsArray: Transaction[][]): void {
+
+  public applyFilters(
+    isExpanded: boolean,
+    transactionsArray: Transaction[][]
+  ): void {
     this.replaceArray(transactionsArray, this.originalTransactionsArray);
     this.filterBySearchPhrase(transactionsArray);
     this.selectedFilters.getValue()[0] !== 'Domyślnie' &&
@@ -111,26 +133,31 @@ export class FiltersService {
     this.selectedFilters.getValue()[2] === 'Domyślnie' &&
       this.handleMenuExpansion(isExpanded, 2);
   }
-  setIsMobileFiltersOpened(isMobileFiltersOpened: boolean): void {
+
+  public setIsMobileFiltersOpened(isMobileFiltersOpened: boolean): void {
     this.isMobileFiltersOpened.next(isMobileFiltersOpened);
   }
-  setOriginalTransactionsArray(transactionsArray: Transaction[][]): void {
+
+  public setOriginalTransactionsArray(
+    transactionsArray: Transaction[][]
+  ): void {
     this.originalTransactionsArray = JSON.parse(
       JSON.stringify(transactionsArray)
     );
   }
-  setSelectedFilters(selectedFilters: string[]): void {
+
+  public setSelectedFilters(selectedFilters: string[]): void {
     this.selectedFilters.next(selectedFilters);
   }
-  setSearchPhrase(searchPhrase: string): void {
+
+  public setSearchPhrase(searchPhrase: string): void {
     this.searchPhrase.next(searchPhrase);
   }
-  get actualSelectedFilters(): string[] {
-    return this.selectedFilters.getValue();
-  }
+
   public changeMenuState(isExpanded: boolean, menuNumber: number): void {
     isExpanded ? this.closeMenu(menuNumber) : this.expandMenu(menuNumber);
   }
+
   public sortByDate(
     transactionArray: Transaction[][],
     sortType: 'asc' | 'desc'
@@ -151,6 +178,11 @@ export class FiltersService {
       }
     );
   }
+
+  public get actualSelectedFilters(): string[] {
+    return this.selectedFilters.getValue();
+  }
+
   private filterBySearchPhrase(transactionArray: Transaction[][]): void {
     if (this.searchPhrase.getValue() !== '') {
       const lowerCaseSearchPhrase = this.searchPhrase.getValue().toLowerCase();
@@ -163,6 +195,7 @@ export class FiltersService {
       this.replaceArray(transactionArray, filteredTransactionArray);
     }
   }
+
   private applySortFilter(
     isExpanded: boolean,
     transactionsArray: Transaction[][]
@@ -187,6 +220,7 @@ export class FiltersService {
     this.changeMenuState(isExpanded, 0);
     this.setIsMobileFiltersOpened(false);
   }
+
   private applyDurationFilter(
     isExpanded: boolean,
     transactionsArray: Transaction[][]
@@ -214,6 +248,7 @@ export class FiltersService {
     this.changeMenuState(isExpanded, 1);
     this.setIsMobileFiltersOpened(false);
   }
+
   private applyStatusFilter(
     isExpanded: boolean,
     transactionsArray: Transaction[][]
@@ -232,6 +267,7 @@ export class FiltersService {
     this.changeMenuState(isExpanded, 2);
     this.setIsMobileFiltersOpened(false);
   }
+
   private sortByTransactionAmount(
     transactionArray: Transaction[][],
     sortType: 'asc' | 'desc'
@@ -245,6 +281,7 @@ export class FiltersService {
       );
     });
   }
+
   private filterByStatus(
     transactionArray: Transaction[][],
     status: 'blockade' | 'settled'
@@ -257,6 +294,7 @@ export class FiltersService {
     );
     this.replaceArray(transactionArray, filteredTransactionArray);
   }
+
   private filterByDate(
     transactionArray: Transaction[][],
     dateDuration: 'day' | 'week' | 'month' | 'half-year' | 'year'
@@ -272,6 +310,7 @@ export class FiltersService {
     );
     this.replaceArray(transactionArray, filteredTransactionArray);
   }
+
   private replaceArray(
     transactionArray: Transaction[][],
     replacingTransactionArray: Transaction[][]
@@ -285,6 +324,7 @@ export class FiltersService {
       ...replacingTransactionArray
     );
   }
+
   private getDuration(
     dateDuration: 'day' | 'week' | 'month' | 'half-year' | 'year'
   ): Date {
@@ -312,10 +352,12 @@ export class FiltersService {
         return lastYear;
     }
   }
+
   private handleMenuExpansion(isExpanded: boolean, menuNumber: number): void {
     this.changeMenuState(isExpanded, menuNumber);
     this.setIsMobileFiltersOpened(false);
   }
+
   private expandMenu(menuNumber: number): void {
     switch (menuNumber) {
       case 0:
@@ -329,6 +371,7 @@ export class FiltersService {
         break;
     }
   }
+
   private closeMenu(menuNumber: number): void {
     const currentFlagsArray: boolean[] = this.expansionFlagsArray.getValue();
     currentFlagsArray[menuNumber] = false;

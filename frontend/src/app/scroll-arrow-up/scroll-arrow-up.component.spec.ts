@@ -11,11 +11,13 @@ describe('ScrollArrowUpComponent', () => {
   let component: ScrollArrowUpComponent;
   let fixture: ComponentFixture<ScrollArrowUpComponent>;
   let windowEventsService: jasmine.SpyObj<WindowEventsService>;
+
   beforeEach(async () => {
     const windowEventsServiceSpy = jasmine.createSpyObj('WindowEventsService', [
       'startPulsing',
       'scrollToTop',
     ]);
+
     await TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -28,6 +30,7 @@ describe('ScrollArrowUpComponent', () => {
         AnimationsProvider,
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(ScrollArrowUpComponent);
     component = fixture.componentInstance;
     windowEventsService = TestBed.inject(
@@ -35,12 +38,15 @@ describe('ScrollArrowUpComponent', () => {
     ) as jasmine.SpyObj<WindowEventsService>;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should call startPulsing on WindowEventsService when initialized', () => {
     expect(windowEventsService.startPulsing).toHaveBeenCalled();
   });
+
   it('should call scrollToTop on WindowEventsService when scrollToTop is called', () => {
     component.scrollToTop();
     expect(windowEventsService.scrollToTop).toHaveBeenCalled();

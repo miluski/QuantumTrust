@@ -5,27 +5,26 @@ import { Transaction } from '../../types/transaction';
 
 /**
  * @component SearchBarComponent
- *
- * A standalone Angular component that represents a search bar.
- * It allows users to input a search phrase and triggers search functionality.
+ * @description This component is responsible for managing the search bar functionality for filtering transactions.
  *
  * @selector app-search-bar
  * @templateUrl ./search-bar.component.html
  *
- * @property {Transaction[][]} transactionsArray - An array of transaction arrays passed as input.
- * @property {'global' | 'non-global'} filterServiceType - The type of filter service to use, defaults to 'global'.
+ * @class SearchBarComponent
  *
- * @method changeSearchPhrase - Updates the search phrase and sets it in the filters service.
- * @param {Event} event - The input event containing the new search phrase.
- *
- * @method onKeydown - Handles the keydown event, triggers search on 'Enter' key press.
- * @param {KeyboardEvent} event - The keyboard event.
- *
- * @method onSearch - Applies the search filter based on the filter service type.
+ * @property {Transaction[][]} transactionsArray - An array of arrays of transactions.
+ * @property {'global' | 'non-global'} filterServiceType - The type of filter service to be used.
+ * @property {string} searchPhrase - The search phrase entered by the user.
  *
  * @constructor
  * @param {FiltersService} filtersService - Service to manage filters.
- * @param {GlobalTransactionsFiltersService} globalTransactionsFiltersService - Service to manage global transaction filters.
+ * @param {GlobalTransactionsFiltersService} globalTransactionsFiltersService - Service to manage global transactions filters.
+ *
+ * @method changeSearchPhrase - Changes the search phrase based on user input.
+ * @param {Event} event - The input event.
+ * @method onKeydown - Handles the keydown event to trigger search on Enter key press.
+ * @param {KeyboardEvent} event - The keyboard event.
+ * @method onSearch - Applies the search filter based on the filter service type.
  */
 @Component({
   selector: 'app-search-bar',
@@ -33,22 +32,29 @@ import { Transaction } from '../../types/transaction';
 })
 export class SearchBarComponent {
   @Input() transactionsArray!: Transaction[][];
-  @Input() filterServiceType: 'global' | 'non-global' = 'global';
+  @Input() filterServiceType: 'global' | 'non-global';
+
   private searchPhrase: string = '';
+
   constructor(
     private filtersService: FiltersService,
     private globalTransactionsFiltersService: GlobalTransactionsFiltersService
-  ) {}
-  changeSearchPhrase(event: Event): void {
+  ) {
+    this.filterServiceType = 'global';
+  }
+
+  public changeSearchPhrase(event: Event): void {
     this.searchPhrase = (event.target as HTMLInputElement).value;
     this.filtersService.setSearchPhrase(this.searchPhrase);
   }
-  onKeydown(event: KeyboardEvent): void {
+
+  public onKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       this.onSearch();
     }
   }
-  onSearch(): void {
+
+  public onSearch(): void {
     this.filterServiceType === 'global'
       ? this.globalTransactionsFiltersService.setAppliedFilter(
           this.globalTransactionsFiltersService.actualAppliedFilter,

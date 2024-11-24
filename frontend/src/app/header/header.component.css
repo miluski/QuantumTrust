@@ -1,14 +1,12 @@
 .mat-mdc-tab-label-container {
-  border-bottom-width: 0px !important;
+  border-block-end-width: 0px !important;
 }
-
 .mat-mdc-tab .mdc-tab__text-label {
-  font-family: 'Roboto' !important;
+  font-family: "Roboto" !important;
   font-size: 20px !important;
-  font-weight: 100 !important; 
-  border-bottom-width: 0px !important;
+  font-weight: 100 !important;
+  border-block-end-width: 0px !important;
 }
-
 .transition-colors {
-	transition: color 0.3s ease;
+  transition: color 0.3s ease;
 }

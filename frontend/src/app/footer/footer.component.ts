@@ -4,52 +4,59 @@ import { ProductTypesService } from '../../services/product-types.service';
 import { UserService } from '../../services/user.service';
 
 /**
- * @fileoverview FooterComponent is a standalone Angular component that manages the footer section of the application.
- * It interacts with ProductTypesService and AppInformationStatesService to update and reflect the current state of
- * account type, card type, deposit type, and tab name.
+ * @component FooterComponent
+ * @description This component is responsible for displaying and managing the footer section of the application.
  *
- * @component
  * @selector app-footer
  * @templateUrl ./footer.component.html
  *
- * @class
- * @classdesc The FooterComponent class initializes with default values for account type, card type, and deposit type.
- * It subscribes to various observables to keep track of the current state and provides methods to change these states.
- * It also includes a computed property to determine if the footer can be sticky based on the current tab name and
- * transactions array length.
+ * @class FooterComponent
  *
- * @property {string} accountType - The current account type, default is 'personal'.
- * @property {string} cardType - The current card type, default is 'standard'.
- * @property {string} depositType - The current deposit type, default is 'timely'.
+ * @property {string} cardType - The type of card, default is 'standard'.
+ * @property {string} depositType - The type of deposit, default is 'timely'.
+ * @property {string} accountType - The type of account, default is 'personal'.
  * @property {string} currentTabName - The name of the current tab.
  * @property {number} currentTransactionsArrayLength - The length of the current transactions array.
  *
- * @method ngOnInit - Lifecycle hook that subscribes to observables from ProductTypesService and AppInformationStatesService.
- * @method changeAccountType - Changes the current account type.
- * @method changeCardType - Changes the current card type.
- * @method changeDepositType - Changes the current deposit type.
- * @method changeTabName - Changes the current tab name.
- * @method canBeSticky - Computed property that determines if the footer can be sticky based on the current tab name and transactions array length.
- *
+ * @constructor
+ * @param {UserService} userService - Service to manage user data.
  * @param {ProductTypesService} productTypesService - Service to manage product types.
  * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ *
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentAccountType, currentCardType, currentDepositType, currentTabName, and currentTransactionsArrayLength observables.
+ * @method changeAccountType - Changes the account type using the productTypesService.
+ * @param {string} accountType - The new account type to be set.
+ * @method changeCardType - Changes the card type using the productTypesService.
+ * @param {string} cardType - The new card type to be set.
+ * @method changeDepositType - Changes the deposit type using the productTypesService.
+ * @param {string} depositType - The new deposit type to be set.
+ * @method changeTabName - Changes the current tab name using the appInformationStatesService.
+ * @param {string} tabName - The new tab name to be set.
+ * @method canBeSticky - Determines if the footer can be sticky based on the current tab name and transactions array length.
+ * @returns {boolean} - Returns true if the footer can be sticky, otherwise false.
  */
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
 })
 export class FooterComponent {
-  public accountType: string = 'personal';
-  public cardType: string = 'standard';
-  public depositType: string = 'timely';
+  public cardType: string;
+  public depositType: string;
+  public accountType: string;
   public currentTabName!: string;
   public currentTransactionsArrayLength!: number;
+
   constructor(
     private userService: UserService,
     private productTypesService: ProductTypesService,
     private appInformationStatesService: AppInformationStatesService
-  ) {}
-  ngOnInit(): void {
+  ) {
+    this.cardType = 'standard';
+    this.depositType = 'timely';
+    this.accountType = 'personal';
+  }
+
+  public ngOnInit(): void {
     this.productTypesService.currentAccountType.subscribe(
       (accountType: string) => (this.accountType = accountType)
     );
@@ -67,16 +74,23 @@ export class FooterComponent {
         (this.currentTransactionsArrayLength = arrayLength)
     );
   }
-  changeAccountType(accountType: string): void {
+
+  public changeAccountType(accountType: string): void {
+    this.userService.logout();
     this.productTypesService.changeAccountType(accountType);
   }
-  changeCardType(cardType: string): void {
+
+  public changeCardType(cardType: string): void {
+    this.userService.logout();
     this.productTypesService.changeCardType(cardType);
   }
-  changeDepositType(depositType: string): void {
+
+  public changeDepositType(depositType: string): void {
+    this.userService.logout();
     this.productTypesService.changeDepositType(depositType);
   }
-  changeTabName(tabName: string): void {
+
+  public changeTabName(tabName: string): void {
     this.userService.logout();
     this.appInformationStatesService.changeTabName(tabName);
   }

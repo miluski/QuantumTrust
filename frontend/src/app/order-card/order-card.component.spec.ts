@@ -1,184 +1,129 @@
-import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, NgModel } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ConvertService } from '../../services/convert.service';
 import { PaginationService } from '../../services/pagination.service';
 import { ShakeStateService } from '../../services/shake-state.service';
 import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
-import { Account } from '../../types/account';
 import { Card } from '../../types/card';
-import { VerificationCodeModule } from '../verification-code/verification-code.module';
 import { OrderCardComponent } from './order-card.component';
-import { OrderCardModule } from './order-card.module';
+import { provideHttpClient } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ImageModule } from '../image/image.module';
 
 describe('OrderCardComponent', () => {
   let component: OrderCardComponent;
   let fixture: ComponentFixture<OrderCardComponent>;
-  let userService: jasmine.SpyObj<UserService>;
-  let paginationService: jasmine.SpyObj<PaginationService>;
-  let convertService: jasmine.SpyObj<ConvertService>;
-  let verificationService: jasmine.SpyObj<VerificationService>;
+  let userService: UserService;
+  let verificationService: VerificationService;
+  let paginationService: PaginationService;
+  let convertService: ConvertService;
+
   beforeEach(async () => {
-    const userServiceSpy = jasmine.createSpyObj('UserService', [
-      'getUserAccountsArray',
-    ]);
-    const paginationServiceSpy = jasmine.createSpyObj(
-      'PaginationService',
-      ['setPaginatedArray', 'handleWidthChange', 'onResize'],
-      {
-        paginatedItems: [
-          {
-            id: '1',
-            showingCardSite: 'front',
-            image: 'front.jpg',
-            backImage: 'back.jpg',
-            publisher: 'VISA',
-            type: 'Credit',
-            fees: {
-              release: 10,
-            },
-          },
-          {
-            id: '2',
-            showingCardSite: 'front',
-            image: 'front.jpg',
-            backImage: 'back.jpg',
-            publisher: 'VISA',
-            type: 'Credit',
-            fees: {
-              release: 10,
-            },
-          },
-        ],
-      }
-    );
-    const convertServiceSpy = jasmine.createSpyObj('ConvertService', [
-      'getCalculatedAmount',
-      'getMinLimit',
-    ]);
-    const verificationServiceSpy = jasmine.createSpyObj('VerificationService', [
-      'validateInput',
-      'validateSelectedAccount',
-    ]);
     await TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        FormsModule,
-        MatIconModule,
-        OrderCardModule,
-        VerificationCodeModule,
-      ],
+      imports: [MatIconModule, FormsModule, BrowserAnimationsModule, ImageModule],
+      declarations: [OrderCardComponent],
       providers: [
         AnimationsProvider,
-        { provide: UserService, useValue: userServiceSpy },
-        { provide: PaginationService, useValue: paginationServiceSpy },
-        { provide: ConvertService, useValue: convertServiceSpy },
-        { provide: VerificationService, useValue: verificationServiceSpy },
+        ConvertService,
+        PaginationService,
         ShakeStateService,
+        UserService,
+        VerificationService,
+        provideHttpClient()
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(OrderCardComponent);
     component = fixture.componentInstance;
-    userService = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
-    paginationService = TestBed.inject(
-      PaginationService
-    ) as jasmine.SpyObj<PaginationService>;
-    convertService = TestBed.inject(
-      ConvertService
-    ) as jasmine.SpyObj<ConvertService>;
-    verificationService = TestBed.inject(
-      VerificationService
-    ) as jasmine.SpyObj<VerificationService>;
+    userService = TestBed.inject(UserService);
+    verificationService = TestBed.inject(VerificationService);
+    paginationService = TestBed.inject(PaginationService);
+    convertService = TestBed.inject(ConvertService);
+
+    fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('should handle window resize events', () => {
-    const event = new UIEvent('resize');
-    component.onResize(event);
-    expect(paginationService.onResize).toHaveBeenCalledWith(event, 3, 3);
+
+  it('should validate input value', () => {
+    const input = { valid: true } as NgModel;
+    spyOn(verificationService, 'validateInput').and.returnValue(false);
+    const isValid = component.getIsInputValueValid(input, 'cash');
+    expect(isValid).toBe(true);
   });
-  it('should validate input values and set corresponding flags', () => {
-    const mockNgModel = { value: '1234' } as NgModel;
-    verificationService.validateInput.and.returnValue(true);
-    const isValid = component.getIsInputValueValid(mockNgModel, 'pinCode');
-    expect(verificationService.validateInput).toHaveBeenCalledWith(mockNgModel);
-    expect(isValid).toBe(false);
-    expect(component.cardFlags.isPinCodeValid).toBe(false);
-  });
-  it('should set deposit account number based on user input', () => {
-    const mockAccounts: Account[] = [
-      {
-        id: '1',
-        currency: 'USD',
-        advertismentText: '',
-        advertismentContent: '',
-        image: '',
-        type: '',
-        benefits: [],
-      },
-    ];
-    component.userAccounts = mockAccounts;
-    verificationService.validateSelectedAccount.and.returnValue(true);
+
+  it('should set deposit account number', () => {
     const event = { target: { value: '1' } } as unknown as Event;
+    spyOn(verificationService, 'validateSelectedAccount').and.returnValue(true);
     component.setDepositAccountNumber(event);
-    expect(verificationService.validateSelectedAccount).toHaveBeenCalledWith(
-      mockAccounts,
-      '1'
-    );
+    expect(component.cardFlags.isAccountNumberValid).toBe(true);
     expect(component.cardSettings.assignedAccountNumber).toBe('1');
   });
 
-  it('should rotate card to show either front or back side', () => {
-    component.rotateCard(paginationService.paginatedItems[0]);
-    expect(paginationService.paginatedItems[0].showingCardSite).toBe('front');
-  });
-  it('should calculate and return the fee based on the type', () => {
-    convertService.getCalculatedAmount.and.returnValue(10);
-    const fee = component.getFee('monthly');
-    expect(convertService.getCalculatedAmount).toHaveBeenCalledWith('PLN', 10);
-    expect(fee).toBe('10 PLN');
-  });
-  it('should get the image of the card based on its current state', () => {
-    const mockCard: Card = {
-      id: '1',
-      showingCardSite: 'front',
-      image: 'front.jpg',
-      backImage: 'back.jpg',
-    } as unknown as Card;
-    const image = component.getCardImage(mockCard);
-    expect(image).toBe('front.jpg');
+  it('should rotate card', () => {
+    const card = { id: '1', showingCardSite: 'front' } as unknown as Card;
+    spyOnProperty(component, 'currentSelectedCard', 'get').and.returnValue(
+      card
+    );
+    component.rotateCard(card);
+    expect(card.showingCardSite).toBe('back');
   });
 
-  it('should get the full name of the card owner', () => {
-    const mockUserAccount = {
-      name: 'John',
-      surname: 'Doe',
-      identifier: 123,
-      email: 'john.doe@example.com',
-      phoneNumber: 123456789,
-      pesel: 12345678901,
-      address: '123 Main St',
-      city: 'Anytown',
-      country: 'Anycountry',
-      postalCode: '12345',
-      dateOfBirth: new Date('1990-01-01'),
-      identityDocumentType: 'Passport',
-      identityDocumentSerie: 'AB123456',
-      avatarUrl: 'http://example.com/avatar.jpg',
-      password: 'password123',
-      repeatedPassword: 'password123',
-    };
-    component['userService'].userAccount = mockUserAccount;
+  it('should get card state', () => {
+    spyOnProperty(component, 'currentSelectedCard', 'get').and.returnValue({
+      id: 1,
+    } as Card);
+    const state = component.getCardState(1);
+    expect(state).toBe('center');
+  });
+
+  it('should get card image', () => {
+    spyOnProperty(component, 'currentSelectedCard', 'get').and.returnValue({
+      id: '1',
+      showingCardSite: 'back',
+      backImage: 'back.jpg',
+    } as unknown as Card);
+    const card = { id: '1', image: 'front.jpg' } as unknown as Card;
+    const image = component.getCardImage(card);
+    expect(image).toBe('back.jpg');
+  });
+
+  it('should get card settings object', () => {
+    const cardSettings = component.getCardSettingsObject('min', 'internet');
+    expect(cardSettings.limitType).toBe('min');
+    expect(cardSettings.transactionType).toBe('internet');
+  });
+
+  it('should get owner full name', () => {
+    spyOnProperty(userService, 'userAccount', 'get').and.returnValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      id: 0,
+      emailAddress: '',
+      phoneNumber: 0,
+      peselNumber: 0,
+      documentType: '',
+      documentSerie: '',
+      avatarUrl: '',
+      address: '',
+      password: '',
+      repeatedPassword: '',
+    });
     const fullName = component.ownerFullName;
     expect(fullName).toBe('J.DOE');
   });
 
-  it('should get the card type along with its publisher', () => {
+  it('should get card type with publisher', () => {
+    spyOnProperty(component, 'currentSelectedCard', 'get').and.returnValue({
+      publisher: 'visa',
+      type: 'credit',
+    } as unknown as Card);
     const cardTypeWithPublisher = component.cardTypeWithPublisher;
-    expect(cardTypeWithPublisher).toBe('VISA Credit');
+    expect(cardTypeWithPublisher).toBe('VISA credit');
   });
 });

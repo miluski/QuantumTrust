@@ -9,11 +9,13 @@ describe('GlobalTransactionsFiltersComponent', () => {
   let component: GlobalTransactionsFiltersComponent;
   let fixture: ComponentFixture<GlobalTransactionsFiltersComponent>;
   let globalTransactionsFiltersService: GlobalTransactionsFiltersService;
+
   beforeEach(async () => {
     const globalTransactionsFiltersServiceSpy = jasmine.createSpyObj(
       'GlobalTransactionsFiltersService',
       ['setAppliedFilter']
     );
+
     await TestBed.configureTestingModule({
       imports: [GlobalTransactionsFiltersModule, CommonModule],
       providers: [
@@ -24,15 +26,18 @@ describe('GlobalTransactionsFiltersComponent', () => {
         AnimationsProvider,
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(GlobalTransactionsFiltersComponent);
     component = fixture.componentInstance;
     globalTransactionsFiltersService = TestBed.inject(
       GlobalTransactionsFiltersService
     );
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  
   it('should set default applied filter to "Wszystkie" on init', () => {
     component.ngOnInit();
     expect(

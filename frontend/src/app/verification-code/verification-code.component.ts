@@ -8,36 +8,52 @@ import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 
 /**
- * @fileoverview VerificationCodeComponent handles the verification code input and validation process.
- * It provides various functionalities based on the action type such as logging in, opening an account, etc.
- * It also manages the display of alerts and navigation based on the verification result.
+ * @component VerificationCodeComponent
+ * @description This component is responsible for managing the verification code process for various user actions.
  *
- * @component
  * @selector app-verification-code
  * @templateUrl ./verification-code.component.html
- * @animations AnimationsProvider.animations
+ * @animations [AnimationsProvider.animations]
  *
  * @class VerificationCodeComponent
- * @property {string} actionType - The type of action being performed (e.g., 'Logowanie', 'Otwieranie konta').
- * @property {number} verificationCode - The verification code input by the user.
- * @property {boolean} isVerificationCodeValid - Indicates whether the verification code is valid.
+ *
+ * @property {string} actionType - The type of action being verified (e.g., 'Logowanie', 'Otwieranie konta').
+ * @property {number} verificationCode - The verification code entered by the user.
+ * @property {boolean} isVerificationCodeValid - Flag indicating if the verification code is valid.
  * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
  *
- * @method handleButtonClick - Handles the button click event, validates the verification code, and performs actions based on the result.
- * @method handleRedirectButtonClick - Handles the redirect button click event and changes the tab name if necessary.
- * @method redirectText - Returns the text for the redirect button based on the action type.
- * @method redirectLink - Returns the link for the redirect button based on the action type.
- * @method buttonText - Returns the text for the main button based on the action type.
- * @method ask - Returns the question text based on the action type.
- * @method buttonLink - Returns the link for the main button based on the action type.
- * @method setAlertCredentials - Sets the alert credentials (type, title, content) based on the action type and trigger type.
- * @method changeTabName - Changes the tab name using the AppInformationStatesService.
- *
  * @constructor
- * @param {Router} router - Angular Router service for navigation.
- * @param {VerificationService} verificationService - Service for verifying the verification code.
- * @param {AppInformationStatesService} appInformationStatesService - Service for managing application state information.
- * @param {AlertService} alertService - Service for managing alerts.
+ * @param {Router} router - The Angular Router service for navigation.
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {AlertService} alertService - Service to manage alerts.
+ * @param {UserService} userService - Service to manage user data.
+ *
+ * @method validateVerificationCode - Validates the verification code entered by the user.
+ * @method showPositiveAlert - Shows a positive alert indicating successful verification.
+ * @param {boolean} isUserLoggedIn - Flag indicating if the user is logged in.
+ * @method showNegativeAlert - Shows a negative alert indicating failed verification.
+ * @method setAlertCredentials - Sets the credentials for the alert based on the action type and trigger type.
+ * @param {'info' | 'warning' | 'error'} alertType - The type of alert.
+ * @param {string} alertTitle - The title of the alert.
+ * @param {string} alertIcon - The icon of the alert.
+ * @param {string} progressBarBorderColor - The border color of the progress bar.
+ * @param {'positive' | 'negative'} triggerType - The trigger type of the alert.
+ * @method handleRedirectButtonClick - Handles the redirect button click event.
+ * @method changeTabName - Changes the current tab name using the appInformationStatesService.
+ * @param {string} tabName - The new tab name to be set.
+ * @method handleButtonClick - Handles the button click event to validate the verification code and finalize the operation.
+ * @returns {Promise<void>} - Returns a promise that resolves when the operation is finalized.
+ * @method redirectText - Getter method to get the redirect text based on the action type.
+ * @returns {string} - Returns the redirect text.
+ * @method redirectLink - Getter method to get the redirect link based on the action type.
+ * @returns {string} - Returns the redirect link.
+ * @method buttonText - Getter method to get the button text based on the action type.
+ * @returns {string} - Returns the button text.
+ * @method ask - Getter method to get the ask text based on the action type.
+ * @returns {string} - Returns the ask text.
+ * @method buttonLink - Getter method to get the button link based on the action type.
+ * @returns {string} - Returns the button link.
  */
 @Component({
   selector: 'app-verification-code',
@@ -49,7 +65,7 @@ export class VerificationCodeComponent {
 
   public verificationCode!: number;
   public isVerificationCodeValid!: boolean;
-  public shakeStateService: ShakeStateService = new ShakeStateService();
+  public shakeStateService: ShakeStateService;
 
   constructor(
     private router: Router,
@@ -57,29 +73,11 @@ export class VerificationCodeComponent {
     private appInformationStatesService: AppInformationStatesService,
     private alertService: AlertService,
     private userService: UserService
-  ) {}
-
-  async handleButtonClick(): Promise<void> {
-    this.validateVerificationCode();
-    const isOpeningAccount = this.actionType === 'Otwieranie konta';
-    const isLoggingIn = this.actionType === 'Logowanie';
-    const isNotOnMainPage = this.router.url !== '/main-page';
-    const isUserLoggedIn: boolean = !(
-      (isOpeningAccount && isNotOnMainPage) ||
-      isLoggingIn
-    );
-    if (this.isVerificationCodeValid) {
-      const isOperationFinalized: boolean =
-        await this.userService.finalizeOperation();
-      isOperationFinalized
-        ? this.showPositiveAlert(isUserLoggedIn)
-        : this.showNegativeAlert();
-    } else {
-      this.showNegativeAlert();
-    }
+  ) {
+    this.shakeStateService = new ShakeStateService();
   }
 
-  validateVerificationCode(): void {
+  public validateVerificationCode(): void {
     this.isVerificationCodeValid =
       this.verificationService.validateVerificationCode(
         this.verificationCode
@@ -89,7 +87,7 @@ export class VerificationCodeComponent {
     }
   }
 
-  showPositiveAlert(isUserLoggedIn: boolean): void {
+  public showPositiveAlert(isUserLoggedIn: boolean): void {
     this.alertService.progressValue = 100;
     this.setAlertCredentials(
       'info',
@@ -104,7 +102,7 @@ export class VerificationCodeComponent {
       : setTimeout(() => this.router.navigateByUrl(this.buttonLink), 500);
   }
 
-  showNegativeAlert(): void {
+  public showNegativeAlert(isUserLoggedIn: boolean): void {
     this.alertService.progressValue = 100;
     this.setAlertCredentials(
       'error',
@@ -114,62 +112,9 @@ export class VerificationCodeComponent {
       'negative'
     );
     this.alertService.show();
-    setTimeout(() => this.router.navigate(['/home-page']), 500);
-  }
-
-  handleRedirectButtonClick(): void {
-    this.actionType === 'Logowanie' ||
-    (this.actionType === 'Otwieranie konta' && this.router.url !== '/main-page')
-      ? null
-      : this.changeTabName('Finanse');
-  }
-
-  get redirectText(): string {
-    switch (this.actionType) {
-      case 'Logowanie':
-        return 'Załóż je!';
-      case 'Otwieranie konta':
-        return this.router.url === '/main-page'
-          ? 'Powrót do finansów!'
-          : 'Zaloguj się!';
-      default:
-        return 'Powrót do finansów!';
-    }
-  }
-
-  get redirectLink(): string {
-    switch (this.actionType) {
-      case 'Logowanie':
-        return '/open-account';
-      case 'Otwieranie konta':
-        return this.router.url === '/main-page' ? '/main-page' : '/login';
-      default:
-        return '/main-page';
-    }
-  }
-
-  get buttonText(): string {
-    switch (this.actionType) {
-      case 'Logowanie':
-        return 'Zaloguj się';
-      case 'Otwieranie konta':
-        return 'Otwórz konto';
-      default:
-        return 'Zatwierdź';
-    }
-  }
-
-  get ask(): string {
-    switch (this.actionType) {
-      case 'Logowanie':
-        return 'Nie masz konta?';
-      case 'Otwieranie konta':
-        return this.router.url === '/main-page'
-          ? 'Zabłądziłeś?'
-          : 'Masz już konto?';
-      default:
-        return 'Zabłądziłeś?';
-    }
+    isUserLoggedIn
+      ? this.changeTabName('Finanse')
+      : setTimeout(() => this.userService.logout(), 500);
   }
 
   public setAlertCredentials(
@@ -232,6 +177,85 @@ export class VerificationCodeComponent {
     }
   }
 
+  public handleRedirectButtonClick(): void {
+    this.actionType === 'Logowanie' ||
+    (this.actionType === 'Otwieranie konta' && this.router.url !== '/main-page')
+      ? null
+      : this.changeTabName('Finanse');
+  }
+
+  public changeTabName(tabName: string) {
+    this.appInformationStatesService.changeTabName(tabName);
+  }
+
+  public get redirectText(): string {
+    switch (this.actionType) {
+      case 'Logowanie':
+        return 'Załóż je!';
+      case 'Otwieranie konta':
+        return this.router.url === '/main-page'
+          ? 'Powrót do finansów!'
+          : 'Zaloguj się!';
+      default:
+        return 'Powrót do finansów!';
+    }
+  }
+
+  public get redirectLink(): string {
+    switch (this.actionType) {
+      case 'Logowanie':
+        return '/open-account';
+      case 'Otwieranie konta':
+        return this.router.url === '/main-page' ? '/main-page' : '/login';
+      default:
+        return '/main-page';
+    }
+  }
+
+  public get buttonText(): string {
+    switch (this.actionType) {
+      case 'Logowanie':
+        return 'Zaloguj się';
+      case 'Otwieranie konta':
+        return 'Otwórz konto';
+      default:
+        return 'Zatwierdź';
+    }
+  }
+
+  public get ask(): string {
+    switch (this.actionType) {
+      case 'Logowanie':
+        return 'Nie masz konta?';
+      case 'Otwieranie konta':
+        return this.router.url === '/main-page'
+          ? 'Zabłądziłeś?'
+          : 'Masz już konto?';
+      default:
+        return 'Zabłądziłeś?';
+    }
+  }
+
+  public async handleButtonClick(): Promise<void> {
+    this.validateVerificationCode();
+    const isOpeningAccount = this.actionType === 'Otwieranie konta';
+    const isLoggingIn = this.actionType === 'Logowanie';
+    const isNotOnMainPage = this.router.url !== '/main-page';
+    const isUserLoggedIn: boolean = !(
+      (isOpeningAccount && isNotOnMainPage) ||
+      isLoggingIn
+    );
+    if (this.isVerificationCodeValid) {
+      const isOperationFinalized: boolean =
+        await this.userService.finalizeOperation();
+      isOperationFinalized
+        ? this.showPositiveAlert(isUserLoggedIn)
+        : this.showNegativeAlert(isUserLoggedIn);
+    } else {
+      this.showNegativeAlert(isUserLoggedIn);
+    }
+  }
+
   private get buttonLink(): string {
     switch (this.actionType) {
       case 'Logowanie':
@@ -241,9 +265,5 @@ export class VerificationCodeComponent {
       default:
         return '/main-page';
     }
-  }
-
-  public changeTabName(tabName: string) {
-    this.appInformationStatesService.changeTabName(tabName);
   }
 }

@@ -3,7 +3,7 @@ import { Card } from '../types/card';
 export const mockCards: Card[] = [
   {
     id: 1234567890123456,
-    assignedAccountId: 'PL 49 1020 2892 2276 3005 0000 0001',
+    assignedAccountNumber: 'PL 49 1020 2892 2276 3005 0000 0001',
     type: 'STANDARD',
     publisher: 'Visa',
     description: '',

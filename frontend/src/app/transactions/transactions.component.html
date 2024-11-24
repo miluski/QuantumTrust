@@ -1,83 +1,184 @@
-<div class="flex-col flex justify-start text-center bg-black text-white hyphens-auto py-10 select-none w-screen min-h-screen">
-    <div class="flex flex-row w-[95%] justify-between self-center">
-        <app-global-transactions-filters class="max-md:hidden w-[75%] justify-self-center self-center pb-5" />
-        <div class="flex flex-row space-x-10 self-end max-md:w-full justify-between max-md:self-center">
-            <div class="md:hidden flex flex-row cursor-pointer space-x-2 pt-5 group"
-                (click)="globalTransactionsFiltersService.isMobileFiltersOpened = true">
-                <i class="fa-solid fa-filter text-2xl group-hover:text-gray-400"></i>
-                <p class="font-roboto text-white text-lg font-light pt-1 group-hover:text-gray-400 text-nowrap">Filtry</p>
-            </div>
-            <app-search-bar class="self-center justify-self-start pb-10" filterServiceType="global" />
-            <div class="relative rounded-full min-w-8 min-h-8 w-8 h-8 bg-gray-500 hover:bg-gray-400 cursor-pointer inline-block items-center justify-center mt-5 max-lg:mb-14 justify-self-end"
-                matTooltip="Przejdź do wykonania nowego przelewu." (click)="changeTabName('NewTransfer')">
-                <hr class="absolute top-[50%] left-[10%] bg-black border-none shadow-none w-6 h-0.5" />
-                <hr class="absolute top-[50%] left-[10%] bg-black border-none shadow-none w-6 h-0.5 rotate-90" />
-            </div>
-        </div>
+<div
+  class="flex-col flex justify-start text-center bg-black text-white hyphens-auto py-10 select-none w-screen min-h-screen"
+>
+  <div class="flex flex-row w-[95%] justify-between self-center">
+    <app-global-transactions-filters
+      class="max-md:hidden w-[75%] justify-self-center self-center pb-5"
+    />
+    <div
+      class="flex flex-row space-x-10 self-end max-md:w-full justify-between max-md:self-center"
+    >
+      <div
+        class="md:hidden flex flex-row cursor-pointer space-x-2 pt-5 group"
+        (click)="globalTransactionsFiltersService.isMobileFiltersOpened = true"
+      >
+        <i class="fa-solid fa-filter text-2xl group-hover:text-gray-400"></i>
+        <p
+          class="font-roboto text-white text-lg font-light pt-1 group-hover:text-gray-400 text-nowrap"
+        >
+          Filtry
+        </p>
+      </div>
+      <app-search-bar
+        class="self-center justify-self-start pb-10"
+        filterServiceType="global"
+      />
+      <div
+        class="relative rounded-full min-w-8 min-h-8 w-8 h-8 bg-gray-500 hover:bg-gray-400 cursor-pointer inline-block items-center justify-center mt-5 max-lg:mb-14 justify-self-end"
+        matTooltip="Przejdź do wykonania nowego przelewu."
+        (click)="changeTabName('NewTransfer')"
+      >
+        <hr
+          class="absolute top-[50%] left-[10%] bg-black border-none shadow-none w-6 h-0.5"
+        />
+        <hr
+          class="absolute top-[50%] left-[10%] bg-black border-none shadow-none w-6 h-0.5 rotate-90"
+        />
+      </div>
     </div>
-    <table mat-table [dataSource]="globalTransactionsFiltersService.tableDataSource">
-        <ng-container matColumnDef="Tytuł">
-            <th mat-header-cell *matHeaderCellDef class="!bg-gray-500 !text-center !pt-5">
-                <p class="font-roboto text-xs md:text-lg font-normal text-white">Tytuł</p>
-            </th>
-            <td mat-cell *matCellDef="let element" class="!justify-center !text-center !pt-5 w-[40%]">
-                <p class="font-roboto text-xs md:text-lg font-light text-black text-center !min-w-[5%]">
-                    {{element.title}}</p>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="Data i godzina">
-            <th mat-header-cell *matHeaderCellDef class="!bg-gray-500 !text-center !pt-5">
-                <p class="font-roboto text-xs md:text-lg font-normal text-white">Data i godzina</p>
-            </th>
-            <td mat-cell *matCellDef="let element" class="!justify-center !text-center">
-                <div class="flex flex-col w-full h-full text-center pt-5">
-                    <p class="font-roboto text-xs md:text-lg font-light text-black">{{element.dateAndHour.date}}</p>
-                    <p class="font-roboto text-xs md:text-lg font-light text-gray-500">{{element.dateAndHour.hour}}</p>
-                </div>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="Numer konta">
-            <th mat-header-cell *matHeaderCellDef class="!bg-gray-500 !text-center !pt-5 max-md:!hidden">
-                <p class="font-roboto text-xs md:text-lg font-normal text-white">Numer konta</p>
-            </th>
-            <td mat-cell *matCellDef="let element" class="max-md:!hidden !justify-center !text-center">
-                <p class="font-roboto text-xs md:text-lg font-light text-black text-center max-xl:hidden text-nowrap">
-                    {{element.accountNumber}}
-                </p>
-                <p class="font-roboto text-xs md:text-lg font-light text-black text-center xl:hidden text-nowrap">
-                    {{convertService.getShortenedAccountId(element.accountNumber)}}
-                </p>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="Kwota">
-            <th mat-header-cell *matHeaderCellDef class="!bg-gray-500 !text-center !pt-5">
-                <p class="font-roboto text-xs md:text-lg font-normal text-white">Kwota</p>
-            </th>
-            <td mat-cell *matCellDef="let element" class="!justify-center !text-center">
-                <p class="font-roboto text-xs md:text-lg font-bold text-center text-nowrap" [ngClass]="{
-                        'text-green-500': element.type === 'incoming', 
-                        'text-red-500': element.type === 'outgoing'}">
-                    {{element.amountWithCurrency}}
-                </p>
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="Status">
-            <th mat-header-cell *matHeaderCellDef class="!bg-gray-500 !text-center !pt-5 max-sm:!hidden">
-                <p class="font-roboto text-xs md:text-lg font-normal text-white">Status</p>
-            </th>
-            <td mat-cell *matCellDef="let element" class="max-sm:!hidden !items-center">
-                <div class="flex flex-row rounded-2xl h-8 mb-5 text-center items-center justify-center" [ngClass]="{
-                            'bg-[#a2845e]': element.status === 'blockade', 
-                            'bg-gray-400': element.status === 'settled'}">
-                    <p class="font-roboto font-light text-xs pt-2 max-lg:text-xxs max-lg:pt-1">
-                        {{element.status === 'blockade' ? "Blokada" : "Rozliczona"}}
-                    </p>
-                </div>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[15, 20, 50]" showFirstLastButtons></mat-paginator>
+  </div>
+  <table
+    mat-table
+    [dataSource]="globalTransactionsFiltersService.tableDataSource"
+  >
+    <ng-container matColumnDef="Tytuł">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        class="!bg-gray-500 !text-center !pt-5"
+      >
+        <p class="font-roboto text-xs md:text-lg font-normal text-white">
+          Tytuł
+        </p>
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="!justify-center !text-center !pt-5 w-[40%]"
+      >
+        <p
+          class="font-roboto text-xs md:text-lg font-light text-black text-center !min-w-[5%]"
+        >
+          {{ element.title }}
+        </p>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="Data i godzina">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        class="!bg-gray-500 !text-center !pt-5"
+      >
+        <p class="font-roboto text-xs md:text-lg font-normal text-white">
+          Data i godzina
+        </p>
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="!justify-center !text-center"
+      >
+        <div class="flex flex-col w-full h-full text-center pt-5">
+          <p class="font-roboto text-xs md:text-lg font-light text-black">
+            {{ element.dateAndHour.date }}
+          </p>
+          <p class="font-roboto text-xs md:text-lg font-light text-gray-500">
+            {{ element.dateAndHour.hour }}
+          </p>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="Numer konta">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        class="!bg-gray-500 !text-center !pt-5 max-md:!hidden"
+      >
+        <p class="font-roboto text-xs md:text-lg font-normal text-white">
+          Numer konta
+        </p>
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="max-md:!hidden !justify-center !text-center"
+      >
+        <p
+          class="font-roboto text-xs md:text-lg font-light text-black text-center max-xl:hidden text-nowrap"
+        >
+          {{ element.assignedAccountNumber }}
+        </p>
+        <p
+          class="font-roboto text-xs md:text-lg font-light text-black text-center xl:hidden text-nowrap"
+        >
+          {{
+            convertService.getShortenedAccountId(element.assignedAccountNumber)
+          }}
+        </p>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="Kwota">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        class="!bg-gray-500 !text-center !pt-5"
+      >
+        <p class="font-roboto text-xs md:text-lg font-normal text-white">
+          Kwota
+        </p>
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="!justify-center !text-center"
+      >
+        <p
+          class="font-roboto text-xs md:text-lg font-bold text-center text-nowrap"
+          [ngClass]="{
+            'text-green-500': element.type === 'incoming',
+            'text-red-500': element.type === 'outgoing'
+          }"
+        >
+          {{ element.amountWithCurrency }}
+        </p>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="Status">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        class="!bg-gray-500 !text-center !pt-5 max-sm:!hidden"
+      >
+        <p class="font-roboto text-xs md:text-lg font-normal text-white">
+          Status
+        </p>
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="max-sm:!hidden !items-center"
+      >
+        <div
+          class="flex flex-row rounded-2xl h-8 mb-5 text-center items-center justify-center"
+          [ngClass]="{
+            'bg-[#a2845e]': element.status === 'blockade',
+            'bg-gray-400': element.status === 'settled'
+          }"
+        >
+          <p
+            class="font-roboto font-light text-xs pt-2 max-lg:text-xxs max-lg:pt-1"
+          >
+            {{ element.status === "blockade" ? "Blokada" : "Rozliczona" }}
+          </p>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <mat-paginator
+    [pageSizeOptions]="[15, 20, 50]"
+    showFirstLastButtons
+  ></mat-paginator>
 </div>
 <app-mobile-global-transactions-filters />

@@ -4,9 +4,7 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 
 /**
  * @component GuestHeaderComponent
- * @description
- * This component represents the header for guest users. It includes functionality to manage the current route and tab name,
- * and provides methods to change the tab name and toggle a drawer.
+ * @description This component is responsible for displaying and managing the header section for guest users.
  *
  * @selector app-guest-header
  * @templateUrl ./guest-header.component.html
@@ -14,49 +12,45 @@ import { AppInformationStatesService } from '../../services/app-information-stat
  * @class GuestHeaderComponent
  * @implements OnInit
  *
- * @property {string} currentRoute - The current route of the application.
  * @property {string} tabName - The name of the current tab.
+ * @property {string} currentRoute - The current route URL.
  *
  * @constructor
- * @param {Router} router - The Angular Router service.
+ * @param {Router} router - The Angular Router service for navigation.
  * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
  *
- * @method ngOnInit
- * @description
- * Lifecycle hook that is called after the component's view has been fully initialized. Subscribes to the currentTabName
- * observable to update the tabName property.
- *
- * @method changeTabName
- * @param {string} tabName - The new tab name to set.
- * @description
- * Changes the current tab name by calling the changeTabName method of the AppInformationStatesService.
- *
- * @method toggleDrawer
- * @description
- * Toggles the drawer by calling the toggleDrawer method of the AppInformationStatesService.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentTabName observable.
+ * @method changeTabName - Changes the current tab name using the appInformationStatesService.
+ * @param {string} tabName - The new tab name to be set.
+ * @method toggleDrawer - Toggles the drawer state using the appInformationStatesService.
  */
 @Component({
   selector: 'app-guest-header',
   templateUrl: './guest-header.component.html',
 })
 export class GuestHeaderComponent implements OnInit {
-  public currentRoute: string = '/';
-  public tabName: string = 'Konta';
+  public tabName: string;
+  public currentRoute: string;
+
   constructor(
     router: Router,
     private appInformationStatesService: AppInformationStatesService
   ) {
+    this.tabName = 'Konta';
     this.currentRoute = router.url;
   }
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     this.appInformationStatesService.currentTabName.subscribe(
       (currentTabName: string) => (this.tabName = currentTabName)
     );
   }
-  changeTabName(tabName: string) {
+
+  public changeTabName(tabName: string) {
     this.appInformationStatesService.changeTabName(tabName);
   }
-  toggleDrawer(): void {
+
+  public toggleDrawer(): void {
     this.appInformationStatesService.toggleDrawer();
   }
 }

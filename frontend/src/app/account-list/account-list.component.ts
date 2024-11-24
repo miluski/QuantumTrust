@@ -9,31 +9,31 @@ import { accountsObjectsArray } from '../../utils/accounts-objects-array';
 /**
  * @component AccountListComponent
  * @description This component is responsible for displaying a list of accounts.
- * It uses Angular's standalone component feature and includes animations.
+ * It uses Angular's standalone component feature and imports necessary modules.
  *
  * @selector app-account-list
  * @templateUrl ./account-list.component.html
  * @animations [AnimationsProvider.animations]
  *
+ * @class AccountListComponent
+ * @implements OnInit
  *
+ * @property {string} tabName - The name of the current tab.
  * @property {string} accountType - The type of account, default is 'personal'.
+ * @property {number} currentIndex - The current index in the accounts array.
  * @property {Account[]} accountsObjectsArray - An array of account objects.
- * @property {number} currentIndex - The current index in the account list.
  *
  * @constructor
+ * @param {Object} platformId - The platform ID for checking if the platform is a browser.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
  * @param {ProductTypesService} productTypeService - Service to manage product types.
  *
- * @method ngOnInit
- * @description Initializes the component and subscribes to the currentAccountType observable.
- *
- * @method changeAccountType
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentAccountType and currentTabName observables.
+ * @method changeAccountType - Changes the account type using the productTypeService.
  * @param {string} accountType - The new account type to be set.
- * @description Changes the account type using the ProductTypesService.
- *
- * @method isAccountIdEven
- * @param {string} accountId - The account ID to check.
- * @returns {boolean} - Returns true if the account ID is even, false otherwise.
- * @description Checks if the given account ID is an even number.
+ * @method isAccountIdEven - Checks if the account ID is even.
+ * @param {string} accountId - The ID of the account to be checked.
+ * @returns {boolean} - Returns true if the account ID is even, otherwise false.
  */
 @Component({
   selector: 'app-account-list',
@@ -41,16 +41,23 @@ import { accountsObjectsArray } from '../../utils/accounts-objects-array';
   animations: [AnimationsProvider.animations],
 })
 export class AccountListComponent implements OnInit {
-  public tabName: string = 'Konta';
-  public accountType: string = 'personal';
-  public accountsObjectsArray: Account[] = accountsObjectsArray;
-  public currentIndex: number = 0;
+  public tabName: string;
+  public accountType: string;
+  public currentIndex: number;
+  public accountsObjectsArray: Account[];
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private appInformationStatesService: AppInformationStatesService,
     private productTypeService: ProductTypesService
-  ) {}
-  ngOnInit(): void {
+  ) {
+    this.tabName = 'Konta';
+    this.accountType = 'personal';
+    this.currentIndex = 0;
+    this.accountsObjectsArray = accountsObjectsArray;
+  }
+
+  public ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.productTypeService.currentAccountType.subscribe(
         (accountType: string) => (this.accountType = accountType)
@@ -60,10 +67,12 @@ export class AccountListComponent implements OnInit {
       );
     }
   }
-  changeAccountType(accountType: string): void {
+
+  public changeAccountType(accountType: string): void {
     this.productTypeService.changeAccountType(accountType);
   }
-  isAccountIdEven(accountId: string): boolean {
+
+  public isAccountIdEven(accountId: string): boolean {
     return Number(accountId) % 2 === 0;
   }
 }

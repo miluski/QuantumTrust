@@ -3,17 +3,28 @@ import { Router } from '@angular/router';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 
 /**
- * HeaderComponent is responsible for displaying the appropriate header based on the current route and tab name.
- * It includes methods for changing the tab name and determining if the current route is part of the guest section.
+ * @component HeaderComponent
+ * @description This component is responsible for displaying and managing the header section of the application.
  *
- * @component
- * @selector 'app-header'
- * @templateUrl './header.component.html'
+ * @selector app-header
+ * @templateUrl ./header.component.html
  * @styleUrls ['./header.component.css']
  *
- * @method ngOnInit Initializes the component and subscribes to the currentTabName observable.
- * @method changeTabName Changes the current tab name using the AppInformationStatesService.
- * @method isGuestPart Determines if the current route is part of the guest section.
+ * @class HeaderComponent
+ * @implements OnInit
+ *
+ * @property {string} tabName - The name of the current tab.
+ * @property {string} currentRoute - The current route URL.
+ *
+ * @constructor
+ * @param {Router} router - The Angular Router service for navigation.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ *
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentTabName observable.
+ * @method changeTabName - Changes the current tab name using the appInformationStatesService.
+ * @param {string} tabName - The new tab name to be set.
+ * @method isGuestPart - Determines if the current route is not the main page.
+ * @returns {boolean} - Returns true if the current route is not the main page, otherwise false.
  */
 @Component({
   selector: 'app-header',
@@ -23,21 +34,24 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 export class HeaderComponent implements OnInit {
   public tabName!: string;
   public currentRoute!: string;
+
   constructor(
     router: Router,
     private appInformationStatesService: AppInformationStatesService
   ) {
     this.currentRoute = router.url;
   }
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     this.appInformationStatesService.currentTabName.subscribe(
       (tabName: string) => (this.tabName = tabName)
     );
   }
-  changeTabName(tabName: string): void {
+  public changeTabName(tabName: string): void {
     this.appInformationStatesService.changeTabName(tabName);
   }
-  isGuestPart(): boolean {
+
+  public isGuestPart(): boolean {
     return this.currentRoute !== '/main-page';
   }
 }

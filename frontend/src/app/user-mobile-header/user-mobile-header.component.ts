@@ -4,35 +4,33 @@ import { Router } from '@angular/router';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
-import { UserAccount } from '../../types/user-account';
 
 /**
- * @fileoverview UserMobileHeaderComponent is a standalone Angular component that represents the mobile header section for a user.
- * It includes functionality for managing the current route, tab name, and drawer visibility.
+ * @component UserMobileHeaderComponent
+ * @description This component is responsible for displaying and managing the header section for authenticated users on mobile devices.
  *
- * @component
  * @selector app-user-mobile-header
  * @templateUrl ./user-mobile-header.component.html
  *
  * @class UserMobileHeaderComponent
- * @implements OnInit, AfterViewInit, ImageComponent
  *
- * @property {MatDrawer} drawer - The drawer component reference.
- * @property {string} currentRoute - The current route of the application.
+ * @property {MatDrawer} drawer - Reference to the MatDrawer component.
  * @property {string} tabName - The name of the current tab.
- * @property {UserAccount} user - The user account information.
+ * @property {string} currentRoute - The current route URL.
  *
  * @constructor
- * @param {Router} router - The Angular Router service.
- * @param {UserService} userService - The service providing user account information.
- * @param {AppInformationStatesService} appInformationStatesService - The service managing application state information.
- * @param {AvatarService} avatarService - The service managing user avatars.
+ * @param {Router} router - The Angular Router service for navigation.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {AvatarService} avatarService - Service to manage user avatar.
  *
- * @method ngOnInit - Initializes the component and subscribes to the current tab name.
- * @method ngAfterViewInit - Sets the drawer reference in the application state service.
- * @method changeTabName - Changes the current tab name.
- * @param {string} tabName - The new tab name.
- * @method toggleDrawer - Toggles the visibility of the drawer.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentTabName observable and observes breakpoints.
+ * @method ngAfterViewInit - Lifecycle hook that is called after the component's view has been fully initialized. Changes the drawer reference in the appInformationStatesService.
+ * @method changeTabName - Changes the current tab name using the appInformationStatesService. Logs out the user if the tab name is 'Konta'.
+ * @param {string} tabName - The new tab name to be set.
+ * @method toggleDrawer - Toggles the drawer state using the appInformationStatesService.
+ * @method userFullName - Returns the full name of the user.
+ * @method avatarUrl - Returns the URL of the user's avatar.
  */
 @Component({
   selector: 'app-user-mobile-header',
@@ -40,32 +38,54 @@ import { UserAccount } from '../../types/user-account';
 })
 export class UserMobileHeaderComponent {
   @ViewChild('drawer') drawer!: MatDrawer;
-  public currentRoute: string = '/home-page';
-  public tabName: string = 'Konta';
-  public user: UserAccount = new UserAccount();
+
+  public tabName: string;
+  public currentRoute: string;
+
   constructor(
     router: Router,
-    private userService: UserService,
     private appInformationStatesService: AppInformationStatesService,
+    protected userService: UserService,
     protected avatarService: AvatarService
   ) {
+    this.tabName = 'Konta';
+    this.currentRoute = '/home-page';
     this.currentRoute = router.url;
-    this.user = userService.userAccount;
   }
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     this.appInformationStatesService.currentTabName.subscribe(
       (currentTabName: string) => (this.tabName = currentTabName)
     );
     this.appInformationStatesService.observeBreakpoints();
   }
-  ngAfterViewInit(): void {
+
+  public ngAfterViewInit(): void {
     this.appInformationStatesService.changeDrawer(this.drawer);
   }
-  changeTabName(tabName: string) {
-    this.userService.logout();
+
+  public changeTabName(tabName: string) {
+    if (tabName === 'Konta') {
+      this.userService.logout();
+    }
     this.appInformationStatesService.changeTabName(tabName);
   }
-  toggleDrawer(): void {
+
+  public toggleDrawer(): void {
     this.appInformationStatesService.toggleDrawer();
+  }
+
+  public get userFullName(): string {
+    return this.userService.userAccount
+      ? this.userService.userAccount.firstName +
+          ' ' +
+          this.userService.userAccount.lastName
+      : '';
+  }
+
+  public get avatarUrl(): string {
+    return this.userService.userAccount
+      ? this.userService.userAccount.avatarUrl
+      : '';
   }
 }

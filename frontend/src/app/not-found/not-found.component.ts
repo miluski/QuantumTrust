@@ -3,33 +3,38 @@ import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 
 /**
- * NotFoundComponent is a standalone Angular component that displays a "not found" page.
- * It includes a header and footer and subscribes to the drawer state from the AppInformationStatesService.
+ * @component NotFoundComponent
+ * @description This component is responsible for displaying a "not found" page when a user navigates to an invalid route.
  *
- * @selector 'app-not-found'
- * @templateUrl './not-found.component.html'
- * @imports [HeaderComponent, FooterComponent, CommonModule]
+ * @selector app-not-found
+ * @templateUrl ./not-found.component.html
  *
  * @class NotFoundComponent
+ * @implements OnInit
  *
- * @property {boolean} isDrawerOpened - Indicates whether the drawer is opened.
+ * @property {boolean} isDrawerOpened - Flag indicating if the drawer is opened.
  *
  * @constructor
- * @param {AppInformationStatesService} appInformationStatesService - Service to get the current drawer state.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {AlertService} alertService - Service to manage alerts.
  *
- * @method ngOnInit - Lifecycle hook that is called after the component's view has been initialized.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentIsDrawerOpened observable.
  */
 @Component({
   selector: 'app-not-found',
   templateUrl: './not-found.component.html',
 })
 export class NotFoundComponent implements OnInit {
-  public isDrawerOpened: boolean = false;
+  public isDrawerOpened: boolean;
+
   constructor(
     private appInformationStatesService: AppInformationStatesService,
     protected alertService: AlertService
-  ) {}
-  ngOnInit(): void {
+  ) {
+    this.isDrawerOpened = false;
+  }
+
+  public ngOnInit(): void {
     this.appInformationStatesService.currentIsDrawerOpened.subscribe(
       (isDrawerOpened: boolean) => (this.isDrawerOpened = isDrawerOpened)
     );

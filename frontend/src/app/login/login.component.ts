@@ -12,18 +12,30 @@ import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 
 /**
- * LoginComponent is responsible for handling the login process.
- * It includes form validation and state management for user account data.
+ * @component LoginComponent
+ * @description This component is responsible for managing the login process for users.
  *
- * @component
- * @selector 'app-login'
- * @templateUrl './login.component.html'
+ * @selector app-login
+ * @templateUrl ./login.component.html
  * @animations [AnimationsProvider.animations]
  *
  * @class LoginComponent
  *
- * @method verifyData Verifies the user data by validating the identifier and password fields.
- * @method setCanShake Sets the shake state based on the validation flags.
+ * @property {UserAccount} userAccount - The user account object containing user details.
+ * @property {UserAccountFlags} userAccountFlags - Flags indicating the validation status of user account fields.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
+ *
+ * @constructor
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {CryptoService} cryptoService - Service to handle data encryption.
+ * @param {HttpClient} httpClient - The Angular HTTP client for making HTTP requests.
+ * @param {AlertService} alertService - Service to manage alerts.
+ *
+ * @method verifyData - Verifies the user data by setting validation flags and checking if the user exists.
+ * @method getIsUserExists - Checks if the user exists by making an HTTP request.
+ * @method showAlert - Shows an alert indicating that the login data is invalid.
+ * @method setCanShake - Sets the shake state based on the validation flags and user existence.
  */
 @Component({
   selector: 'app-login',
@@ -31,9 +43,9 @@ import { UserAccountFlags } from '../../types/user-account-flags';
   animations: [AnimationsProvider.animations],
 })
 export class LoginComponent {
-  public shakeStateService: ShakeStateService = new ShakeStateService();
-  public userAccountFlags: UserAccountFlags = new UserAccountFlags();
-  public userAccount: UserAccount = new UserAccount();
+  public userAccount: UserAccount;
+  public userAccountFlags: UserAccountFlags;
+  public shakeStateService: ShakeStateService;
 
   constructor(
     private verificationService: VerificationService,
@@ -41,29 +53,18 @@ export class LoginComponent {
     private cryptoService: CryptoService,
     private httpClient: HttpClient,
     protected alertService: AlertService
-  ) {}
+  ) {
+    this.userAccount = new UserAccount();
+    this.userAccountFlags = new UserAccountFlags();
+    this.shakeStateService = new ShakeStateService();
+  }
 
-  verifyData(): void {
+  public verifyData(): void {
     this.userAccountFlags.isIdentifierValid =
       this.verificationService.validateIdentifier(this.userAccount.id);
     this.userAccountFlags.isPasswordValid =
       this.verificationService.validatePassword(this.userAccount.password);
     this.setCanShake();
-  }
-
-  private async setCanShake(): Promise<void> {
-    const isSomeDataInvalid: boolean =
-      this.userAccountFlags.isIdentifierValid === false ||
-      this.userAccountFlags.isPasswordValid === false;
-    const isUserExists: boolean = await this.getIsUserExists();
-    if (isSomeDataInvalid === false && isUserExists) {
-      this.userService.operation = 'login';
-      this.userService.sendVerificationEmail(this.userAccount.id.toString());
-      this.userService.setLoggingUserAccount(this.userAccount);
-    }
-    this.shakeStateService.setCurrentShakeState(
-      isSomeDataInvalid || !isUserExists ? 'shake' : 'none'
-    );
   }
 
   private getIsUserExists(): Promise<boolean> {
@@ -93,5 +94,20 @@ export class LoginComponent {
     this.alertService.alertType = 'error';
     this.alertService.progressBarBorderColor = '#fca5a5';
     this.alertService.show();
+  }
+
+  private async setCanShake(): Promise<void> {
+    const isSomeDataInvalid: boolean =
+      this.userAccountFlags.isIdentifierValid === false ||
+      this.userAccountFlags.isPasswordValid === false;
+    const isUserExists: boolean = await this.getIsUserExists();
+    if (isSomeDataInvalid === false && isUserExists) {
+      this.userService.operation = 'login';
+      this.userService.sendVerificationEmail(this.userAccount.id.toString());
+      this.userService.setLoggingUserAccount(this.userAccount);
+    }
+    this.shakeStateService.setCurrentShakeState(
+      isSomeDataInvalid || !isUserExists ? 'shake' : 'none'
+    );
   }
 }

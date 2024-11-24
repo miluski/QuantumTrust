@@ -9,11 +9,9 @@ import { Account } from '../../types/account';
 import { TransferFlags } from '../../types/transfer-flags';
 
 /**
- * @fileoverview NewTransferComponent handles the creation of new transfers.
- * It includes methods for validating transfer details, setting user accounts,
- * and handling UI events such as window resizing.
+ * @component NewTransferComponent
+ * @description This component is responsible for managing the new transfer process for users.
  *
- * @component
  * @selector app-new-transfer
  * @templateUrl ./new-transfer.component.html
  * @animations [AnimationsProvider.animations]
@@ -21,30 +19,32 @@ import { TransferFlags } from '../../types/transfer-flags';
  * @class NewTransferComponent
  * @implements OnInit
  *
+ * @property {Account[]} userAccounts - Array of user accounts.
  * @property {string} transferTitle - The title of the transfer.
- * @property {string} transferReceiverAccountId - The receiver's account ID.
- * @property {number} transferAmount - The amount to be transferred.
- * @property {ShakeStateService} shakeStateService - Service to manage shake state.
- * @property {TransferFlags} transferFlags - Flags indicating the validity of transfer fields.
+ * @property {number} transferAmount - The amount of the transfer.
+ * @property {TransferFlags} transferFlags - Flags indicating the validation status of transfer fields.
+ * @property {string} transferReceiverAccountId - The ID of the receiver's account.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
  *
  * @constructor
- * @param {UserService} userService - Service to handle user-related operations.
- * @param {VerificationService} verificationService - Service to handle verification operations.
- * @param {PaginationService} paginationService - Service to handle pagination.
- * @param {ConvertService} convertService - Service to handle conversions.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
+ * @param {ConvertService} convertService - Service to handle data conversion.
+ * @param {PaginationService} paginationService - Service to manage pagination.
  *
- * @method ngOnInit - Initializes the component and sets user accounts.
- * @method onResize - Handles window resize events.
+ * @method ngOnInit - Lifecycle hook that initializes the component.
+ * @method onResize - Handles the window resize event to adjust pagination.
  * @param {UIEvent} event - The resize event.
- * @method handleButtonClick - Handles button click events and validates fields.
- * @method setUserAccounts - Sets the user accounts and handles width changes.
- * @method get currentSelectedAccount - Retrieves the currently selected account.
- * @method get currentTransferAmount - Retrieves the current transfer amount.
+ * @method handleButtonClick - Handles the button click event to validate fields and set the shake state.
+ * @method setUserAccounts - Sets the user accounts and initializes pagination.
  * @method validateFields - Validates the transfer fields.
- * @method setIsTransferAmountValid - Validates the transfer amount.
- * @method setIsTransferTitleValid - Validates the transfer title.
- * @method setsTransferReceiverAccountNumberValid - Validates the receiver's account number.
- * @method get actualTransferFlagsArray - Retrieves an array of transfer flags.
+ * @method currentSelectedAccount - Getter method to get the current selected account.
+ * @method currentTransferAmount - Getter method to get the current transfer amount.
+ * @method setIsTransferAmountValid - Sets the validation flag for the transfer amount.
+ * @method setIsTransferTitleValid - Sets the validation flag for the transfer title.
+ * @method setsTransferReceiverAccountNumberValid - Sets the validation flag for the receiver's account number.
+ * @method actualTransferFlagsArray - Getter method to get the array of transfer validation flags.
+ * @returns {boolean[]} - Returns an array of transfer validation flags.
  */
 @Component({
   selector: 'app-new-transfer',
@@ -52,27 +52,36 @@ import { TransferFlags } from '../../types/transfer-flags';
   animations: [AnimationsProvider.animations],
 })
 export class NewTransferComponent implements OnInit {
+  private userAccounts!: Account[];
+
   public transferTitle!: string;
+  public transferAmount: number;
+  public transferFlags: TransferFlags;
   public transferReceiverAccountId!: string;
-  public transferAmount: number = 1;
-  public shakeStateService: ShakeStateService = new ShakeStateService();
-  public transferFlags: TransferFlags = new TransferFlags();
+  public shakeStateService: ShakeStateService;
+
   constructor(
     private userService: UserService,
     private verificationService: VerificationService,
     protected convertService: ConvertService,
     public paginationService: PaginationService
   ) {
+    this.transferAmount = 1;
+    this.transferFlags = new TransferFlags();
+    this.shakeStateService = new ShakeStateService();
     this.paginationService.paginationMethod = 'movableItems';
   }
-  ngOnInit(): void {
-    this.setUserAccounts();
-  }
+
   @HostListener('window:resize', ['$event'])
-  onResize(event: UIEvent): void {
+  public onResize(event: UIEvent): void {
     this.paginationService.onResize(event, 3, 3);
   }
-  handleButtonClick(): void {
+
+  public ngOnInit(): void {
+    this.setUserAccounts();
+  }
+
+  public handleButtonClick(): void {
     this.validateFields();
     const isSomeDataInvalid: boolean = this.actualTransferFlagsArray.some(
       (flag: boolean) => flag === false
@@ -81,20 +90,32 @@ export class NewTransferComponent implements OnInit {
       isSomeDataInvalid ? 'shake' : 'none'
     );
   }
-  async setUserAccounts(): Promise<void> {
-    const userAccounts: Account[] =
-      await this.userService.getUserAccountsArray();
-    this.paginationService.setPaginatedArray(userAccounts);
+
+  public setUserAccounts(): void {
+    this.userService.userAccounts.subscribe((newAccountsArray: Account[]) => {
+      if (newAccountsArray.length >= 1) {
+        this.userAccounts = newAccountsArray;
+        this.paginationService.setPaginatedArray(this.userAccounts);
+      }
+    });
     this.paginationService.handleWidthChange(window.innerWidth, 3, 3);
   }
-  get currentSelectedAccount(): Account {
+
+  public validateFields(): void {
+    this.setIsTransferAmountValid();
+    this.setIsTransferTitleValid();
+    this.setsTransferReceiverAccountNumberValid();
+  }
+
+  public get currentSelectedAccount(): Account {
     return this.paginationService.paginatedItems !== undefined
       ? this.paginationService.paginatedItems[1]
         ? this.paginationService.paginatedItems[1]
         : this.paginationService.paginatedItems[0]
       : new Account();
   }
-  get currentTransferAmount(): number {
+
+  public get currentTransferAmount(): number {
     this.transferAmount =
       this.currentSelectedAccount.balance &&
       this.transferAmount > this.currentSelectedAccount.balance
@@ -102,11 +123,7 @@ export class NewTransferComponent implements OnInit {
         : this.transferAmount;
     return this.transferAmount;
   }
-  public validateFields(): void {
-    this.setIsTransferAmountValid();
-    this.setIsTransferTitleValid();
-    this.setsTransferReceiverAccountNumberValid();
-  }
+
   private setIsTransferAmountValid(): void {
     this.transferFlags.isTransferAmountValid =
       this.verificationService.validateOperationAmount(
@@ -114,10 +131,12 @@ export class NewTransferComponent implements OnInit {
         this.currentSelectedAccount
       );
   }
+
   private setIsTransferTitleValid(): void {
     this.transferFlags.isTransferTitleValid =
       this.verificationService.validateTransferTitle(this.transferTitle);
   }
+
   private setsTransferReceiverAccountNumberValid(): void {
     const receiverAccountId: string =
       this.transferReceiverAccountId &&
@@ -132,6 +151,7 @@ export class NewTransferComponent implements OnInit {
         senderAccountId
       );
   }
+
   private get actualTransferFlagsArray(): boolean[] {
     return [
       this.transferFlags.isTransferAmountValid,

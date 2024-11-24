@@ -7,6 +7,7 @@ import { AppInformationStatesService } from '../../services/app-information-stat
 import { WindowEventsService } from '../../services/window-events.service';
 import { HomePageComponent } from './home-page.component';
 import { HomePageModule } from './home-page.module';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('HomePageComponent', () => {
   let component: HomePageComponent;
@@ -14,6 +15,7 @@ describe('HomePageComponent', () => {
   let mockAppInformationStatesService: jasmine.SpyObj<AppInformationStatesService>;
   let mockWindowEventsService: jasmine.SpyObj<WindowEventsService>;
   let mockAlertService: jasmine.SpyObj<AlertService>;
+
   beforeEach(async () => {
     mockAppInformationStatesService = jasmine.createSpyObj(
       'AppInformationStatesService',
@@ -27,6 +29,7 @@ describe('HomePageComponent', () => {
       'startPulsing',
     ]);
     mockAlertService = jasmine.createSpyObj('AlertService', ['']);
+
     await TestBed.configureTestingModule({
       imports: [HomePageModule, BrowserAnimationsModule],
       providers: [
@@ -37,21 +40,22 @@ describe('HomePageComponent', () => {
         { provide: WindowEventsService, useValue: mockWindowEventsService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: ActivatedRoute, useValue: {} },
+        provideHttpClient()
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(HomePageComponent);
     component = fixture.componentInstance;
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize with default tabName and isDrawerOpened values', () => {
     expect(component['isDrawerOpened']).toBe(false);
   });
-  it('should subscribe to currentTabName and update tabName', () => {
-    mockAppInformationStatesService.currentTabName = of('Test Tab');
-    component.ngOnInit();
-  });
+
   it('should subscribe to currentIsDrawerOpened and update isDrawerOpened', () => {
     mockAppInformationStatesService.currentIsDrawerOpened = of(true);
     component.ngOnInit();

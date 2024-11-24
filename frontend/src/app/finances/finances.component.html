@@ -45,8 +45,8 @@
       <div
         class="flex flex-col bg-gray-500 hover:bg-gray-400 rounded-3xl cursor-pointer p-3 max-sm:p-2"
         (click)="
-          changeTabName('SingleAccountTransactions');
-          setSelectedAccount(account)
+          setSelectedAccount(account);
+          changeTabName('SingleAccountTransactions')
         "
       >
         <div
@@ -359,9 +359,7 @@
               'bottom-4 pb-4 left-3.5': card.publisher === 'Mastercard'
             }"
           >
-            {{ userAccount.firstName.substring(0, 1).toUpperCase() }}.{{
-              userAccount.lastName.toUpperCase()
-            }}
+            {{ userService.userFullName }}
           </p>
           } @if(card.showingCardSite === 'back') {
           <p
@@ -382,7 +380,7 @@
               'left-2': card.showingCardSite === 'back',
               'right-2': card.showingCardSite === 'front'
             }"
-            (click)="changeTabName('CardSettings'); setSelectedCard(card)"
+            (click)="setSelectedCard(card); changeTabName('CardSettings')"
             matTooltip="Zmień ustawienia karty."
           ></i>
         </div>

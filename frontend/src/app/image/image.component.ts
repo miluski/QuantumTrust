@@ -4,28 +4,29 @@ import { MediaService } from '../../services/media.service';
 
 /**
  * @component ImageComponent
- *
- * @description
- * A standalone Angular component for rendering an image with various input properties and animations.
+ * @description This component is responsible for displaying an image with various input properties and animations.
  *
  * @selector app-image
+ * @templateUrl ./image.component.html
+ * @animations [AnimationsProvider.animations]
  *
- * @inputs
- * - `src: string` - The source URL of the image.
- * - `alt: string` - The alternative text for the image.
- * - `classString: string` - The CSS class to apply to the image.
- * - `click: () => void` - The click event handler for the image.
- * - `ngClass: Record<string, any>` - The dynamic classes to apply to the image.
+ * @class ImageComponent
  *
- * @properties
- * - `isLoaded: boolean` - A private property indicating whether the image has loaded.
+ * @property {string} src - The source URL of the image.
+ * @property {string} alt - The alternative text for the image.
+ * @property {string} ownClass - The custom class for the image.
+ * @property {Function} click - The click event handler for the image.
+ * @property {Function} error - The error event handler for the image.
+ * @property {Record<string, any>} ngClass - The ngClass directive for the image.
+ * @property {boolean} isLoaded - Flag indicating if the image is loaded.
  *
- * @getters
- * - `canRender: boolean` - A getter that returns whether the image can be rendered based on its load state.
+ * @constructor
+ * @param {MediaService} mediaService - Service to manage media-related operations.
  *
- * @methods
- * - `onload(): void` - A method to set the image as loaded.
- * - `onerror(): void` - A method to set the image as not loaded in case of an error.
+ * @method onload - Event handler for the image load event. Sets the isLoaded flag to true.
+ * @method onerror - Event handler for the image error event. Calls the error handler and sets the isLoaded flag to false.
+ * @method canRender - Getter method to determine if the image can be rendered.
+ * @returns {boolean} - Returns true if the image can be rendered, otherwise false.
  */
 @Component({
   selector: 'app-image',
@@ -39,19 +40,26 @@ export class ImageComponent {
   @Input() click!: () => void;
   @Input() error!: void;
   @Input() ngClass!: Record<string, any>;
-  private isLoaded: boolean = false;
-  constructor(protected mediaService: MediaService) {}
+
+  private isLoaded: boolean;
+
+  constructor(protected mediaService: MediaService) {
+    this.isLoaded = false;
+  }
+
+  public onload(): void {
+    this.isLoaded = true;
+  }
+
+  public onerror(): void {
+    this.error;
+    this.isLoaded = false;
+  }
+
   get canRender(): boolean {
     return (
       this.mediaService.getPhotoUrl(this.src) !== 'PHOTO_LOADING_SKELETON' ||
       this.isLoaded
     );
-  }
-  onload(): void {
-    this.isLoaded = true;
-  }
-  onerror(): void {
-    this.error;
-    this.isLoaded = false;
   }
 }

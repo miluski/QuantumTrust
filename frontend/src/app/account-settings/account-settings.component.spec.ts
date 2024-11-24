@@ -14,6 +14,7 @@ describe('AccountSettingsComponent', () => {
   let mockAvatarService: jasmine.SpyObj<AvatarService>;
   let mockUserService: jasmine.SpyObj<UserService>;
   let mockVerificationService: jasmine.SpyObj<VerificationService>;
+
   beforeEach(async () => {
     mockAvatarService = jasmine.createSpyObj('AvatarService', [
       'currentTemporaryAvatarUrl',
@@ -32,6 +33,7 @@ describe('AccountSettingsComponent', () => {
       'validateSelectedAvatarType',
       'validateSelectedAvatarSize',
     ]);
+
     await TestBed.configureTestingModule({
       imports: [AccountSettingsModule, BrowserAnimationsModule],
       providers: [
@@ -41,51 +43,58 @@ describe('AccountSettingsComponent', () => {
         ShakeStateService,
       ],
     }).compileComponents();
-  });
-  beforeEach(() => {
+
     fixture = TestBed.createComponent(AccountSettingsComponent);
     component = fixture.componentInstance;
     mockAvatarService.currentTemporaryAvatarUrl = of('');
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should subscribe to avatar URL changes on init', () => {
     mockAvatarService.currentTemporaryAvatarUrl = of('new-avatar-url');
     component.ngOnInit();
     expect(component.avatarUrl).toBe('new-avatar-url');
   });
+
   it('should validate name correctly', () => {
     component.userObject.firstName = 'Jane';
     mockVerificationService.validateFirstName.and.returnValue(true);
     component.validateName();
     expect(component.userAccountFlags.isNameValid).toBeTrue();
   });
+
   it('should validate surname correctly', () => {
     component.userObject.lastName = 'Smith';
     mockVerificationService.validateLastName.and.returnValue(true);
     component.validateSurname();
     expect(component.userAccountFlags.isSurnameValid).toBeTrue();
   });
+
   it('should validate email correctly', () => {
     component.userObject.emailAddress = 'jane.smith@example.com';
     mockVerificationService.validateEmail.and.returnValue(true);
     component.validateEmail();
     expect(component.userAccountFlags.isEmailValid).toBeTrue();
   });
+
   it('should validate phone number correctly', () => {
     component.userObject.phoneNumber = 987654321;
     mockVerificationService.validatePhoneNumber.and.returnValue(true);
     component.validatePhoneNumber();
     expect(component.userAccountFlags.isPhoneNumberValid).toBeTrue();
   });
+
   it('should validate address correctly', () => {
     component.userObject.address = '456 Another St';
     mockVerificationService.validateAddress.and.returnValue(true);
     component.validateAddress();
     expect(component.userAccountFlags.isAddressValid).toBeTrue();
   });
+
   it('should validate password correctly', () => {
     component.actualPassword = 'newpassword';
     component.userObject.password = 'newpassword';
@@ -93,6 +102,7 @@ describe('AccountSettingsComponent', () => {
     component.validatePassword();
     expect(component.userAccountFlags.isPasswordValid).toBeTrue();
   });
+
   it('should validate repeated password correctly', () => {
     component.actualPassword = 'newpassword';
     component.userObject.repeatedPassword = 'newpassword';
@@ -100,6 +110,7 @@ describe('AccountSettingsComponent', () => {
     component.validateNewPassword();
     expect(component.userAccountFlags.isRepeatedPasswordValid).toBeTrue();
   });
+
   it('should handle file selection correctly', () => {
     const file = new Blob(['avatar'], { type: 'image/png' });
     const event = { target: { files: [file] } } as unknown as Event;
@@ -108,6 +119,7 @@ describe('AccountSettingsComponent', () => {
     component.onFileSelected(event);
     expect(component.userAccountFlags.isAvatarValid).toBeTrue();
   });
+  
   it('should handle save button click correctly', () => {
     spyOn<any>(component, 'isSomeDataNotEqualWithOriginal').and.returnValue(
       true

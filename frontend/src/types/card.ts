@@ -9,7 +9,7 @@ export class Card {
   benefits!: string[];
   limits!: limits[];
   fees!: { release: number; monthly: number };
-  assignedAccountId?: string;
+  assignedAccountNumber?: string;
   pin?: number;
   expirationDate?: string;
   publisher?: 'Visa' | 'Mastercard';

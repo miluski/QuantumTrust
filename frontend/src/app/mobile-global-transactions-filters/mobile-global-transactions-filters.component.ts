@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { GlobalTransactionsFiltersService } from '../../services/global-transactions-filters.service';
 
 /**
- * Component for filtering global transactions on mobile devices.
+ * @component MobileGlobalTransactionsFiltersComponent
+ * @description This component is responsible for displaying and managing the global transactions filters for mobile view.
  *
  * @selector app-mobile-global-transactions-filters
  * @templateUrl ./mobile-global-transactions-filters.component.html
@@ -11,10 +12,9 @@ import { GlobalTransactionsFiltersService } from '../../services/global-transact
  * @implements OnInit
  *
  * @constructor
- * @param {GlobalTransactionsFiltersService} globalTransactionsFiltersService - Service for managing global transaction filters.
+ * @param {GlobalTransactionsFiltersService} globalTransactionsFiltersService - Service to manage global transactions filters.
  *
- * @method ngOnInit
- * @description Initializes the component and sets the default applied filter to 'Wszystkie'.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Sets the applied filter to 'Wszystkie'.
  */
 @Component({
   selector: 'app-mobile-global-transactions-filters',
@@ -24,7 +24,8 @@ export class MobileGlobalTransactionsFiltersComponent implements OnInit {
   constructor(
     protected globalTransactionsFiltersService: GlobalTransactionsFiltersService
   ) {}
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     this.globalTransactionsFiltersService.setAppliedFilter('Wszystkie', '');
   }
 }

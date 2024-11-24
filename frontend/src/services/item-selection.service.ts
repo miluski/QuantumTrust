@@ -6,88 +6,74 @@ import { Transaction } from '../types/transaction';
 import { UserService } from './user.service';
 
 /**
- * @fileoverview ItemSelectionService manages the selection of user accounts and cards.
- * It provides functionalities to set the selected account and card, and to retrieve user transactions based on the selected item.
- *
- * @service
- * @providedIn root
- *
  * @class ItemSelectionService
- * @property {Card[]} userCards - The array of user cards.
- * @property {BehaviorSubject<Account>} selectedAccount - The currently selected account.
- * @property {BehaviorSubject<Card>} selectedCard - The currently selected card.
- * @property {Observable<Account>} currentAccount - Observable for the currently selected account.
- * @property {Observable<Card>} currentCard - Observable for the currently selected card.
+ * @description This service is responsible for managing the selection of items such as accounts and cards.
  *
- * @method setSelectedAccount - Sets the selected account.
- * @param {Account} selectedAccount - The account to select.
- * @method setSelectedCard - Sets the selected card.
- * @param {Card} selectedCard - The card to select.
- * @method getUserTransactions - Retrieves user transactions based on the selected item type.
- * @param {'account' | 'card'} itemType - The type of item to filter transactions by.
- * @returns {Promise<Transaction[]>} - A promise that resolves to an array of transactions.
- * @method setUserCardsArray - Sets the array of user cards.
- * @method isTransactionAccountIdEqualToItemId - Checks if the transaction account ID matches the selected item ID.
- * @param {'account' | 'card'} itemType - The type of item to check.
- * @param {Transaction} transaction - The transaction to check.
- * @returns {boolean} - True if the transaction account ID matches the selected item ID, false otherwise.
- * @method isAccountIdAssignedToCardEqualToItemId - Checks if the account ID assigned to a card matches the selected account ID.
- * @param {'account' | 'card'} itemType - The type of item to check.
- * @param {Transaction} transaction - The transaction to check.
- * @returns {boolean} - True if the account ID assigned to a card matches the selected account ID, false otherwise.
+ * @providedIn 'root'
+ *
+ * @property {BehaviorSubject<Card>} selectedCard - The currently selected card.
+ * @property {BehaviorSubject<Account>} selectedAccount - The currently selected account.
+ * @property {Card[]} userCards - Array of user cards.
+ * @property {Observable<Card>} currentCard - Observable for the currently selected card.
+ * @property {Observable<Account>} currentAccount - Observable for the currently selected account.
  *
  * @constructor
- * @param {UserService} userService - Service for managing user data.
+ * @param {UserService} userService - Service to manage user data.
+ *
+ * @method setSelectedAccount - Sets the currently selected account.
+ * @param {Account} selectedAccount - The account to be selected.
+ * @method setSelectedCard - Sets the currently selected card.
+ * @param {Card} selectedCard - The card to be selected.
+ * @method isTransactionAccountIdEqualToItemId - Checks if the transaction's account ID is equal to the selected item's ID.
+ * @param {'account' | 'card'} itemType - The type of item to check.
+ * @param {Transaction} transaction - The transaction to check.
+ * @returns {boolean} - Returns true if the transaction's account ID is equal to the selected item's ID, otherwise false.
+ * @method isAccountIdAssignedToCardEqualToItemId - Checks if the account ID assigned to the card is equal to the selected item's ID.
+ * @param {'account' | 'card'} itemType - The type of item to check.
+ * @param {Transaction} transaction - The transaction to check.
+ * @returns {boolean} - Returns true if the account ID assigned to the card is equal to the selected item's ID, otherwise false.
+ * @method setUserCardsArray - Sets the array of user cards by subscribing to the userCards observable.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class ItemSelectionService {
-  private selectedAccount: BehaviorSubject<Account>;
   private selectedCard: BehaviorSubject<Card>;
+  private selectedAccount: BehaviorSubject<Account>;
+
   public userCards!: Card[];
-  public currentAccount: Observable<Account>;
   public currentCard: Observable<Card>;
+  public currentAccount: Observable<Account>;
+
   constructor(private userService: UserService) {
-    this.selectedAccount = new BehaviorSubject(new Account());
     this.selectedCard = new BehaviorSubject(new Card());
-    this.currentAccount = this.selectedAccount.asObservable();
+    this.selectedAccount = new BehaviorSubject(new Account());
     this.currentCard = this.selectedCard.asObservable();
+    this.currentAccount = this.selectedAccount.asObservable();
     this.setUserCardsArray();
   }
-  setSelectedAccount(selectedAccount: Account): void {
+
+  public setSelectedAccount(selectedAccount: Account): void {
     this.selectedAccount.next(selectedAccount);
   }
-  setSelectedCard(selectedCard: Card): void {
+
+  public setSelectedCard(selectedCard: Card): void {
     this.selectedCard.next(selectedCard);
   }
-  public async getUserTransactions(
-    itemType: 'account' | 'card'
-  ): Promise<Transaction[]> {
-    let userTransactions: Transaction[] =
-      await this.userService.getUserTransactionsArray();
-    userTransactions = userTransactions.filter(
-      (transaction: Transaction) =>
-        this.isTransactionAccountIdEqualToItemId(itemType, transaction) ||
-        this.isAccountIdAssignedToCardEqualToItemId(itemType, transaction)
-    );
-    return userTransactions;
-  }
-  private async setUserCardsArray(): Promise<void> {
-    this.userCards = await this.userService.getUserCardsArray();
-  }
-  private isTransactionAccountIdEqualToItemId(
+
+  public isTransactionAccountIdEqualToItemId(
     itemType: 'account' | 'card',
     transaction: Transaction
   ): boolean {
     return (
-      transaction.accountNumber ===
+      String(transaction.assignedAccountNumber) ===
       (itemType === 'account'
-        ? this.selectedAccount.getValue().id
-        : this.selectedCard.getValue().id)
+        ? String(this.selectedAccount.getValue().id)
+        : String(this.selectedCard.getValue().id))
     );
   }
-  private isAccountIdAssignedToCardEqualToItemId(
+
+  public isAccountIdAssignedToCardEqualToItemId(
     itemType: 'account' | 'card',
     transaction: Transaction
   ): boolean {
@@ -95,11 +81,21 @@ export class ItemSelectionService {
       return false;
     }
     return itemType === 'account'
-      ? this.userCards.some(
-          (card: Card) =>
-            transaction.accountNumber === card.id &&
-            card.assignedAccountId === this.selectedAccount.getValue().id
-        )
+      ? this.userCards.some((card: Card) => {
+          return (
+            String(transaction.assignedAccountNumber) === String(card.id) &&
+            String(card.assignedAccountNumber) ===
+              String(this.selectedAccount.getValue().id)
+          );
+        })
       : false;
+  }
+
+  public setUserCardsArray(): void {
+    this.userService.userCards.subscribe((newUserCards: Card[]) => {
+      if (newUserCards.length >= 1) {
+        this.userCards = newUserCards;
+      }
+    });
   }
 }

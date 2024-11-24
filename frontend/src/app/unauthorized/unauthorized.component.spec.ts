@@ -5,17 +5,17 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ProductTypesService } from '../../services/product-types.service';
-import { FooterComponent } from '../footer/footer.component';
-import { HeaderComponent } from '../header/header.component';
-import { UnauthorizedComponent } from './unauthorized.component';
-import { HeaderModule } from '../header/header.module';
 import { FooterModule } from '../footer/footer.module';
+import { HeaderModule } from '../header/header.module';
+import { UnauthorizedComponent } from './unauthorized.component';
 import { UnauthorizedModule } from './unauthorized.module';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('UnauthorizedComponent', () => {
   let component: UnauthorizedComponent;
   let fixture: ComponentFixture<UnauthorizedComponent>;
   let appInformationStatesService: AppInformationStatesService;
+
   beforeEach(async () => {
     const mockRouter = {
       url: '/test-route',
@@ -43,6 +43,7 @@ describe('UnauthorizedComponent', () => {
     mockAppInformationStatesService.currentTabName = of(
       'SingleAccountTransactions'
     );
+
     await TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -68,19 +69,24 @@ describe('UnauthorizedComponent', () => {
           provide: ActivatedRoute,
           useValue: {},
         },
+        provideHttpClient()
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(UnauthorizedComponent);
     component = fixture.componentInstance;
     appInformationStatesService = TestBed.inject(AppInformationStatesService);
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize isDrawerOpened to false', () => {
     expect(component.isDrawerOpened).toBeFalse();
   });
+
   it('should subscribe to currentIsDrawerOpened and update isDrawerOpened', () => {
     const newDrawerState = true;
     appInformationStatesService.currentIsDrawerOpened = of(newDrawerState);

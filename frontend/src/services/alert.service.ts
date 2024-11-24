@@ -1,38 +1,49 @@
 import { Injectable } from '@angular/core';
 
 /**
- * @fileoverview AlertService manages the display and timing of alert messages.
- * It provides functionalities to show and close alerts, and updates the progress value based on a countdown timer.
- *
- * @service
- * @providedIn root
- *
  * @class AlertService
- * @property {number} totalSeconds - The total number of seconds for the alert countdown.
- * @property {number} secondsLeftToClose - The number of seconds left before the alert automatically closes.
- * @property {boolean} isOpened - Indicates whether the alert is currently opened.
- * @property {number} progressValue - The current progress value of the alert countdown.
- * @property {'info' | 'warning' | 'error'} alertType - The type of alert being displayed.
- * @property {string} alertContent - The content of the alert message.
- * @property {string} alertTitle - The title of the alert message.
+ * @description This service is responsible for managing alerts in the application.
  *
- * @method show - Displays the alert and starts the countdown timer.
+ * @providedIn 'root'
+ *
+ * @property {NodeJS.Timeout} interval - The interval for updating the progress bar.
+ * @property {number} secondsLeftToClose - The number of seconds left to close the alert.
+ * @property {boolean} isOpened - Flag indicating if the alert is opened.
+ * @property {string} alertIcon - The icon of the alert.
+ * @property {string} alertTitle - The title of the alert.
+ * @property {string} alertContent - The content of the alert.
+ * @property {number} progressValue - The progress value of the progress bar.
+ * @property {string} progressBarBorderColor - The border color of the progress bar.
+ * @property {'info' | 'warning' | 'error'} alertType - The type of the alert.
+ *
+ * @constructor
+ *
+ * @method show - Shows the alert and starts the interval for updating the progress bar.
  * @method close - Closes the alert.
- * @method updateProgress - Updates the progress value based on the remaining time.
+ * @method runIntervalFn - Runs the interval function to update the progress bar and close the alert after 30 seconds.
+ * @method updateProgress - Updates the progress value of the progress bar.
+ * @method resetCredentials - Resets the credentials of the alert.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AlertService {
-  private secondsLeftToClose: number = 30;
-  private interval!: NodeJS.Timeout;
-  public isOpened: boolean = false;
-  public progressValue: number = 100;
-  public alertType!: 'info' | 'warning' | 'error';
-  public alertContent!: string;
-  public alertTitle!: string;
+  private interval!: any;
+  private secondsLeftToClose: number;
+
+  public isOpened: boolean;
   public alertIcon!: string;
+  public alertTitle!: string;
+  public alertContent!: string;
+  public progressValue: number;
   public progressBarBorderColor!: string;
+  public alertType!: 'info' | 'warning' | 'error';
+
+  constructor() {
+    this.secondsLeftToClose = 30;
+    this.progressValue = 100;
+    this.isOpened = false;
+  }
 
   public show(): void {
     this.resetCredentials();

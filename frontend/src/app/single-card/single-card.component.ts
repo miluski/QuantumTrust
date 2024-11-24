@@ -7,9 +7,9 @@ import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-object
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 
 /**
- * @fileoverview SingleCardComponent is a standalone Angular component that displays details of a single card, including Mastercard and Visa card details, and a list of frequently asked questions and answers. It uses various Angular modules and components, and includes animations.
+ * @component SingleCardComponent
+ * @description This component is responsible for displaying and managing a single card view.
  *
- * @component
  * @selector app-single-card
  * @templateUrl ./single-card.component.html
  * @animations [AnimationsProvider.animations]
@@ -17,47 +17,24 @@ import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
  * @class SingleCardComponent
  * @implements OnInit
  *
- * @property {Card} mastercardObject - Object representing the Mastercard details.
- * @protected
- *
- * @property {Card} visaCardObject - Object representing the Visa card details.
- * @protected
- *
- * @property {Question[]} questionsAndAnswersPairs - Array of questions and answers related to the card.
- * @protected
- *
- * @property {string} cardType - Type of the card, default is 'standard'.
- * @private
+ * @property {string} cardType - The type of card, default is 'standard'.
+ * @property {Card} visaCardObject - The Visa card object containing card details.
+ * @property {Card} mastercardObject - The MasterCard object containing card details.
+ * @property {Question[]} questionsAndAnswersPairs - An array of questions and answers related to the card.
  *
  * @constructor
  * @param {ProductTypesService} productTypesService - Service to manage product types.
  *
- * @method ngOnInit
- * @description Lifecycle hook that is called after data-bound properties of a directive are initialized.
- *
- * @method initializeFields
- * @description Initializes the fields for the component, fetching card details and setting up questions and answers.
- * @protected
- *
- * @method changeStateOfQuestionAnswer
- * @description Toggles the state of a question and answer pair.
- * @param {number} id - The ID of the question and answer pair to toggle.
- * @public
- *
- * @method changeCardType
- * @description Changes the card type and updates the service.
- * @param {string} cardType - The new card type to set.
- * @public
- *
- * @method getVisaCardObject
- * @description Fetches the Visa card object based on the current card type.
- * @private
- * @returns {Card} The Visa card object.
- *
- * @method getMastercardObject
- * @description Fetches the Mastercard object based on the current card type.
- * @private
- * @returns {Card} The Mastercard object.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentCardType observable and initializes fields.
+ * @method initializeFields - Initializes the card objects and questions and answers pairs.
+ * @method changeStateOfQuestionAnswer - Changes the state of a question and answer pair.
+ * @param {number} id - The ID of the question and answer pair to be changed.
+ * @method changeCardType - Changes the card type using the productTypesService.
+ * @param {string} cardType - The new card type to be set.
+ * @method getVisaCardObject - Gets the Visa card object based on the card type.
+ * @returns {Card} - Returns the Visa card object.
+ * @method getMastercardObject - Gets the MasterCard object based on the card type.
+ * @returns {Card} - Returns the MasterCard object.
  */
 @Component({
   selector: 'app-single-card',
@@ -65,19 +42,24 @@ import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
   animations: [AnimationsProvider.animations],
 })
 export class SingleCardComponent implements OnInit {
-  public mastercardObject!: Card;
+  public cardType: string;
   public visaCardObject!: Card;
+  public mastercardObject!: Card;
   public questionsAndAnswersPairs!: Question[];
-  public cardType: string = 'standard';
-  constructor(private productTypesService: ProductTypesService) {}
-  ngOnInit(): void {
+
+  constructor(private productTypesService: ProductTypesService) {
+    this.cardType = 'standard';
+  }
+
+  public ngOnInit(): void {
     this.productTypesService.currentCardType.subscribe((cardType: string) => {
       this.cardType = cardType;
       this.initializeFields();
     });
     this.initializeFields();
   }
-  initializeFields(): void {
+
+  public initializeFields(): void {
     this.visaCardObject = this.getVisaCardObject();
     this.mastercardObject = this.getMastercardObject();
     this.questionsAndAnswersPairs = [
@@ -107,18 +89,22 @@ export class SingleCardComponent implements OnInit {
       },
     ];
   }
-  changeStateOfQuestionAnswer(id: number): void {
+
+  public changeStateOfQuestionAnswer(id: number): void {
     this.questionsAndAnswersPairs[id].isOpened =
       !this.questionsAndAnswersPairs[id].isOpened;
   }
-  changeCardType(cardType: string): void {
+
+  public changeCardType(cardType: string): void {
     this.productTypesService.changeCardType(cardType);
   }
+
   private getVisaCardObject(): Card {
     return visaCardsObjectsArray.find(
       (card: Card) => card.type === this.cardType.toUpperCase()
     ) as Card;
   }
+
   private getMastercardObject(): Card {
     return mastercardCardsObjectsArray.find(
       (card: Card) => card.type === this.cardType.toUpperCase()

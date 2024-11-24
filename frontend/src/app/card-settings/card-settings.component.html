@@ -81,9 +81,7 @@
               '-bottom-1.5 left-3.5': card.publisher === 'Mastercard'
             }"
           >
-            {{ userAccount.firstName.substring(0, 1).toUpperCase() }}.{{
-              userAccount.lastName.toUpperCase()
-            }}
+            {{userService.userFullName}}
           </p>
           } @if(card.showingCardSite === 'back') {
           <p

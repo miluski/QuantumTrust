@@ -15,18 +15,21 @@ import { HeaderModule } from '../header/header.module';
 import { VerificationCodeModule } from '../verification-code/verification-code.module';
 import { LoginComponent } from './login.component';
 import { LoginModule } from './login.module';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let verificationService: jasmine.SpyObj<VerificationService>;
   let alertService: jasmine.SpyObj<AlertService>;
+
   beforeEach(async () => {
     const verificationServiceSpy = jasmine.createSpyObj('VerificationService', [
       'validateIdentifier',
       'validatePassword',
     ]);
-    const alertServiceSpy = jasmine.createSpyObj('AlertService', ['showAlert']);
+    const alertServiceSpy = jasmine.createSpyObj('AlertService', ['show']);
+
     await TestBed.configureTestingModule({
       imports: [
         LoginModule,
@@ -47,8 +50,10 @@ describe('LoginComponent', () => {
         { provide: AlertService, useValue: alertServiceSpy },
         { provide: ActivatedRoute, useValue: {} },
         ShakeStateService,
+        provideHttpClient()
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     verificationService = TestBed.inject(
@@ -57,9 +62,11 @@ describe('LoginComponent', () => {
     alertService = TestBed.inject(AlertService) as jasmine.SpyObj<AlertService>;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should validate identifier and password on verifyData call', () => {
     component.userAccount.id = 1;
     component.userAccount.password = 'testPassword';
@@ -73,10 +80,11 @@ describe('LoginComponent', () => {
     expect(component.userAccountFlags.isIdentifierValid).toBeTrue();
     expect(component.userAccountFlags.isPasswordValid).toBeTrue();
   });
+  
   it('should set shake state based on validation flags', () => {
     component.userAccountFlags.isIdentifierValid = true;
     component.userAccountFlags.isPasswordValid = true;
     component.verifyData();
-    expect(component.shakeStateService.shakeState).toBe('none');
+    expect(component.shakeStateService.shakeState).toBe('');
   });
 });

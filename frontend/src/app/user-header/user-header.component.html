@@ -64,7 +64,7 @@
         <p
           class="pt-5 font-roboto font-light text-xl text-nowrap hover:text-gray-300"
         >
-          {{ user.firstName }} {{ user.lastName }}
+          {{ userFullName }}
         </p>
         <button class="w-full">
           @if(!avatarService.avatarError) {
@@ -72,7 +72,7 @@
             class="min-w-12 w-12 h-12"
             ownClass="rounded-full pointer-events-none w-full h-full"
             alt="user-avatar"
-            [src]="user.avatarUrl"
+            [src]="avatarUrl"
             [error]="handleAvatarError()"
           />
           } @else {

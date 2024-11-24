@@ -10,11 +10,13 @@ import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-object
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 import { SingleCardComponent } from './single-card.component';
 import { SingleCardModule } from './single-card.module';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('SingleCardComponent', () => {
   let component: SingleCardComponent;
   let fixture: ComponentFixture<SingleCardComponent>;
   let productTypesService: jasmine.SpyObj<ProductTypesService>;
+
   beforeEach(async () => {
     const productTypesServiceSpy = jasmine.createSpyObj('ProductTypesService', [
       'changeCardType',
@@ -46,6 +48,7 @@ describe('SingleCardComponent', () => {
       'SingleAccountTransactions'
     );
     appInformationStatesServiceSpy.currentTransactionsArrayLength = of(25);
+
     await TestBed.configureTestingModule({
       imports: [SingleCardModule, BrowserAnimationsModule],
       providers: [
@@ -57,13 +60,16 @@ describe('SingleCardComponent', () => {
           useValue: appInformationStatesServiceSpy,
         },
         { provide: ActivatedRoute, useValue: {} },
+        provideHttpClient()
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(SingleCardComponent);
     component = fixture.componentInstance;
     productTypesService = TestBed.inject(
       ProductTypesService
     ) as jasmine.SpyObj<ProductTypesService>;
+
     spyOn<any>(component, 'getVisaCardObject').and.returnValue({
       id: 1,
       type: 'STANDARD',
@@ -112,14 +118,17 @@ describe('SingleCardComponent', () => {
     });
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize fields on ngOnInit', () => {
     spyOn(component, 'initializeFields');
     component.ngOnInit();
     expect(component.initializeFields).toHaveBeenCalled();
   });
+
   it('should fetch Visa card object based on card type', () => {
     component['cardType'] = 'standard';
     const visaCard = component['getVisaCardObject']();
@@ -127,6 +136,7 @@ describe('SingleCardComponent', () => {
       visaCardsObjectsArray.find((card) => card.type === 'STANDARD')!
     );
   });
+
   it('should fetch Mastercard object based on card type', () => {
     component['cardType'] = 'standard';
     const mastercard = component['getMastercardObject']();
@@ -134,6 +144,7 @@ describe('SingleCardComponent', () => {
       mastercardCardsObjectsArray.find((card) => card.type === 'STANDARD')!
     );
   });
+
   it('should toggle the state of a question and answer pair', () => {
     component.questionsAndAnswersPairs = [
       { id: 0, content: 'Question 1', answer: 'Answer 1', isOpened: false },
@@ -144,10 +155,12 @@ describe('SingleCardComponent', () => {
     component.changeStateOfQuestionAnswer(0);
     expect(component.questionsAndAnswersPairs[0].isOpened).toBeFalse();
   });
+
   it('should change card type and update the service', () => {
     component.changeCardType('premium');
     expect(productTypesService.changeCardType).toHaveBeenCalledWith('premium');
   });
+
   it('should initialize fields correctly', () => {
     component['cardType'] = 'standard';
     component.initializeFields();

@@ -1,11 +1,18 @@
 <div class="flex items-center justify-center lg:pt-4 w-full">
-    <div class="relative w-full">
-        <input type="text" placeholder="Tytuł transakcji..."
-            class="rounded-xl w-full px-5 py-2 font-roboto font-extralight text-black"
-            (input)="changeSearchPhrase($event); onSearch();" (keydown)="onKeydown($event)">
-        <div class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" (click)="onSearch()"
-            matTooltip="Wyszukaj transakcję.">
-            <i class="fa-solid fa-magnifying-glass text-black"></i>
-        </div>
+  <div class="relative w-full">
+    <input
+      type="text"
+      placeholder="Tytuł transakcji..."
+      class="rounded-xl w-full px-5 py-2 font-roboto font-extralight text-black"
+      (input)="changeSearchPhrase($event); onSearch()"
+      (keydown)="onKeydown($event)"
+    />
+    <div
+      class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+      (click)="onSearch()"
+      matTooltip="Wyszukaj transakcję."
+    >
+      <i class="fa-solid fa-magnifying-glass text-black"></i>
     </div>
+  </div>
 </div>
