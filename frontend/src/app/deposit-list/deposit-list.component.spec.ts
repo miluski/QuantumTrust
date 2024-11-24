@@ -12,6 +12,7 @@ describe('DepositListComponent', () => {
   let fixture: ComponentFixture<DepositListComponent>;
   let productTypesServiceMock: any;
   let convertServiceMock: any;
+
   beforeEach(async () => {
     productTypesServiceMock = {
       currentDepositType: of('timely'),
@@ -21,6 +22,7 @@ describe('DepositListComponent', () => {
       'getDepositIcon',
       'getPolishDepositType',
     ]);
+
     await TestBed.configureTestingModule({
       imports: [DepositListModule],
       providers: [
@@ -29,34 +31,40 @@ describe('DepositListComponent', () => {
         { provide: ActivatedRoute, useValue: {} },
       ],
     }).compileComponents();
-  });
-  beforeEach(() => {
+
     fixture = TestBed.createComponent(DepositListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should have default depositType as "timely"', () => {
     expect(component.depositType).toBe('timely');
   });
+
   it('should initialize depositsObjectArray with depositsObjectArray', () => {
     expect(component.depositsObjectArray).toEqual(depositsObjectArray);
   });
+
   it('should subscribe to currentDepositType on init', () => {
     component.ngOnInit();
     expect(component.depositType).toBe('timely');
   });
+
   it('should call changeDepositType on productTypesService when changeDepositType is called', () => {
     component.changeDepositType('newType');
     expect(productTypesServiceMock.changeDepositType).toHaveBeenCalledWith(
       'newType'
     );
   });
+
   it('should return true if depositId is higher than two', () => {
     expect(component.isDepositIdHigherThanTwo('3')).toBeTrue();
   });
+
   it('should return false if depositId is not higher than two', () => {
     expect(component.isDepositIdHigherThanTwo('2')).toBeFalse();
   });

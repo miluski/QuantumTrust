@@ -24,7 +24,7 @@ import lombok.Setter;
 public class Card {
     @Id
     @CardId
-    private Long id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "assignedAccountId", referencedColumnName = "id")
@@ -38,6 +38,9 @@ public class Card {
 
     @Column(name = "image", nullable = false)
     private String image;
+
+    @Column(name = "limits", nullable = false)
+    private String limits;
 
     @Column(name = "pin", nullable = false)
     private Integer pin;
@@ -54,10 +57,9 @@ public class Card {
     @Column(name = "backImage", nullable = false)
     private String backImage;
 
-    // @Embedded
-    // private Fees fees;
+    @Column(name = "fees", nullable = false)
+    private String fees;
 
     @Column(name = "status", nullable = false)
     private String status;
-
 }

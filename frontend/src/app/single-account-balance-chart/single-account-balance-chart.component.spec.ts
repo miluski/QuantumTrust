@@ -9,6 +9,7 @@ import { SingleAccountBalanceChartModule } from './single-account-balance-chart.
 describe('SingleAccountBalanceChartComponent', () => {
   let component: SingleAccountBalanceChartComponent;
   let fixture: ComponentFixture<SingleAccountBalanceChartComponent>;
+
   beforeEach(async () => {
     Chart.register(...registerables);
     await TestBed.configureTestingModule({
@@ -19,23 +20,26 @@ describe('SingleAccountBalanceChartComponent', () => {
       ],
       providers: [ChangeDetectorRef],
     }).compileComponents();
-  });
-  beforeEach(() => {
+
     fixture = TestBed.createComponent(SingleAccountBalanceChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should set chart options on init', () => {
     component.ngOnInit();
     expect(component.chartOptions).toEqual({ responsive: true });
   });
+
   it('should set chart labels on init', () => {
     component.ngOnInit();
     expect(component.chartLabels).toEqual(['Wpływy', 'Wydatki']);
   });
+
   it('should set chart dataset on init', () => {
     component.totalIncomingBalance = 100;
     component.totalOutgoingBalance = 50;
@@ -47,6 +51,7 @@ describe('SingleAccountBalanceChartComponent', () => {
       },
     ]);
   });
+
   it('should update chart dataset on changes', () => {
     component.totalIncomingBalance = 200;
     component.totalOutgoingBalance = 100;

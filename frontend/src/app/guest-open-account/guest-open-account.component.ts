@@ -17,22 +17,37 @@ import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 
 /**
- * GuestOpenAccountComponent is responsible for handling the guest account opening process.
- * It includes form validation and state management for user account data.
+ * @component GuestOpenAccountComponent
+ * @description This component is responsible for managing the account opening process for guest users.
  *
- * @component
- * @selector 'app-guest-open-account'
- * @templateUrl './guest-open-account.component.html'
+ * @selector app-guest-open-account
+ * @templateUrl ./guest-open-account.component.html
  * @animations [AnimationsProvider.animations]
  *
- * @method verifyData Verifies the user data by validating various fields and setting the shake state.
- * @method setIsContactDataValid Validates the contact data (email and phone number) of the user account.
- * @method setIsFullNameValid Validates the full name (first name and last name) of the user account.
- * @method setIsIdentityDataValid Validates the identity data (PESEL, document type, document series, and address) of the user account.
- * @method setIsPasswordValid Validates the password and repeated password of the user account.
- * @method setIsAccountDataValid Validates the account data (currency and type) of the user account.
- * @method setCanShake Sets the shake state based on the validation flags.
- * @method get validationFlags Returns an array of validation flags for the user account data.
+ * @class GuestOpenAccountComponent
+ *
+ * @property {Account} account - The account object containing account details.
+ * @property {UserAccount} userAccount - The user account object containing user details.
+ * @property {UserAccountFlags} userAccountFlags - Flags indicating the validation status of user account fields.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
+ *
+ * @constructor
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {CryptoService} cryptoService - Service to handle data encryption.
+ * @param {HttpClient} httpClient - The Angular HTTP client for making HTTP requests.
+ * @param {AlertService} alertService - Service to manage alerts.
+ *
+ * @method verifyData - Verifies the user data by setting validation flags and checking if the user exists.
+ * @method setIsContactDataValid - Sets the validation flags for contact data.
+ * @method setIsFullNameValid - Sets the validation flags for full name.
+ * @method setIsIdentityDataValid - Sets the validation flags for identity data.
+ * @method setIsPasswordValid - Sets the validation flags for password.
+ * @method setIsAccountDataValid - Sets the validation flags for account data.
+ * @method setCanShake - Sets the shake state based on the validation flags and user existence.
+ * @method getIsUserNotExists - Checks if the user does not exist by making an HTTP request.
+ * @method showAlert - Shows an alert indicating that the user already exists.
+ * @method showUnexpectedErrorAlert - Shows an alert indicating an unexpected error.
  */
 @Component({
   selector: 'app-guest-open-account',
@@ -40,10 +55,10 @@ import { UserAccountFlags } from '../../types/user-account-flags';
   animations: [AnimationsProvider.animations],
 })
 export class GuestOpenAccountComponent {
-  public shakeStateService: ShakeStateService = new ShakeStateService();
-  public userAccountFlags: UserAccountFlags = new UserAccountFlags();
-  public userAccount: UserAccount = new UserAccount();
-  public account: Account = new Account();
+  public account: Account;
+  public userAccount: UserAccount;
+  public userAccountFlags: UserAccountFlags;
+  public shakeStateService: ShakeStateService;
 
   constructor(
     private verificationService: VerificationService,
@@ -52,12 +67,16 @@ export class GuestOpenAccountComponent {
     private httpClient: HttpClient,
     protected alertService: AlertService
   ) {
-    this.userAccount.documentType = 'Dowód Osobisty';
-    this.account.type = 'Konto osobiste';
+    this.account = new Account();
     this.account.currency = 'PLN';
+    this.account.type = 'personal';
+    this.userAccount = new UserAccount();
+    this.userAccount.documentType = 'Dowód Osobisty';
+    this.userAccountFlags = new UserAccountFlags();
+    this.shakeStateService = new ShakeStateService();
   }
 
-  verifyData(): void {
+  public verifyData(): void {
     this.setIsContactDataValid();
     this.setIsAccountDataValid();
     this.setIsFullNameValid();

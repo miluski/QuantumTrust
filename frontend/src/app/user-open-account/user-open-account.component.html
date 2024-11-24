@@ -33,15 +33,13 @@
             class="!font-roboto !font-light !text-sm !text-black !rounded-lg !px-5 !py-2 !w-full !border !border-gray-200 max-lg:!border-gray-400 !bg-transparent"
             [(ngModel)]="account.type"
           >
-            <option class="py-2" value="Konto osobiste">Konto osobiste</option>
-            <option class="py-2" value="Konto dla młodych">
-              Konto dla młodych
-            </option>
-            <option class="py-2" value="Konto wielowalutowe">
+            <option class="py-2" value="personal">Konto osobiste</option>
+            <option class="py-2" value="young">Konto dla młodych</option>
+            <option class="py-2" value="multiCurrency">
               Konto wielowalutowe
             </option>
-            <option class="py-2" value="Konto rodzinne">Konto rodzinne</option>
-            <option class="py-2" value="Konto senior">Konto senior</option>
+            <option class="py-2" value="family">Konto rodzinne</option>
+            <option class="py-2" value="oldPeople">Konto senior</option>
           </select>
           @if(userAccountFlags.isAccountTypeValid === false) {
           <p class="font-roboto font-light text-red-500 text-sm pt-5">
@@ -49,7 +47,7 @@
           </p>
           }
         </div>
-        @if(account.type === "Konto wielowalutowe") {
+        @if(account.type === "multiCurrency") {
         <div
           class="flex flex-col lg:w-[75%] w-[80%] z-20"
           [ngClass]="{

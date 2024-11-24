@@ -1,122 +1,191 @@
-import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
 import { FiltersService } from '../../services/filters.service';
 import { ItemSelectionService } from '../../services/item-selection.service';
+import { UserService } from '../../services/user.service';
 import { Account } from '../../types/account';
 import { Transaction } from '../../types/transaction';
+import { DurationExpansionModule } from '../duration-expansion/duration-expansion.module';
+import { MobileFiltersModule } from '../mobile-filters/mobile-filters.module';
+import { SearchBarModule } from '../search-bar/search-bar.module';
+import { SingleAccountBalanceChartModule } from '../single-account-balance-chart/single-account-balance-chart.module';
+import { SortExpansionModule } from '../sort-expansion/sort-expansion.module';
+import { StatusExpansionModule } from '../status-expansion/status-expansion.module';
 import { SingleAccountTransactionsComponent } from './single-account-transactions.component';
-import { SingleAccountTransactionsModule } from './single-account-transactions.module';
 
 describe('SingleAccountTransactionsComponent', () => {
   let component: SingleAccountTransactionsComponent;
   let fixture: ComponentFixture<SingleAccountTransactionsComponent>;
-  let itemSelectionService: jasmine.SpyObj<ItemSelectionService>;
-  let appInformationStatesService: jasmine.SpyObj<AppInformationStatesService>;
-  let convertService: jasmine.SpyObj<ConvertService>;
-  let filtersService: jasmine.SpyObj<FiltersService>;
+  let mockAppInformationStatesService: jasmine.SpyObj<AppInformationStatesService>;
+  let mockConvertService: jasmine.SpyObj<ConvertService>;
+  let mockFiltersService: jasmine.SpyObj<FiltersService>;
+  let mockItemSelectionService: jasmine.SpyObj<ItemSelectionService>;
+  let mockUserService: jasmine.SpyObj<UserService>;
+
   beforeEach(async () => {
-    const itemSelectionServiceSpy = jasmine.createSpyObj(
-      'ItemSelectionService',
-      ['currentAccount', 'getUserTransactions']
-    );
-    const appInformationStatesServiceSpy = jasmine.createSpyObj(
+    mockAppInformationStatesService = jasmine.createSpyObj(
       'AppInformationStatesService',
       ['changeTransactionsArrayLength']
     );
-    const convertServiceSpy = jasmine.createSpyObj('ConvertService', [
-      'getGroupedUserTransactions',
+    mockConvertService = jasmine.createSpyObj('ConvertService', [
       'getConversionRate',
+      'getGroupedUserTransactions',
       'getPolishAccountType',
       'getNumberWithSpacesBetweenThousands',
     ]);
-    const filtersServiceSpy = jasmine.createSpyObj(
+    mockFiltersService = jasmine.createSpyObj(
       'FiltersService',
-      ['sortByDate', 'setOriginalTransactionsArray', 'resetSelectedFilters'],
+      ['resetSelectedFilters', 'sortByDate', 'setOriginalTransactionsArray'],
       {
-        currentIsMobileFiltersOpened: of(true),
-        currentExpansionFlagsArray: of([false]),
-        actualSelectedFilters: ['Domyślnie'],
+        currentExpansionFlagsArray: of([]),
+        currentIsMobileFiltersOpened: of([]),
       }
     );
+    mockItemSelectionService = jasmine.createSpyObj(
+      'ItemSelectionService',
+      [
+        'isAccountIdAssignedToCardEqualToItemId',
+        'isTransactionAccountIdEqualToItemId',
+      ],
+      { currentAccount: of(new Account()) }
+    );
+    mockUserService = jasmine.createSpyObj('UserService', [], {
+      userTransactions: of([]),
+    });
+
     await TestBed.configureTestingModule({
-      imports: [SingleAccountTransactionsModule],
+      imports: [
+        SingleAccountBalanceChartModule,
+        SortExpansionModule,
+        DurationExpansionModule,
+        StatusExpansionModule,
+        SearchBarModule,
+        MobileFiltersModule,
+      ],
+      declarations: [SingleAccountTransactionsComponent],
       providers: [
-        { provide: ItemSelectionService, useValue: itemSelectionServiceSpy },
         {
           provide: AppInformationStatesService,
-          useValue: appInformationStatesServiceSpy,
+          useValue: mockAppInformationStatesService,
         },
-        { provide: ConvertService, useValue: convertServiceSpy },
-        { provide: FiltersService, useValue: filtersServiceSpy },
-        ChangeDetectorRef,
+        { provide: ConvertService, useValue: mockConvertService },
+        { provide: FiltersService, useValue: mockFiltersService },
+        { provide: ItemSelectionService, useValue: mockItemSelectionService },
+        { provide: UserService, useValue: mockUserService },
       ],
     }).compileComponents();
+  });
+
+  beforeEach(() => {
     fixture = TestBed.createComponent(SingleAccountTransactionsComponent);
     component = fixture.componentInstance;
-    itemSelectionService = TestBed.inject(
-      ItemSelectionService
-    ) as jasmine.SpyObj<ItemSelectionService>;
-    appInformationStatesService = TestBed.inject(
-      AppInformationStatesService
-    ) as jasmine.SpyObj<AppInformationStatesService>;
-    convertService = TestBed.inject(
-      ConvertService
-    ) as jasmine.SpyObj<ConvertService>;
-    filtersService = TestBed.inject(
-      FiltersService
-    ) as jasmine.SpyObj<FiltersService>;
-    itemSelectionService.getUserTransactions.and.returnValue(
-      Promise.resolve([])
-    );
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('should initialize account transactions on ngOnInit', async () => {
-    const mockAccount = of(new Account());
-    const mockTransactions: Transaction[] = [];
-    itemSelectionService.currentAccount = mockAccount;
-    itemSelectionService.getUserTransactions.and.returnValue(
-      Promise.resolve(mockTransactions)
-    );
-    convertService.getGroupedUserTransactions.and.returnValue([]);
-    filtersService.sortByDate.and.stub();
-    filtersService.setOriginalTransactionsArray.and.stub();
-    appInformationStatesService.changeTransactionsArrayLength.and.stub();
+
+  it('should initialize account transactions on init', () => {
+    spyOn(component, 'initializeAccountTransactions');
     component.ngOnInit();
-    expect(itemSelectionService.getUserTransactions).toHaveBeenCalledWith(
-      'account'
-    );
+    expect(component.initializeAccountTransactions).toHaveBeenCalled();
   });
-  it('should calculate total incoming and outgoing balances', () => {
-    const mockTransactions: Transaction[] = [
+
+  it('should reset selected filters on init', () => {
+    component.ngOnInit();
+    expect(mockFiltersService.resetSelectedFilters).toHaveBeenCalled();
+  });
+
+  it('should calculate total incoming balance', () => {
+    const transaction: Transaction = {
+      id: 1,
+      type: 'incoming',
+      status: 'settled',
+      amount: 100,
+      currency: 'USD',
+      date: '',
+      hour: '',
+      title: '',
+      assignedAccountNumber: '',
+      category: '',
+      accountAmountAfter: 0,
+      accountCurrency: '',
+    };
+    mockConvertService.getConversionRate.and.returnValue(1);
+    component.calculateTotalIncomingBalance(transaction);
+    expect(component.totalIncomingBalance).toBe(100);
+  });
+
+  it('should calculate total outgoing balance', () => {
+    const transaction: Transaction = {
+      id: 1,
+      type: 'outgoing',
+      status: 'settled',
+      amount: 50,
+      currency: 'USD',
+      date: '',
+      hour: '',
+      title: '',
+      assignedAccountNumber: '',
+      category: '',
+      accountAmountAfter: 0,
+      accountCurrency: '',
+    };
+    mockConvertService.getConversionRate.and.returnValue(1);
+    component.calculateTotalOutgoingBalance(transaction);
+    expect(component.totalOutgoingBalance).toBe(50);
+  });
+
+  it('should convert currency', () => {
+    mockConvertService.getConversionRate.and.returnValue(0.85);
+    const convertedAmount = component.convertCurrency(100, 'USD', 'EUR');
+    expect(convertedAmount).toBe(85);
+  });
+
+  it('should set transactions details', () => {
+    const transactions: Transaction[] = [
       {
+        id: 1,
         type: 'incoming',
         status: 'settled',
         amount: 100,
         currency: 'USD',
-      } as Transaction,
+        date: '',
+        hour: '',
+        title: '',
+        assignedAccountNumber: '',
+        category: '',
+        accountAmountAfter: 0,
+        accountCurrency: '',
+      },
       {
+        id: 2,
         type: 'outgoing',
         status: 'settled',
         amount: 50,
         currency: 'USD',
-      } as Transaction,
+        date: '',
+        hour: '',
+        title: '',
+        assignedAccountNumber: '',
+        category: '',
+        accountAmountAfter: 0,
+        accountCurrency: '',
+      },
     ];
-    component.accountTransactions = mockTransactions;
-    component.account.currency = 'USD';
-    convertService.getConversionRate.and.returnValue(1);
-    component.calculateBalances();
-    expect(component.totalIncomingBalance).toBe(100);
-    expect(component.totalOutgoingBalance).toBe(50);
-  });
-  it('should convert currency correctly', () => {
-    convertService.getConversionRate.and.returnValue(1.2);
-    const convertedAmount = component.convertCurrency(100, 'USD', 'EUR');
-    expect(convertedAmount).toBe(120);
+    component.accountTransactions = transactions;
+    mockConvertService.getGroupedUserTransactions.and.returnValue([
+      transactions,
+    ]);
+    component.setTransactionsDetails();
+    expect(component.dailyTransactions.length).toBe(1);
+    expect(mockFiltersService.sortByDate).toHaveBeenCalled();
+    expect(mockFiltersService.setOriginalTransactionsArray).toHaveBeenCalled();
+    expect(
+      mockAppInformationStatesService.changeTransactionsArrayLength
+    ).toHaveBeenCalledWith(2);
   });
 });

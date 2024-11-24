@@ -10,57 +10,67 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Transaction } from '../types/transaction';
 
 /**
- * @fileoverview AppInformationStatesService manages the state information of the application.
- * It handles the current tab name, drawer state, and transactions array length.
- * It also observes breakpoints to manage the drawer state based on screen size.
- *
- * @service
- * @providedIn root
- *
  * @class AppInformationStatesService
+ * @description This service is responsible for managing application state information, such as the current tab name, drawer state, and transactions array length.
+ *
+ * @providedIn 'root'
+ *
  * @property {BehaviorSubject<string>} tabName - The current tab name.
  * @property {BehaviorSubject<boolean>} isDrawerOpened - The state of the drawer (opened or closed).
  * @property {BehaviorSubject<number>} transactionsArrayLength - The length of the transactions array.
- * @property {MatDrawer} drawer - The drawer component.
+ * @property {MatDrawer | undefined} drawer - The drawer component.
  * @property {Observable<string>} currentTabName - Observable for the current tab name.
- * @property {Observable<number>} currentTransactionsArrayLength - Observable for the transactions array length.
  * @property {Observable<boolean>} currentIsDrawerOpened - Observable for the drawer state.
- *
- * @method observeBreakpoints - Observes screen size breakpoints and closes the drawer if necessary.
- * @method changeDrawer - Changes the drawer component.
- * @method changeTabName - Changes the current tab name.
- * @method changeIsDrawerOpened - Changes the state of the drawer (opened or closed).
- * @method changeTransactionsArrayLength - Changes the length of the transactions array.
- * @method toggleDrawer - Toggles the state of the drawer (opened or closed).
- * @method isDrawerOpen - Returns whether the drawer is open.
- * @method canSetAbsoluteStyle - Determines if absolute style can be set based on the transactions array.
+ * @property {Observable<number>} currentTransactionsArrayLength - Observable for the transactions array length.
  *
  * @constructor
- * @param {Router} router - Angular Router service for navigation.
- * @param {BreakpointObserver} breakpointObserver - Service to observe screen size breakpoints.
+ * @param {Router} router - The Angular Router service for navigation.
+ * @param {BreakpointObserver} breakpointObserver - Service to observe breakpoints.
+ *
+ * @method observeBreakpoints - Observes breakpoints to manage the state of the drawer.
+ * @method changeDrawer - Changes the drawer component.
+ * @param {MatDrawer} drawer - The drawer component.
+ * @method changeTabName - Changes the current tab name.
+ * @param {string} tabName - The new tab name to be set.
+ * @method changeIsDrawerOpened - Changes the state of the drawer.
+ * @param {boolean} isDrawerOpened - The new state of the drawer.
+ * @method changeTransactionsArrayLength - Changes the length of the transactions array.
+ * @param {number} transactionsArrayLength - The new length of the transactions array.
+ * @method toggleDrawer - Toggles the state of the drawer.
+ * @method isDrawerOpen - Checks if the drawer is open.
+ * @returns {boolean} - Returns true if the drawer is open, otherwise false.
+ * @method canSetAbsoluteStyle - Determines if the absolute style can be set based on the transactions array.
+ * @param {Transaction[][]} transactionsArray - An array of arrays of transactions.
+ * @returns {boolean} - Returns true if the absolute style can be set, otherwise false.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AppInformationStatesService {
   private tabName: BehaviorSubject<string>;
-  private isDrawerOpened: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  private transactionsArrayLength: BehaviorSubject<number> =
-    new BehaviorSubject(0);
+  private isDrawerOpened: BehaviorSubject<boolean>;
+  private transactionsArrayLength: BehaviorSubject<number>;
+
   protected drawer?: MatDrawer;
+
   public currentTabName: Observable<string>;
-  public currentTransactionsArrayLength: Observable<number> =
-    this.transactionsArrayLength.asObservable();
-  public currentIsDrawerOpened: Observable<boolean> =
-    this.isDrawerOpened.asObservable();
+  public currentIsDrawerOpened: Observable<boolean>;
+  public currentTransactionsArrayLength: Observable<number>;
+
   constructor(router: Router, private breakpointObserver: BreakpointObserver) {
+    this.isDrawerOpened = new BehaviorSubject(false);
+    this.transactionsArrayLength = new BehaviorSubject(0);
+    this.currentIsDrawerOpened = this.isDrawerOpened.asObservable();
+    this.currentTransactionsArrayLength =
+      this.transactionsArrayLength.asObservable();
     this.tabName =
       router.url === '/main-page'
         ? new BehaviorSubject('Finanse')
         : new BehaviorSubject('Konta');
     this.currentTabName = this.tabName.asObservable();
   }
-  observeBreakpoints(): void {
+
+  public observeBreakpoints(): void {
     this.breakpointObserver
       .observe([Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
       .subscribe((result: BreakpointState) => {
@@ -69,27 +79,34 @@ export class AppInformationStatesService {
         }
       });
   }
-  changeDrawer(drawer: MatDrawer): void {
+
+  public changeDrawer(drawer: MatDrawer): void {
     this.drawer = drawer;
   }
-  changeTabName(tabName: string): void {
+
+  public changeTabName(tabName: string): void {
     this.tabName.next(tabName);
   }
-  changeIsDrawerOpened(isDrawerOpened: boolean): void {
+
+  public changeIsDrawerOpened(isDrawerOpened: boolean): void {
     this.isDrawerOpened.next(isDrawerOpened);
   }
-  changeTransactionsArrayLength(transactionsArrayLength: number): void {
+
+  public changeTransactionsArrayLength(transactionsArrayLength: number): void {
     this.transactionsArrayLength.next(transactionsArrayLength);
   }
-  toggleDrawer(): void {
+
+  public toggleDrawer(): void {
     if (this.drawer) {
       this.drawer.toggle();
     }
   }
-  isDrawerOpen(): boolean {
+
+  public isDrawerOpen(): boolean {
     return this.drawer ? this.drawer.opened : false;
   }
-  canSetAbsoluteStyle(transactionsArray: Transaction[][]): boolean {
+
+  public canSetAbsoluteStyle(transactionsArray: Transaction[][]): boolean {
     let emptyArraysCount: number = 0;
     let oneElementArraysCount: number = 0;
     transactionsArray.forEach((transactionArray: Transaction[]) => {

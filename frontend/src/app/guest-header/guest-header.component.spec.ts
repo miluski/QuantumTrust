@@ -18,6 +18,7 @@ describe('GuestHeaderComponent', () => {
     changeTabName: jasmine.createSpy('changeTabName'),
     toggleDrawer: jasmine.createSpy('toggleDrawer'),
   };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GuestHeaderModule],
@@ -33,27 +34,31 @@ describe('GuestHeaderComponent', () => {
         },
       ],
     }).compileComponents();
-  });
-  beforeEach(() => {
+
     fixture = TestBed.createComponent(GuestHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize currentRoute with router url', () => {
     expect(component.currentRoute).toBe('/test-route');
   });
+
   it('should subscribe to currentTabName and update tabName', () => {
     expect(component.tabName).toBe('Test Tab');
   });
+
   it('should call changeTabName on AppInformationStatesService when changeTabName is called', () => {
     component.changeTabName('New Tab');
     expect(mockAppInformationStatesService.changeTabName).toHaveBeenCalledWith(
       'New Tab'
     );
   });
+
   it('should call toggleDrawer on AppInformationStatesService when toggleDrawer is called', () => {
     component.toggleDrawer();
     expect(mockAppInformationStatesService.toggleDrawer).toHaveBeenCalled();

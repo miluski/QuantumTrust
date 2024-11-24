@@ -3,58 +3,68 @@ import { MatTableDataSource } from '@angular/material/table';
 import { TableTransaction } from '../types/table-transaction';
 
 /**
- * @fileoverview GlobalTransactionsFiltersService manages the filtering and searching of table transactions.
- * It provides functionalities to set and reset filters, search phrases, and manage the state of mobile filters.
- *
- * @service
- * @providedIn root
- *
  * @class GlobalTransactionsFiltersService
- * @property {TableTransaction[]} originalTableTransactionsArray - The original array of table transactions.
- * @property {string[]} acceptedFilters - The list of accepted filters.
+ * @description This service is responsible for managing global filters for transactions, including applied filters, search phrases, and mobile filters state.
+ *
+ * @providedIn 'root'
+ *
  * @property {string} appliedFilter - The currently applied filter.
  * @property {string} searchedPhrase - The current search phrase.
- * @property {boolean} isMobileFiltersOpened - The state of mobile filters (opened or closed).
+ * @property {string[]} acceptedFilters - The array of accepted filters.
+ * @property {TableTransaction[]} originalTableTransactionsArray - The original array of table transactions.
+ * @property {boolean} isMobileFiltersOpened - The state of the mobile filters (opened or closed).
  * @property {MatTableDataSource<TableTransaction>} tableDataSource - The data source for the table transactions.
  *
+ * @constructor
+ *
  * @method setOriginalTableTransactionsArray - Sets the original array of table transactions.
- * @param {TableTransaction[]} tableTransactionArray - The original array of table transactions.
- * @method setAppliedFilter - Sets the applied filter and search phrase, and filters the transactions accordingly.
- * @param {string} appliedFilter - The filter to apply.
- * @param {string} searchedPhrase - The search phrase to apply.
- * @method setSearchPhrase - Sets the search phrase and filters the transactions accordingly.
- * @param {string} searchedPhrase - The search phrase to apply.
+ * @param {TableTransaction[]} tableTransactionArray - The array of table transactions to be set as the original array.
+ * @method setAppliedFilter - Sets the applied filter and search phrase.
+ * @param {string} appliedFilter - The new applied filter.
+ * @param {string} searchedPhrase - The new search phrase.
+ * @method setSearchPhrase - Sets the search phrase and filters the transactions based on the search phrase.
+ * @param {string} searchedPhrase - The new search phrase.
  * @method resetArray - Resets the table transactions array to the original array.
- * @method replaceArray - Replaces the current table transactions array with a new array.
- * @param {TableTransaction[]} newArray - The new array of table transactions.
- * @method get acceptedFiltersArray - Returns the list of accepted filters.
- * @returns {string[]} - The list of accepted filters.
- * @method get actualAppliedFilter - Returns the currently applied filter.
- * @returns {string} - The currently applied filter.
- * @method get actualSearchedPhrase - Returns the current search phrase.
- * @returns {string} - The current search phrase.
- * @method get englishFilterType - Returns the English equivalent of the applied filter.
- * @returns {string} - The English equivalent of the applied filter.
+ * @method acceptedFiltersArray - Getter method to get the array of accepted filters.
+ * @returns {string[]} - Returns the array of accepted filters.
+ * @method actualAppliedFilter - Getter method to get the currently applied filter.
+ * @returns {string} - Returns the currently applied filter.
+ * @method actualSearchedPhrase - Getter method to get the current search phrase.
+ * @returns {string} - Returns the current search phrase.
+ * @method replaceArray - Replaces the table transactions array with another array.
+ * @param {TableTransaction[]} newArray - The array of table transactions to replace with.
+ * @method englishFilterType - Getter method to get the English equivalent of the applied filter.
+ * @returns {string} - Returns the English equivalent of the applied filter.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class GlobalTransactionsFiltersService {
+  private appliedFilter: string;
+  private searchedPhrase: string;
+  private acceptedFilters: string[];
   private originalTableTransactionsArray!: TableTransaction[];
-  private acceptedFilters: string[] = ['Wszystkie', 'Wpływy', 'Wydatki'];
-  private appliedFilter: string = 'Wszystkie';
-  private searchedPhrase: string = '';
-  public isMobileFiltersOpened: boolean = false;
-  public tableDataSource: MatTableDataSource<TableTransaction> =
-    new MatTableDataSource<TableTransaction>([]);
-  setOriginalTableTransactionsArray(
+
+  public isMobileFiltersOpened: boolean;
+  public tableDataSource: MatTableDataSource<TableTransaction>;
+
+  constructor() {
+    this.searchedPhrase = '';
+    this.appliedFilter = 'Wszystkie';
+    this.isMobileFiltersOpened = false;
+    this.acceptedFilters = ['Wszystkie', 'Wpływy', 'Wydatki'];
+    this.tableDataSource = new MatTableDataSource<TableTransaction>([]);
+  }
+
+  public setOriginalTableTransactionsArray(
     tableTransactionArray: TableTransaction[]
   ): void {
     this.originalTableTransactionsArray = JSON.parse(
       JSON.stringify(tableTransactionArray)
     );
   }
-  setAppliedFilter(appliedFilter: string, searchedPhrase: string): void {
+
+  public setAppliedFilter(appliedFilter: string, searchedPhrase: string): void {
     this.resetArray();
     this.appliedFilter = appliedFilter;
     const filteredArray: TableTransaction[] = this.tableDataSource.data.filter(
@@ -64,7 +74,8 @@ export class GlobalTransactionsFiltersService {
     appliedFilter !== 'Wszystkie' ? this.replaceArray(filteredArray) : null;
     this.setSearchPhrase(searchedPhrase);
   }
-  setSearchPhrase(searchedPhrase: string): void {
+
+  public setSearchPhrase(searchedPhrase: string): void {
     this.searchedPhrase = searchedPhrase.toLowerCase();
     if (searchedPhrase !== '') {
       const filteredArray: TableTransaction[] =
@@ -72,27 +83,33 @@ export class GlobalTransactionsFiltersService {
           transaction.title.toLowerCase().includes(this.searchedPhrase)
         );
       this.replaceArray(filteredArray);
-    } 
+    }
   }
-  get acceptedFiltersArray(): string[] {
-    return this.acceptedFilters;
-  }
-  get actualAppliedFilter(): string {
-    return this.appliedFilter;
-  }
-  get actualSearchedPhrase(): string {
-    return this.searchedPhrase;
-  }
+
   public resetArray(): void {
     this.tableDataSource.data = this.originalTableTransactionsArray
       ? JSON.parse(JSON.stringify(this.originalTableTransactionsArray))
       : this.tableDataSource.data;
   }
+
+  public get acceptedFiltersArray(): string[] {
+    return this.acceptedFilters;
+  }
+
+  public get actualAppliedFilter(): string {
+    return this.appliedFilter;
+  }
+
+  public get actualSearchedPhrase(): string {
+    return this.searchedPhrase;
+  }
+
   private replaceArray(newArray: TableTransaction[]): void {
     this.tableDataSource.data = newArray
       ? JSON.parse(JSON.stringify(newArray))
       : this.tableDataSource.data;
   }
+
   private get englishFilterType(): string {
     switch (this.appliedFilter) {
       case 'Wpływy':

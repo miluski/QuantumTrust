@@ -45,6 +45,7 @@ export class PolishPaginatorProvider extends MatPaginatorIntl {
   override previousPageLabel = 'Poprzednia strona';
   override firstPageLabel = 'Pierwsza strona';
   override lastPageLabel = 'Ostatnia strona';
+
   override getRangeLabel = (page: number, pageSize: number, length: number) => {
     if (length === 0 || pageSize === 0) {
       return `0 z ${length}`;

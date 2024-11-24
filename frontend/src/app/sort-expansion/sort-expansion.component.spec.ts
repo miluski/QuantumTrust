@@ -13,6 +13,7 @@ describe('SortExpansionComponent', () => {
   let fixture: ComponentFixture<SortExpansionComponent>;
   let filtersService: FiltersService;
   let appInformationStatesService: AppInformationStatesService;
+
   beforeEach(async () => {
     const filtersServiceMock = {
       resetSelectedFilters: jasmine.createSpy('resetSelectedFilters'),
@@ -23,6 +24,7 @@ describe('SortExpansionComponent', () => {
     const appInformationStatesServiceMock = {
       canSetAbsoluteStyle: jasmine.createSpy('canSetAbsoluteStyle'),
     };
+
     await TestBed.configureTestingModule({
       imports: [CommonModule, FormsModule, MatRadioModule, SortExpansionModule],
       providers: [
@@ -33,31 +35,38 @@ describe('SortExpansionComponent', () => {
         },
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(SortExpansionComponent);
     component = fixture.componentInstance;
     filtersService = TestBed.inject(FiltersService);
     appInformationStatesService = TestBed.inject(AppInformationStatesService);
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize with default values', () => {
     expect(component.isExpanded).toBeTrue();
     expect(component.options.length).toBe(5);
   });
+
   it('should update isExpanded based on currentExpansionFlagsArray', () => {
     component.ngOnInit();
     expect(component.isExpanded).toBeTrue();
   });
+
   it('should return "true" if the option is selected in isChecked method', () => {
     const result = component.isChecked('Po dacie rosnąco');
     expect(result).toBe('true');
   });
+
   it('should return "false" if the option is not selected in isChecked method', () => {
     const result = component.isChecked('Po dacie malejąco');
     expect(result).toBe('false');
   });
+
   it('should change the selected option in changeCheckedOption method', () => {
     component.changeCheckedOption('Po dacie malejąco');
     expect(filtersService.setSelectedFilters).toHaveBeenCalledWith([

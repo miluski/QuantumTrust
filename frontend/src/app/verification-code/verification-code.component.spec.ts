@@ -1,131 +1,134 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { MatDividerModule } from '@angular/material/divider';
+import { Router } from '@angular/router';
+import { AnimationsProvider } from '../../providers/animations.provider';
 import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ShakeStateService } from '../../services/shake-state.service';
+import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
+import { ImageModule } from '../image/image.module';
 import { VerificationCodeComponent } from './verification-code.component';
-import { VerificationCodeModule } from './verification-code.module';
 
 describe('VerificationCodeComponent', () => {
   let component: VerificationCodeComponent;
   let fixture: ComponentFixture<VerificationCodeComponent>;
-  let mockRouter: any;
-  let mockVerificationService: any;
-  let mockAppInformationStatesService: any;
-  let mockAlertService: any;
+  let router: Router;
+  let verificationService: VerificationService;
+  let appInformationStatesService: AppInformationStatesService;
+  let alertService: AlertService;
+  let userService: UserService;
+
   beforeEach(async () => {
-    mockRouter = {
-      url: '/main-page',
-      events: of({}),
-      navigate: jasmine.createSpy('navigate'),
-      navigateByUrl: jasmine.createSpy('navigateByUrl'),
-      createUrlTree: jasmine.createSpy('createUrlTree'),
-      serializeUrl: jasmine.createSpy('serializeUrl'),
-    };
-    mockVerificationService = {
-      validateVerificationCode: jasmine
-        .createSpy('validateVerificationCode')
-        .and.returnValue(true),
-    };
-    mockAppInformationStatesService = {
-      changeTabName: jasmine.createSpy('changeTabName'),
-    };
-    mockAlertService = {
-      progressValue: 0,
-      alertType: '',
-      alertTitle: '',
-      alertContent: '',
-      show: jasmine.createSpy('show'),
-    };
+    const routerSpy = jasmine.createSpyObj('Router', [
+      'navigateByUrl',
+      'navigate',
+    ]);
+    const verificationServiceSpy = jasmine.createSpyObj('VerificationService', [
+      'validateVerificationCode',
+    ]);
+    const appInformationStatesServiceSpy = jasmine.createSpyObj(
+      'AppInformationStatesService',
+      ['changeTabName']
+    );
+    const alertServiceSpy = jasmine.createSpyObj('AlertService', ['show']);
+    const userServiceSpy = jasmine.createSpyObj('UserService', [
+      'getIsCodeValid',
+      'finalizeOperation',
+      'logout',
+    ]);
+
     await TestBed.configureTestingModule({
-      imports: [VerificationCodeModule, BrowserAnimationsModule],
+      declarations: [VerificationCodeComponent],
       providers: [
-        { provide: Router, useValue: mockRouter },
-        { provide: VerificationService, useValue: mockVerificationService },
+        { provide: Router, useValue: routerSpy },
+        { provide: VerificationService, useValue: verificationServiceSpy },
         {
           provide: AppInformationStatesService,
-          useValue: mockAppInformationStatesService,
+          useValue: appInformationStatesServiceSpy,
         },
-        { provide: AlertService, useValue: mockAlertService },
-        { provide: ActivatedRoute, useValue: {} },
+        { provide: AlertService, useValue: alertServiceSpy },
+        { provide: UserService, useValue: userServiceSpy },
         ShakeStateService,
+        AnimationsProvider,
       ],
+      imports: [MatDividerModule, ImageModule],
     }).compileComponents();
-  });
-  beforeEach(() => {
+
     fixture = TestBed.createComponent(VerificationCodeComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    router = TestBed.inject(Router);
+    verificationService = TestBed.inject(VerificationService);
+    appInformationStatesService = TestBed.inject(AppInformationStatesService);
+    alertService = TestBed.inject(AlertService);
+    userService = TestBed.inject(UserService);
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('should validate verification code and navigate on handleButtonClick', () => {
+
+  it('should show positive alert and change tab name if user is logged in', () => {
     component.actionType = 'Logowanie';
-    component.verificationCode = 123456;
-    component.handleButtonClick();
-    expect(
-      mockVerificationService.validateVerificationCode
-    ).toHaveBeenCalledWith(123456);
-    expect(mockAlertService.progressValue).toBe(100);
-    expect(mockAlertService.show).toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/main-page');
-  });
-  it('should set shake state if verification code is invalid', () => {
-    mockVerificationService.validateVerificationCode.and.returnValue(false);
-    component.verificationCode = 123456;
-    component.handleButtonClick();
-    expect(component.shakeStateService.shakeState).toBe('shake');
-  });
-  it('should change tab name on handleRedirectButtonClick', () => {
-    component.actionType = 'Otwieranie konta';
-    mockRouter.url = '/main-page';
-    component.handleRedirectButtonClick();
-    expect(mockAppInformationStatesService.changeTabName).toHaveBeenCalledWith(
+    component.showPositiveAlert(true);
+
+    expect(alertService.show).toHaveBeenCalled();
+    expect(appInformationStatesService.changeTabName).toHaveBeenCalledWith(
       'Finanse'
     );
   });
-  it('should return correct redirectText based on actionType', () => {
+
+  it('should show positive alert and navigate if user is not logged in', (done) => {
     component.actionType = 'Logowanie';
-    expect(component.redirectText).toBe('Załóż je!');
-    component.actionType = 'Otwieranie konta';
-    mockRouter.url = '/main-page';
-    expect(component.redirectText).toBe('Powrót do finansów!');
+    component.showPositiveAlert(false);
+
+    setTimeout(() => {
+      expect(alertService.show).toHaveBeenCalled();
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/main-page');
+      done();
+    }, 500);
   });
-  it('should return correct redirectLink based on actionType', () => {
-    component.actionType = 'Logowanie';
-    expect(component.redirectLink).toBe('/open-account');
-    component.actionType = 'Otwieranie konta';
-    mockRouter.url = '/main-page';
-    expect(component.redirectLink).toBe('/main-page');
+
+  it('should show negative alert and change tab name if user is logged in', () => {
+    component.showNegativeAlert(true);
+
+    expect(alertService.show).toHaveBeenCalled();
+    expect(appInformationStatesService.changeTabName).toHaveBeenCalledWith(
+      'Finanse'
+    );
   });
-  it('should return correct buttonText based on actionType', () => {
-    component.actionType = 'Logowanie';
-    expect(component.buttonText).toBe('Zaloguj się');
-    component.actionType = 'Otwieranie konta';
-    expect(component.buttonText).toBe('Otwórz konto');
+
+  it('should show negative alert and logout if user is not logged in', (done) => {
+    component.showNegativeAlert(false);
+    setTimeout(() => {
+      expect(alertService.show).toHaveBeenCalled();
+      done();
+    }, 500);
   });
-  it('should return correct ask text based on actionType', () => {
-    component.actionType = 'Logowanie';
-    expect(component.ask).toBe('Nie masz konta?');
-    component.actionType = 'Otwieranie konta';
-    mockRouter.url = '/main-page';
-    expect(component.ask).toBe('Zabłądziłeś?');
-  });
+
   it('should set alert credentials correctly', () => {
     component.actionType = 'Logowanie';
-    component.setAlertCredentials('info', 'Sukces!', 'positive');
-    expect(mockAlertService.alertType).toBe('info');
-    expect(mockAlertService.alertTitle).toBe('Sukces!');
-    expect(mockAlertService.alertContent).toBe('Pomyślnie zalogowano!');
-  });
-  it('should change tab name correctly', () => {
-    component.changeTabName('Finanse');
-    expect(mockAppInformationStatesService.changeTabName).toHaveBeenCalledWith(
-      'Finanse'
+    component.setAlertCredentials(
+      'info',
+      'Sukces!',
+      'fa-circle-info',
+      '#276749',
+      'positive'
     );
+
+    expect(alertService.alertType).toBe('info');
+    expect(alertService.alertTitle).toBe('Sukces!');
+    expect(alertService.progressBarBorderColor).toBe('#276749');
+    expect(alertService.alertIcon).toBe('fa-circle-info');
+    expect(alertService.alertContent).toBe('Pomyślnie zalogowano!');
+  });
+
+  it('should handle button click and show negative alert if verification code is invalid', async () => {
+    component.isVerificationCodeValid = false;
+    spyOn(component, 'showNegativeAlert');
+
+    await component.handleButtonClick();
+
+    expect(component.showNegativeAlert).toHaveBeenCalled();
   });
 });

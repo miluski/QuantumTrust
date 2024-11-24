@@ -6,6 +6,7 @@ import { ShakeStateService } from '../../services/shake-state.service';
 import { VerificationService } from '../../services/verification.service';
 import { GuestOpenAccountComponent } from './guest-open-account.component';
 import { GuestOpenAccountModule } from './guest-open-account.module';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('GuestOpenAccountComponent', () => {
   let component: GuestOpenAccountComponent;
@@ -13,6 +14,7 @@ describe('GuestOpenAccountComponent', () => {
   let verificationService: jasmine.SpyObj<VerificationService>;
   let alertService: jasmine.SpyObj<AlertService>;
   let shakeStateService: jasmine.SpyObj<ShakeStateService>;
+
   beforeEach(async () => {
     const verificationServiceSpy = jasmine.createSpyObj('VerificationService', [
       'validateEmail',
@@ -32,6 +34,7 @@ describe('GuestOpenAccountComponent', () => {
     const shakeStateServiceSpy = jasmine.createSpyObj('ShakeStateService', [
       'setCurrentShakeState',
     ]);
+
     await TestBed.configureTestingModule({
       imports: [GuestOpenAccountModule, BrowserAnimationsModule],
       providers: [
@@ -39,8 +42,10 @@ describe('GuestOpenAccountComponent', () => {
         { provide: AlertService, useValue: alertServiceSpy },
         { provide: ShakeStateService, useValue: shakeStateServiceSpy },
         { provide: ActivatedRoute, useValue: {} },
+        provideHttpClient()
       ],
     }).compileComponents();
+
     fixture = TestBed.createComponent(GuestOpenAccountComponent);
     component = fixture.componentInstance;
     verificationService = TestBed.inject(
@@ -52,14 +57,17 @@ describe('GuestOpenAccountComponent', () => {
     ) as jasmine.SpyObj<ShakeStateService>;
     fixture.detectChanges();
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize user account and account with default values', () => {
     expect(component.userAccount.documentType).toBe('Dowód Osobisty');
-    expect(component.account.type).toBe('Konto osobiste');
+    expect(component.account.type).toBe('personal');
     expect(component.account.currency).toBe('PLN');
   });
+
   it('should validate contact data', () => {
     component.userAccount.emailAddress = 'test@example.com';
     component.userAccount.phoneNumber = 123456789;
@@ -75,8 +83,9 @@ describe('GuestOpenAccountComponent', () => {
     expect(component.userAccountFlags.isEmailValid).toBeTrue();
     expect(component.userAccountFlags.isPhoneNumberValid).toBeTrue();
   });
+
   it('should validate full name', () => {
-    component.userAccount.name = 'John';
+    component.userAccount.firstName = 'John';
     component.userAccount.lastName = 'Doe';
     verificationService.validateFirstName.and.returnValue(true);
     verificationService.validateLastName.and.returnValue(true);
@@ -86,6 +95,7 @@ describe('GuestOpenAccountComponent', () => {
     expect(component.userAccountFlags.isNameValid).toBeTrue();
     expect(component.userAccountFlags.isSurnameValid).toBeTrue();
   });
+
   it('should validate identity data', () => {
     component.userAccount.peselNumber = 12345678901;
     component.userAccount.documentType = 'Dowód Osobisty';
@@ -111,6 +121,7 @@ describe('GuestOpenAccountComponent', () => {
     expect(component.userAccountFlags.isIdentityDocumentSerieValid).toBeTrue();
     expect(component.userAccountFlags.isAddressValid).toBeTrue();
   });
+
   it('should validate password', () => {
     component.userAccount.password = 'password123';
     component.userAccount.repeatedPassword = 'password123';
@@ -127,9 +138,10 @@ describe('GuestOpenAccountComponent', () => {
     expect(component.userAccountFlags.isPasswordValid).toBeTrue();
     expect(component.userAccountFlags.isRepeatedPasswordValid).toBeTrue();
   });
+
   it('should validate account data', () => {
     component.account.currency = 'PLN';
-    component.account.type = 'Konto osobiste';
+    component.account.type = 'personal';
     verificationService.validateAccountCurrency.and.returnValue(true);
     verificationService.validateAccountType.and.returnValue(true);
     component['setIsAccountDataValid']();
@@ -137,11 +149,12 @@ describe('GuestOpenAccountComponent', () => {
       'PLN'
     );
     expect(verificationService.validateAccountType).toHaveBeenCalledWith(
-      'Konto osobiste'
+      'personal'
     );
     expect(component.userAccountFlags.isAccountCurrencyValid).toBeTrue();
     expect(component.userAccountFlags.isAccountTypeValid).toBeTrue();
   });
+
   it('should return validation flags', () => {
     component.userAccountFlags = {
       isEmailValid: true,

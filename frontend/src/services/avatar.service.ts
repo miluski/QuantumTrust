@@ -1,64 +1,76 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UserAccount } from '../types/user-account';
 import { UserService } from './user.service';
 
 /**
- * @fileoverview AvatarService manages the avatar URL and color for the user account.
- * It provides functionalities to set temporary avatar URLs and handle avatar errors.
- * It also generates a random color for the avatar.
- *
- * @service
- * @providedIn root
- *
  * @class AvatarService
- * @property {BehaviorSubject<string>} temporaryAvatarUrl - The temporary avatar URL.
- * @property {BehaviorSubject<boolean>} temporaryAvatarError - The error state of the temporary avatar.
- * @property {UserAccount} user - The user account information.
- * @property {string} avatarColor - The color of the avatar.
- * @property {boolean} avatarError - Indicates whether there is an error with the avatar.
- * @property {Observable<string>} currentTemporaryAvatarUrl - Observable for the temporary avatar URL.
- * @property {Observable<boolean>} currentAvatarError - Observable for the temporary avatar error state.
+ * @description This service is responsible for managing user avatars, including temporary avatar URLs and avatar errors.
  *
- * @method setTemporaryAvatarUrl - Sets the temporary avatar URL.
- * @method setTemporaryAvatarError - Sets the error state of the temporary avatar.
- * @method getRandomColor - Generates a random color for the avatar.
+ * @providedIn 'root'
+ *
+ * @property {BehaviorSubject<string>} temporaryAvatarUrl - The temporary avatar URL.
+ * @property {BehaviorSubject<boolean>} temporaryAvatarError - The temporary avatar error state.
+ * @property {string} avatarColor - The color of the avatar.
+ * @property {boolean} avatarError - The avatar error state.
+ * @property {Observable<boolean>} currentAvatarError - Observable for the current avatar error state.
+ * @property {Observable<string>} currentTemporaryAvatarUrl - Observable for the current temporary avatar URL.
  *
  * @constructor
- * @param {UserService} userService - Service for managing user account information.
+ * @param {UserService} userService - Service to manage user data.
+ *
+ * @method setTemporaryAvatarUrl - Sets the temporary avatar URL.
+ * @param {string} temporaryAvatarUrl - The temporary avatar URL to be set.
+ * @method setTemporaryAvatarError - Sets the temporary avatar error state.
+ * @param {boolean} avatarError - The avatar error state to be set.
+ * @method getInitials - Gets the initials of the user based on their first and last name.
+ * @returns {string} - Returns the initials of the user.
+ * @method actualAvatarError - Getter method to get the current avatar error state.
+ * @returns {boolean} - Returns the current avatar error state.
+ * @method getRandomColor - Generates a random color for the avatar.
+ * @returns {string} - Returns a random color.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AvatarService {
-  private temporaryAvatarUrl: BehaviorSubject<string> = new BehaviorSubject('');
-  private temporaryAvatarError: BehaviorSubject<boolean> = new BehaviorSubject(
-    false
-  );
-  protected user: UserAccount;
+  private temporaryAvatarUrl: BehaviorSubject<string>;
+  private temporaryAvatarError: BehaviorSubject<boolean>;
+
   public avatarColor: string;
   public avatarError: boolean = false;
-  public currentTemporaryAvatarUrl: Observable<string> =
-    this.temporaryAvatarUrl.asObservable();
-  public currentAvatarError: Observable<boolean> =
-    this.temporaryAvatarError.asObservable();
-  constructor(userService: UserService) {
-    this.user = userService.userAccount;
+  public currentAvatarError: Observable<boolean>;
+  public currentTemporaryAvatarUrl: Observable<string>;
+
+  constructor(private userService: UserService) {
+    this.avatarError = false;
+    this.temporaryAvatarUrl = new BehaviorSubject('');
+    this.temporaryAvatarError = new BehaviorSubject(false);
+    this.currentAvatarError = this.temporaryAvatarError.asObservable();
+    this.currentTemporaryAvatarUrl = this.temporaryAvatarUrl.asObservable();
     this.avatarColor = this.getRandomColor();
   }
-  setTemporaryAvatarUrl(temporaryAvatarUrl: string): void {
+
+  public setTemporaryAvatarUrl(temporaryAvatarUrl: string): void {
     this.temporaryAvatarUrl.next(temporaryAvatarUrl);
   }
-  setTemporaryAvatarError(avatarError: boolean): void {
+
+  public setTemporaryAvatarError(avatarError: boolean): void {
     this.temporaryAvatarError.next(avatarError);
   }
-  get actualAvatarError(): boolean {
+
+  public getInitials(): string {
+    const firstNameInitial =
+      this.userService.userAccount.firstName?.charAt(0) || '';
+    const lastNameInitial =
+      this.userService.userAccount.lastName?.charAt(0) || '';
+    const initials: string = (firstNameInitial + lastNameInitial).toUpperCase();
+    return initials;
+  }
+
+  public get actualAvatarError(): boolean {
     return this.temporaryAvatarError.getValue();
   }
-  getInitials(): string {
-    const initials = this.user.firstName.charAt(0) + this.user.lastName.charAt(0);
-    return initials.toUpperCase();
-  }
+
   private getRandomColor(): string {
     const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF8C33'];
     return colors[Math.floor(Math.random() * colors.length)];

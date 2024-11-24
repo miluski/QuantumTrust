@@ -27,7 +27,8 @@ export class GlobalTransactionsFiltersComponent implements OnInit {
   constructor(
     protected globalTransactionsFiltersService: GlobalTransactionsFiltersService
   ) {}
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
     this.globalTransactionsFiltersService.setAppliedFilter('Wszystkie', '');
   }
 }

@@ -96,7 +96,7 @@ public class ValidationService {
     }
 
     private boolean validateAddress(String address) {
-        String addressPattern = "^[A-Za-z0-9'\\.\\-\\s,]+$";
+        String addressPattern = "^[A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+(?: [A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+)* \\d+(?:\\/\\d+)?(?:, [A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+)+$";
         return address != null && Pattern.matches(addressPattern, address);
     }
 
@@ -108,11 +108,11 @@ public class ValidationService {
 
     private boolean validateAccountType(String accountType) {
         return accountType != null
-                && (accountType.equals("Konto osobiste") ||
-                        accountType.equals("Konto dla młodych") ||
-                        accountType.equals("Konto wielowalutowe") ||
-                        accountType.equals("Konto rodzinne") ||
-                        accountType.equals("Konto senior"));
+                && (accountType.equals("personal") ||
+                        accountType.equals("young") ||
+                        accountType.equals("multiCurrency") ||
+                        accountType.equals("family") ||
+                        accountType.equals("oldPeople"));
     }
 
     private boolean validateAccountCurrency(String accountCurrency) {

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
@@ -25,9 +26,26 @@ public class TokenService {
     private Long refreshExpiration;
 
     public Boolean validateToken(String token, String identificator) {
-        final String tokenIdentificator = this.getIdentificatorFromToken(token);
-        final Date tokenExpiration = this.getExpirationFromToken(token);
-        return tokenIdentificator.equals(identificator) && !tokenExpiration.before(new Date());
+        try {
+            final String tokenIdentificator = this.getIdentificatorFromToken(token);
+            final Date tokenExpiration = this.getExpirationFromToken(token);
+            return tokenIdentificator.equals(identificator) && !tokenExpiration.before(new Date());
+        } catch (MalformedJwtException e) {
+            return false;
+        }
+    }
+
+    public String generateToken(String identificator, String tokenType) {
+        final boolean isRefreshToken = tokenType.equals("refresh");
+        final Date expirationDate = isRefreshToken ? getRefreshTokenExpirationDate() : getTokenExpirationDate();
+        return Jwts
+                .builder()
+                .setClaims(new HashMap<>())
+                .setSubject(identificator)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(expirationDate)
+                .signWith(this.getKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String getIdentificatorFromToken(String token) {
@@ -50,19 +68,6 @@ public class TokenService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    public String generateToken(String identificator, String tokenType) {
-        final boolean isRefreshToken = tokenType.equals("refresh");
-        final Date expirationDate = isRefreshToken ? getRefreshTokenExpirationDate() : getTokenExpirationDate();
-        return Jwts
-                .builder()
-                .setClaims(new HashMap<>())
-                .setSubject(identificator)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(expirationDate)
-                .signWith(this.getKey(), SignatureAlgorithm.HS256)
-                .compact();
     }
 
     private Date getRefreshTokenExpirationDate() {

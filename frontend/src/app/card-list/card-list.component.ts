@@ -13,32 +13,33 @@ import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-object
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 
 /**
- * @fileoverview CardListComponent is a standalone Angular component that displays a list of cards.
- * It handles different card types and manages pagination services for Visa and MasterCard cards.
+ * @component CardListComponent
+ * @description This component is responsible for displaying a list of cards, including Visa and MasterCard.
  *
- * @component
  * @selector app-card-list
  * @templateUrl ./card-list.component.html
  * @styleUrl ./card-list.component.css
  *
- * @class
+ * @class CardListComponent
  * @implements OnInit
  *
- * @property {string} tabName - The name of the tab, default is 'Karty'.
- * @property {string} cardType - The type of card, default is 'standard'.
- * @property {PaginationService} visaCardsPaginationService - Service for handling pagination of Visa cards.
- * @property {PaginationService} masterCardsPaginationService - Service for handling pagination of MasterCard cards.
+ * @property {string} tabName - The name of the current tab.
+ * @property {string} cardType - The type of card, either 'visa' or 'mastercard'.
+ * @property {PaginationService} visaCardsPaginationService - Service to manage pagination for Visa cards.
+ * @property {PaginationService} masterCardsPaginationService - Service to manage pagination for MasterCard cards.
  *
  * @constructor
- * @param {ProductTypesService} productTypesService - Service for handling product types.
+ * @param {Object} platformId - The platform ID for checking if the platform is a browser.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {ProductTypesService} productTypesService - Service to manage product types.
  *
- * @method ngOnInit - Lifecycle hook that is called after data-bound properties are initialized.
- * @method onResize - Host listener for window resize events.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentCardType and currentTabName observables.
+ * @method onResize - Handles the window resize event to adjust pagination.
  * @param {UIEvent} event - The resize event.
  * @method setPaginatedArrays - Sets the paginated arrays for Visa and MasterCard cards.
- * @method handleWidthChange - Handles changes in window width for pagination services.
- * @method changeCardType - Changes the current card type.
- * @param {string} cardType - The new card type.
+ * @method handleWidthChange - Handles the width change to adjust pagination.
+ * @method changeCardType - Changes the card type using the productTypesService.
+ * @param {string} cardType - The new card type to be set.
  */
 @Component({
   selector: 'app-card-list',
@@ -46,18 +47,23 @@ import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
   styleUrl: './card-list.component.css',
 })
 export class CardListComponent implements OnInit {
-  public tabName: string = 'Konta';
-  public cardType: string = 'standard';
-  public visaCardsPaginationService: PaginationService =
-    new PaginationService();
-  public masterCardsPaginationService: PaginationService =
-    new PaginationService();
+  public tabName: string;
+  public cardType: string;
+  public visaCardsPaginationService: PaginationService;
+  public masterCardsPaginationService: PaginationService;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private appInformationStatesService: AppInformationStatesService,
     private productTypesService: ProductTypesService
-  ) {}
-  ngOnInit(): void {
+  ) {
+    this.tabName = 'Konta';
+    this.cardType = 'standard';
+    this.visaCardsPaginationService = new PaginationService();
+    this.masterCardsPaginationService = new PaginationService();
+  }
+
+  public ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.productTypesService.currentCardType.subscribe(
         (cardType: string) => (this.cardType = cardType)
@@ -69,24 +75,28 @@ export class CardListComponent implements OnInit {
       this.handleWidthChange();
     }
   }
+
   @HostListener('window:resize', ['$event'])
-  onResize(event: UIEvent): void {
+  public onResize(event: UIEvent): void {
     this.visaCardsPaginationService.onResize(event);
     this.masterCardsPaginationService.onResize(event);
   }
-  setPaginatedArrays(): void {
+
+  public setPaginatedArrays(): void {
     this.visaCardsPaginationService.setPaginatedArray(visaCardsObjectsArray);
     this.masterCardsPaginationService.setPaginatedArray(
       mastercardCardsObjectsArray
     );
   }
-  handleWidthChange(): void {
+
+  public handleWidthChange(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.visaCardsPaginationService.handleWidthChange(window.innerWidth);
       this.masterCardsPaginationService.handleWidthChange(window.innerWidth);
     }
   }
-  changeCardType(cardType: string): void {
+
+  public changeCardType(cardType: string): void {
     this.productTypesService.changeCardType(cardType);
   }
 }

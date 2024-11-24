@@ -1,6 +1,6 @@
 <div
   *ngIf="alertService.isOpened"
-  class="fixed bottom-5 right-5 pt-2 z-[1000] rounded-xl max-sm:w-[85%] sm:w-2/3 lg:w-1/3"
+  class="fixed bottom-5 max-sm:right-1 sm:right-5 pt-2 z-[1000] rounded-xl max-sm:w-[95%] sm:w-2/3 lg:w-1/3"
   [@slideInFromTop]
   [ngClass]="{
     'bg-red-400': alertService.alertType === 'error',

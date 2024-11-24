@@ -4,13 +4,20 @@ import { AnimationsProvider } from '../../providers/animations.provider';
 import { WindowEventsService } from '../../services/window-events.service';
 
 /**
- * Component that displays a scroll arrow button to scroll to the top of the page.
+ * @component ScrollArrowUpComponent
+ * @description This component is responsible for displaying a scroll-to-top arrow and managing its behavior.
  *
- * @selector 'app-scroll-arrow-up'
- * @templateUrl './scroll-arrow-up.component.html'
+ * @selector app-scroll-arrow-up
+ * @templateUrl ./scroll-arrow-up.component.html
  * @animations [AnimationsProvider.animations]
  *
- * @method scrollToTop Scrolls the window to the top of the page with a smooth scrolling behavior.
+ * @class ScrollArrowUpComponent
+ *
+ * @constructor
+ * @param {Object} platformId - The platform ID for checking if the platform is a browser.
+ * @param {WindowEventsService} windowEventsService - Service to manage window events.
+ *
+ * @method scrollToTop - Scrolls the window to the top.
  */
 @Component({
   selector: 'app-scroll-arrow-up',
@@ -26,7 +33,8 @@ export class ScrollArrowUpComponent {
       this.windowEventsService.startPulsing();
     }
   }
-  scrollToTop(): void {
+
+  public scrollToTop(): void {
     this.windowEventsService.scrollToTop();
   }
 }

@@ -1,120 +1,189 @@
-<div class="flex-col flex justify-center text-center bg-black text-white w-screen">
-    @if(shakeStateService.siteNumber === 1) {
+<div
+  class="flex-col flex justify-center text-center bg-black text-white w-screen"
+>
+  @if(shakeStateService.siteNumber === 1) {
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
+    <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">
+      Otwieranie nowej lokaty
+    </p>
+    <p class="font-roboto font-light text-md text-white w-3/4">
+      Wybierz interesującą cię lokatę i ciesz się rosnącymi zyskami!
+    </p>
+  </div>
+  <div class="w-screen bg-white h-[1px]"></div>
+  <div class="flex flex-col justify-center items-center pt-5">
+    <div
+      class="flex flex-row w-screen h-full lg:space-x-14 2xl:space-x-40 relative justify-center border-none"
+    >
+      <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
+        <button
+          class="sm:ml-10 font-bold px-4 rounded-l text-white max-sm:px-2"
+          (click)="paginationService.previousPage()"
+        >
+          <mat-icon class="cursor-pointer">arrow_back</mat-icon>
+        </button>
+        <div class="flex-grow"></div>
+        <button
+          class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2"
+          (click)="paginationService.nextPage()"
+        >
+          <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
+        </button>
+      </div>
+      @for(deposit of paginationService.paginatedItems; track deposit.id) {
+      <div
+        class="bg-own-gray rounded-xl justify-center items-center text-center w-80 h-96 md:w-64 xl:w-72 p-5 max-sm:w-64 max-sm:my-2"
+        [ngClass]="{ 'blur-xxs': deposit.type !== currentSelectedDepositType }"
+      >
+        <mat-icon class="my-5 icon-3x">{{
+          convertService.getDepositIcon(deposit.type)
+        }}</mat-icon>
+        <p class="font-walter font-normal text-2xl text-black max-md:text-lg">
+          Lokata {{ convertService.getPolishDepositType(deposit.type) }}
+        </p>
+        <p class="font-walter font-normal text-2xl text-white max-md:text-lg">
+          {{ deposit.percent }}%
+        </p>
+        <ul class="flex flex-col self-center list-disc space-y-5 px-5">
+          @for(benefit of deposit.benefits; track benefit) {
+          <li
+            class="items-center font-roboto font-light text-xl text-black text-left max-md:text-base"
+          >
+            {{ benefit }}
+          </li>
+          }
+        </ul>
+      </div>
+      }
+    </div>
+    <p
+      class="font-roboto font-normal text-2xl text-white py-5 text-center lg:pl-12 2xl:pl-36"
+    >
+      Wybrano lokatę
+      {{
+        convertService.getPolishDepositType(
+          currentSelectedDepositType,
+          "BOTTOM_INFORMATION"
+        )
+      }}
+    </p>
     <div class="w-screen bg-white h-[1px]"></div>
     <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
-        <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Otwieranie nowej lokaty</p>
-        <p class="font-roboto font-light text-md text-white w-3/4">Wybierz interesującą cię lokatę i ciesz się rosnącymi
-            zyskami!</p>
+      <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">
+        Czas trwania
+      </p>
+      <p class="font-roboto font-light text-md text-white w-3/4">
+        Określ czas trwania lokaty.
+      </p>
     </div>
     <div class="w-screen bg-white h-[1px]"></div>
-    <div class="flex flex-col justify-center items-center pt-5">
-        <div class="flex flex-row w-screen h-full lg:space-x-14 2xl:space-x-40 relative justify-center border-none">
-            <div class="absolute inset-y-1/2 flex items-center z-10 w-screen">
-                <button class="sm:ml-10 font-bold px-4 rounded-l text-white max-sm:px-2"
-                    (click)="paginationService.previousPage()">
-                    <mat-icon class="cursor-pointer">arrow_back</mat-icon>
-                </button>
-                <div class="flex-grow"></div>
-                <button class="font-bold py-2 rounded-r text-white sm:mr-2 px-4 max-sm:px-2"
-                    (click)="paginationService.nextPage()">
-                    <mat-icon class="cursor-pointer">arrow_forward</mat-icon>
-                </button>
-            </div>
-            @for(deposit of paginationService.paginatedItems; track deposit.id) {
-            <div class="bg-own-gray rounded-xl justify-center items-center text-center w-80 h-96 md:w-64 xl:w-72 p-5 max-sm:w-64 max-sm:my-2"
-                [ngClass]="{'blur-xxs': deposit.type !== currentSelectedDepositType}">
-                <mat-icon class="my-5 icon-3x">{{convertService.getDepositIcon(deposit.type)}}</mat-icon>
-                <p class="font-walter font-normal text-2xl text-black max-md:text-lg">Lokata
-                    {{convertService.getPolishDepositType(deposit.type)}}</p>
-                <p class="font-walter font-normal text-2xl text-white max-md:text-lg">{{deposit.percent}}%</p>
-                <ul class="flex flex-col self-center list-disc space-y-5 px-5">
-                    @for(benefit of deposit.benefits; track benefit) {
-                    <li class="items-center font-roboto font-light text-xl text-black text-left max-md:text-base">
-                        {{benefit}}
-                    </li>
-                    }
-                </ul>
-            </div>
-            }
+    <div class="w-screen flex flex-col items-center py-12">
+      <div
+        class="flex flex-col lg:w-1/3 items-center space-y-5 max-md:w-[85%] md:w-[65%]"
+      >
+        <p class="font-roboto font-light text-2xl">Czas trwania</p>
+        <div class="w-full flex flex-col items-center space-y-5">
+          <input
+            type="range"
+            min="1"
+            max="4"
+            step="1"
+            [value]="deposit.duration"
+            [(ngModel)]="deposit.duration"
+            (ngModelChange)="setDepositEndDate()"
+            #depositDurationInput="ngModel"
+            readonly
+            class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb"
+          />
+          <div class="flex justify-between w-full px-2 mt-2">
+            <span class="text-white">1 mc</span>
+            <span class="text-white">3 mc</span>
+            <span class="text-white">6 mc</span>
+            <span class="text-white">12 mc</span>
+          </div>
         </div>
-        <p class="font-roboto font-normal text-2xl text-white py-5 text-center lg:pl-12 2xl:pl-36">Wybrano lokatę
-            {{convertService.getPolishDepositType(currentSelectedDepositType, "BOTTOM_INFORMATION")}}</p>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
-            <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Czas trwania</p>
-            <p class="font-roboto font-light text-md text-white w-3/4">Określ czas trwania lokaty.</p>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <div class="w-screen flex flex-col items-center py-12">
-            <div class="flex flex-col lg:w-1/3 items-center space-y-5 max-md:w-[85%] md:w-[65%]">
-                <p class="font-roboto font-light text-2xl">Czas trwania</p>
-                <div class="w-full flex flex-col items-center space-y-5">
-                    <input type="range" min="1" max="4" step="1" [value]="deposit.duration"
-                        [(ngModel)]="deposit.duration" (ngModelChange)="setDepositEndDate()"
-                        #depositDurationInput="ngModel" readonly
-                        class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb">
-                    <div class="flex justify-between w-full px-2 mt-2">
-                        <span class="text-white">1 mc</span>
-                        <span class="text-white">3 mc</span>
-                        <span class="text-white">6 mc</span>
-                        <span class="text-white">12 mc</span>
-                    </div>
-                </div>
-                <p class="font-roboto font-light text-lg">{{monthsDescription}}</p>
-            </div>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
-            <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">Informacje techniczne</p>
-            <p class="font-roboto font-light text-md text-white w-3/4">Wybierz konto bankowe, z którego powstanie lokata
-                i
-                określ
-                kapitał początkowy.</p>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <div class="flex flex-col lg:flex-row justify-between py-12 w-[85%] max-lg:space-y-5">
-            <div class="flex flex-col lg:w-100 items-center">
-                <div class="relative w-full">
-                    <p class="font-roboto font-light text-md text-left">Kapitał początkowy</p>
-                    <input class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
-                        type="number" min="{{getLimit(100)}}" max="{{getLimit(10000)}}" value={{deposit.balance}}
-                        [(ngModel)]="deposit.balance" #initialCapitalInput="ngModel" required />
-                    <span
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-black pt-9">{{currentCurrency}}</span>
-                </div>
-                <div *ngIf="!getIsInitialCapitalValid(initialCapitalInput)" class="text-red-500 pt-2">
-                    <div *ngIf="initialCapitalInput.errors?.['required']">Kapitał początkowy jest wymagany.</div>
-                    <div *ngIf="initialCapitalInput.errors?.['min']">Minimalna wartość to
-                        {{getValueWithCurrency(100)}}</div>
-                    <div *ngIf="initialCapitalInput.errors?.['max']">Maksymalna wartość to
-                        {{getValueWithCurrency(10000)}}</div>
-                </div>
-            </div>
-            <div class="flex flex-col z-20">
-                <p class="font-roboto font-light text-md text-left">Konto bankowe</p>
-                <select
-                    class="!font-roboto !font-light !text-black !rounded-lg !px-5 !h-10 !w-100 max-lg:!w-full !bg-white"
-                    (change)="setDepositAccountNumber($event)"> 
-                    @for(userAccount of userAccounts; track userAccount.id) {
-                    <option class="py-2" [value]="userAccount.id">
-                        {{convertService.getAccountOptionString(userAccount)}}
-                    </option>
-                    }
-                </select>
-                @if(isAccountNumberValid === false) {
-                <p class="font-roboto font-light text-red-500 text-sm pt-5">Wybrane konto jest nieprawidłowe.</p>
-                }
-            </div>
-        </div>
-        <div class="w-screen bg-white h-[1px]"></div>
-        <button
-            class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8"
-            [@shake]="shakeStateService.shakeState" (click)="handleButtonClick()">
-            Załóż lokatę
-        </button>
+        <p class="font-roboto font-light text-lg">{{ monthsDescription }}</p>
+      </div>
     </div>
-    }
-    @else {
-    <app-verification-code actionType="Otwieranie lokaty" />
-    }
+    <div class="w-screen bg-white h-[1px]"></div>
+    <div class="flex flex-col w-full pl-5 md:px-10 items-start text-left py-2">
+      <p class="font-roboto font-medium text-lg text-white pt-2 text-nowrap">
+        Informacje techniczne
+      </p>
+      <p class="font-roboto font-light text-md text-white w-3/4">
+        Wybierz konto bankowe, z którego powstanie lokata i określ kapitał
+        początkowy.
+      </p>
+    </div>
+    <div class="w-screen bg-white h-[1px]"></div>
+    <div
+      class="flex flex-col lg:flex-row justify-between py-12 w-[85%] max-lg:space-y-5"
+    >
+      <div class="flex flex-col lg:w-100 items-center">
+        <div class="relative w-full">
+          <p class="font-roboto font-light text-md text-left">
+            Kapitał początkowy
+          </p>
+          <input
+            class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
+            type="number"
+            min="{{ getLimit(100) }}"
+            max="{{ getLimit(10000) }}"
+            value="{{ deposit.balance }}"
+            [(ngModel)]="deposit.balance"
+            #initialCapitalInput="ngModel"
+            required
+          />
+          <span
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 font-roboto font-light text-black pt-9"
+            >{{ currentCurrency }}</span
+          >
+        </div>
+        <div
+          *ngIf="!getIsInitialCapitalValid(initialCapitalInput)"
+          class="text-red-500 pt-2"
+        >
+          <div *ngIf="initialCapitalInput.errors?.['required']">
+            Kapitał początkowy jest wymagany.
+          </div>
+          <div *ngIf="initialCapitalInput.errors?.['min']">
+            Minimalna wartość to {{ getValueWithCurrency(100) }}
+          </div>
+          <div *ngIf="initialCapitalInput.errors?.['max']">
+            Maksymalna wartość to {{ getValueWithCurrency(10000) }}
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col z-20">
+        <p class="font-roboto font-light text-md text-left">Konto bankowe</p>
+        <select
+          class="!font-roboto !font-light !text-black !rounded-lg !px-5 !h-10 !w-100 max-lg:!w-full !bg-white"
+          (change)="setDepositAccountNumber($event)"
+        >
+          @for(userAccount of userAccounts; track userAccount.id) {
+          <option class="py-2" [value]="userAccount.id">
+            {{ convertService.getAccountOptionString(userAccount) }}
+          </option>
+          }
+        </select>
+        @if(isAccountNumberValid === false) {
+        <p class="font-roboto font-light text-red-500 text-sm pt-5">
+          Wybrane konto jest nieprawidłowe.
+        </p>
+        }
+      </div>
+    </div>
+    <div class="w-screen bg-white h-[1px]"></div>
+    <button
+      class="my-5 py-5 border text-xl border-white text-white font-salsa rounded-full hover:bg-gray-600 bg-own-gray mx-5 self-center z-20 px-8"
+      [@shake]="shakeStateService.shakeState"
+      (click)="handleButtonClick()"
+    >
+      Załóż lokatę
+    </button>
+  </div>
+  } @else {
+  <app-verification-code actionType="Otwieranie lokaty" />
+  }
 </div>

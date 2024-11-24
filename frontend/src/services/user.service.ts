@@ -1,94 +1,70 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../environments/environment.development';
 import { Account } from '../types/account';
 import { Card } from '../types/card';
 import { Deposit } from '../types/deposit';
 import { Transaction } from '../types/transaction';
 import { UserAccount } from '../types/user-account';
-import { userAccounts } from '../utils/example-user-accounts-object';
-import { userCards } from '../utils/example-user-cards-object';
-import { userDeposits } from '../utils/example-user-deposits-object';
-import { userTransactions } from '../utils/example-user-transactions-object';
 import { CryptoService } from './crypto.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  public operation!: string;
-  private registeringAccount!: string;
   private loginData!: string;
+  private registeringAccount!: string;
   private registeringUserAccount!: string;
-  private verificationCode!: string;
+  private currentUserAccount!: UserAccount;
+  private userCardsSubject: BehaviorSubject<Card[]>;
+  private userAccountsSubject: BehaviorSubject<Account[]>;
+  private userDepositsSubject: BehaviorSubject<Deposit[]>;
+  private userTransactionsSubject: BehaviorSubject<Transaction[]>;
+
+  public operation!: string;
+  public userCards: Observable<Card[]>;
+  public userAccounts: Observable<Account[]>;
+  public userDeposits: Observable<Deposit[]>;
+  public userTransactions: Observable<Transaction[]>;
 
   constructor(
     private cryptoService: CryptoService,
     private cookieService: CookieService,
     private httpClient: HttpClient
-  ) {}
-
-  async finalizeOperation(): Promise<boolean> {
-    switch (this.operation) {
-      case 'register':
-        return this.register();
-      case 'login':
-        return this.login();
-      default:
-        return false;
-    }
+  ) {
+    this.currentUserAccount = new UserAccount();
+    this.userCardsSubject = new BehaviorSubject<Card[]>([]);
+    this.userAccountsSubject = new BehaviorSubject<Account[]>([]);
+    this.userDepositsSubject = new BehaviorSubject<Deposit[]>([]);
+    this.userTransactionsSubject = new BehaviorSubject<Transaction[]>([]);
+    this.userCards = this.userCardsSubject.asObservable();
+    this.userAccounts = this.userAccountsSubject.asObservable();
+    this.userDeposits = this.userDepositsSubject.asObservable();
+    this.userTransactions = this.userTransactionsSubject.asObservable();
   }
 
-  async register(): Promise<boolean> {
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/auth/register`,
-      {
-        encryptedAccountDto: this.registeringAccount,
-        encryptedUserDto: this.registeringUserAccount,
-      },
-      {
-        observe: 'response',
-      }
-    );
-    return new Promise((resolve) => {
-      request.subscribe({
-        next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
-      });
-    });
-  }
-
-  async login(): Promise<boolean> {
-    const loginData: string = this.loginData;
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/auth/login`,
-      {
-        loginData,
-      },
-      {
-        observe: 'response',
-      }
-    );
-    return new Promise((resolve) => {
-      request.subscribe({
-        next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
-      });
-    });
-  }
-
-  logout(): void {
+  public logout(): void {
     const request: Observable<Object> = this.httpClient.post(
       `${environment.apiUrl}/auth/logout`,
-      {},
-      { withCredentials: true }
+      {}
     );
     request.subscribe();
+    this.resetUserObjects();
   }
 
-  sendVerificationEmail(data: string): void {
+  public refreshTokens(): void {
+    this.httpClient
+      .post(`${environment.apiUrl}/auth/refresh-token`, {})
+      .subscribe();
+  }
+
+  public sendVerificationEmail(data: string): void {
     const endpoint: string =
       this.operation === 'login'
         ? `${environment.apiUrl}/auth/login/verification/send-email`
@@ -98,14 +74,9 @@ export class UserService {
       encryptedData,
     });
     request.subscribe();
-    this.setVerificationCode();
   }
 
-  getIsCodeValid(typedVerificationCode: string): boolean {
-    return this.verificationCode === typedVerificationCode;
-  }
-
-  setLoggingUserAccount(loggingUserAccount: UserAccount): void {
+  public setLoggingUserAccount(loggingUserAccount: UserAccount): void {
     loggingUserAccount.password = this.cryptoService.encryptData(
       loggingUserAccount.password
     );
@@ -114,15 +85,7 @@ export class UserService {
     );
   }
 
-  setRegisteringAccount(registeringAccount: Account): void {
-    registeringAccount.balance = 0.0;
-    registeringAccount.image = this.getAccountImage(registeringAccount.type);
-    this.registeringAccount = this.cryptoService.encryptData(
-      JSON.stringify(registeringAccount)
-    );
-  }
-
-  setRegisteringUserAccount(registeringUserAccount: UserAccount): void {
+  public setRegisteringUserAccount(registeringUserAccount: UserAccount): void {
     registeringUserAccount.address = this.cryptoService.encryptData(
       registeringUserAccount.address
     );
@@ -141,38 +104,219 @@ export class UserService {
     );
   }
 
-  setVerificationCode(): void {
-    setTimeout(() => {
-      const encryptedCode: string = this.cookieService.get('VERIFICATION_CODE');
-      this.verificationCode = this.cryptoService.decryptData(encryptedCode);
-    }, 2000);
+  public refreshUserObjects(): void {
+    this.setUserAccountDetails();
+    this.setUserAccountsArray();
+    this.setUserDepositsArray();
+    this.setUserCardsArray();
+    this.setUserTransactionsArray();
   }
 
-  getUserAccountsArray(): Account[] {
-    return userAccounts;
+  public openNewBankAccount(encryptedAccountDto: string): void {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/user/account/open`,
+      {
+        encryptedAccountDto: encryptedAccountDto,
+      },
+      {
+        observe: 'response',
+      }
+    );
+    request.subscribe({
+      next: (response) => response.status === 200,
+      error: () => false,
+    });
   }
 
-  getUserDepositsArray(): Deposit[] {
-    return userDeposits;
+  public setRegisteringAccount(registeringAccount: Account): void {
+    registeringAccount.balance = 0.0;
+    registeringAccount.image = this.getAccountImage(registeringAccount.type);
+    this.registeringAccount = this.cryptoService.encryptData(
+      JSON.stringify(registeringAccount)
+    );
   }
 
-  getUserTransactionsArray(): Transaction[] {
-    return userTransactions;
+  public getIsCodeValid(typedVerificationCode: string): boolean {
+    const encryptedCode: string = this.cookieService.get('VERIFICATION_CODE');
+    const verificationCode: string =
+      this.cryptoService.decryptData(encryptedCode);
+    return verificationCode === typedVerificationCode;
   }
 
-  getUserCardsArray(): Card[] {
-    return userCards;
+  public get userAccount(): UserAccount {
+    return this.currentUserAccount;
   }
 
-  get userAccount(): UserAccount {
-    const userAccount: UserAccount = new UserAccount();
-    userAccount.firstName = 'Maksymilian';
-    userAccount.lastName = 'Sowula';
-    userAccount.address = 'Al.Tysiąclecia 1/1';
-    userAccount.emailAddress = 'example@gmail.com';
-    userAccount.phoneNumber = 123456789;
-    userAccount.password = 'Test@12345678';
-    return userAccount;
+  public get userFullName(): string {
+    const firstLetterOfFirstName: string =
+      this.userAccount.firstName?.substring(0, 1).toUpperCase() || '';
+    const lastName: string = this.userAccount.lastName?.toUpperCase() || '';
+    return firstLetterOfFirstName + '.' + lastName;
+  }
+
+  public async finalizeOperation(): Promise<boolean> {
+    switch (this.operation) {
+      case 'register':
+        return this.register();
+      case 'login':
+        return this.login();
+      default:
+        return false;
+    }
+  }
+
+  public async register(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/auth/register`,
+      {
+        encryptedAccountDto: this.registeringAccount,
+        encryptedUserDto: this.registeringUserAccount,
+      },
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  public async login(): Promise<boolean> {
+    const loginData: string = this.loginData;
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/auth/login`,
+      {
+        loginData,
+      },
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  private resetUserObjects(): void {
+    this.userAccountsSubject.next([]);
+    this.userDepositsSubject.next([]);
+    this.userCardsSubject.next([]);
+    this.userTransactionsSubject.next([]);
+  }
+
+  private setUserAccountDetails(): void {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.get(
+      `${environment.apiUrl}/user/account-object`,
+      {
+        observe: 'response',
+      }
+    );
+    request.subscribe({
+      next: (response: HttpResponse<any>) => {
+        this.currentUserAccount = this.cryptoService.decryptData(
+          response.body.encryptedData
+        ) as unknown as UserAccount;
+        this.currentUserAccount.address = this.cryptoService.decryptData(
+          this.currentUserAccount.address
+        );
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log('Error:', error);
+      },
+    });
+  }
+
+  private setUserAccountsArray(): void {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.get(
+      `${environment.apiUrl}/user/all-accounts`,
+      {
+        observe: 'response',
+      }
+    );
+    request.subscribe({
+      next: (response: HttpResponse<any>) => {
+        const decryptedAccountsArray: any = this.cryptoService.decryptData(
+          response.body.encryptedData
+        );
+        this.userAccountsSubject.next(decryptedAccountsArray);
+      },
+      error: () => false,
+    });
+  }
+
+  private setUserDepositsArray(): void {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.get(
+      `${environment.apiUrl}/deposits/user/all`,
+      {
+        observe: 'response',
+      }
+    );
+    request.subscribe({
+      next: (response: HttpResponse<any>) => {
+        const decryptedDepositsArray: any = this.cryptoService.decryptData(
+          response.body.encryptedData
+        );
+        this.userDepositsSubject.next(decryptedDepositsArray);
+      },
+      error: () => false,
+    });
+  }
+
+  private setUserCardsArray(): void {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.get(
+      `${environment.apiUrl}/cards/user/all`,
+      {
+        observe: 'response',
+      }
+    );
+    request.subscribe({
+      next: (response: HttpResponse<any>) => {
+        const decryptedCardsArray: any = this.cryptoService.decryptData(
+          response.body.encryptedData
+        );
+        decryptedCardsArray.forEach((card: any) => {
+          if (typeof card.limits === 'string') {
+            card.limits = JSON.parse(card.limits);
+          }
+        });
+        this.userCardsSubject.next(decryptedCardsArray);
+      },
+      error: () => false,
+    });
+  }
+
+  private setUserTransactionsArray(): void {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.get(
+      `${environment.apiUrl}/user/all-transactions`,
+      {
+        observe: 'response',
+      }
+    );
+    request.subscribe({
+      next: (response: HttpResponse<any>) => {
+        const decryptedTransactionsArray: any = this.cryptoService.decryptData(
+          response.body.encryptedData
+        );
+        decryptedTransactionsArray.forEach((transaction: any) => {
+          if (
+            transaction.assignedAccountNumber &&
+            !isNaN(transaction.assignedAccountNumber)
+          ) {
+            transaction.assignedAccountNumber = Number(
+              transaction.assignedAccountNumber
+            );
+          }
+        });
+        this.userTransactionsSubject.next(decryptedTransactionsArray);
+      },
+      error: () => false,
+    });
   }
 
   private getAccountImage(accountType: string) {

@@ -7,11 +7,15 @@ import com.quantum.trust.backend.model.entities.Transaction;
 
 @Component
 public class TransactionMapper {
-    public TransactionDto convertToTransactionDto(Transaction transaction) {
+        public TransactionDto convertToTransactionDto(Transaction transaction) {
+        String assignedAccountNumber = transaction.getAccount() != null ? transaction.getAccount().getId()
+                        : transaction.getCard().getId();
+                
         return TransactionDto
                 .builder()
                 .id(transaction.getId())
-                .account(transaction.getAccount())
+                .assignedAccountNumber(
+                        assignedAccountNumber)
                 .accountAmountAfter(transaction.getAccountAmountAfter())
                 .accountCurrency(transaction.getAccountCurrency())
                 .amount(transaction.getAmount())
@@ -28,8 +32,9 @@ public class TransactionMapper {
     public Transaction convertToTransaction(TransactionDto transactionDto) {
         return Transaction
                 .builder()
-                .account(transactionDto.getAccount())
                 .accountAmountAfter(transactionDto.getAccountAmountAfter())
+                .account(transactionDto.getAccount())
+                .card(transactionDto.getCard())
                 .accountCurrency(transactionDto.getAccountCurrency())
                 .amount(transactionDto.getAmount())
                 .category(transactionDto.getCategory())

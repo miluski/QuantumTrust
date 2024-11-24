@@ -15,53 +15,80 @@ import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-object
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 
 /**
- * @fileoverview OrderCardComponent is a standalone Angular component that manages the display and interaction
- * with user order cards. It includes functionalities such as pagination, card rotation, input validation,
- * and user account management.
+ * @component OrderCardComponent
+ * @description This component is responsible for managing the process of ordering a new card for users.
  *
- * @component
  * @selector app-order-card
  * @templateUrl ./order-card.component.html
- * @animations AnimationsProvider.animations
+ * @animations [AnimationsProvider.animations]
  *
  * @class OrderCardComponent
  * @implements OnInit
  *
  * @property {Account[]} userAccounts - Array of user accounts.
- * @property {number} pinCode - Default pin code for the card.
- * @property {CardFlags} cardFlags - Flags indicating the state of various card properties.
- * @property {CardSettings} cardSettings - Settings related to the card.
- * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the card.
+ * @property {number} pinCode - The PIN code for the card.
+ * @property {CardFlags} cardFlags - Flags indicating the validation status of card fields.
+ * @property {CardSettings} cardSettings - The card settings object.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
  *
  * @constructor
- * @param {VerificationService} verificationService - Service for input validation.
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
  * @param {UserService} userService - Service to manage user data.
  * @param {PaginationService} paginationService - Service to manage pagination.
- * @param {ConvertService} convertService - Service to handle currency conversion.
+ * @param {ConvertService} convertService - Service to handle data conversion.
  *
- * @method ngOnInit - Lifecycle hook that is called after data-bound properties are initialized.
- * @method onResize - Host listener for window resize events.
- * @method setUserAccounts - Asynchronously sets the user accounts and initializes card settings.
- * @method handleButtonClick - Handles button click events and sets the shake state based on data validity.
- * @method getIsInputValueValid - Validates input values and sets the corresponding flags.
- * @method setDepositAccountNumber - Sets the deposit account number based on user input.
- * @method rotateCard - Rotates the card to show either the front or back side.
+ * @method ngOnInit - Lifecycle hook that initializes the component.
+ * @method onResize - Handles the window resize event to adjust pagination.
+ * @param {UIEvent} event - The resize event.
+ * @method setUserAccounts - Sets the user accounts.
+ * @method handleButtonClick - Handles the button click event to validate fields and set the shake state.
+ * @method getIsInputValueValid - Checks if the input value is valid.
+ * @param {NgModel} input - The input model.
+ * @param {'cash' | 'internet' | 'pinCode'} type - The type of input.
+ * @returns {boolean} - Returns true if the input value is valid, otherwise false.
+ * @method setDepositAccountNumber - Sets the account number for the deposit.
+ * @param {Event} event - The event object.
+ * @method rotateCard - Rotates the card to show the front or back side.
+ * @param {Card} card - The card object to be rotated.
  * @method isCardIndexAtCenter - Checks if the card index is at the center.
+ * @param {number} index - The index of the card.
+ * @returns {boolean} - Returns true if the card index is at the center, otherwise false.
  * @method getRotateState - Gets the rotate state of the card.
- * @method getCardState - Gets the state of the card based on its index.
- * @method getFee - Calculates and returns the fee based on the type.
- * @method getCardImage - Gets the image of the card based on its current state.
- * @method getCardSettingsObject - Returns the card settings object with specified limits and transaction types.
- * @method currentSelectedCard - Gets the currently selected card.
- * @method currentSelectedAccount - Gets the currently selected account.
- * @method ownerFullName - Gets the full name of the card owner.
- * @method cardTypeWithPublisher - Gets the card type along with its publisher.
+ * @param {Card} card - The card object.
+ * @returns {string} - Returns 'front' if the card is showing the front side, otherwise 'back'.
+ * @method getCardState - Gets the state of the card.
+ * @param {number} index - The index of the card.
+ * @returns {string} - Returns 'center' if the card index is at the center, otherwise 'default'.
+ * @method getFee - Gets the fee for the card.
+ * @param {'monthly' | 'issuance'} type - The type of fee.
+ * @returns {string} - Returns the fee amount with the currency symbol.
+ * @method getCardImage - Gets the image of the card.
+ * @param {Card} currentCard - The current card object.
+ * @returns {string} - Returns the image URL of the card.
+ * @method getCardSettingsObject - Gets the card settings object.
+ * @param {'min' | 'max'} limitType - The limit type.
+ * @param {'internet' | 'cash'} transactionType - The transaction type.
+ * @returns {CardSettings} - Returns the card settings object.
+ * @method currentSelectedCard - Getter method to get the current selected card.
+ * @returns {Card} - Returns the current selected card.
+ * @method currentSelectedAccount - Getter method to get the current selected account.
+ * @returns {Account} - Returns the current selected account.
+ * @method ownerFullName - Getter method to get the full name of the card owner.
+ * @returns {string} - Returns the full name of the card owner.
+ * @method cardTypeWithPublisher - Getter method to get the card type with the publisher.
+ * @returns {string} - Returns the card type with the publisher.
  * @method setCardAndCurrency - Sets the card and currency in the card settings.
- * @method setMinTransactionsLimit - Sets the minimum transaction limit based on the current currency.
- * @method setCorrectInputFlag - Sets the correct input flag based on the type and validity.
- * @method currentCurrency - Gets the current currency of the selected account.
- * @method cardsObjectsArray - Gets the array of card objects.
- * @method cardFlagsArray - Gets the array of card flags.
+ * @param {CardSettings} cardSettings - The card settings object.
+ * @method setMinTransactionsLimit - Sets the minimum transactions limit for the card.
+ * @method setCorrectInputFlag - Sets the correct input flag.
+ * @param {'cash' | 'internet' | 'pinCode'} type - The type of input.
+ * @param {boolean} isValid - The validation status.
+ * @method currentCurrency - Getter method to get the current currency of the selected account.
+ * @returns {string} - Returns the current currency of the selected account.
+ * @method cardsObjectsArray - Getter method to get the array of card objects.
+ * @returns {Card[]} - Returns the array of card objects.
+ * @method cardFlagsArray - Getter method to get the array of card validation flags.
+ * @returns {boolean[]} - Returns the array of card validation flags.
  */
 @Component({
   selector: 'app-order-card',
@@ -69,35 +96,49 @@ import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
   animations: [AnimationsProvider.animations],
 })
 export class OrderCardComponent implements OnInit {
-  public userAccounts!: Account[];
-  public pinCode: number = 1111;
-  public cardFlags: CardFlags = new CardFlags();
-  public cardSettings: CardSettings = new CardSettings();
-  public shakeStateService: ShakeStateService = new ShakeStateService();
+  protected userAccounts!: Account[];
+
+  public pinCode: number;
+  public cardFlags: CardFlags;
+  public cardSettings: CardSettings;
+  public shakeStateService: ShakeStateService;
+
   constructor(
     private verificationService: VerificationService,
     protected userService: UserService,
     protected paginationService: PaginationService,
     protected convertService: ConvertService
   ) {
+    this.pinCode = 1111;
+    this.cardFlags = new CardFlags();
+    this.cardSettings = new CardSettings();
+    this.shakeStateService = new ShakeStateService();
     this.paginationService.paginationMethod = 'movableItems';
   }
-  ngOnInit(): void {
+
+  @HostListener('window:resize', ['$event'])
+  public onResize(event: UIEvent): void {
+    this.paginationService.onResize(event, 3, 3);
+  }
+
+  public ngOnInit(): void {
     const cardsArray: Card[] = this.cardsObjectsArray;
     this.paginationService.setPaginatedArray(cardsArray);
     this.paginationService.handleWidthChange(window.innerWidth, 3, 3);
     this.setUserAccounts();
   }
-  @HostListener('window:resize', ['$event'])
-  onResize(event: UIEvent): void {
-    this.paginationService.onResize(event, 3, 3);
-  }
-  async setUserAccounts(): Promise<void> {
-    this.userAccounts = await this.userService.getUserAccountsArray();
-    this.cardSettings.assignedAccountNumber = this.userAccounts[0].id;
+
+  public setUserAccounts(): void {
+    this.userService.userAccounts.subscribe((newAccountsArray: Account[]) => {
+      if (newAccountsArray.length >= 1) {
+        this.userAccounts = newAccountsArray;
+        this.cardSettings.assignedAccountNumber = this.userAccounts[0].id;
+      }
+    });
     this.setMinTransactionsLimit();
   }
-  handleButtonClick(): void {
+
+  public handleButtonClick(): void {
     const isSomeDataInvalid: boolean = this.cardFlagsArray.some(
       (flag: boolean) => flag === false
     );
@@ -105,7 +146,8 @@ export class OrderCardComponent implements OnInit {
       isSomeDataInvalid ? 'shake' : 'none'
     );
   }
-  getIsInputValueValid(
+
+  public getIsInputValueValid(
     input: NgModel,
     type: 'cash' | 'internet' | 'pinCode'
   ): boolean {
@@ -113,7 +155,8 @@ export class OrderCardComponent implements OnInit {
     this.setCorrectInputFlag(type, isValid);
     return isValid;
   }
-  setDepositAccountNumber(event: Event) {
+
+  public setDepositAccountNumber(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target) {
       this.cardFlags.isAccountNumberValid =
@@ -127,26 +170,31 @@ export class OrderCardComponent implements OnInit {
         : this.cardSettings.assignedAccountNumber;
     }
   }
-  rotateCard(card: Card): void {
+
+  public rotateCard(card: Card): void {
     card.showingCardSite =
       card.showingCardSite === 'front' &&
       card.id === this.currentSelectedCard.id
         ? 'back'
         : 'front';
   }
-  isCardIndexAtCenter(index: number): boolean {
+
+  public isCardIndexAtCenter(index: number): boolean {
     return this.currentSelectedCard.id === index;
   }
-  getRotateState(card: Card): string {
+
+  public getRotateState(card: Card): string {
     const isCardIdSelected: boolean = card.id === this.currentSelectedCard.id;
     const isCardSiteFront: boolean = card.showingCardSite === 'front';
     !isCardIdSelected ? this.rotateCard(card) : null;
     return !isCardIdSelected || isCardSiteFront ? 'front' : 'back';
   }
-  getCardState(index: number): string {
+
+  public getCardState(index: number): string {
     return this.isCardIndexAtCenter(index) ? 'center' : 'default';
   }
-  getFee(type: 'monthly' | 'issuance'): string {
+
+  public getFee(type: 'monthly' | 'issuance'): string {
     const issuanceAmount: number = this.convertService.getCalculatedAmount(
       this.currentCurrency,
       type === 'monthly'
@@ -155,13 +203,15 @@ export class OrderCardComponent implements OnInit {
     );
     return issuanceAmount.toString() + ' ' + this.currentCurrency;
   }
-  getCardImage(currentCard: Card): string {
+
+  public getCardImage(currentCard: Card): string {
     return currentCard.id === this.currentSelectedCard.id &&
       this.currentSelectedCard.showingCardSite === 'back'
       ? this.currentSelectedCard.backImage
       : currentCard.image;
   }
-  getCardSettingsObject(
+
+  public getCardSettingsObject(
     limitType: 'min' | 'max' = 'min',
     transactionType: 'internet' | 'cash' = 'internet'
   ): CardSettings {
@@ -170,12 +220,14 @@ export class OrderCardComponent implements OnInit {
     this.cardSettings.transactionType = transactionType;
     return this.cardSettings;
   }
-  get currentSelectedCard(): Card {
+
+  public get currentSelectedCard(): Card {
     return this.paginationService.paginatedItems[1]
       ? this.paginationService.paginatedItems[1]
       : this.paginationService.paginatedItems[0];
   }
-  get currentSelectedAccount(): Account {
+
+  public get currentSelectedAccount(): Account {
     return (
       this.userAccounts &&
       (this.userAccounts.find(
@@ -184,24 +236,28 @@ export class OrderCardComponent implements OnInit {
       ) as Account)
     );
   }
-  get ownerFullName(): string {
-    return (
-      this.userService.userAccount.firstName.substring(0, 1) +
-      '.' +
-      this.userService.userAccount.lastName.toUpperCase()
-    );
+
+  public get ownerFullName(): string {
+    const firstName: string =
+      this.userService.userAccount?.firstName?.substring(0, 1) ?? 'J.';
+    const lastName: string =
+      this.userService.userAccount?.lastName?.toUpperCase() ?? 'KOWALSKI';
+    return firstName + '.' + lastName;
   }
-  get cardTypeWithPublisher(): string {
+
+  public get cardTypeWithPublisher(): string {
     return (
       this.currentSelectedCard.publisher?.toUpperCase() +
       ' ' +
       this.currentSelectedCard.type
     );
   }
+
   private setCardAndCurrency(cardSettings: CardSettings): void {
     cardSettings.card = this.currentSelectedCard;
     cardSettings.currency = this.currentCurrency as Currency;
   }
+
   private setMinTransactionsLimit(): void {
     const minTransactionsLimit: number =
       this.currentCurrency === 'PLN'
@@ -210,6 +266,7 @@ export class OrderCardComponent implements OnInit {
     this.cardSettings.limits.internetTransactionsLimit = minTransactionsLimit;
     this.cardSettings.limits.cashTransactionsLimit = minTransactionsLimit;
   }
+
   private setCorrectInputFlag(
     type: 'cash' | 'internet' | 'pinCode',
     isValid: boolean
@@ -226,18 +283,21 @@ export class OrderCardComponent implements OnInit {
         this.cardFlags.isPinCodeValid = isValid;
     }
   }
+
   protected get currentCurrency(): string {
     return (
       (this.currentSelectedAccount && this.currentSelectedAccount.currency) ??
       'PLN'
     );
   }
+
   private get cardsObjectsArray(): Card[] {
     return Array.from([
       ...visaCardsObjectsArray,
       ...mastercardCardsObjectsArray,
     ]);
   }
+
   private get cardFlagsArray(): boolean[] {
     return [
       this.cardFlags.isAccountNumberValid,

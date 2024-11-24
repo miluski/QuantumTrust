@@ -96,7 +96,7 @@ public class VerificationService {
     private void addVerificationCodeCookie(HttpServletResponse httpServletResponse) throws Exception {
         String encryptedCode = this.cryptoService.encryptData(this.verificationCode);
         Cookie responseCookie = this.cookieService.generateCookie("VERIFICATION_CODE", encryptedCode, false,
-                30);
+                180);
         httpServletResponse.addCookie(responseCookie);
     }
 

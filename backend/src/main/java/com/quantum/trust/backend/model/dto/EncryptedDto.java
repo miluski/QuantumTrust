@@ -14,6 +14,5 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EncryptedDto implements Serializable {
-    private String encryptedAccountDto;
-    private String encryptedUserDto;
+    private String encryptedData;
 }

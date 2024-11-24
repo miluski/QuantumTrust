@@ -14,7 +14,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'cardIdFormat',
 })
 export class CardIdFormatPipe implements PipeTransform {
-  transform(value: number): string {
+  public transform(value: number): string {
     if (isNaN(value)) {
       throw new TypeError('Value is not an number!');
     }

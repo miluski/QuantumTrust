@@ -8,12 +8,14 @@ import { Deposit } from '../../types/deposit';
 import { depositsObjectArray } from '../../utils/deposits-objects-array';
 import { SingleDepositComponent } from './single-deposit.component';
 import { SingleDepositModule } from './single-deposit.module';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('SingleDepositComponent', () => {
   let component: SingleDepositComponent;
   let fixture: ComponentFixture<SingleDepositComponent>;
   let productTypesService: jasmine.SpyObj<ProductTypesService>;
   let convertService: jasmine.SpyObj<ConvertService>;
+
   beforeEach(async () => {
     const productTypesServiceSpy = jasmine.createSpyObj('ProductTypesService', [
       'currentDepositType',
@@ -22,12 +24,14 @@ describe('SingleDepositComponent', () => {
     const convertServiceSpy = jasmine.createSpyObj('ConvertService', [
       'getMonths',
     ]);
+
     await TestBed.configureTestingModule({
       imports: [FormsModule, SingleDepositModule],
       providers: [
         { provide: ProductTypesService, useValue: productTypesServiceSpy },
         { provide: ConvertService, useValue: convertServiceSpy },
         { provide: ActivatedRoute, useValue: {} },
+        provideHttpClient()
       ],
     }).compileComponents();
 
@@ -42,9 +46,11 @@ describe('SingleDepositComponent', () => {
     productTypesService.currentDepositType = of('timely');
     convertService.getMonths.and.returnValue(12);
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
   it('should initialize with default values', () => {
     component.ngOnInit();
     expect(component.depositType).toBe('timely');
@@ -52,6 +58,7 @@ describe('SingleDepositComponent', () => {
     expect(component.interval).toBe(1);
     expect(component.profit).toBe(2);
   });
+
   it('should calculate profit correctly for non-progressive deposit', () => {
     component.depositObject = { type: 'timely', percent: 5 } as Deposit;
     component.initialCapital = 1000;
@@ -61,6 +68,7 @@ describe('SingleDepositComponent', () => {
       Math.round(((1000 * 5) / 100) * (12 / 12) * 0.83)
     );
   });
+
   it('should calculate profit correctly for progressive deposit', () => {
     component.depositObject = { type: 'progressive', percent: 5 } as Deposit;
     component.initialCapital = 1000;
@@ -76,11 +84,13 @@ describe('SingleDepositComponent', () => {
     }
     expect(component.profit).toBe(Math.round(totalProfit * 0.83));
   });
+
   it('should validate initial capital correctly', () => {
     const ngModel = { invalid: true, dirty: true, touched: true } as NgModel;
     expect(component.getIsInitialCapitalInvalid(ngModel)).toBeTrue();
     expect(component.isInitialCapitalInValid).toBeTrue();
   });
+
   it('should retrieve the correct deposit object', () => {
     component.depositType = 'timely';
     expect(component.getDepositObject()).toEqual(
