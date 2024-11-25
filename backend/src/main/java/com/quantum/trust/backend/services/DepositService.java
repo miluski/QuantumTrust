@@ -15,16 +15,13 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quantum.trust.backend.mappers.DepositMapper;
-import com.quantum.trust.backend.mappers.TransactionMapper;
 import com.quantum.trust.backend.model.dto.DepositDto;
 import com.quantum.trust.backend.model.dto.EncryptedDto;
 import com.quantum.trust.backend.model.dto.TransactionDto;
 import com.quantum.trust.backend.model.entities.Account;
 import com.quantum.trust.backend.model.entities.Deposit;
-import com.quantum.trust.backend.model.entities.Transaction;
 import com.quantum.trust.backend.repositories.AccountRepository;
 import com.quantum.trust.backend.repositories.DepositRepository;
-import com.quantum.trust.backend.repositories.TransactionRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -35,24 +32,22 @@ public class DepositService {
     private final CryptoService cryptoService;
     private final DepositMapper depositMapper;
     private final ObjectMapper objectMapper;
-    private final TransactionMapper transactionMapper;
+    private final TransactionService transactionService;
     private final DepositRepository depositRepository;
     private final AccountRepository accountRepository;
-    private final TransactionRepository transactionRepository;
 
     @Autowired
     public DepositService(AccountService accountService, CryptoService cryptoService, DepositMapper depositMapper,
-            ObjectMapper objectMapper, TransactionMapper transactionMapper,
+            ObjectMapper objectMapper,
             DepositRepository depositRepository, AccountRepository accountRepository,
-            TransactionRepository transactionRepository) {
+            TransactionService transactionService) {
         this.accountService = accountService;
         this.cryptoService = cryptoService;
         this.depositMapper = depositMapper;
         this.objectMapper = objectMapper;
-        this.transactionMapper = transactionMapper;
         this.depositRepository = depositRepository;
         this.accountRepository = accountRepository;
-        this.transactionRepository = transactionRepository;
+        this.transactionService = transactionService;
     }
 
     @Scheduled(cron = "0 0 * * * *")
@@ -142,8 +137,7 @@ public class DepositService {
                 .title("Założenie nowej lokaty.")
                 .type("outgoing")
                 .build();
-        Transaction transaction = this.transactionMapper.convertToTransaction(transactionDto);
-        this.transactionRepository.save(transaction);
+        this.transactionService.saveNewTransaction(transactionDto);
     }
 
     private ResponseEntity<?> getResponse(List<Account> accountsList) throws Exception {

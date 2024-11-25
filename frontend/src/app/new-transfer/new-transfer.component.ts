@@ -86,6 +86,16 @@ export class NewTransferComponent implements OnInit {
     const isSomeDataInvalid: boolean = this.actualTransferFlagsArray.some(
       (flag: boolean) => flag === false
     );
+    if (isSomeDataInvalid === false) {
+      this.userService.setTransferObject(
+        this.currentSelectedAccount.id,
+        this.transferReceiverAccountId,
+        this.transferTitle,
+        this.transferAmount
+      );
+      this.userService.operation = 'new-transfer';
+      this.userService.sendVerificationEmail('wysłanie nowego przelewu');
+    }
     this.shakeStateService.setCurrentShakeState(
       isSomeDataInvalid ? 'shake' : 'none'
     );
@@ -137,7 +147,9 @@ export class NewTransferComponent implements OnInit {
       this.verificationService.validateTransferTitle(this.transferTitle);
   }
 
-  private setsTransferReceiverAccountNumberValid(): void {
+  private async setsTransferReceiverAccountNumberValid(): Promise<void> {
+    const getIsAccountExists: boolean =
+      await this.userService.getIsAccountExists(this.transferReceiverAccountId);
     const receiverAccountId: string =
       this.transferReceiverAccountId &&
       this.transferReceiverAccountId.replace(' ', '');
@@ -149,7 +161,7 @@ export class NewTransferComponent implements OnInit {
       this.verificationService.validateReceiverAccountId(
         receiverAccountId,
         senderAccountId
-      );
+      ) && getIsAccountExists;
   }
 
   private get actualTransferFlagsArray(): boolean[] {
