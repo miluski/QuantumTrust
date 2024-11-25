@@ -19,6 +19,7 @@ import { CryptoService } from './crypto.service';
 })
 export class UserService {
   private loginData!: string;
+  private transferObject!: string;
   private openingDeposit!: string;
   private openingBankAccount!: string;
   private registeringUserAccount!: string;
@@ -129,6 +130,23 @@ export class UserService {
     );
   }
 
+  public setTransferObject(
+    senderAccountNumber: string,
+    receiverAccountNumber: string,
+    transferTitle: string,
+    transferAmount: number
+  ): void {
+    const transferObject: any = {
+      senderAccountNumber: senderAccountNumber,
+      receiverAccountNumber: receiverAccountNumber,
+      transferTitle: transferTitle,
+      transferAmount: transferAmount,
+    };
+    this.transferObject = this.cryptoService.encryptData(
+      JSON.stringify(transferObject)
+    );
+  }
+
   public getIsCodeValid(typedVerificationCode: string): boolean {
     const encryptedCode: string = this.cookieService.get('VERIFICATION_CODE');
     const verificationCode: string =
@@ -157,6 +175,8 @@ export class UserService {
         return this.openNewBankAccount();
       case 'open-deposit':
         return this.openNewDeposit();
+      case 'new-transfer':
+        return this.sendNewTransfer();
       default:
         return false;
     }
@@ -219,6 +239,43 @@ export class UserService {
   public async openNewDeposit(): Promise<boolean> {
     const request: Observable<HttpResponse<Object>> = this.httpClient.post(
       `${environment.apiUrl}/deposits/new`,
+      this.openingDeposit,
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  public async sendNewTransfer(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/user/new-transfer`,
+      this.transferObject,
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  public async getIsAccountExists(accountNumber: string): Promise<boolean> {
+    const encryptedAccountNumber: string =
+      this.cryptoService.encryptData(accountNumber);
+    const encodedAccountNumber: string = encodeURIComponent(
+      encryptedAccountNumber
+    );
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/user/account?accountNumber=${encodedAccountNumber}`,
       this.openingDeposit,
       {
         observe: 'response',

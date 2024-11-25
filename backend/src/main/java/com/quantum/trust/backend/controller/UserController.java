@@ -58,9 +58,19 @@ public class UserController {
         return this.transactionService.getAllUserTransactions(httpServletRequest);
     }
 
+    @PostMapping("/account")
+    public ResponseEntity<?> getIsAccountExists(@RequestParam String accountNumber) {
+        return this.userService.getIsAccountExists(accountNumber);
+    }
+
     @PostMapping("/account/open")
     public ResponseEntity<?> openNewAccount(@RequestBody String encryptedAccountDto,
             HttpServletRequest httpServletRequest) {
         return this.userService.saveNewBankAccount(httpServletRequest, encryptedAccountDto);
+    }
+
+    @PostMapping("/new-transfer")
+    public ResponseEntity<?> sendNewTransfer(@RequestBody String encryptedTransferDto) {
+        return this.userService.sendNewTransfer(encryptedTransferDto);
     }
 }

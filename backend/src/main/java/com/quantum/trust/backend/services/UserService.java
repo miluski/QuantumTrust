@@ -1,5 +1,8 @@
 package com.quantum.trust.backend.services;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,6 +204,83 @@ public class UserService {
         String refreshToken = this.cookieService.getCookieValue(httpServletRequest, "REFRESH_TOKEN");
         return refreshToken != null ? this.newTokensPair(refreshToken, httpServletResponse)
                 : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    public ResponseEntity<?> getIsAccountExists(String encryptedAccountNumber) {
+        try {
+            String accountNumber = this.cryptoService.decryptData(encryptedAccountNumber);
+            Optional<Account> account = this.accountRepository.findById(accountNumber);
+            return account.isPresent() ? ResponseEntity.status(HttpStatus.OK).build()
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    public ResponseEntity<?> sendNewTransfer(String encryptedTransferDto) {
+        try {
+            String decryptedTransferDto = this.cryptoService.decryptData(encryptedTransferDto);
+            decryptedTransferDto = decryptedTransferDto.replace("\\", "\"");
+            JsonNode jsonNode = this.objectMapper.readTree(decryptedTransferDto);
+            String senderAccountNumber = jsonNode.get("senderAccountNumber").asText();
+            String receiverAccountNumber = jsonNode.get("receiverAccountNumber").asText();
+            String transferTitle = jsonNode.get("transferTitle").asText();
+            Float transferAmount = Float.valueOf(jsonNode.get("transferAmount").asText());
+            Account senderAccount = this.getUserAccountObject(senderAccountNumber);
+            Account receiverAccount = this.getUserAccountObject(receiverAccountNumber);
+            this.updateSenderAccountBalance(senderAccount, transferTitle, transferAmount);
+            this.updateReceiverAccountBalance(receiverAccount, transferTitle, transferAmount);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private Account getUserAccountObject(String accountNumber) throws Exception {
+        Optional<Account> account = this.accountRepository.findById(accountNumber);
+        if (account.isEmpty()) {
+            throw new Exception("Account not exists");
+        }
+        return account.get();
+    }
+
+    private void updateSenderAccountBalance(Account account, String transferTitle, Float transferAmount)
+            throws Exception {
+        Float newAccountBalance = account.getBalance() - transferAmount;
+        String transactionType = "outgoing";
+        account.setBalance(newAccountBalance);
+        this.saveTransaction(account, transactionType, transferTitle, transferAmount);
+        this.accountRepository.save(account);
+    }
+
+    private void updateReceiverAccountBalance(Account account, String transferTitle, Float transferAmount)
+            throws Exception {
+        Float newAccountBalance = account.getBalance() + transferAmount;
+        String transactionType = "incoming";
+        account.setBalance(newAccountBalance);
+        this.saveTransaction(account, transactionType, transferTitle, transferAmount);
+        this.accountRepository.save(account);
+    }
+
+    private void saveTransaction(Account account, String transactionType, String transactionTitle,
+            Float transactionAmount) throws Exception {
+        TransactionDto transactionDto = TransactionDto
+                .builder()
+                .account(account)
+                .accountAmountAfter(account.getBalance())
+                .accountCurrency(account.getCurrency())
+                .amount(transactionAmount)
+                .category("Inne")
+                .currency(account.getCurrency())
+                .date(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .hour(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")))
+                .status("blockade")
+                .title(transactionTitle)
+                .type(transactionType)
+                .build();
+        this.transactionService.saveNewTransaction(transactionDto);
     }
 
     private Account getUserAccountObject(String encryptedAccountDto, boolean isForLoggedUser) throws Exception {
