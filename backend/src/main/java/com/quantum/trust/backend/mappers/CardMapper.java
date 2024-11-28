@@ -11,10 +11,10 @@ import com.quantum.trust.backend.model.entities.Card;
 @Component
 public class CardMapper {
     public CardDto convertToCardDto(Card card) {
-        LocalDate expirationDate = LocalDate.parse(card.getExpirationDate());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
-        String formattedExpirationDate = expirationDate.format(formatter);
-
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate expirationDate = LocalDate.parse(card.getExpirationDate(), inputFormatter);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MM/yy");
+        String formattedExpirationDate = expirationDate.format(outputFormatter);
         return CardDto
                 .builder()
                 .id(card.getId())

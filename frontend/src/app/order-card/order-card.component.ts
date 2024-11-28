@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AnimationsProvider } from '../../providers/animations.provider';
+import { AlertService } from '../../services/alert.service';
 import { ConvertService } from '../../services/convert.service';
 import { PaginationService } from '../../services/pagination.service';
 import { ShakeStateService } from '../../services/shake-state.service';
@@ -105,6 +106,7 @@ export class OrderCardComponent implements OnInit {
 
   constructor(
     private verificationService: VerificationService,
+    private alertService: AlertService,
     protected userService: UserService,
     protected paginationService: PaginationService,
     protected convertService: ConvertService
@@ -139,11 +141,24 @@ export class OrderCardComponent implements OnInit {
   }
 
   public handleButtonClick(): void {
-    const isSomeDataInvalid: boolean = this.cardFlagsArray.some(
+    const isBalanceHigherThanFee: boolean = this.isBalanceHigherThanFee();
+    let isSomeDataInvalid: boolean = this.cardFlagsArray.some(
       (flag: boolean) => flag === false
     );
+    isSomeDataInvalid = isBalanceHigherThanFee === false || isSomeDataInvalid;
+    if (isSomeDataInvalid === false) {
+      this.userService.setCreatingCardObject(
+        this.currentSelectedCard,
+        this.cardSettings,
+        this.pinCode,
+        this.currentSelectedAccount.id,
+        this.currentCurrency
+      );
+      this.userService.operation = 'order-card';
+      this.userService.sendVerificationEmail('wyrobienie nowej karty');
+    }
     this.shakeStateService.setCurrentShakeState(
-      isSomeDataInvalid ? 'shake' : 'none'
+      isSomeDataInvalid === true ? 'shake' : 'none'
     );
   }
 
@@ -198,8 +213,8 @@ export class OrderCardComponent implements OnInit {
     const issuanceAmount: number = this.convertService.getCalculatedAmount(
       this.currentCurrency,
       type === 'monthly'
-        ? this.currentSelectedCard.fees.release
-        : this.currentSelectedCard.fees.monthly
+        ? this.currentSelectedCard.fees.monthly
+        : this.currentSelectedCard.fees.release
     );
     return issuanceAmount.toString() + ' ' + this.currentCurrency;
   }
@@ -251,6 +266,25 @@ export class OrderCardComponent implements OnInit {
       ' ' +
       this.currentSelectedCard.type
     );
+  }
+
+  private isBalanceHigherThanFee(): boolean {
+    const recaltulatedReleaseFee: string = this.getFee('issuance');
+    const releaseFeeSubstring: number = Number(
+      recaltulatedReleaseFee.split(' ')[0]
+    );
+    const isBalanceHigherThanFee: boolean =
+      (this.currentSelectedAccount?.balance ?? 0) >= releaseFeeSubstring;
+    if (!isBalanceHigherThanFee) {
+      this.alertService.alertContent =
+        'Nie masz wystarczającej kwoty na koncie aby zamówić tę kartę.';
+      this.alertService.alertIcon = 'fa-circle-xmark';
+      this.alertService.alertTitle = 'Błąd';
+      this.alertService.alertType = 'error';
+      this.alertService.progressBarBorderColor = '#fca5a5';
+      this.alertService.show();
+    }
+    return isBalanceHigherThanFee;
   }
 
   private setCardAndCurrency(cardSettings: CardSettings): void {

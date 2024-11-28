@@ -12,4 +12,5 @@ export class CardSettings {
   currency!: Currency;
   card!: Card;
   assignedAccountNumber!: string;
+  site!: string;
 }

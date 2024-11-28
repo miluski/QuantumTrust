@@ -1,8 +1,5 @@
 package com.quantum.trust.backend.services;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quantum.trust.backend.mappers.AccountMapper;
 import com.quantum.trust.backend.mappers.UserMapper;
+import com.quantum.trust.backend.model.TransactionCredentials;
 import com.quantum.trust.backend.model.dto.AccountDto;
 import com.quantum.trust.backend.model.dto.EncryptedDto;
 import com.quantum.trust.backend.model.dto.TransactionDto;
@@ -97,7 +95,11 @@ public class UserService {
         try {
             Account account = this.getUserAccountObject(encryptedAccountDto, false);
             this.savedUserBankAccount = this.accountRepository.save(account);
-            TransactionDto transactionDto = this.transactionService.createStartTransactionDto(account);
+            Float accountAmount = this.transactionService.getRecalculatedAmount("PLN",
+                    account.getCurrency(), 1000.0f);
+            TransactionCredentials transactionCredentials = new TransactionCredentials(accountAmount, accountAmount,
+                    "Inne", "settled", "Założenie nowego konta bankowego.", "incoming");
+            TransactionDto transactionDto = this.transactionService.getTransactionDto(account, transactionCredentials);
             this.transactionService.saveNewTransaction(transactionDto);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
@@ -230,7 +232,7 @@ public class UserService {
             Account senderAccount = this.getUserAccountObject(senderAccountNumber);
             Account receiverAccount = this.getUserAccountObject(receiverAccountNumber);
             this.updateSenderAccountBalance(senderAccount, transferTitle, transferAmount);
-            this.updateReceiverAccountBalance(receiverAccount, transferTitle, transferAmount);
+            this.updateReceiverAccountBalance(receiverAccount, senderAccount, transferTitle, transferAmount);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -255,31 +257,23 @@ public class UserService {
         this.accountRepository.save(account);
     }
 
-    private void updateReceiverAccountBalance(Account account, String transferTitle, Float transferAmount)
+    private void updateReceiverAccountBalance(Account receiverAccount, Account senderAccount, String transferTitle,
+            Float transferAmount)
             throws Exception {
-        Float newAccountBalance = account.getBalance() + transferAmount;
+        transferAmount = this.transactionService.getRecalculatedAmount(senderAccount.getCurrency(),
+                receiverAccount.getCurrency(), transferAmount);
+        Float newAccountBalance = receiverAccount.getBalance() + transferAmount;
         String transactionType = "incoming";
-        account.setBalance(newAccountBalance);
-        this.saveTransaction(account, transactionType, transferTitle, transferAmount);
-        this.accountRepository.save(account);
+        receiverAccount.setBalance(newAccountBalance);
+        this.saveTransaction(receiverAccount, transactionType, transferTitle, transferAmount);
+        this.accountRepository.save(receiverAccount);
     }
 
     private void saveTransaction(Account account, String transactionType, String transactionTitle,
             Float transactionAmount) throws Exception {
-        TransactionDto transactionDto = TransactionDto
-                .builder()
-                .account(account)
-                .accountAmountAfter(account.getBalance())
-                .accountCurrency(account.getCurrency())
-                .amount(transactionAmount)
-                .category("Inne")
-                .currency(account.getCurrency())
-                .date(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .hour(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")))
-                .status("blockade")
-                .title(transactionTitle)
-                .type(transactionType)
-                .build();
+        TransactionCredentials transactionCredentials = new TransactionCredentials(account.getBalance(),
+                transactionAmount, "Inne", "blockade", transactionTitle, transactionType);
+        TransactionDto transactionDto = this.transactionService.getTransactionDto(account, transactionCredentials);
         this.transactionService.saveNewTransaction(transactionDto);
     }
 
@@ -291,7 +285,8 @@ public class UserService {
         account.setUser(this.savedUserAccount);
         this.validationService.validateAccountObject(account);
         if (isForLoggedUser == false) {
-            account.setBalance(this.transactionService.getInitialAmount(account));
+            account.setBalance(this.transactionService.getRecalculatedAmount(
+                    "PLN", account.getCurrency(), 1000.0f));
         }
         return account;
     }

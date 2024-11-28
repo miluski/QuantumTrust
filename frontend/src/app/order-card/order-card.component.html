@@ -50,7 +50,7 @@
             ownClass="w-full h-full object-cover rounded-2xl pointer-events-none"
             [src]="getCardImage(card)"
             [ngClass]="{
-              'shadow-lg shadow-gray-400': card.id === currentSelectedCard.id
+              'shadow-lg shadow-gray-400 rounded-2xl': card.id === currentSelectedCard.id
             }"
           />
           @if(card.showingCardSite === 'front') {

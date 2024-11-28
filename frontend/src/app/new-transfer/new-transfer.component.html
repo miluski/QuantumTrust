@@ -102,16 +102,18 @@
       <p class="font-roboto font-medium text-xl text-left self-start">
         Kwota przelewu
       </p>
-      <div class="w-full flex flex-col items-center space-y-5">
+      <div
+        *ngIf="canShowInput"
+        class="w-full flex flex-col items-center space-y-5"
+      >
         <div class="relative max-sm:w-full w-1/2 2xl:w-1/4 self-center">
           <input
             class="bg-white text-green-600 p-2 w-full rounded-md no-arrows font-roboto font-medium"
             type="number"
             min="1"
-            max="{{ currentSelectedAccount.balance }}"
-            [value]="currentTransferAmount"
+            max="{{ maximumLimit }}"
+            [value]="transferAmount"
             [(ngModel)]="transferAmount"
-            #initialCapitalInput="ngModel"
             required
           />
           <span
@@ -120,34 +122,41 @@
             {{ currentSelectedAccount.currency }}
           </span>
         </div>
-        <input
-          type="range"
-          min="{{ 1 }}"
-          max="{{ currentSelectedAccount.balance }}"
-          step="{{ 0.1 }}"
-          [value]="currentTransferAmount"
-          [(ngModel)]="transferAmount"
-          class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb select-none"
-        />
-        <div class="flex justify-between w-full mt-2">
-          <span class="text-white"
-            >min. 1 {{ currentSelectedAccount.currency }}</span
-          >
-          <span class="text-white"
-            >max.
-            {{
-              convertService.getNumberWithSpacesBetweenThousands(
-                currentSelectedAccount.balance
-              )
-            }}
-            {{ currentSelectedAccount.currency }}</span
-          >
+        <div class="w-full h-full">
+          <input
+            type="range"
+            min="{{ 1 }}"
+            max="{{ maximumLimit }}"
+            step="{{ 0.1 }}"
+            [value]="transferAmount"
+            [(ngModel)]="transferAmount"
+            class="w-full h-2 bg-gray-500 rounded-lg appearance-none cursor-pointer slider-thumb select-none"
+          />
+          <div class="flex justify-between w-full mt-2">
+            <span class="text-white"
+              >min. 1 {{ currentSelectedAccount.currency }}</span
+            >
+            <span class="text-white"
+              >max.
+              {{
+                convertService.getNumberWithSpacesBetweenThousands(
+                  currentSelectedAccount.balance
+                )
+              }}
+              {{ currentSelectedAccount.currency }}</span
+            >
+          </div>
         </div>
         @if(transferFlags.isTransferAmountValid === false) {
         <p class="font-roboto font-light text-red-500 text-sm pt-5">
           Kwota przelewu jest nieprawidłowa.
         </p>
         }
+      </div>
+      <div *ngIf="!canShowInput">
+        <p class="font-roboto font-light text-red-500 text-sm pt-5">
+          Nie masz żadnych pieniędzy na koncie!
+        </p>
       </div>
     </div>
   </div>
