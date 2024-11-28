@@ -1,4 +1,9 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnInit,
+} from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ConvertService } from '../../services/convert.service';
 import { PaginationService } from '../../services/pagination.service';
@@ -83,22 +88,24 @@ export class NewTransferComponent implements OnInit {
 
   public handleButtonClick(): void {
     this.validateFields();
-    const isSomeDataInvalid: boolean = this.actualTransferFlagsArray.some(
-      (flag: boolean) => flag === false
-    );
-    if (isSomeDataInvalid === false) {
-      this.userService.setTransferObject(
-        this.currentSelectedAccount.id,
-        this.transferReceiverAccountId,
-        this.transferTitle,
-        this.transferAmount
+    setTimeout(() => {
+      const isSomeDataInvalid: boolean = this.actualTransferFlagsArray.some(
+        (flag: boolean) => flag === false
       );
-      this.userService.operation = 'new-transfer';
-      this.userService.sendVerificationEmail('wysłanie nowego przelewu');
-    }
-    this.shakeStateService.setCurrentShakeState(
-      isSomeDataInvalid ? 'shake' : 'none'
-    );
+      if (isSomeDataInvalid === false) {
+        this.userService.setTransferObject(
+          this.currentSelectedAccount.id,
+          this.transferReceiverAccountId,
+          this.transferTitle,
+          this.transferAmount
+        );
+        this.userService.operation = 'new-transfer';
+        this.userService.sendVerificationEmail('wysłanie nowego przelewu');
+      }
+      this.shakeStateService.setCurrentShakeState(
+        isSomeDataInvalid ? 'shake' : 'none'
+      );
+    }, 500);
   }
 
   public setUserAccounts(): void {
@@ -111,10 +118,30 @@ export class NewTransferComponent implements OnInit {
     this.paginationService.handleWidthChange(window.innerWidth, 3, 3);
   }
 
-  public validateFields(): void {
+  public async validateFields(): Promise<void> {
     this.setIsTransferAmountValid();
     this.setIsTransferTitleValid();
-    this.setsTransferReceiverAccountNumberValid();
+    await this.setsTransferReceiverAccountNumberValid();
+  }
+
+  public get maximumLimit(): number {
+    this.correctTransferAmount();
+    return this.currentSelectedAccount.balance ?? 0;
+  }
+
+  public correctTransferAmount(): void {
+    const currentAccountBalance: number = Number(
+      this.currentSelectedAccount?.balance ?? 0
+    );
+    const isTransferAmountHigher: boolean =
+      this.transferAmount > currentAccountBalance;
+    this.transferAmount = currentAccountBalance <= 1 ? 0 : this.transferAmount;
+    if (isTransferAmountHigher) {
+      this.transferAmount =
+        this.transferAmount > currentAccountBalance
+          ? currentAccountBalance
+          : this.transferAmount;
+    }
   }
 
   public get currentSelectedAccount(): Account {
@@ -125,13 +152,10 @@ export class NewTransferComponent implements OnInit {
       : new Account();
   }
 
-  public get currentTransferAmount(): number {
-    this.transferAmount =
-      this.currentSelectedAccount.balance &&
-      this.transferAmount > this.currentSelectedAccount.balance
-        ? this.currentSelectedAccount.balance
-        : this.transferAmount;
-    return this.transferAmount;
+  public get canShowInput(): boolean {
+    const currentSelectedAccountBalance: number =
+      this.currentSelectedAccount?.balance ?? 0;
+    return currentSelectedAccountBalance >= 1;
   }
 
   private setIsTransferAmountValid(): void {

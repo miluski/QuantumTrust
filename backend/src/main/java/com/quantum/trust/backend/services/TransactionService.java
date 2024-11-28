@@ -10,11 +10,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.quantum.trust.backend.mappers.TransactionMapper;
+import com.quantum.trust.backend.model.TransactionCredentials;
 import com.quantum.trust.backend.model.dto.EncryptedDto;
 import com.quantum.trust.backend.model.dto.TransactionDto;
 import com.quantum.trust.backend.model.entities.Account;
@@ -23,8 +27,10 @@ import com.quantum.trust.backend.model.entities.Transaction;
 import com.quantum.trust.backend.repositories.TransactionRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 
 @Service
+@EnableScheduling
 public class TransactionService {
     private Transaction savedTransaction;
 
@@ -48,7 +54,7 @@ public class TransactionService {
     }
 
     @Autowired
-    public TransactionService(CardService cardService, AccountService accountService,
+    public TransactionService(@Lazy CardService cardService, AccountService accountService,
             CryptoService cryptoService,
             TransactionMapper transactionMapper,
             TransactionRepository transactionRepository) {
@@ -57,6 +63,25 @@ public class TransactionService {
         this.cryptoService = cryptoService;
         this.transactionMapper = transactionMapper;
         this.transactionRepository = transactionRepository;
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional
+    public void checkTransactionStatuses() {
+        try {
+            List<Transaction> transactions = this.transactionRepository.findAll();
+            LocalDate today = LocalDate.now();
+            for (Transaction transaction : transactions) {
+                LocalDate transactionDate = LocalDate.parse(transaction.getDate());
+                String transactionStatus = transaction.getStatus();
+                if (transactionDate.isAfter(today.plusDays(2L)) && transactionStatus.equals("blockade")) {
+                    transaction.setStatus("settled");
+                    this.transactionRepository.save(transaction);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public ResponseEntity<?> getAllUserTransactions(HttpServletRequest httpServletRequest) {
@@ -83,28 +108,28 @@ public class TransactionService {
         }
     }
 
-    public TransactionDto createStartTransactionDto(Account account) {
+    public TransactionDto getTransactionDto(Account account, TransactionCredentials transactionCredentials) {
         return TransactionDto
                 .builder()
                 .account(account)
-                .accountAmountAfter(this.getInitialAmount(account))
+                .accountAmountAfter(transactionCredentials.getAccountAmountAfter())
                 .accountCurrency(account.getCurrency())
-                .amount(this.getInitialAmount(account))
-                .category("Inne")
+                .amount(transactionCredentials.getAmount())
+                .category(transactionCredentials.getCategory())
                 .currency(account.getCurrency())
                 .date(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .hour(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")))
-                .status("settled")
-                .title("Założenie nowego konta bankowego.")
-                .type("incoming")
+                .status(transactionCredentials.getStatus())
+                .title(transactionCredentials.getTitle())
+                .type(transactionCredentials.getType())
                 .build();
     }
 
-    public float getInitialAmount(Account account) {
-        float amountInPLN = 1000.0f;
-        float exchangeRate = getExchangeRate(account.getCurrency());
-        float amountInCurrency = amountInPLN / exchangeRate;
-        return amountInCurrency;
+    public float getRecalculatedAmount(String fromCurrency, String toCurrency, float amount) {
+        float fromRate = this.getExchangeRate(fromCurrency);
+        float toRate = this.getExchangeRate(toCurrency);
+        float rate = fromRate / toRate;
+        return amount * rate;
     }
 
     private ResponseEntity<?> getTransactionsListResponse(List<Account> accountList, List<Card> cardList)

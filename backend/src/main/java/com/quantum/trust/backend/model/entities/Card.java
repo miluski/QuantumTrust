@@ -1,5 +1,7 @@
 package com.quantum.trust.backend.model.entities;
 
+import java.time.LocalDate;
+
 import com.quantum.trust.backend.annotations.CardId;
 
 import jakarta.persistence.Column;
@@ -22,6 +24,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "cards")
 public class Card {
+
     @Id
     @CardId
     private String id;
@@ -43,13 +46,16 @@ public class Card {
     private String limits;
 
     @Column(name = "pin", nullable = false)
-    private Integer pin;
+    private String pin;
 
     @Column(name = "cvcCode", nullable = false)
-    private Integer cvcCode;
+    private String cvcCode;
 
     @Column(name = "expirationDate", nullable = false)
     private String expirationDate;
+
+    @Column(name = "creationDate", nullable = false)
+    private LocalDate creationDate;
 
     @Column(name = "showingCardSite", nullable = false)
     private String showingCardSite;

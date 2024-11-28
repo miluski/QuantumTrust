@@ -166,17 +166,16 @@ export class CardSettingsComponent implements OnInit {
     });
   }
 
-  public setCurrentSelectedAccount(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target) {
+  public setCurrentSelectedAccount(account: Account) {
+    if (account) {
       this.cardFlags.isAccountNumberValid =
         this.verificationService.validateSelectedAccount(
           this.userAccounts,
-          target.value
+          account.id
         );
       this.cardSettings.assignedAccountNumber = this.cardFlags
         .isAccountNumberValid
-        ? target.value
+        ? account.id
         : this.cardSettings.assignedAccountNumber;
       this.currentSelectedAccount = this.getFoundedAccount(
         this.cardSettings.assignedAccountNumber
@@ -200,6 +199,7 @@ export class CardSettingsComponent implements OnInit {
     this.setCardAndCurrency(this.cardSettings);
     this.cardSettings.limitType = limitType;
     this.cardSettings.transactionType = transactionType;
+    this.cardSettings.site = 'card-settings';
     return this.cardSettings;
   }
 
@@ -298,6 +298,10 @@ export class CardSettingsComponent implements OnInit {
       default:
         this.cardFlags.isPinCodeValid = isValid;
     }
+  }
+
+  public trackByUserId(_: number, userAccount: Account): string {
+    return userAccount.id;
   }
 
   protected get isSaveError(): boolean {

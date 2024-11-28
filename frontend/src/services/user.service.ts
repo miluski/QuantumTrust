@@ -9,9 +9,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../environments/environment.development';
 import { Account } from '../types/account';
 import { Card } from '../types/card';
+import { CardSettings } from '../types/card-settings';
 import { Deposit } from '../types/deposit';
+import { limits } from '../types/limits';
 import { Transaction } from '../types/transaction';
 import { UserAccount } from '../types/user-account';
+import { ConvertService } from './convert.service';
 import { CryptoService } from './crypto.service';
 
 @Injectable({
@@ -22,6 +25,7 @@ export class UserService {
   private transferObject!: string;
   private openingDeposit!: string;
   private openingBankAccount!: string;
+  private creatingCardObject!: string;
   private registeringUserAccount!: string;
   private currentUserAccount!: UserAccount;
   private userCardsSubject: BehaviorSubject<Card[]>;
@@ -38,6 +42,7 @@ export class UserService {
   constructor(
     private cryptoService: CryptoService,
     private cookieService: CookieService,
+    private convertService: ConvertService,
     private httpClient: HttpClient
   ) {
     this.currentUserAccount = new UserAccount();
@@ -58,12 +63,6 @@ export class UserService {
     );
     request.subscribe();
     this.resetUserObjects();
-  }
-
-  public refreshTokens(): void {
-    this.httpClient
-      .post(`${environment.apiUrl}/auth/refresh-token`, {})
-      .subscribe();
   }
 
   public sendVerificationEmail(data: string): void {
@@ -147,6 +146,36 @@ export class UserService {
     );
   }
 
+  public setCreatingCardObject(
+    card: Card,
+    cardSettings: CardSettings,
+    pinCode: number,
+    assignedAccountNumber: string,
+    currency: string
+  ): void {
+    const cardCopy: Card = { ...card };
+    const creatingCardObject: unknown = {
+      assignedAccountNumber: assignedAccountNumber,
+      type: cardCopy.type,
+      publisher: cardCopy.publisher,
+      image: cardCopy.image,
+      limits: this.cryptoService.encryptData(
+        this.getLimits(cardCopy, cardSettings)
+      ),
+      pin: this.cryptoService.encryptData(pinCode),
+      expirationDate: this.getExpirationDate(),
+      backImage: cardCopy.backImage,
+      fees: this.cryptoService.encryptData(
+        JSON.stringify(this.getFees(cardCopy, currency))
+      ),
+      showingCardSite: cardCopy.showingCardSite,
+      status: 'unsuspended',
+    };
+    this.creatingCardObject = this.cryptoService.encryptData(
+      JSON.stringify(creatingCardObject)
+    );
+  }
+
   public getIsCodeValid(typedVerificationCode: string): boolean {
     const encryptedCode: string = this.cookieService.get('VERIFICATION_CODE');
     const verificationCode: string =
@@ -177,6 +206,8 @@ export class UserService {
         return this.openNewDeposit();
       case 'new-transfer':
         return this.sendNewTransfer();
+      case 'order-card':
+        return this.orderNewCard();
       default:
         return false;
     }
@@ -268,6 +299,22 @@ export class UserService {
     });
   }
 
+  public async orderNewCard(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/cards/new`,
+      this.creatingCardObject,
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
   public async getIsAccountExists(accountNumber: string): Promise<boolean> {
     const encryptedAccountNumber: string =
       this.cryptoService.encryptData(accountNumber);
@@ -284,9 +331,63 @@ export class UserService {
     return new Promise((resolve) => {
       request.subscribe({
         next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
+        error: () => {
+          resolve(false);
+        },
       });
     });
+  }
+
+  public refreshTokens(): void {
+    this.httpClient
+      .post(`${environment.apiUrl}/auth/refresh-token`, {})
+      .subscribe();
+  }
+
+  private getExpirationDate(): string {
+    const currentDate: Date = new Date();
+    const expirationDate: Date = new Date(
+      currentDate.getFullYear() + 4,
+      currentDate.getMonth(),
+      currentDate.getDate()
+    );
+    const day: string = String(expirationDate.getDate()).padStart(2, '0');
+    const month: string = String(expirationDate.getMonth() + 1).padStart(
+      2,
+      '0'
+    );
+    const year: number = expirationDate.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+
+  private getLimits(card: Card, cardSettings: CardSettings): limits[] {
+    return [
+      {
+        internetTransactions: [
+          cardSettings.limits.internetTransactionsLimit,
+          card.limits[0].internetTransactions[1],
+          card.limits[0].internetTransactions[0],
+        ],
+        cashTransactions: [
+          cardSettings.limits.cashTransactionsLimit,
+          card.limits[0].cashTransactions[1],
+          card.limits[0].cashTransactions[0],
+        ],
+      },
+    ];
+  }
+
+  private getFees(card: Card, currency: string): unknown {
+    return {
+      monthly: this.convertService.getCalculatedAmount(
+        currency,
+        card.fees.monthly
+      ),
+      release: this.convertService.getCalculatedAmount(
+        currency,
+        card.fees.release
+      ),
+    };
   }
 
   private resetUserObjects(): void {
@@ -367,9 +468,10 @@ export class UserService {
           response.body.encryptedData
         );
         decryptedCardsArray.forEach((card: any) => {
-          if (typeof card.limits === 'string') {
-            card.limits = JSON.parse(card.limits);
-          }
+          card.limits = this.cryptoService.decryptData(card.limits);
+          card.fees = this.cryptoService.decryptData(card.fees);
+          card.cvcCode = this.cryptoService.decryptData(card.cvcCode);
+          card.pin = this.cryptoService.decryptData(card.pin);
         });
         this.userCardsSubject.next(decryptedCardsArray);
       },

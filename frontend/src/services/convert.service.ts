@@ -285,11 +285,18 @@ export class ConvertService {
 
   public getTransactionsLimit(cardSettings: CardSettings): number {
     if (cardSettings.card.limits) {
+      const isOnCardSettings: boolean = cardSettings.site === 'card-settings';
+      const internetTransactionLimit: number = isOnCardSettings
+        ? cardSettings.card.limits[0].internetTransactions[2]
+        : cardSettings.card.limits[0].internetTransactions[0];
+      const cashTransactionLimit: number = isOnCardSettings
+        ? cardSettings.card.limits[0].cashTransactions[2]
+        : cardSettings.card.limits[0].cashTransactions[0];
       const currentLimit: number =
         cardSettings.limitType === 'max'
           ? cardSettings.transactionType === 'internet'
-            ? cardSettings.card.limits[0].internetTransactions[0]
-            : cardSettings.card.limits[0].cashTransactions[0]
+            ? internetTransactionLimit
+            : cashTransactionLimit
           : 500;
       const convertedLimit: number = this.getCalculatedAmount(
         cardSettings.currency,
