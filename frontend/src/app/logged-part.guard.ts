@@ -1,4 +1,8 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { catchError, map, Observable, of } from 'rxjs';
@@ -30,8 +34,15 @@ export class AuthGuard implements CanActivate {
       })
       .pipe(
         map((response: HttpResponse<any>) => response.status === 200),
-        catchError(() => {
-          this.router.navigate(['/unauthorized']);
+        catchError((error: HttpErrorResponse) => {
+          if (
+            error.status !== 401 &&
+            (error.status === 403 || error.status === 500)
+          ) {
+            this.router.navigate(['/unauthorized']);
+          } else if (error.status === 401) {
+            window.location.reload();
+          }
           return of(false);
         })
       );

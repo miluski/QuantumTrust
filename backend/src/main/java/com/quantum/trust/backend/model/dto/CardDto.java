@@ -22,8 +22,8 @@ public class CardDto implements Serializable {
     private String publisher;
     private String image;
     private String limits;
-    private Integer pin;
-    private Integer cvcCode;
+    private String pin;
+    private String cvcCode;
     private String expirationDate;
     private String showingCardSite;
     private String backImage;

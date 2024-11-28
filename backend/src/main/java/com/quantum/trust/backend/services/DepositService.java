@@ -1,8 +1,6 @@
 package com.quantum.trust.backend.services;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +8,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quantum.trust.backend.mappers.DepositMapper;
+import com.quantum.trust.backend.model.TransactionCredentials;
 import com.quantum.trust.backend.model.dto.DepositDto;
 import com.quantum.trust.backend.model.dto.EncryptedDto;
 import com.quantum.trust.backend.model.dto.TransactionDto;
@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @Service
+@EnableScheduling
 public class DepositService {
     private final AccountService accountService;
     private final CryptoService cryptoService;
@@ -50,22 +51,22 @@ public class DepositService {
         this.transactionService = transactionService;
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void checkDeposits() {
-        List<Deposit> deposits = depositRepository.findAll();
-        if (deposits.size() >= 1) {
-            LocalDate today = LocalDate.now();
-            for (Deposit deposit : deposits) {
-                LocalDate endDate = LocalDate.parse(deposit.getEndDate());
-                if (endDate.isBefore(today) || endDate.isEqual(today)) {
-                    Account account = deposit.getAccount();
-                    float interest = deposit.getDuration() * deposit.getPercent() * deposit.getBalance();
-                    account.setBalance(account.getBalance() + deposit.getBalance() + interest);
-                    accountRepository.save(account);
-                    depositRepository.delete(deposit);
+        try {
+            List<Deposit> deposits = depositRepository.findAll();
+            if (deposits.size() >= 1) {
+                LocalDate today = LocalDate.now();
+                for (Deposit deposit : deposits) {
+                    LocalDate endDate = LocalDate.parse(deposit.getEndDate());
+                    if (endDate.isBefore(today) || endDate.isEqual(today)) {
+                        this.closeDeposit(deposit);
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -92,6 +93,47 @@ public class DepositService {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private void closeDeposit(Deposit deposit) throws Exception {
+        Account account = deposit.getAccount();
+        Float interest = this.calculateInterest(deposit);
+        Float finalDepositBalance = interest + deposit.getBalance();
+        account.setBalance(account.getBalance() + finalDepositBalance);
+        this.saveClosingDepositTransaction(account, deposit, finalDepositBalance);
+        accountRepository.save(account);
+        depositRepository.delete(deposit);
+    }
+
+    private float calculateInterest(Deposit deposit) {
+        float initialCapital = deposit.getBalance();
+        float percent = deposit.getPercent();
+        int monthsCount = deposit.getDuration();
+        String depositType = deposit.getType();
+        float profit = depositType.equals("progressive")
+                ? Math.round(((initialCapital * percent) / 100) * (monthsCount / 12.0f))
+                : this.getNonProgressiveDepositProfit(percent, monthsCount, initialCapital);
+        return Math.round(profit * 0.83f);
+    }
+
+    private float getNonProgressiveDepositProfit(float percent, float monthsCount, float initialCapital) {
+        float rate = percent;
+        float totalProfit = 0;
+        for (int i = 1; i <= monthsCount; i++) {
+            if (i > 3) {
+                rate += 1;
+            }
+            totalProfit += (initialCapital * rate) / 100 / 12;
+        }
+        return Math.round(totalProfit);
+    }
+
+    private void saveClosingDepositTransaction(Account account, Deposit deposit, Float finalDepositBalance) {
+        String title = "Zamknięcie lokaty " + deposit.getId();
+        TransactionCredentials transactionCredentials = new TransactionCredentials(account.getBalance(),
+                finalDepositBalance, "Inne", "settled", title, "incoming");
+        TransactionDto transactionDto = this.transactionService.getTransactionDto(account, transactionCredentials);
+        this.transactionService.saveNewTransaction(transactionDto);
     }
 
     private Deposit getDepositFromEncryptedDto(String encryptedDepositDto) throws Exception {
@@ -122,21 +164,9 @@ public class DepositService {
     }
 
     private void saveNewTransaction(Account account, Float depositBalance) throws Exception {
-        TransactionDto transactionDto = TransactionDto
-                .builder()
-                .account(account)
-                .accountAmountAfter(account.getBalance())
-                .accountCurrency(account.getCurrency())
-                .amount(depositBalance)
-                .assignedAccountNumber(account.getId())
-                .category("Inne")
-                .currency(account.getCurrency())
-                .date(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .hour(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")))
-                .status("blockade")
-                .title("Założenie nowej lokaty.")
-                .type("outgoing")
-                .build();
+        TransactionCredentials transactionCredentials = new TransactionCredentials(account.getBalance(), depositBalance,
+                "Inne", "settled", "Założenie nowej lokaty.", "outgoing");
+        TransactionDto transactionDto = this.transactionService.getTransactionDto(account, transactionCredentials);
         this.transactionService.saveNewTransaction(transactionDto);
     }
 

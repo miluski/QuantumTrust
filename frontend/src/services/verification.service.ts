@@ -216,7 +216,7 @@ export class VerificationService {
     return (
       accountId !== undefined &&
       accountNumberRegex.test(accountId) &&
-      accountId !== senderAccountId
+      String(accountId.trim()) !== String(senderAccountId.trim())
     );
   }
 
