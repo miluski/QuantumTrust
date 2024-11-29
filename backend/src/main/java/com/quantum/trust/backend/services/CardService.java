@@ -36,6 +36,7 @@ import jakarta.transaction.Transactional;
 public class CardService {
     private final AccountService accountService;
     private final CryptoService cryptoService;
+    private final ValidationService validationService;
     private final TransactionService transactionService;
     private final CardMapper cardMapper;
     private final ObjectMapper objectMapper;
@@ -43,12 +44,13 @@ public class CardService {
     private final AccountRepository accountRepository;
 
     @Autowired
-    public CardService(AccountService accountService, CryptoService cryptoService,
+    public CardService(AccountService accountService, CryptoService cryptoService, ValidationService validationService,
             @Lazy TransactionService transactionService, CardMapper cardMapper,
             ObjectMapper objectMapper,
             CardRepository cardRepository, AccountRepository accountRepository) {
         this.accountService = accountService;
         this.cryptoService = cryptoService;
+        this.validationService = validationService;
         this.transactionService = transactionService;
         this.cardMapper = cardMapper;
         this.objectMapper = objectMapper;
@@ -108,6 +110,7 @@ public class CardService {
             Account account = this.getAccountFromCardDto(cardDto);
             Card card = this.cardMapper.convertToCard(cardDto);
             this.setCardCredentials(card, account);
+            this.validationService.validateCard(card);
             this.cardRepository.save(card);
             this.chargeReleaseCardFee(account, card);
             return ResponseEntity.status(HttpStatus.OK).build();

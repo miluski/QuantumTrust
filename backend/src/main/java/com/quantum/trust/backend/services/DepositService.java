@@ -31,6 +31,7 @@ import jakarta.transaction.Transactional;
 public class DepositService {
     private final AccountService accountService;
     private final CryptoService cryptoService;
+    private final ValidationService validationService;
     private final DepositMapper depositMapper;
     private final ObjectMapper objectMapper;
     private final TransactionService transactionService;
@@ -38,12 +39,14 @@ public class DepositService {
     private final AccountRepository accountRepository;
 
     @Autowired
-    public DepositService(AccountService accountService, CryptoService cryptoService, DepositMapper depositMapper,
+    public DepositService(AccountService accountService, CryptoService cryptoService,
+            ValidationService validationService, DepositMapper depositMapper,
             ObjectMapper objectMapper,
             DepositRepository depositRepository, AccountRepository accountRepository,
             TransactionService transactionService) {
         this.accountService = accountService;
         this.cryptoService = cryptoService;
+        this.validationService = validationService;
         this.depositMapper = depositMapper;
         this.objectMapper = objectMapper;
         this.depositRepository = depositRepository;
@@ -142,6 +145,7 @@ public class DepositService {
         DepositDto depositDto = objectMapper.readValue(decryptedDepositDto, DepositDto.class);
         Deposit deposit = this.depositMapper.convertToDeposit(depositDto);
         this.assignAccountToDeposit(deposit, depositDto);
+        this.validationService.validateDeposit(deposit);
         return deposit;
     }
 

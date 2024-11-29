@@ -207,6 +207,7 @@ describe('ConvertService', () => {
       },
       transactionType: 'cash',
       assignedAccountNumber: '',
+      site: ''
     };
     expect(service.getStep(cardSettings)).toBeDefined();
   });
@@ -234,6 +235,7 @@ describe('ConvertService', () => {
       },
       transactionType: 'cash',
       assignedAccountNumber: '',
+      site: ''
     };
     expect(service.getFormattedTransactionsLimit(cardSettings)).toBeDefined();
   });
@@ -261,6 +263,7 @@ describe('ConvertService', () => {
       },
       transactionType: 'cash',
       assignedAccountNumber: '',
+      site: ''
     };
     expect(service.getTransactionsLimit(cardSettings)).toBeDefined();
   });
@@ -288,6 +291,7 @@ describe('ConvertService', () => {
       },
       transactionType: 'cash',
       assignedAccountNumber: '',
+      site: ''
     };
     expect(service.getCurrentTransactionLimit(cardSettings)).toBeDefined();
   });
@@ -315,6 +319,7 @@ describe('ConvertService', () => {
       },
       transactionType: 'cash',
       assignedAccountNumber: '',
+      site: ''
     };
     expect(service.getMaxLimit(cardSettings)).toBeDefined();
   });
