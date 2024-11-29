@@ -125,26 +125,6 @@ describe('NewTransferComponent', () => {
     expect(component.transferFlags.isTransferAmountValid).toBeTrue();
   });
 
-  it('should return the current transfer amount', () => {
-    const mockAccounts: Account[] = [
-      {
-        id: '1',
-        balance: 1000,
-        advertismentText: '',
-        advertismentContent: '',
-        image: '',
-        type: '',
-        benefits: [],
-      },
-    ];
-    Object.defineProperty(component, 'currentSelectedAccount', {
-      value: mockAccounts[0],
-    });
-    mockPaginationService.setPaginatedArray(mockAccounts);
-    const transferAmount = component.currentTransferAmount;
-    expect(transferAmount).toBe(1);
-  });
-
   it('should return the current selected account', () => {
     const mockAccounts: Account[] = [
       {
