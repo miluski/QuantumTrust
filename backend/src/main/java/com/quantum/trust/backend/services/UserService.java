@@ -120,6 +120,7 @@ public class UserService {
             }
             this.savedUserAccount = user.get();
             Account account = this.getUserAccountObject(encryptedAccountDto, true);
+            this.validationService.validateAccountObject(account);
             this.savedUserBankAccount = this.accountRepository.save(account);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
@@ -231,6 +232,7 @@ public class UserService {
             Float transferAmount = Float.valueOf(jsonNode.get("transferAmount").asText());
             Account senderAccount = this.getUserAccountObject(senderAccountNumber);
             Account receiverAccount = this.getUserAccountObject(receiverAccountNumber);
+            this.validateTransferCredentials(transferTitle, transferAmount, senderAccount);
             this.updateSenderAccountBalance(senderAccount, transferTitle, transferAmount);
             this.updateReceiverAccountBalance(receiverAccount, senderAccount, transferTitle, transferAmount);
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -246,6 +248,15 @@ public class UserService {
             throw new Exception("Account not exists");
         }
         return account.get();
+    }
+
+    private void validateTransferCredentials(String transferTitle, Float transferAmount, Account senderAccount)
+            throws Exception {
+        boolean isTransferTitleValid = this.validationService.validateTransferTitle(transferTitle);
+        boolean isTransferAmountValid = this.validationService.validateTransferAmount(transferAmount, senderAccount);
+        if (isTransferTitleValid == false || isTransferAmountValid == false) {
+            throw new Exception("Trasfer credentials is invalid");
+        }
     }
 
     private void updateSenderAccountBalance(Account account, String transferTitle, Float transferAmount)

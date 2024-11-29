@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -17,10 +18,18 @@ public class MediaService {
     @Value("${media.dir}")
     private String baseDir;
 
+    private final ValidationService validationService;
+
+    @Autowired
+    public MediaService(ValidationService validationService) {
+        this.validationService = validationService;
+    }
+
     public ResponseEntity<?> getResponseEntity(String mediaPath) {
         try {
             Resource mediaResource = this.getMedia(mediaPath);
             if (mediaResource != null) {
+                this.validationService.validateImage(mediaResource.getFilename(), mediaResource.contentLength());
                 HttpHeaders headers = new HttpHeaders();
                 this.setHeaders(mediaPath, mediaResource, headers);
                 return ResponseEntity.status(HttpStatus.OK)
@@ -58,7 +67,7 @@ public class MediaService {
             contentType = "image/webp";
         } else if (mediaPath.endsWith(".ico")) {
             contentType = "image/x-icon";
-        } 
+        }
         return contentType;
     }
 }

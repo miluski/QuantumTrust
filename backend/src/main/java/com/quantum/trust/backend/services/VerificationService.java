@@ -51,7 +51,8 @@ public class VerificationService {
             String encryptedEmail = jsonNode.get("encryptedData").asText();
             String decryptedEmail = this.cryptoService.decryptData(encryptedEmail);
             boolean isUserExists = this.userService.isEmailExists(encryptedEmail);
-            if (isUserExists) {
+            boolean isEmailValid = this.validationService.validateEmail(decryptedEmail);
+            if (isUserExists || isEmailValid == false) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
                 return this.sendVerificationCode(decryptedEmail, "rejestrację", httpServletResponse);
@@ -87,6 +88,7 @@ public class VerificationService {
             String identificatorFromToken = this.tokenService.getIdentificatorFromToken(token);
             Optional<User> user = this.userRepository.findById(Long.valueOf(identificatorFromToken));
             if (user.isPresent()) {
+                this.validationService.validateOperation(decryptedOperation);
                 return this.sendVerificationCode(user.get().getEmailAddress(), decryptedOperation, httpServletResponse);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
