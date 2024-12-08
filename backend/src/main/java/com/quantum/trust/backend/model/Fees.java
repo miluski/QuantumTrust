@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Fees {
-    private int release;
-    private int monthly;
+    private float release;
+    private float monthly;
 }

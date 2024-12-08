@@ -95,7 +95,7 @@
           </p>
           }
           <i
-            class="absolute top-2 fa-solid text-brown hover:text-light-brown text-2xl cursor-pointer z-30"
+            class="absolute top-2 fa-solid text-brown hover:text-light-brown text-2xl cursor-pointer z-[100]"
             matTooltip="{{
               card.status === 'suspended'
                 ? 'Unieważnij zawieszenie karty.'
@@ -109,6 +109,7 @@
               'fa-check text-green-500 hover:text-green-300 z-50':
                 card.status === 'suspended'
             }"
+            (click)="changeCardStatus()"
           ></i>
         </div>
       </div>
@@ -128,14 +129,14 @@
                   class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
                   type="number"
                   min="{{
-                    convertService.getTransactionsLimit(getCardSettingsObject())
+                    convertService.getTransactionsLimit(getCardSettingsObject(), 'PLN')
                   }}"
                   max="{{
                     convertService.getTransactionsLimit(
-                      getCardSettingsObject('max')
+                      getCardSettingsObject('max'), 'PLN'
                     )
                   }}"
-                  [value]="cardSettings.limits.internetTransactionsLimit"
+                  [value]="currentInternetTransactionsLimit"
                   [(ngModel)]="cardSettings.limits.internetTransactionsLimit"
                   #internetTransactionsLimitInput="ngModel"
                   required
@@ -150,15 +151,15 @@
                 class="xl:w-80 2xl:w-100 w-[85%] md:w-[65%] h-2 bg-own-gray rounded-lg appearance-none cursor-pointer slider-thumb select-none"
                 type="range"
                 min="{{
-                  convertService.getTransactionsLimit(getCardSettingsObject())
+                  convertService.getTransactionsLimit(getCardSettingsObject(), 'PLN')
                 }}"
                 max="{{
                   convertService.getTransactionsLimit(
-                    getCardSettingsObject('max')
+                    getCardSettingsObject('max'), 'PLN'
                   )
                 }}"
                 step="{{ convertService.getStep(getCardSettingsObject()) }}"
-                [value]="cardSettings.limits.internetTransactionsLimit"
+                [value]="currentInternetTransactionsLimit"
                 [(ngModel)]="cardSettings.limits.internetTransactionsLimit"
                 #internetTransactionsLimitInput="ngModel"
               />
@@ -240,15 +241,15 @@
                   type="number"
                   min="{{
                     convertService.getTransactionsLimit(
-                      getCardSettingsObject('min', 'cash')
+                      getCardSettingsObject('min', 'cash'), 'PLN'
                     )
                   }}"
                   max="{{
                     convertService.getTransactionsLimit(
-                      getCardSettingsObject('max', 'cash')
+                      getCardSettingsObject('max', 'cash'), 'PLN'
                     )
                   }}"
-                  [value]="cardSettings.limits.cashTransactionsLimit"
+                  [value]="currentCashTransactionsLimit"
                   [(ngModel)]="cardSettings.limits.cashTransactionsLimit"
                   #cashTransactionsLimitInput="ngModel"
                   required
@@ -263,18 +264,18 @@
                 type="range"
                 min="{{
                   convertService.getTransactionsLimit(
-                    getCardSettingsObject('min', 'cash')
+                    getCardSettingsObject('min', 'cash'), 'PLN'
                   )
                 }}"
                 max="{{
                   convertService.getTransactionsLimit(
-                    getCardSettingsObject('max', 'cash')
+                    getCardSettingsObject('max', 'cash'), 'PLN'
                   )
                 }}"
                 step="{{
                   convertService.getStep(getCardSettingsObject('min', 'cash'))
                 }}"
-                [value]="cardSettings.limits.cashTransactionsLimit"
+                [value]="currentCashTransactionsLimit"
                 [(ngModel)]="cardSettings.limits.cashTransactionsLimit"
                 #cashTransactionsLimitInput="ngModel"
                 class="xl:w-80 2xl:w-100 w-[85%] md:w-[65%] h-2 bg-own-gray rounded-lg appearance-none cursor-pointer slider-thumb select-none"

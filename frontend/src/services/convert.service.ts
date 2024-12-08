@@ -10,85 +10,8 @@ import {
   TWELVE_MONTHS,
 } from '../utils/enums';
 import { exchangeRates } from '../utils/exchange-rates';
+import { Currency } from '../types/currency';
 
-/**
- * @class ConvertService
- * @description This service is responsible for handling various data conversion operations, such as converting account types, deposit types, transaction categories, and currency amounts.
- *
- * @providedIn 'root'
- *
- * @method getPolishAccountType - Converts the account type to its Polish equivalent.
- * @param {string} accountType - The account type to be converted.
- * @returns {string} - Returns the Polish equivalent of the account type.
- * @method getPolishDepositType - Converts the deposit type to its Polish equivalent.
- * @param {string} depositType - The deposit type to be converted.
- * @param {string} [usageType] - The usage type for the deposit.
- * @returns {string} - Returns the Polish equivalent of the deposit type.
- * @method getDepositIcon - Gets the icon for the deposit type.
- * @param {string} depositType - The deposit type.
- * @returns {string} - Returns the icon for the deposit type.
- * @method getIconClassFromTransactionCategory - Gets the icon class for the transaction category.
- * @param {string} transactionCategory - The transaction category.
- * @returns {string} - Returns the icon class for the transaction category.
- * @method getNumberWithSpacesBetweenThousands - Formats a number with spaces between thousands.
- * @param {number} [number] - The number to be formatted.
- * @returns {string} - Returns the formatted number.
- * @method getGroupedUserTransactions - Groups user transactions by date.
- * @param {Transaction[]} userTransactions - Array of user transactions.
- * @returns {Transaction[][]} - Returns an array of arrays of transactions grouped by date.
- * @method getDayFromDate - Gets the day of the week from a date string.
- * @param {string} date - The date string.
- * @returns {string} - Returns the day of the week.
- * @method getWeekDayFromNumber - Gets the day of the week from a number.
- * @param {number} day - The number representing the day of the week.
- * @returns {string} - Returns the day of the week.
- * @method getMonths - Gets the number of months for a given interval.
- * @param {number} interval - The interval.
- * @returns {number} - Returns the number of months.
- * @method getMonthForm - Gets the form of the month for a given interval.
- * @param {number} interval - The interval.
- * @returns {string} - Returns the form of the month.
- * @method getAccountOptionString - Gets the account option string for a given account.
- * @param {Account} account - The account.
- * @returns {string} - Returns the account option string.
- * @method getShortenedAccountId - Gets the shortened account ID.
- * @param {string} accountId - The account ID.
- * @returns {string} - Returns the shortened account ID.
- * @method getCalculatedAmount - Gets the calculated amount based on the currency and multiplier.
- * @param {string} accountCurrency - The account currency.
- * @param {number} multiplier - The multiplier.
- * @returns {number} - Returns the calculated amount.
- * @method getConversionRate - Gets the conversion rate between two currencies.
- * @param {string} fromCurrency - The currency to convert from.
- * @param {string} toCurrency - The currency to convert to.
- * @returns {number} - Returns the conversion rate.
- * @method getStep - Gets the step value for the card settings.
- * @param {CardSettings} cardSettings - The card settings.
- * @returns {number} - Returns the step value.
- * @method getFormattedTransactionsLimit - Gets the formatted transactions limit for the card settings.
- * @param {CardSettings} cardSettings - The card settings.
- * @returns {string} - Returns the formatted transactions limit.
- * @method getTransactionsLimit - Gets the transactions limit for the card settings.
- * @param {CardSettings} cardSettings - The card settings.
- * @returns {number} - Returns the transactions limit.
- * @method getCurrentTransactionLimit - Gets the current transaction limit for the card settings.
- * @param {CardSettings} cardSettings - The card settings.
- * @returns {number} - Returns the current transaction limit.
- * @method getMaxLimit - Gets the maximum limit for the card settings.
- * @param {CardSettings} cardSettings - The card settings.
- * @returns {number} - Returns the maximum limit.
- * @method getMinLimit - Gets the minimum limit for the account currency.
- * @param {string} accountCurrency - The account currency.
- * @returns {number} - Returns the minimum limit.
- * @method setInternetTransactionLimit - Sets the internet transaction limit for the card settings.
- * @param {number} upLimit - The upper limit.
- * @param {number} downLimit - The lower limit.
- * @param {CardSettings} cardSettings - The card settings.
- * @method setCashTransactionLimit - Sets the cash transaction limit for the card settings.
- * @param {number} upLimit - The upper limit.
- * @param {number} downLimit - The lower limit.
- * @param {CardSettings} cardSettings - The card settings.
- */
 @Injectable({
   providedIn: 'root',
 })
@@ -250,16 +173,17 @@ export class ConvertService {
   }
 
   public getCalculatedAmount(
-    accountCurrency: string,
+    fromCurrency: Currency,
+    accountCurrency: Currency,
     multiplier: number
   ): number {
     const conversionRate: number = this.getConversionRate(
-      'PLN',
+      fromCurrency,
       accountCurrency
     );
     const value: number = conversionRate * multiplier;
     const calculatedAmount: number = Number(
-      parseFloat(value.toString()).toPrecision(2)
+      Math.round(value)
     );
     return calculatedAmount;
   }
@@ -275,15 +199,15 @@ export class ConvertService {
     const min: number = this.getMinLimit(cardSettings.currency);
     const range: number = max - min;
     const steps: number = Math.ceil(range / 10);
-    return range / steps;
+    return Math.round(range / steps);
   }
 
   public getFormattedTransactionsLimit(cardSettings: CardSettings): string {
-    const limit = this.getTransactionsLimit(cardSettings);
+    const limit = this.getTransactionsLimit(cardSettings, "PLN");
     return limit.toLocaleString('pl-PL');
   }
 
-  public getTransactionsLimit(cardSettings: CardSettings): number {
+  public getTransactionsLimit(cardSettings: CardSettings, fromCurrency: Currency): number {
     if (cardSettings.card.limits) {
       const isOnCardSettings: boolean = cardSettings.site === 'card-settings';
       const internetTransactionLimit: number = isOnCardSettings
@@ -299,6 +223,7 @@ export class ConvertService {
             : cashTransactionLimit
           : 500;
       const convertedLimit: number = this.getCalculatedAmount(
+        fromCurrency,
         cardSettings.currency,
         currentLimit
       );
@@ -322,6 +247,7 @@ export class ConvertService {
   public getMaxLimit(cardSettings: CardSettings): number {
     if (cardSettings.card.limits) {
       return this.getCalculatedAmount(
+        "PLN",
         cardSettings.currency,
         cardSettings.transactionType === 'cash'
           ? cardSettings.card.limits[0].cashTransactions[0]
@@ -332,8 +258,8 @@ export class ConvertService {
     }
   }
 
-  public getMinLimit(accountCurrency: string): number {
-    return this.getCalculatedAmount(accountCurrency, 500);
+  public getMinLimit(accountCurrency: Currency): number {
+    return this.getCalculatedAmount("PLN", accountCurrency, 500);
   }
 
   private setInternetTransactionLimit(

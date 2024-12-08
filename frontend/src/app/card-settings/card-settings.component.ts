@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AnimationsProvider } from '../../providers/animations.provider';
+import { AlertService } from '../../services/alert.service';
 import { AppInformationStatesService } from '../../services/app-information-states.service';
 import { ConvertService } from '../../services/convert.service';
 import { FiltersService } from '../../services/filters.service';
@@ -14,72 +15,6 @@ import { CardFlags } from '../../types/card-flags';
 import { CardSettings } from '../../types/card-settings';
 import { Transaction } from '../../types/transaction';
 
-/**
- * @component CardSettingsComponent
- * @description This component is responsible for managing card settings, including limits and assigned account.
- *
- * @selector app-card-settings
- * @templateUrl ./card-settings.component.html
- * @animations [AnimationsProvider.animations]
- *
- * @class CardSettingsComponent
- * @implements OnInit
- *
- * @property {Card} card - The card object containing card details.
- * @property {Card} originalCard - The original card object for comparison.
- * @property {CardFlags} cardFlags - Flags indicating the validation status of card fields.
- * @property {CardSettings} cardSettings - The card settings object.
- * @property {Account} currentSelectedAccount - The currently selected account.
- * @property {string} currentSelectedAccountId - The ID of the currently selected account.
- * @property {Transaction[]} accountTransactions - Array of transactions related to the account.
- * @property {Transaction[][]} dailyTransactions - Array of daily grouped transactions.
- * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
- * @property {Account[]} userAccounts - Array of user accounts.
- * @property {number} newPinCode - The new PIN code for the card.
- *
- * @constructor
- * @param {ItemSelectionService} itemSelectionService - Service to manage item selection.
- * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
- * @param {VerificationService} verificationService - Service to handle verification of user data.
- * @param {UserService} userService - Service to manage user data.
- * @param {FiltersService} filtersService - Service to manage filters.
- * @param {ConvertService} convertService - Service to handle data conversion.
- *
- * @method ngOnInit - Lifecycle hook that initializes the component.
- * * @method initializeCardTransactions - Initializes card transactions.
- * @method setAccountTransactions - Sets the account transactions.
- * @method setUserAccounts - Sets the user accounts.
- * @method setCurrentSelectedAccount - Sets the currently selected account.
- * @param {Event} event - The event object.
- * @method getIsInputValueValid - Checks if the input value is valid.
- * @param {NgModel} input - The input model.
- * @param {'cash' | 'internet' | 'pinCode'} type - The type of input.
- * @returns {boolean} - Returns true if the input value is valid, otherwise false.
- * @method getCardSettingsObject - Gets the card settings object.
- * @param {'min' | 'max'} limitType - The limit type.
- * @param {'internet' | 'cash'} transactionType - The transaction type.
- * @returns {CardSettings} - Returns the card settings object.
- * @method handleSaveButtonClick - Handles the save button click event.
- * @method isSomeCardDataChanged - Checks if some card data has changed.
- * @returns {boolean} - Returns true if some card data has changed, otherwise false.
- * @method isAccountIdChanged - Checks if the account ID has changed.
- * @returns {boolean} - Returns true if the account ID has changed, otherwise false.
- * @method isCashTransactionsLimitChanged - Checks if the cash transactions limit has changed.
- * @returns {boolean} - Returns true if the cash transactions limit has changed, otherwise false.
- * @method isInternetTransactionsLimitChanged - Checks if the internet transactions limit has changed.
- * @returns {boolean} - Returns true if the internet transactions limit has changed, otherwise false.
- * @method setTransactions - Sets the transactions.
- * @method getFoundedAccount - Gets the founded account by ID.
- * @param {string | undefined} accountId - The account ID.
- * @returns {Account} - Returns the founded account.
- * @method setCorrectInputFlag - Sets the correct input flag.
- * @param {'cash' | 'internet' | 'pinCode'} type - The type of input.
- * @param {boolean} isValid - The validation status.
- * @method setCardAndCurrency - Sets the card and currency in the card settings.
- * @param {CardSettings} cardSettings - The card settings object.
- * @property {boolean[]} cardFlagsArray - Array of card flags.
- * @property {boolean} isSaveError - Checks if there is a save error.
- */
 @Component({
   selector: 'app-card-settings',
   templateUrl: './card-settings.component.html',
@@ -99,6 +34,7 @@ export class CardSettingsComponent implements OnInit {
   public shakeStateService: ShakeStateService;
 
   constructor(
+    private alertService: AlertService,
     private itemSelectionService: ItemSelectionService,
     private appInformationStatesService: AppInformationStatesService,
     private verificationService: VerificationService,
@@ -125,11 +61,31 @@ export class CardSettingsComponent implements OnInit {
       this.card = currentCard;
       this.originalCard = JSON.parse(JSON.stringify(currentCard));
       this.setUserAccounts();
+      if (
+        this.card !== undefined &&
+        this.card.assignedAccountNumber !== undefined
+      ) {
+        this.card.orginalCurrency = this.getFoundedAccount(
+          this.card.assignedAccountNumber
+        ).currency;
+      }
       this.setAccountTransactions();
       this.cardSettings.limits.internetTransactionsLimit =
         this.card.limits && this.card.limits[0].internetTransactions[0];
       this.cardSettings.limits.cashTransactionsLimit =
         this.card.limits && this.card.limits[0].cashTransactions[0];
+    });
+  }
+
+  public setUserAccounts(): void {
+    this.userService.userAccounts.subscribe((newUserAccounts: Account[]) => {
+      if (newUserAccounts.length >= 1) {
+        this.userAccounts = newUserAccounts;
+        this.currentSelectedAccount = this.getFoundedAccount(
+          this.card.assignedAccountNumber
+        );
+        this.currentSelectedAccountId = this.currentSelectedAccount.id;
+      }
     });
   }
 
@@ -152,18 +108,6 @@ export class CardSettingsComponent implements OnInit {
         }
       }
     );
-  }
-
-  public setUserAccounts(): void {
-    this.userService.userAccounts.subscribe((newUserAccounts: Account[]) => {
-      if (newUserAccounts.length >= 1) {
-        this.userAccounts = newUserAccounts;
-        this.currentSelectedAccount = this.getFoundedAccount(
-          this.card.assignedAccountNumber
-        );
-        this.currentSelectedAccountId = this.currentSelectedAccount.id;
-      }
-    });
   }
 
   public setCurrentSelectedAccount(account: Account) {
@@ -204,12 +148,33 @@ export class CardSettingsComponent implements OnInit {
   }
 
   public handleSaveButtonClick(): void {
-    const isSomeDataInvalid: boolean =
-      this.cardFlagsArray.some((flag: boolean) => flag === false) ||
-      !this.isSomeCardDataChanged();
-    this.shakeStateService.setCurrentShakeState(
-      isSomeDataInvalid ? 'shake' : 'none'
-    );
+    if (this.card.status === 'unsuspended') {
+      const isSomeDataInvalid: boolean =
+        this.cardFlagsArray.some((flag: boolean) => flag === false) ||
+        !this.isSomeCardDataChanged();
+      const isPinCodeChanged: boolean =
+        this.newPinCode !== undefined && this.cardFlagsArray[3] === true;
+      if (isSomeDataInvalid === false || isPinCodeChanged) {
+        this.userService.operation = 'edit-card';
+        this.card.limits[0].internetTransactions[0] =
+          this.cardSettings.limits.internetTransactionsLimit;
+        this.card.limits[0].cashTransactions[0] =
+          this.cardSettings.limits.cashTransactionsLimit;
+        this.card.assignedAccountNumber =
+          this.cardSettings.assignedAccountNumber !== undefined
+            ? this.cardSettings.assignedAccountNumber
+            : this.card.assignedAccountNumber;
+        this.card.pin =
+          this.newPinCode !== undefined ? this.newPinCode : this.card.pin;
+        this.userService.sendVerificationEmail('edycję danych karty');
+        this.userService.setEditingCard(this.card);
+      }
+      this.shakeStateService.setCurrentShakeState(
+        isSomeDataInvalid ? 'shake' : 'none'
+      );
+    } else {
+      this.showAlert();
+    }
   }
 
   public isSomeCardDataChanged(): boolean {
@@ -239,7 +204,10 @@ export class CardSettingsComponent implements OnInit {
     localCardSettings.limitType = 'max';
     localCardSettings.currency = this.cardSettings.currency;
     const convertedOriginalLimit: number =
-      this.convertService.getTransactionsLimit(localCardSettings);
+      this.convertService.getTransactionsLimit(
+        localCardSettings,
+        localCardSettings.currency
+      );
     return (
       this.cardSettings.limits.cashTransactionsLimit !== undefined &&
       this.cardSettings.limits.cashTransactionsLimit !== convertedOriginalLimit
@@ -253,7 +221,10 @@ export class CardSettingsComponent implements OnInit {
     localCardSettings.transactionType = 'internet';
     localCardSettings.currency = this.cardSettings.currency;
     const convertedOriginalLimit: number =
-      this.convertService.getTransactionsLimit(localCardSettings);
+      this.convertService.getTransactionsLimit(
+        localCardSettings,
+        localCardSettings.currency
+      );
     return (
       this.cardSettings.limits.internetTransactionsLimit !== undefined &&
       this.cardSettings.limits.internetTransactionsLimit !==
@@ -304,11 +275,83 @@ export class CardSettingsComponent implements OnInit {
     return userAccount.id;
   }
 
+  public get currentInternetTransactionsLimit(): number {
+    const limit: number = this.cardSettings.limits.internetTransactionsLimit;
+    const minLimit: number = this.convertService.getTransactionsLimit(
+      this.getCardSettingsObject(),
+      'PLN'
+    );
+    const maxLimit: number = this.convertService.getTransactionsLimit(
+      this.getCardSettingsObject('max'),
+      'PLN'
+    );
+    const isLimitHigherThanMaximum: boolean = limit > maxLimit;
+    const isLimitLowerThanMinimum: boolean = limit < minLimit;
+    const currentLimit: number = isLimitHigherThanMaximum
+      ? maxLimit
+      : isLimitLowerThanMinimum
+      ? minLimit
+      : limit;
+    this.cardSettings.limits.internetTransactionsLimit =
+      Math.round(currentLimit);
+    return Math.round(currentLimit);
+  }
+
+  public get currentCashTransactionsLimit(): number {
+    const limit: number = this.cardSettings.limits.cashTransactionsLimit;
+    const minLimit: number = this.convertService.getTransactionsLimit(
+      this.getCardSettingsObject('min', 'cash'),
+      'PLN'
+    );
+    const maxLimit: number = this.convertService.getTransactionsLimit(
+      this.getCardSettingsObject('max', 'cash'),
+      'PLN'
+    );
+    const isLimitHigherThanMaximum: boolean = limit > maxLimit;
+    const isLimitLowerThanMinimum: boolean = limit < minLimit;
+    const currentLimit: number = isLimitHigherThanMaximum
+      ? maxLimit
+      : isLimitLowerThanMinimum
+      ? minLimit
+      : limit;
+    this.cardSettings.limits.cashTransactionsLimit = Math.round(currentLimit);
+    return Math.round(currentLimit);
+  }
+
+  protected changeCardStatus(): void {
+    this.userService.operation =
+      this.card.status === 'suspended'
+        ? 'unsuspend-card'
+        : this.card.status === 'unsuspended'
+        ? 'suspend-card'
+        : '';
+    this.userService.sendVerificationEmail('zmianę statusu karty');
+    this.userService.setEditingCard(this.card);
+    this.shakeStateService.setCurrentShakeState('none');
+  }
+
+  protected get currentCurrency(): string {
+    return (
+      (this.currentSelectedAccount && this.currentSelectedAccount.currency) ??
+      'PLN'
+    );
+  }
+
   protected get isSaveError(): boolean {
     return (
       this.isSomeCardDataChanged() === false &&
       this.shakeStateService.shakeState !== ''
     );
+  }
+
+  private showAlert(): void {
+    this.alertService.alertType = 'error';
+    this.alertService.alertIcon = 'fa-circle-xmark';
+    this.alertService.alertTitle = 'Błąd!';
+    this.alertService.alertContent =
+      'Nie możesz edytować danych tej karty, gdyż jest zawieszona!';
+    this.alertService.progressBarBorderColor = '#fca5a5';
+    this.alertService.show();
   }
 
   private setCardAndCurrency(cardSettings: CardSettings): void {

@@ -15,82 +15,6 @@ import { Currency } from '../../types/currency';
 import { mastercardCardsObjectsArray } from '../../utils/mastercard-cards-objects-array';
 import { visaCardsObjectsArray } from '../../utils/visa-cards-objects-array';
 
-/**
- * @component OrderCardComponent
- * @description This component is responsible for managing the process of ordering a new card for users.
- *
- * @selector app-order-card
- * @templateUrl ./order-card.component.html
- * @animations [AnimationsProvider.animations]
- *
- * @class OrderCardComponent
- * @implements OnInit
- *
- * @property {Account[]} userAccounts - Array of user accounts.
- * @property {number} pinCode - The PIN code for the card.
- * @property {CardFlags} cardFlags - Flags indicating the validation status of card fields.
- * @property {CardSettings} cardSettings - The card settings object.
- * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
- *
- * @constructor
- * @param {VerificationService} verificationService - Service to handle verification of user data.
- * @param {UserService} userService - Service to manage user data.
- * @param {PaginationService} paginationService - Service to manage pagination.
- * @param {ConvertService} convertService - Service to handle data conversion.
- *
- * @method ngOnInit - Lifecycle hook that initializes the component.
- * @method onResize - Handles the window resize event to adjust pagination.
- * @param {UIEvent} event - The resize event.
- * @method setUserAccounts - Sets the user accounts.
- * @method handleButtonClick - Handles the button click event to validate fields and set the shake state.
- * @method getIsInputValueValid - Checks if the input value is valid.
- * @param {NgModel} input - The input model.
- * @param {'cash' | 'internet' | 'pinCode'} type - The type of input.
- * @returns {boolean} - Returns true if the input value is valid, otherwise false.
- * @method setDepositAccountNumber - Sets the account number for the deposit.
- * @param {Event} event - The event object.
- * @method rotateCard - Rotates the card to show the front or back side.
- * @param {Card} card - The card object to be rotated.
- * @method isCardIndexAtCenter - Checks if the card index is at the center.
- * @param {number} index - The index of the card.
- * @returns {boolean} - Returns true if the card index is at the center, otherwise false.
- * @method getRotateState - Gets the rotate state of the card.
- * @param {Card} card - The card object.
- * @returns {string} - Returns 'front' if the card is showing the front side, otherwise 'back'.
- * @method getCardState - Gets the state of the card.
- * @param {number} index - The index of the card.
- * @returns {string} - Returns 'center' if the card index is at the center, otherwise 'default'.
- * @method getFee - Gets the fee for the card.
- * @param {'monthly' | 'issuance'} type - The type of fee.
- * @returns {string} - Returns the fee amount with the currency symbol.
- * @method getCardImage - Gets the image of the card.
- * @param {Card} currentCard - The current card object.
- * @returns {string} - Returns the image URL of the card.
- * @method getCardSettingsObject - Gets the card settings object.
- * @param {'min' | 'max'} limitType - The limit type.
- * @param {'internet' | 'cash'} transactionType - The transaction type.
- * @returns {CardSettings} - Returns the card settings object.
- * @method currentSelectedCard - Getter method to get the current selected card.
- * @returns {Card} - Returns the current selected card.
- * @method currentSelectedAccount - Getter method to get the current selected account.
- * @returns {Account} - Returns the current selected account.
- * @method ownerFullName - Getter method to get the full name of the card owner.
- * @returns {string} - Returns the full name of the card owner.
- * @method cardTypeWithPublisher - Getter method to get the card type with the publisher.
- * @returns {string} - Returns the card type with the publisher.
- * @method setCardAndCurrency - Sets the card and currency in the card settings.
- * @param {CardSettings} cardSettings - The card settings object.
- * @method setMinTransactionsLimit - Sets the minimum transactions limit for the card.
- * @method setCorrectInputFlag - Sets the correct input flag.
- * @param {'cash' | 'internet' | 'pinCode'} type - The type of input.
- * @param {boolean} isValid - The validation status.
- * @method currentCurrency - Getter method to get the current currency of the selected account.
- * @returns {string} - Returns the current currency of the selected account.
- * @method cardsObjectsArray - Getter method to get the array of card objects.
- * @returns {Card[]} - Returns the array of card objects.
- * @method cardFlagsArray - Getter method to get the array of card validation flags.
- * @returns {boolean[]} - Returns the array of card validation flags.
- */
 @Component({
   selector: 'app-order-card',
   templateUrl: './order-card.component.html',
@@ -211,6 +135,7 @@ export class OrderCardComponent implements OnInit {
 
   public getFee(type: 'monthly' | 'issuance'): string {
     const issuanceAmount: number = this.convertService.getCalculatedAmount(
+      "PLN",
       this.currentCurrency,
       type === 'monthly'
         ? this.currentSelectedCard.fees.monthly
@@ -318,7 +243,7 @@ export class OrderCardComponent implements OnInit {
     }
   }
 
-  protected get currentCurrency(): string {
+  protected get currentCurrency(): Currency {
     return (
       (this.currentSelectedAccount && this.currentSelectedAccount.currency) ??
       'PLN'
