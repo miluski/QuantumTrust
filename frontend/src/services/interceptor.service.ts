@@ -14,12 +14,13 @@ import { environment } from '../environments/environment.development';
 
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
-  private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null
-  );
+  private isRefreshing: boolean;
+  private refreshTokenSubject: BehaviorSubject<any>;
 
-  constructor(private router: Router, private httpClient: HttpClient) {}
+  constructor(private router: Router, private httpClient: HttpClient) {
+    this.isRefreshing = false;
+    this.refreshTokenSubject = new BehaviorSubject<any>(null);
+  }
 
   public intercept(
     request: HttpRequest<any>,

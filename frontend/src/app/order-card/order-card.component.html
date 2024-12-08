@@ -147,11 +147,11 @@
               class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
               type="number"
               min="{{
-                convertService.getTransactionsLimit(getCardSettingsObject())
+                convertService.getTransactionsLimit(getCardSettingsObject(), 'PLN')
               }}"
               max="{{
                 convertService.getTransactionsLimit(
-                  getCardSettingsObject('max')
+                  getCardSettingsObject('max'), 'PLN'
                 )
               }}"
               [value]="
@@ -173,10 +173,10 @@
             class="w-[85%] lg:w-100 h-2 bg-own-gray rounded-lg appearance-none cursor-pointer slider-thumb select-none"
             type="range"
             min="{{
-              convertService.getTransactionsLimit(getCardSettingsObject())
+              convertService.getTransactionsLimit(getCardSettingsObject(), 'PLN')
             }}"
             max="{{
-              convertService.getTransactionsLimit(getCardSettingsObject('max'))
+              convertService.getTransactionsLimit(getCardSettingsObject('max'), 'PLN')
             }}"
             step="{{ convertService.getStep(getCardSettingsObject()) }}"
             [value]="
@@ -244,12 +244,12 @@
               type="number"
               min="{{
                 convertService.getTransactionsLimit(
-                  getCardSettingsObject('min', 'cash')
+                  getCardSettingsObject('min', 'cash'), 'PLN'
                 )
               }}"
               max="{{
                 convertService.getTransactionsLimit(
-                  getCardSettingsObject('max', 'cash')
+                  getCardSettingsObject('max', 'cash'), 'PLN'
                 )
               }}"
               [value]="
@@ -271,12 +271,12 @@
             type="range"
             min="{{
               convertService.getTransactionsLimit(
-                getCardSettingsObject('min', 'cash')
+                getCardSettingsObject('min', 'cash'), 'PLN'
               )
             }}"
             max="{{
               convertService.getTransactionsLimit(
-                getCardSettingsObject('max', 'cash')
+                getCardSettingsObject('max', 'cash'), 'PLN'
               )
             }}"
             step="{{

@@ -10,6 +10,7 @@ import { environment } from '../environments/environment.development';
 import { Account } from '../types/account';
 import { Card } from '../types/card';
 import { CardSettings } from '../types/card-settings';
+import { Currency } from '../types/currency';
 import { Deposit } from '../types/deposit';
 import { limits } from '../types/limits';
 import { Transaction } from '../types/transaction';
@@ -21,6 +22,7 @@ import { CryptoService } from './crypto.service';
   providedIn: 'root',
 })
 export class UserService {
+  private editingCard!: Card;
   private loginData!: string;
   private transferObject!: string;
   private openingDeposit!: string;
@@ -77,6 +79,10 @@ export class UserService {
       encryptedData,
     });
     request.subscribe();
+  }
+
+  public setEditingCard(editingCard: Card): void {
+    this.editingCard = editingCard;
   }
 
   public setLoggingUserAccount(loggingUserAccount: UserAccount): void {
@@ -151,24 +157,20 @@ export class UserService {
     cardSettings: CardSettings,
     pinCode: number,
     assignedAccountNumber: string,
-    currency: string
+    currency: Currency
   ): void {
     const cardCopy: Card = { ...card };
     const creatingCardObject: unknown = {
+      ...cardCopy,
       assignedAccountNumber: assignedAccountNumber,
-      type: cardCopy.type,
-      publisher: cardCopy.publisher,
-      image: cardCopy.image,
       limits: this.cryptoService.encryptData(
         this.getLimits(cardCopy, cardSettings)
       ),
       pin: this.cryptoService.encryptData(pinCode),
       expirationDate: this.getExpirationDate(),
-      backImage: cardCopy.backImage,
       fees: this.cryptoService.encryptData(
         JSON.stringify(this.getFees(cardCopy, currency))
       ),
-      showingCardSite: cardCopy.showingCardSite,
       status: 'unsuspended',
     };
     this.creatingCardObject = this.cryptoService.encryptData(
@@ -208,6 +210,12 @@ export class UserService {
         return this.sendNewTransfer();
       case 'order-card':
         return this.orderNewCard();
+      case 'suspend-card':
+        return this.suspendCard();
+      case 'unsuspend-card':
+        return this.unsuspendCard();
+      case 'edit-card':
+        return this.editCard();
       default:
         return false;
     }
@@ -338,6 +346,79 @@ export class UserService {
     });
   }
 
+  public async suspendCard(): Promise<boolean> {
+    const encryptedCardId: string = this.cryptoService.encryptData(
+      this.editingCard.id
+    );
+    const encodedCardId: string = encodeURIComponent(encryptedCardId);
+    const request: Observable<HttpResponse<Object>> = this.httpClient.patch(
+      `${environment.apiUrl}/cards/suspend?id=${encodedCardId}`,
+      {},
+      { observe: 'response' }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => {
+          resolve(false);
+        },
+      });
+    });
+  }
+
+  public async unsuspendCard(): Promise<boolean> {
+    const encryptedCardId: string = this.cryptoService.encryptData(
+      this.editingCard.id
+    );
+    const encodedCardId: string = encodeURIComponent(encryptedCardId);
+    const request: Observable<HttpResponse<Object>> = this.httpClient.patch(
+      `${environment.apiUrl}/cards/unsuspend?id=${encodedCardId}`,
+      {},
+      { observe: 'response' }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => {
+          resolve(false);
+        },
+      });
+    });
+  }
+
+  public async editCard(): Promise<boolean> {
+    const cardCopy: Card = { ...this.editingCard };
+    const [month, year] = (cardCopy.expirationDate as string).split('/').map(Number);
+    const expirationDate = new Date(2000 + year, month - 1, 1);
+    const formattedExpirationDate = expirationDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).replace(/\//g, '-');
+    const creatingCardObject: Object = {
+      ...cardCopy,
+      expirationDate: formattedExpirationDate,
+      limits: this.cryptoService.encryptData(cardCopy.limits),
+      pin: this.cryptoService.encryptData(cardCopy.pin as number),
+      fees: this.cryptoService.encryptData(cardCopy.fees),
+    };
+    const encryptedCardObject: string =
+      this.cryptoService.encryptData(JSON.stringify(creatingCardObject));
+    const request: Observable<HttpResponse<Object>> = this.httpClient.patch(
+      `${environment.apiUrl}/cards/edit`,
+      encryptedCardObject,
+      { observe: 'response' }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => {
+          resolve(false);
+        },
+      });
+    });
+  }
+
   public refreshTokens(): void {
     this.httpClient
       .post(`${environment.apiUrl}/auth/refresh-token`, {})
@@ -377,13 +458,15 @@ export class UserService {
     ];
   }
 
-  private getFees(card: Card, currency: string): unknown {
+  private getFees(card: Card, currency: Currency): unknown {
     return {
       monthly: this.convertService.getCalculatedAmount(
+        'PLN',
         currency,
         card.fees.monthly
       ),
       release: this.convertService.getCalculatedAmount(
+        'PLN',
         currency,
         card.fees.release
       ),

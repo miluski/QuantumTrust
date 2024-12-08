@@ -130,6 +130,58 @@ public class CardService {
         return cardsList;
     }
 
+    public ResponseEntity<?> suspendCard(String encryptedCardId) {
+        try {
+            String decryptedCardId = this.cryptoService.decryptData(encryptedCardId);
+            Optional<Card> foundedCard = this.cardRepository.findById(Long.valueOf(decryptedCardId));
+            if (foundedCard.isEmpty()) {
+                throw new Exception("Card with provided id was not founded.");
+            }
+            Card card = foundedCard.get();
+            card.setStatus("suspended");
+            this.cardRepository.save(card);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<?> unsuspendCard(String encryptedCardId) {
+        try {
+            String decryptedCardId = this.cryptoService.decryptData(encryptedCardId);
+            Optional<Card> foundedCard = this.cardRepository.findById(Long.valueOf(decryptedCardId));
+            if (foundedCard.isEmpty()) {
+                throw new Exception("Card with provided id was not founded.");
+            }
+            Card card = foundedCard.get();
+            card.setStatus("unsuspended");
+            this.cardRepository.save(card);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<?> editCard(String encryptedCardObject) {
+        try {
+            CardDto cardDto = this.getDecryptedCardDto(encryptedCardObject);
+            Optional<Card> retrievedCard = this.cardRepository.findById(Long.valueOf(cardDto.getId()));
+            if (retrievedCard.isEmpty()) {
+                throw new Exception("Card was not founded.");
+            }
+            Card card = retrievedCard.get();
+            this.setEditingCardCredentials(card, cardDto);
+            this.validationService.validateCard(card);
+            this.cardRepository.save(card);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     private void chargeMonthlyFee(Card card) throws Exception {
         Account account = card.getAccount();
         Fees fees = this.getFeesFromCard(card);
@@ -226,5 +278,24 @@ public class CardService {
 
     private String formatCardId(String cardId) {
         return cardId.replaceAll("(.{4})", "$1 ").trim();
+    }
+
+    private void setEditingCardCredentials(Card card, CardDto cardDto) throws Exception {
+        Account account = this.getAccountFromCardDto(cardDto);
+        card.setLimits(cardDto.getLimits());
+        card.setPin(cardDto.getPin());
+        card.setAccount(account);
+        this.setRecalculatedCardFees(card, cardDto.getOrginalCurrency());
+    }
+
+    private void setRecalculatedCardFees(Card card, String orginalCurrency) throws Exception {
+        String decryptedCardFees = this.cryptoService.decryptData(card.getFees());
+        decryptedCardFees = decryptedCardFees.replace("\\", "\"");
+        Fees cardFees = this.objectMapper.readValue(decryptedCardFees, Fees.class);
+        cardFees.setMonthly(this.validationService.getRecalculatedMonthlyFee(card, cardFees, orginalCurrency));
+        cardFees.setRelease(this.validationService.getRecalculatedReleaseFee(card, cardFees, orginalCurrency));
+        String cardFeesJson = this.objectMapper.writeValueAsString(cardFees);
+        String encryptedCardFees = this.cryptoService.encryptData(cardFeesJson);
+        card.setFees(encryptedCardFees);
     }
 }

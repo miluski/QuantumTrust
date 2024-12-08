@@ -1,8 +1,5 @@
 package com.quantum.trust.backend.services;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -109,6 +106,22 @@ public class ValidationService {
         }
     }
 
+    public Integer getRecalculatedReleaseFee(Card card, Fees cardFees, String fromCurrency) {
+        String accountCurrency = card.getAccount().getCurrency();
+        Float releaseFee = cardFees.getRelease();
+        Float recalculatedFee = this.transactionService.getRecalculatedAmount(fromCurrency,
+                accountCurrency, releaseFee);
+        return this.roundValue(recalculatedFee);
+    }
+
+    public Integer getRecalculatedMonthlyFee(Card card, Fees cardFees, String fromCurrency) {
+        String accountCurrency = card.getAccount().getCurrency();
+        Float monthlyFee = cardFees.getMonthly();
+        Float recalculatedFee = this.transactionService.getRecalculatedAmount(fromCurrency,
+                accountCurrency, monthlyFee);
+        return this.roundValue(recalculatedFee);
+    }
+
     private boolean validateCardType(String type) {
         List<String> validTypes = Arrays.asList("PODRÓŻNIK", "STUDENT", "BIZNES", "STANDARD");
         return validTypes.contains(type);
@@ -126,27 +139,17 @@ public class ValidationService {
         String decryptedCardFees = this.cryptoService.decryptData(card.getFees());
         decryptedCardFees = decryptedCardFees.replace("\\", "\"");
         Fees cardFees = this.objectMapper.readValue(decryptedCardFees, Fees.class);
-        boolean isReleaseFeeValid = cardFees.getRelease() == this.getRecalculatedReleaseFee(card,
-                validCardFees);
-        boolean isMontlyFeeValid = cardFees.getMonthly() == this.getRecalculatedMonthlyFee(card,
-                validCardFees);
+        float cardReleaseFee = cardFees.getRelease();
+        float validRecalculatedReleaseFee = this.getRecalculatedReleaseFee(card,
+                validCardFees, "PLN");
+        float cardMonthlyFee = cardFees.getMonthly();
+        float validRecalculatedMonthlyFee = this.getRecalculatedMonthlyFee(card,
+                validCardFees, "PLN");
+        boolean isReleaseFeeValid = areFloatsEqual(validRecalculatedReleaseFee, cardReleaseFee, 
+                10.0f);
+        boolean isMontlyFeeValid = areFloatsEqual(validRecalculatedMonthlyFee, cardMonthlyFee, 
+                validRecalculatedMonthlyFee * 0.35f);
         return isReleaseFeeValid && isMontlyFeeValid;
-    }
-
-    private Float getRecalculatedReleaseFee(Card card, Fees cardFees) {
-        String accountCurrency = card.getAccount().getCurrency();
-        Integer releaseFee = cardFees.getRelease();
-        Float recalculatedFee = this.transactionService.getRecalculatedAmount("PLN",
-                accountCurrency, releaseFee);
-        return this.roundToTwoDecimalPlaces(recalculatedFee);
-    }
-
-    private Float getRecalculatedMonthlyFee(Card card, Fees cardFees) {
-        String accountCurrency = card.getAccount().getCurrency();
-        Integer monthlyFee = cardFees.getMonthly();
-        Float recalculatedFee = this.transactionService.getRecalculatedAmount("PLN",
-                accountCurrency, monthlyFee);
-        return this.roundToTwoDecimalPlaces(recalculatedFee);
     }
 
     private boolean validateCardLimits(Card card) throws Exception {
@@ -173,8 +176,8 @@ public class ValidationService {
     }
 
     private boolean getIsInternetLimitsValid(Card card, Limits validCardLimits, Limits cardLimits) {
-        Float validMinLimit = this.getRecalculatedMinLimit(card);
-        Float validMaxLimit = this.getRecalculatedMaxLimit(card, validCardLimits.getInternetTransactions()[0]);
+        Integer validMinLimit = this.getRecalculatedMinLimit(card);
+        Integer validMaxLimit = this.getRecalculatedMaxLimit(card, validCardLimits.getInternetTransactions()[0]);
         boolean isLimitHigherThanMin = cardLimits.getInternetTransactions()[0] >= validMinLimit;
         boolean isLimitLowerThanMax = cardLimits.getInternetTransactions()[0] <= validMaxLimit;
         Float cardMaxLimit = Float.valueOf(cardLimits.getInternetTransactions()[2]);
@@ -184,8 +187,8 @@ public class ValidationService {
     }
 
     private boolean getIsCashLimitsValid(Card card, Limits validCardLimits, Limits cardLimits) {
-        Float validMinLimit = this.getRecalculatedMinLimit(card);
-        Float validMaxLimit = this.getRecalculatedMaxLimit(card, validCardLimits.getCashTransactions()[0]);
+        Integer validMinLimit = this.getRecalculatedMinLimit(card);
+        Integer validMaxLimit = this.getRecalculatedMaxLimit(card, validCardLimits.getCashTransactions()[0]);
         boolean isLimitHigherThanMin = cardLimits.getCashTransactions()[0] >= validMinLimit;
         boolean isLimitLowerThanMax = cardLimits.getCashTransactions()[0] <= validMaxLimit;
         Float cardMaxLimit = Float.valueOf(cardLimits.getCashTransactions()[2]);
@@ -210,24 +213,25 @@ public class ValidationService {
         return Math.abs(a - b) < epsilon;
     }
 
-    private Float getRecalculatedMinLimit(Card card) {
+    private Integer getRecalculatedMinLimit(Card card) {
         String accountCurrency = card.getAccount().getCurrency();
         Float recalculatedLimit = this.transactionService.getRecalculatedAmount("PLN", accountCurrency, 500);
-        return this.roundToTwoDecimalPlaces(recalculatedLimit);
+        return this.roundValue(recalculatedLimit);
     }
 
-    private Float getRecalculatedMaxLimit(Card card, Float limit) {
+    private Integer getRecalculatedMaxLimit(Card card, Float limit) {
         String accountCurrency = card.getAccount().getCurrency();
         Float recalculatedLimit = this.transactionService.getRecalculatedAmount("PLN", accountCurrency, limit);
-        return this.roundToTwoDecimalPlaces(recalculatedLimit);
+        return this.roundValue(recalculatedLimit);
     }
 
     private boolean validateCardExpirationDate(String expirationDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate today = LocalDate.now();
         LocalDate dateToValidate = LocalDate.parse(expirationDate, formatter);
-        LocalDate fourYears = today.plus(4, ChronoUnit.YEARS);
-        return dateToValidate.equals(fourYears);
+        int currentYear = today.getYear();
+        int yearToValidate = dateToValidate.getYear();
+        return yearToValidate == currentYear + 4;
     }
 
     private boolean validateCardPin(String encryptedPin) throws Exception {
@@ -258,7 +262,7 @@ public class ValidationService {
     }
 
     public void validateImage(String fileName, long fileSize) throws Exception {
-        List<String> allowedExtensions = Arrays.asList("webp", "ico");
+        List<String> allowedExtensions = Arrays.asList("webp", "ico", "png", "jpg", "jpeg");
         long maxSizeInBytes = 2 * 1024 * 1024;
         String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
         boolean isFileExtensionValid = allowedExtensions.contains(fileExtension);
@@ -270,7 +274,8 @@ public class ValidationService {
 
     public void validateOperation(String operation) throws IllegalArgumentException {
         List<String> allowedOperations = Arrays.asList("otworzenie nowego konta bankowego", "wyrobienie nowej karty",
-                "otworzenie nowej lokaty", "wysłanie nowego przelewu");
+                "otworzenie nowej lokaty", "wysłanie nowego przelewu", "zmianę statusu karty", "edycję danych karty",
+                "edycję danych osobistych");
         if (!allowedOperations.contains(operation)) {
             throw new IllegalArgumentException("Invalid operation");
         }
@@ -297,18 +302,16 @@ public class ValidationService {
     private boolean validateDepositBalance(Deposit deposit) {
         Float minimumBalance = this.transactionService.getRecalculatedAmount("PLN", deposit.getCurrency(), 100);
         Float maximumBalance = this.transactionService.getRecalculatedAmount("PLN", deposit.getCurrency(), 10000);
-        minimumBalance = this.roundToTwoDecimalPlaces(minimumBalance);
-        maximumBalance = this.roundToTwoDecimalPlaces(maximumBalance);
+        minimumBalance = (float) this.roundValue(minimumBalance);
+        maximumBalance = (float) this.roundValue(maximumBalance);
         return deposit.getBalance() >= minimumBalance && deposit.getBalance() <= maximumBalance;
     }
 
-    private Float roundToTwoDecimalPlaces(Float value) {
+    private Integer roundValue(Float value) {
         if (value == null) {
             return null;
         }
-        BigDecimal bd = new BigDecimal(value.toString());
-        bd = bd.round(new MathContext(2, RoundingMode.HALF_EVEN));
-        return bd.floatValue();
+        return Math.round(value);
     }
 
     private boolean validateDepositType(String type) {

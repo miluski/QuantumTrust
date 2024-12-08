@@ -22,13 +22,13 @@
         (change)="onFileSelected($event)"
         style="display: none"
       />
-      @if(!avatarService.avatarError) {
-      <app-image
+      @if(avatarService.actualAvatarError === false) {
+      <img
         class="min-w-12 w-12 h-12"
         ownClass="rounded-full pointer-events-none w-full h-full"
         alt="user-avatar"
         [src]="avatarUrl"
-        [error]="avatarService.setTemporaryAvatarError(true)"
+        (error)="avatarService.setTemporaryAvatarError(true)"
       />
       } @else {
       <div
@@ -178,13 +178,13 @@
     class="flex flex-col lg:flex-row justify-between w-full max-lg:space-y-5 px-10 pb-12"
   >
     <div class="flex flex-col lg:w-100 text-left">
-      <p class="font-roboto font-light text-md">Aktualne hasło</p>
+      <p class="font-roboto font-light text-md">Nowe hasło</p>
       <input
         class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
         type="password"
         placeholder="************"
-        [(ngModel)]="actualPassword"
-        (ngModelChange)="validatePassword()"
+        [(ngModel)]="newPassword"
+        (ngModelChange)="validateNewPassword()"
       />
       @if(userAccountFlags.isPasswordValid === false) {
       <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
@@ -193,17 +193,17 @@
       }
     </div>
     <div class="flex flex-col lg:w-100">
-      <p class="font-roboto font-light text-md text-left">Nowe hasło</p>
+      <p class="font-roboto font-light text-md text-left">Powtórz nowe hasło</p>
       <input
         class="bg-white text-black p-2 w-full rounded-md no-arrows font-roboto font-light"
         type="password"
         placeholder="************"
         [(ngModel)]="userObject.repeatedPassword"
-        (ngModelChange)="validateNewPassword()"
+        (ngModelChange)="validateRepeatedPassword()"
       />
       @if(userAccountFlags.isRepeatedPasswordValid === false) {
       <p class="font-roboto font-light text-red-500 text-sm pt-5 self-center">
-        Wprowadzone nowe hasło jest nieprawidłowe!
+        Wprowadzone hasła różnią się!
       </p>
       }
     </div>
