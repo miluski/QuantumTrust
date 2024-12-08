@@ -92,7 +92,7 @@ public class SecurityConfig {
                 corsConfiguration.setAllowCredentials(true);
                 corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
                 corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
-                corsConfiguration.setAllowedOrigins(Arrays.asList("https://192.168.0.18:4200"));
+                corsConfiguration.setAllowedOrigins(Arrays.asList("https://192.168.0.14:4200"));
                 corsConfiguration.addExposedHeader("Set-Cookie");
                 corsConfiguration.setMaxAge(5L);
                 return corsConfiguration;

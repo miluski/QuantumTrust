@@ -96,18 +96,18 @@ describe('AccountSettingsComponent', () => {
   });
 
   it('should validate password correctly', () => {
-    component.actualPassword = 'newpassword';
+    component.newPassword = 'newpassword';
     component.userObject.password = 'newpassword';
     mockVerificationService.validatePassword.and.returnValue(true);
-    component.validatePassword();
+    component.validateNewPassword();
     expect(component.userAccountFlags.isPasswordValid).toBeTrue();
   });
 
   it('should validate repeated password correctly', () => {
-    component.actualPassword = 'newpassword';
+    component.newPassword = 'newpassword';
     component.userObject.repeatedPassword = 'newpassword';
     mockVerificationService.validatePassword.and.returnValue(true);
-    component.validateNewPassword();
+    component.validateRepeatedPassword();
     expect(component.userAccountFlags.isRepeatedPasswordValid).toBeTrue();
   });
 
@@ -119,7 +119,7 @@ describe('AccountSettingsComponent', () => {
     component.onFileSelected(event);
     expect(component.userAccountFlags.isAvatarValid).toBeTrue();
   });
-  
+
   it('should handle save button click correctly', () => {
     spyOn<any>(component, 'isSomeDataNotEqualWithOriginal').and.returnValue(
       true

@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,7 @@ public class MediaService {
         this.validationService = validationService;
     }
 
+    @Cacheable("mediaCache")
     public ResponseEntity<?> getResponseEntity(String mediaPath) {
         try {
             Resource mediaResource = this.getMedia(mediaPath);

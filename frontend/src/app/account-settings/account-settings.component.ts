@@ -60,7 +60,7 @@ import { UserAccountFlags } from '../../types/user-account-flags';
 export class AccountSettingsComponent implements OnInit {
   public avatarUrl: string;
   public avatarError: string;
-  public actualPassword: string;
+  public newPassword: string;
   public userObject: UserAccount;
   public isNotDataChanged!: boolean;
   public userAccountFlags: UserAccountFlags;
@@ -74,14 +74,16 @@ export class AccountSettingsComponent implements OnInit {
     this.userObject = { ...userService.userAccount };
     this.avatarUrl = '';
     this.avatarError = '';
-    this.actualPassword = '';
+    this.newPassword = '';
     this.userAccountFlags = new UserAccountFlags();
     this.shakeStateService = new ShakeStateService();
   }
 
   public ngOnInit(): void {
     this.avatarService.currentTemporaryAvatarUrl.subscribe(
-      (avatarUrl: string) => (this.avatarUrl = avatarUrl)
+      (avatarUrl: string) => {
+        this.avatarUrl = avatarUrl;
+      }
     );
   }
 
@@ -105,61 +107,44 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   public validateName(): void {
-    if (this.userObject.firstName !== this.userService.userAccount.firstName) {
-      this.userAccountFlags.isNameValid =
-        this.verificationService.validateFirstName(this.userObject.firstName);
-    }
+    this.userAccountFlags.isNameValid =
+      this.verificationService.validateFirstName(this.userObject.firstName);
   }
 
   public validateSurname(): void {
-    if (this.userObject.lastName !== this.userService.userAccount.lastName) {
-      this.userAccountFlags.isSurnameValid =
-        this.verificationService.validateLastName(this.userObject.lastName);
-    }
+    this.userAccountFlags.isSurnameValid =
+      this.verificationService.validateLastName(this.userObject.lastName);
   }
 
   public validateEmail(): void {
-    if (
-      this.userObject.emailAddress !== this.userService.userAccount.emailAddress
-    ) {
-      this.userAccountFlags.isEmailValid =
-        this.verificationService.validateEmail(this.userObject.emailAddress);
-    }
+    this.userAccountFlags.isEmailValid = this.verificationService.validateEmail(
+      this.userObject.emailAddress
+    );
   }
 
   public validatePhoneNumber(): void {
-    if (
-      this.userObject.phoneNumber !== this.userService.userAccount.phoneNumber
-    ) {
-      this.userAccountFlags.isPhoneNumberValid =
-        this.verificationService.validatePhoneNumber(
-          String(this.userObject.phoneNumber)
-        );
-    }
+    this.userAccountFlags.isPhoneNumberValid =
+      this.verificationService.validatePhoneNumber(
+        String(this.userObject.phoneNumber)
+      );
   }
 
   public validateAddress(): void {
-    if (this.userObject.address !== this.userService.userAccount.address) {
-      this.userAccountFlags.isAddressValid =
-        this.verificationService.validateAddress(this.userObject.address);
-    }
-  }
-
-  public validatePassword(): void {
-    if (this.actualPassword !== '') {
-      this.userAccountFlags.isPasswordValid =
-        this.verificationService.validatePassword(this.actualPassword) &&
-        this.userObject.password === this.actualPassword;
-    }
+    this.userAccountFlags.isAddressValid =
+      this.verificationService.validateAddress(this.userObject.address);
   }
 
   public validateNewPassword(): void {
-    if (this.actualPassword !== '') {
-      this.userAccountFlags.isRepeatedPasswordValid =
-        this.verificationService.validatePassword(
-          this.userObject.repeatedPassword
-        );
-    }
+    this.userAccountFlags.isPasswordValid =
+      this.verificationService.validatePassword(this.newPassword);
+    this.validateRepeatedPassword();
+  }
+
+  public validateRepeatedPassword(): void {
+    this.userAccountFlags.isRepeatedPasswordValid =
+      this.verificationService.validatePassword(
+        this.userObject.repeatedPassword
+      ) && this.userObject.repeatedPassword === this.newPassword;
   }
 
   public changeAvatarUrl(avatar: Blob): void {
@@ -182,7 +167,7 @@ export class AccountSettingsComponent implements OnInit {
       this.userObject.phoneNumber !==
         this.userService.userAccount.phoneNumber ||
       this.userObject.address !== this.userService.userAccount.address ||
-      this.actualPassword !== '' ||
+      this.newPassword !== '' ||
       this.userAccountFlags.isAvatarValid === true
     );
   }
