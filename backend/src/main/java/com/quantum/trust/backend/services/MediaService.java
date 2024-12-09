@@ -1,8 +1,12 @@
 package com.quantum.trust.backend.services;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +17,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.quantum.trust.backend.model.entities.User;
 
 @Service
 public class MediaService {
@@ -45,6 +51,27 @@ public class MediaService {
         }
     }
 
+    public void saveImage(User user, String avatarPath) throws Exception {
+        String avatarName = this.getRandomAvatarName(avatarPath);
+        String filePath = baseDir + avatarName;
+        try {
+            String base64ImageData = avatarPath.split(",")[1];
+            byte[] imageBytes = Base64.getDecoder().decode(base64ImageData);
+            FileOutputStream fos = new FileOutputStream(filePath);
+            fos.write(imageBytes);
+            fos.close();
+            Resource mediaResource = this.getMedia(filePath);
+            this.validationService.validateImage(mediaResource.getFilename(), mediaResource.contentLength());
+            user.setAvatarPath(filePath.replace("/media/", ""));
+        } catch (Exception e) {
+            File file = new File(filePath);
+            if (file.exists()) {
+                file.delete();
+            }
+            throw e;
+        }
+    }
+
     private Resource getMedia(String mediaPath) throws Exception {
         try {
             Path filePath = Paths.get(baseDir).resolve(mediaPath).normalize();
@@ -71,5 +98,18 @@ public class MediaService {
             contentType = "image/x-icon";
         }
         return contentType;
+    }
+
+    private String getRandomAvatarName(String image) {
+        String extension = "";
+        if (image.startsWith("data:image/png")) {
+            extension = ".png";
+        } else if (image.startsWith("data:image/jpeg")) {
+            extension = ".jpeg";
+        } else if (image.startsWith("data:image/jpg")) {
+            extension = ".jpg";
+        }
+        String uuid = UUID.randomUUID().toString();
+        return uuid + extension;
     }
 }

@@ -285,15 +285,16 @@ public class CardService {
         card.setLimits(cardDto.getLimits());
         card.setPin(cardDto.getPin());
         card.setAccount(account);
-        this.setRecalculatedCardFees(card, cardDto.getOrginalCurrency());
+        this.setCorrectCardFees(card);
     }
 
-    private void setRecalculatedCardFees(Card card, String orginalCurrency) throws Exception {
-        String decryptedCardFees = this.cryptoService.decryptData(card.getFees());
-        decryptedCardFees = decryptedCardFees.replace("\\", "\"");
-        Fees cardFees = this.objectMapper.readValue(decryptedCardFees, Fees.class);
-        cardFees.setMonthly(this.validationService.getRecalculatedMonthlyFee(card, cardFees, orginalCurrency));
-        cardFees.setRelease(this.validationService.getRecalculatedReleaseFee(card, cardFees, orginalCurrency));
+    private void setCorrectCardFees(Card card) throws Exception {
+        Fees validCardFees = this.validationService.validFees.get(card.getType());
+        float validRecalculatedReleaseFee = this.validationService.getRecalculatedReleaseFee(card,
+                validCardFees, "PLN");
+        float validRecalculatedMonthlyFee = this.validationService
+                .getRecalculatedMonthlyFee(card, validCardFees, "PLN");
+        Fees cardFees = new Fees(validRecalculatedReleaseFee, validRecalculatedMonthlyFee);
         String cardFeesJson = this.objectMapper.writeValueAsString(cardFees);
         String encryptedCardFees = this.cryptoService.encryptData(cardFeesJson);
         card.setFees(encryptedCardFees);
