@@ -43,10 +43,10 @@ public class ValidationService {
     }
 
     public void validateUserObject(User user) throws Exception {
-        boolean isEmailValid = this.validateEmail(user.getEmailAddress());
-        boolean isPhoneNumberValid = this.validatePhoneNumber(user.getPhoneNumber());
-        boolean isFirstNameValid = this.validateFirstName(user.getFirstName());
-        boolean isLastNameValid = this.validateLastName(user.getLastName());
+        boolean isEmailValid = this.validateEmail(this.cryptoService.decryptData(user.getEmailAddress()));
+        boolean isPhoneNumberValid = this.validatePhoneNumber(this.cryptoService.decryptData(user.getPhoneNumber()));
+        boolean isFirstNameValid = this.validateFirstName(this.cryptoService.decryptData(user.getFirstName()));
+        boolean isLastNameValid = this.validateLastName(this.cryptoService.decryptData(user.getLastName()));
         boolean isPeselValid = this.validatePESEL(this.cryptoService.decryptData(user.getPeselNumber()));
         boolean isIdentityDocumentTypeValid = this
                 .validateIdentityDocumentType(this.cryptoService.decryptData(user.getDocumentType()));
@@ -60,10 +60,10 @@ public class ValidationService {
     }
 
     public void validateEditedUserObject(User user) throws Exception {
-        boolean isEmailValid = this.validateEmail(user.getEmailAddress());
-        boolean isPhoneNumberValid = this.validatePhoneNumber(user.getPhoneNumber());
-        boolean isFirstNameValid = this.validateFirstName(user.getFirstName());
-        boolean isLastNameValid = this.validateLastName(user.getLastName());
+        boolean isEmailValid = this.validateEmail(this.cryptoService.decryptData(user.getEmailAddress()));
+        boolean isPhoneNumberValid = this.validatePhoneNumber(this.cryptoService.decryptData(user.getPhoneNumber()));
+        boolean isFirstNameValid = this.validateFirstName(this.cryptoService.decryptData(user.getFirstName()));
+        boolean isLastNameValid = this.validateLastName(this.cryptoService.decryptData(user.getLastName()));
         boolean isAddressValid = this.validateAddress(this.cryptoService.decryptData(user.getAddress()));
         if (!(isEmailValid && isPhoneNumberValid && isFirstNameValid && isLastNameValid && isAddressValid)) {
             throw new IllegalArgumentException("User object is invalid");

@@ -288,7 +288,7 @@ public class UserService {
     }
 
     private void setNewUserAvatar(User user, UserDto userDto) throws Exception {
-        String avatarPath = userDto.getAvatarPath();
+        String avatarPath = this.cryptoService.decryptData(userDto.getAvatarPath());
         boolean isAvatarPathEqualsNull = "null".equals(avatarPath);
         boolean isAvatarPathObjectNull = Objects.isNull(avatarPath);
         boolean isAvatarPathEqualsEmptyString = "".equals(avatarPath);
@@ -297,10 +297,12 @@ public class UserService {
                 || isAvatarPathEmpty;
         boolean isAvatarPathChanged = true;
         if (user.getAvatarPath() != null) {
-            isAvatarPathChanged = !avatarPath.contains(user.getAvatarPath());
+            String decryptedUserPath = this.cryptoService.decryptData(user.getAvatarPath());
+            isAvatarPathChanged = !avatarPath.contains(decryptedUserPath);
         }
         if (!isAvatarPathNull && isAvatarPathChanged) {
-            this.mediaService.saveImage(user, userDto.getAvatarPath());
+            String decryptedAvatarPath = this.cryptoService.decryptData(userDto.getAvatarPath());
+            this.mediaService.saveImage(user, decryptedAvatarPath);
         }
     }
 

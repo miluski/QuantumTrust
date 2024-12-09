@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,13 @@ public class EmailService {
     @Value("${resend.api.key}")
     private String resendApiKey;
 
+    private final CryptoService cryptoService;
+
+    @Autowired
+    public EmailService(CryptoService cryptoService) {
+        this.cryptoService = cryptoService;
+    }
+
     public void sendVerificationCode(String userEmail, String verificationCode, String operation)
             throws ResendException {
         String htmlTemplate = this.getHtmlTemplate("verification-code");
@@ -27,10 +35,11 @@ public class EmailService {
         this.sendEmail(userEmail, "Kod uwierzytelniający", htmlTemplate);
     }
 
-    public void sendIdentificator(User user) throws ResendException {
+    public void sendIdentificator(User user) throws Exception {
         String htmlTemplate = this.getHtmlTemplate("identificator");
+        String decryptedEmailAddress = this.cryptoService.decryptData(user.getEmailAddress());
         htmlTemplate = htmlTemplate.replace("{{IDENTIFICATOR}}", user.getId().toString());
-        this.sendEmail(user.getEmailAddress(), "Twój osobisty identyfikator do konta QuantumTrust",
+        this.sendEmail(decryptedEmailAddress, "Twój osobisty identyfikator do konta QuantumTrust",
                 htmlTemplate);
     }
 

@@ -226,10 +226,15 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   public get avatarUrl(): string {
+    const checkingAvatarUrl: string = this.currentAvatarUrl.replace(
+      `${environment.apiUrl}/media/public/`,
+      ''
+    );
+    console.log(checkingAvatarUrl)
     const isCurrentAvatarUrlValid: boolean =
-      this.currentAvatarUrl !== '' &&
-      this.currentAvatarUrl !== null &&
-      this.currentAvatarUrl !== undefined;
+      checkingAvatarUrl !== '' &&
+      checkingAvatarUrl !== null &&
+      checkingAvatarUrl !== undefined;
     if (isCurrentAvatarUrlValid === false) {
       this.avatarService.setTemporaryAvatarError(true);
     }
