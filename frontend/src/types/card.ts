@@ -16,5 +16,4 @@ export class Card {
   cvcCode?: number;
   showingCardSite?: 'front' | 'back';
   status?: 'suspended' | 'unsuspended';
-  orginalCurrency?: string;
 }

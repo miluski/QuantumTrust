@@ -29,5 +29,4 @@ public class CardDto implements Serializable {
     private String backImage;
     private String fees;
     private String status;
-    private String orginalCurrency;
 }

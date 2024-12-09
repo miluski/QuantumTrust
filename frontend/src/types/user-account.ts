@@ -7,7 +7,7 @@ export class UserAccount {
   peselNumber!: number;
   documentType!: string;
   documentSerie!: string;
-  avatarUrl!: string;
+  avatarUrl!: string | null;
   address!: string;
   password!: string;
   repeatedPassword!: string;

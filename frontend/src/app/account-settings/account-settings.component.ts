@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment.development';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { AvatarService } from '../../services/avatar.service';
 import { ShakeStateService } from '../../services/shake-state.service';
@@ -58,10 +59,10 @@ import { UserAccountFlags } from '../../types/user-account-flags';
   animations: [AnimationsProvider.animations],
 })
 export class AccountSettingsComponent implements OnInit {
-  public avatarUrl: string;
   public avatarError: string;
   public newPassword: string;
   public userObject: UserAccount;
+  private currentAvatarUrl: string;
   public isNotDataChanged!: boolean;
   public userAccountFlags: UserAccountFlags;
   public shakeStateService: ShakeStateService;
@@ -72,17 +73,24 @@ export class AccountSettingsComponent implements OnInit {
     protected avatarService: AvatarService
   ) {
     this.userObject = { ...userService.userAccount };
-    this.avatarUrl = '';
     this.avatarError = '';
     this.newPassword = '';
+    this.currentAvatarUrl = '';
     this.userAccountFlags = new UserAccountFlags();
     this.shakeStateService = new ShakeStateService();
   }
 
   public ngOnInit(): void {
+    this.userService.actualUserAccount.subscribe((userAccount: UserAccount) => {
+      if (userAccount.avatarUrl !== null) {
+        this.currentAvatarUrl = `${environment.apiUrl}/media/public/${userAccount.avatarUrl}`;
+        this.avatarService.setTemporaryAvatarError(false);
+      }
+    });
     this.avatarService.currentTemporaryAvatarUrl.subscribe(
       (avatarUrl: string) => {
-        this.avatarUrl = avatarUrl;
+        this.currentAvatarUrl = avatarUrl;
+        this.avatarService.setTemporaryAvatarError(false);
       }
     );
   }
@@ -96,13 +104,32 @@ export class AccountSettingsComponent implements OnInit {
     }
   }
 
-  public handleSaveButtonClick(): void {
+  public async handleSaveButtonClick(): Promise<void> {
     const isSomeDataInvalid: boolean = this.validationFlags.some(
       (flag: boolean) => flag === false
     );
+    const isUserNotExists: boolean =
+      this.userObject.emailAddress !== this.userService.userAccount.emailAddress
+        ? await this.userService.getIsUserNotExists(this.userObject)
+        : true;
     this.isNotDataChanged = !this.isSomeDataNotEqualWithOriginal;
+    if (
+      isSomeDataInvalid === false &&
+      this.isNotDataChanged === false &&
+      isUserNotExists
+    ) {
+      this.userService.operation = 'edit-account-settings';
+      this.userService.sendVerificationEmail('edycję danych osobistych');
+      this.userObject.avatarUrl = this.avatarUrl;
+      if (this.newPassword !== '' && this.newPassword !== undefined) {
+        this.userObject.password = this.newPassword;
+      }
+      this.userService.setEditingUserAccount(this.userObject);
+    }
     this.shakeStateService.setCurrentShakeState(
-      isSomeDataInvalid || this.isNotDataChanged ? 'shake' : 'none'
+      isSomeDataInvalid || this.isNotDataChanged || isUserNotExists === false
+        ? 'shake'
+        : 'none'
     );
   }
 
@@ -150,9 +177,8 @@ export class AccountSettingsComponent implements OnInit {
   public changeAvatarUrl(avatar: Blob): void {
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
-      this.avatarService.setTemporaryAvatarUrl(
-        (e.target as FileReader).result as string
-      );
+      const fileContent = (e.target as FileReader).result as string;
+      this.avatarService.setTemporaryAvatarUrl(fileContent);
       this.avatarService.setTemporaryAvatarError(false);
     };
     reader.readAsDataURL(avatar);
@@ -197,5 +223,16 @@ export class AccountSettingsComponent implements OnInit {
         ? 'Rozmiar pliku jest za duży.'
         : '';
     return isTypeValid && isSizeValid;
+  }
+
+  public get avatarUrl(): string {
+    const isCurrentAvatarUrlValid: boolean =
+      this.currentAvatarUrl !== '' &&
+      this.currentAvatarUrl !== null &&
+      this.currentAvatarUrl !== undefined;
+    if (isCurrentAvatarUrlValid === false) {
+      this.avatarService.setTemporaryAvatarError(true);
+    }
+    return isCurrentAvatarUrlValid ? this.currentAvatarUrl : '';
   }
 }

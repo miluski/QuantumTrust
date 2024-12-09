@@ -114,7 +114,7 @@ export class VerificationCodeComponent {
     this.alertService.show();
     isUserLoggedIn
       ? this.changeTabName('Finanse')
-      : setTimeout(() => this.userService.logout(), 500);
+      : setTimeout(() => this.router.navigate(["/"]), 500);
   }
 
   public setAlertCredentials(

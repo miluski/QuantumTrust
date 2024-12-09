@@ -15,6 +15,7 @@ import { Deposit } from '../types/deposit';
 import { limits } from '../types/limits';
 import { Transaction } from '../types/transaction';
 import { UserAccount } from '../types/user-account';
+import { AlertService } from './alert.service';
 import { ConvertService } from './convert.service';
 import { CryptoService } from './crypto.service';
 
@@ -29,7 +30,8 @@ export class UserService {
   private openingBankAccount!: string;
   private creatingCardObject!: string;
   private registeringUserAccount!: string;
-  private currentUserAccount!: UserAccount;
+  private editingUserAccount!: UserAccount;
+  private currentUserAccount!: BehaviorSubject<UserAccount>;
   private userCardsSubject: BehaviorSubject<Card[]>;
   private userAccountsSubject: BehaviorSubject<Account[]>;
   private userDepositsSubject: BehaviorSubject<Deposit[]>;
@@ -40,18 +42,23 @@ export class UserService {
   public userAccounts: Observable<Account[]>;
   public userDeposits: Observable<Deposit[]>;
   public userTransactions: Observable<Transaction[]>;
+  public actualUserAccount: Observable<UserAccount>;
 
   constructor(
     private cryptoService: CryptoService,
     private cookieService: CookieService,
     private convertService: ConvertService,
+    private alertService: AlertService,
     private httpClient: HttpClient
   ) {
-    this.currentUserAccount = new UserAccount();
+    this.currentUserAccount = new BehaviorSubject<UserAccount>(
+      new UserAccount()
+    );
     this.userCardsSubject = new BehaviorSubject<Card[]>([]);
     this.userAccountsSubject = new BehaviorSubject<Account[]>([]);
     this.userDepositsSubject = new BehaviorSubject<Deposit[]>([]);
     this.userTransactionsSubject = new BehaviorSubject<Transaction[]>([]);
+    this.actualUserAccount = this.currentUserAccount.asObservable();
     this.userCards = this.userCardsSubject.asObservable();
     this.userAccounts = this.userAccountsSubject.asObservable();
     this.userDeposits = this.userDepositsSubject.asObservable();
@@ -111,6 +118,17 @@ export class UserService {
     this.registeringUserAccount = this.cryptoService.encryptData(
       JSON.stringify(registeringUserAccount)
     );
+  }
+
+  public setEditingUserAccount(editingUserAccount: UserAccount): void {
+    editingUserAccount.address = this.cryptoService.encryptData(
+      editingUserAccount.address
+    );
+    editingUserAccount.repeatedPassword = '';
+    editingUserAccount.password = this.cryptoService.encryptData(
+      editingUserAccount.password
+    );
+    this.editingUserAccount = editingUserAccount;
   }
 
   public refreshUserObjects(): void {
@@ -185,8 +203,35 @@ export class UserService {
     return verificationCode === typedVerificationCode;
   }
 
-  public get userAccount(): UserAccount {
-    return this.currentUserAccount;
+  public refreshTokens(): void {
+    this.httpClient
+      .post(`${environment.apiUrl}/auth/refresh-token`, {})
+      .subscribe();
+  }
+
+  public getIsUserNotExists(userAccount: UserAccount): Promise<boolean> {
+    const encryptedEmail: string = this.cryptoService.encryptData(
+      userAccount.emailAddress
+    );
+    const encodedEmail: string = encodeURIComponent(encryptedEmail);
+    const request: Observable<HttpResponse<Object>> = this.httpClient.get(
+      `${environment.apiUrl}/user/email?email=${encodedEmail}`,
+      { observe: 'response' }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: () => {
+          this.showAlert();
+          resolve(false);
+        },
+        error: (response: HttpErrorResponse) => {
+          if (response.status !== 404) {
+            this.showUnexpectedErrorAlert();
+          }
+          resolve(response.status === 404);
+        },
+      });
+    });
   }
 
   public get userFullName(): string {
@@ -196,131 +241,8 @@ export class UserService {
     return firstLetterOfFirstName + '.' + lastName;
   }
 
-  public async finalizeOperation(): Promise<boolean> {
-    switch (this.operation) {
-      case 'register':
-        return this.register();
-      case 'login':
-        return this.login();
-      case 'logged-user-open-account':
-        return this.openNewBankAccount();
-      case 'open-deposit':
-        return this.openNewDeposit();
-      case 'new-transfer':
-        return this.sendNewTransfer();
-      case 'order-card':
-        return this.orderNewCard();
-      case 'suspend-card':
-        return this.suspendCard();
-      case 'unsuspend-card':
-        return this.unsuspendCard();
-      case 'edit-card':
-        return this.editCard();
-      default:
-        return false;
-    }
-  }
-
-  public async register(): Promise<boolean> {
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/auth/register`,
-      {
-        encryptedAccountDto: this.openingBankAccount,
-        encryptedUserDto: this.registeringUserAccount,
-      },
-      {
-        observe: 'response',
-      }
-    );
-    return new Promise((resolve) => {
-      request.subscribe({
-        next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
-      });
-    });
-  }
-
-  public async login(): Promise<boolean> {
-    const loginData: string = this.loginData;
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/auth/login`,
-      {
-        loginData,
-      },
-      {
-        observe: 'response',
-      }
-    );
-    return new Promise((resolve) => {
-      request.subscribe({
-        next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
-      });
-    });
-  }
-
-  public async openNewBankAccount(): Promise<boolean> {
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/user/account/open`,
-      this.openingBankAccount,
-      {
-        observe: 'response',
-      }
-    );
-    return new Promise((resolve) => {
-      request.subscribe({
-        next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
-      });
-    });
-  }
-
-  public async openNewDeposit(): Promise<boolean> {
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/deposits/new`,
-      this.openingDeposit,
-      {
-        observe: 'response',
-      }
-    );
-    return new Promise((resolve) => {
-      request.subscribe({
-        next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
-      });
-    });
-  }
-
-  public async sendNewTransfer(): Promise<boolean> {
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/user/new-transfer`,
-      this.transferObject,
-      {
-        observe: 'response',
-      }
-    );
-    return new Promise((resolve) => {
-      request.subscribe({
-        next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
-      });
-    });
-  }
-
-  public async orderNewCard(): Promise<boolean> {
-    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
-      `${environment.apiUrl}/cards/new`,
-      this.creatingCardObject,
-      {
-        observe: 'response',
-      }
-    );
-    return new Promise((resolve) => {
-      request.subscribe({
-        next: (response) => resolve(response.status === 200),
-        error: () => resolve(false),
-      });
-    });
+  public get userAccount(): UserAccount {
+    return this.currentUserAccount.getValue();
   }
 
   public async getIsAccountExists(accountNumber: string): Promise<boolean> {
@@ -346,7 +268,136 @@ export class UserService {
     });
   }
 
-  public async suspendCard(): Promise<boolean> {
+  public async finalizeOperation(): Promise<boolean> {
+    switch (this.operation) {
+      case 'register':
+        return this.register();
+      case 'login':
+        return this.login();
+      case 'logged-user-open-account':
+        return this.openNewBankAccount();
+      case 'open-deposit':
+        return this.openNewDeposit();
+      case 'new-transfer':
+        return this.sendNewTransfer();
+      case 'order-card':
+        return this.orderNewCard();
+      case 'suspend-card':
+        return this.suspendCard();
+      case 'unsuspend-card':
+        return this.unsuspendCard();
+      case 'edit-card':
+        return this.editCard();
+      case 'edit-account-settings':
+        return this.editAccountSettings();
+      default:
+        return false;
+    }
+  }
+
+  private async register(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/auth/register`,
+      {
+        encryptedAccountDto: this.openingBankAccount,
+        encryptedUserDto: this.registeringUserAccount,
+      },
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  private async login(): Promise<boolean> {
+    const loginData: string = this.loginData;
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/auth/login`,
+      {
+        loginData,
+      },
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  private async openNewBankAccount(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/user/account/open`,
+      this.openingBankAccount,
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  private async openNewDeposit(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/deposits/new`,
+      this.openingDeposit,
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  private async sendNewTransfer(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/user/new-transfer`,
+      this.transferObject,
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  private async orderNewCard(): Promise<boolean> {
+    const request: Observable<HttpResponse<Object>> = this.httpClient.post(
+      `${environment.apiUrl}/cards/new`,
+      this.creatingCardObject,
+      {
+        observe: 'response',
+      }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => resolve(false),
+      });
+    });
+  }
+
+  private async suspendCard(): Promise<boolean> {
     const encryptedCardId: string = this.cryptoService.encryptData(
       this.editingCard.id
     );
@@ -366,7 +417,7 @@ export class UserService {
     });
   }
 
-  public async unsuspendCard(): Promise<boolean> {
+  private async unsuspendCard(): Promise<boolean> {
     const encryptedCardId: string = this.cryptoService.encryptData(
       this.editingCard.id
     );
@@ -386,15 +437,19 @@ export class UserService {
     });
   }
 
-  public async editCard(): Promise<boolean> {
+  private async editCard(): Promise<boolean> {
     const cardCopy: Card = { ...this.editingCard };
-    const [month, year] = (cardCopy.expirationDate as string).split('/').map(Number);
+    const [month, year] = (cardCopy.expirationDate as string)
+      .split('/')
+      .map(Number);
     const expirationDate = new Date(2000 + year, month - 1, 1);
-    const formattedExpirationDate = expirationDate.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).replace(/\//g, '-');
+    const formattedExpirationDate = expirationDate
+      .toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+      .replace(/\//g, '-');
     const creatingCardObject: Object = {
       ...cardCopy,
       expirationDate: formattedExpirationDate,
@@ -402,8 +457,9 @@ export class UserService {
       pin: this.cryptoService.encryptData(cardCopy.pin as number),
       fees: this.cryptoService.encryptData(cardCopy.fees),
     };
-    const encryptedCardObject: string =
-      this.cryptoService.encryptData(JSON.stringify(creatingCardObject));
+    const encryptedCardObject: string = this.cryptoService.encryptData(
+      JSON.stringify(creatingCardObject)
+    );
     const request: Observable<HttpResponse<Object>> = this.httpClient.patch(
       `${environment.apiUrl}/cards/edit`,
       encryptedCardObject,
@@ -419,10 +475,28 @@ export class UserService {
     });
   }
 
-  public refreshTokens(): void {
-    this.httpClient
-      .post(`${environment.apiUrl}/auth/refresh-token`, {})
-      .subscribe();
+  private async editAccountSettings(): Promise<boolean> {
+    const editingObject: Object = {
+      ...this.editingUserAccount,
+      avatarPath: this.editingUserAccount.avatarUrl,
+      avatarUrl: null,
+    };
+    const encryptedEditingUserObject: string = this.cryptoService.encryptData(
+      JSON.stringify(editingObject)
+    );
+    const request: Observable<HttpResponse<Object>> = this.httpClient.patch(
+      `${environment.apiUrl}/user/edit`,
+      encryptedEditingUserObject,
+      { observe: 'response' }
+    );
+    return new Promise((resolve) => {
+      request.subscribe({
+        next: (response) => resolve(response.status === 200),
+        error: () => {
+          resolve(false);
+        },
+      });
+    });
   }
 
   private getExpirationDate(): string {
@@ -489,12 +563,14 @@ export class UserService {
     );
     request.subscribe({
       next: (response: HttpResponse<any>) => {
-        this.currentUserAccount = this.cryptoService.decryptData(
+        const retrievedUserAccount: any = this.cryptoService.decryptData(
           response.body.encryptedData
-        ) as unknown as UserAccount;
-        this.currentUserAccount.address = this.cryptoService.decryptData(
-          this.currentUserAccount.address
         );
+        this.currentUserAccount.next({
+          ...(retrievedUserAccount as unknown as UserAccount),
+          address: this.cryptoService.decryptData(retrievedUserAccount.address),
+          avatarUrl: retrievedUserAccount.avatarPath,
+        });
       },
       error: (error: HttpErrorResponse) => {
         console.log('Error:', error);
@@ -604,5 +680,24 @@ export class UserService {
       case 'oldPeople':
         return 'fifth-account.webp';
     }
+  }
+
+  private showAlert(): void {
+    this.alertService.alertContent =
+      'Użytkownik o podanym adresie email już istnieje.';
+    this.alertService.alertIcon = 'fa-circle-xmark';
+    this.alertService.alertTitle = 'Błąd';
+    this.alertService.alertType = 'error';
+    this.alertService.progressBarBorderColor = '#fca5a5';
+    this.alertService.show();
+  }
+
+  private showUnexpectedErrorAlert(): void {
+    this.alertService.alertContent = 'Wystąpił nieoczekiwany problem.';
+    this.alertService.alertIcon = 'fa-circle-exclamation';
+    this.alertService.alertTitle = 'Ostrzeżenie';
+    this.alertService.alertType = 'warning';
+    this.alertService.progressBarBorderColor = '#fde047';
+    this.alertService.show();
   }
 }

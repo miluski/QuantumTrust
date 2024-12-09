@@ -1,5 +1,6 @@
 package com.quantum.trust.backend.services;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class UserService {
     private final CookieService cookieService;
     private final CryptoService cryptoService;
     private final EmailService emailService;
+    private final MediaService mediaService;
     private final ValidationService validationService;
     private final TransactionService transactionService;
     private final ObjectMapper objectMapper;
@@ -51,6 +53,7 @@ public class UserService {
             AccountMapper accountMapper, TokenService tokenService, CookieService cookieService,
             CryptoService cryptoService,
             EmailService emailService,
+            MediaService mediaService,
             ValidationService validationService, TransactionService transactionService,
             ObjectMapper objectMapper,
             UserRepository userRepository, AccountRepository accountRepository,
@@ -64,6 +67,7 @@ public class UserService {
         this.cryptoService = cryptoService;
         this.objectMapper = objectMapper;
         this.emailService = emailService;
+        this.mediaService = mediaService;
         this.validationService = validationService;
         this.transactionService = transactionService;
         this.cookieService = cookieService;
@@ -77,7 +81,7 @@ public class UserService {
 
     public ResponseEntity<?> createUserAccount(String encryptedUserDto) {
         try {
-            User user = this.getUser(encryptedUserDto);
+            User user = this.userMapper.convertToUser(this.getUserDto(encryptedUserDto));
             user.setPassword(this.cryptoService.decryptData(user.getPassword()));
             this.validationService.validateUserObject(user);
             user.setPassword(this.cryptoService.getEncryptedPassword(user.getPassword()));
@@ -153,7 +157,7 @@ public class UserService {
         try {
             JsonNode jsonNode = this.objectMapper.readTree(encryptedUserDto);
             String loginData = jsonNode.get("loginData").asText();
-            User user = this.getUser(loginData);
+            User user = this.userMapper.convertToUser(this.getUserDto(loginData));
             this.validationService.validateLoginUserObject(user);
             user.setPassword(this.cryptoService.decryptData(user.getPassword()));
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getId(), user.getPassword());
@@ -242,6 +246,64 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<?> editUserAccount(String encryptedUserObject, HttpServletRequest httpServletRequest) {
+        try {
+            UserDto userDto = this.getUserDto(encryptedUserObject);
+            User user = this.getUserFromToken(httpServletRequest);
+            this.setEditedUserCredentials(user, userDto);
+            this.setNewUserPassword(user, userDto);
+            this.setNewUserAvatar(user, userDto);
+            this.validationService.validateEditedUserObject(user);
+            this.userRepository.save(user);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private void setEditedUserCredentials(User user, UserDto userDto) {
+        user.setEmailAddress(userDto.getEmailAddress());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setAddress(userDto.getAddress());
+    }
+
+    private void setNewUserPassword(User user, UserDto userDto) throws Exception {
+        String decryptedPassword = this.cryptoService.decryptData(userDto.getPassword());
+        boolean isDecryptedPasswordEqualsNull = "null".equals(decryptedPassword);
+        boolean isDecryptedPasswordObjectNull = Objects.isNull(decryptedPassword);
+        boolean isDecryptedPasswordEqualsEmptyString = "".equals(decryptedPassword);
+        boolean isDecryptedPasswordEmpty = decryptedPassword.isEmpty();
+        boolean isDecryptedPasswordNull = isDecryptedPasswordEqualsNull || isDecryptedPasswordObjectNull
+                || isDecryptedPasswordEqualsEmptyString || isDecryptedPasswordEmpty;
+        if (!isDecryptedPasswordNull) {
+            boolean isPasswordValid = this.validationService.validatePassword(decryptedPassword);
+            if (!isPasswordValid) {
+                throw new Exception("Invalid user object.");
+            }
+            user.setPassword(cryptoService.getEncryptedPassword(decryptedPassword));
+        }
+    }
+
+    private void setNewUserAvatar(User user, UserDto userDto) throws Exception {
+        String avatarPath = userDto.getAvatarPath();
+        boolean isAvatarPathEqualsNull = "null".equals(avatarPath);
+        boolean isAvatarPathObjectNull = Objects.isNull(avatarPath);
+        boolean isAvatarPathEqualsEmptyString = "".equals(avatarPath);
+        boolean isAvatarPathEmpty = avatarPath.isEmpty();
+        boolean isAvatarPathNull = isAvatarPathEqualsNull || isAvatarPathObjectNull || isAvatarPathEqualsEmptyString
+                || isAvatarPathEmpty;
+        boolean isAvatarPathChanged = true;
+        if (user.getAvatarPath() != null) {
+            isAvatarPathChanged = !avatarPath.contains(user.getAvatarPath());
+        }
+        if (!isAvatarPathNull && isAvatarPathChanged) {
+            this.mediaService.saveImage(user, userDto.getAvatarPath());
+        }
+    }
+
     private Account getUserAccountObject(String accountNumber) throws Exception {
         Optional<Account> account = this.accountRepository.findById(accountNumber);
         if (account.isEmpty()) {
@@ -302,16 +364,25 @@ public class UserService {
         return account;
     }
 
-    private User getUser(String encryptedUserDto) {
+    private UserDto getUserDto(String encryptedUserDto) {
         try {
             String decryptedUserDto = this.cryptoService.decryptData(encryptedUserDto);
             decryptedUserDto = decryptedUserDto.replace("\\", "\"");
-            UserDto userDto = objectMapper.readValue(decryptedUserDto, UserDto.class);
-            return this.userMapper.convertToUser(userDto);
+            return objectMapper.readValue(decryptedUserDto, UserDto.class);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private User getUserFromToken(HttpServletRequest httpServletRequest) throws Exception {
+        String accessToken = this.cookieService.getCookieValue(httpServletRequest, "ACCESS_TOKEN");
+        String identificatorFromToken = this.tokenService.getIdentificatorFromToken(accessToken);
+        Optional<User> retrievedUser = this.userRepository.findById(Long.valueOf(identificatorFromToken));
+        if (retrievedUser.isEmpty()) {
+            throw new Exception("User was not found.");
+        }
+        return retrievedUser.get();
     }
 
     private ResponseEntity<?> newTokensPair(String refreshToken, HttpServletResponse httpServletResponse) {
