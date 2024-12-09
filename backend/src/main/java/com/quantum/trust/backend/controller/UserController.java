@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,5 +73,10 @@ public class UserController {
     @PostMapping("/new-transfer")
     public ResponseEntity<?> sendNewTransfer(@RequestBody String encryptedTransferDto) {
         return this.userService.sendNewTransfer(encryptedTransferDto);
+    }
+
+    @PatchMapping("/edit")
+    public ResponseEntity<?> editUser(@RequestBody String encryptedUserObject, HttpServletRequest httpServletRequest) {
+        return this.userService.editUserAccount(encryptedUserObject, httpServletRequest);
     }
 }

@@ -61,14 +61,6 @@ export class CardSettingsComponent implements OnInit {
       this.card = currentCard;
       this.originalCard = JSON.parse(JSON.stringify(currentCard));
       this.setUserAccounts();
-      if (
-        this.card !== undefined &&
-        this.card.assignedAccountNumber !== undefined
-      ) {
-        this.card.orginalCurrency = this.getFoundedAccount(
-          this.card.assignedAccountNumber
-        ).currency;
-      }
       this.setAccountTransactions();
       this.cardSettings.limits.internetTransactionsLimit =
         this.card.limits && this.card.limits[0].internetTransactions[0];

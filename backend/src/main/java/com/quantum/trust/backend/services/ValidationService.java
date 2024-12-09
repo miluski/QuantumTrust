@@ -23,11 +23,12 @@ import com.quantum.trust.backend.model.entities.User;
 
 @Service
 public class ValidationService {
-    private final Map<String, Fees> validFees;
     private final Map<String, Limits> validLimits;
     private final CryptoService cryptoService;
     private final TransactionService transactionService;
     private final ObjectMapper objectMapper;
+
+    public final Map<String, Fees> validFees;
 
     @Autowired
     public ValidationService(CryptoService cryptoService, TransactionService transactionService,
@@ -54,6 +55,17 @@ public class ValidationService {
         boolean isPasswordValid = this.validatePassword(user.getPassword());
         if (!(isEmailValid && isPhoneNumberValid && isFirstNameValid && isLastNameValid && isPeselValid
                 && isIdentityDocumentTypeValid && isDocumentValid && isAddressValid && isPasswordValid)) {
+            throw new IllegalArgumentException("User object is invalid");
+        }
+    }
+
+    public void validateEditedUserObject(User user) throws Exception {
+        boolean isEmailValid = this.validateEmail(user.getEmailAddress());
+        boolean isPhoneNumberValid = this.validatePhoneNumber(user.getPhoneNumber());
+        boolean isFirstNameValid = this.validateFirstName(user.getFirstName());
+        boolean isLastNameValid = this.validateLastName(user.getLastName());
+        boolean isAddressValid = this.validateAddress(this.cryptoService.decryptData(user.getAddress()));
+        if (!(isEmailValid && isPhoneNumberValid && isFirstNameValid && isLastNameValid && isAddressValid)) {
             throw new IllegalArgumentException("User object is invalid");
         }
     }
@@ -122,6 +134,50 @@ public class ValidationService {
         return this.roundValue(recalculatedFee);
     }
 
+    public void validateImage(String fileName, long fileSize) throws Exception {
+        List<String> allowedExtensions = Arrays.asList("webp", "ico", "png", "jpg", "jpeg");
+        long maxSizeInBytes = 2 * 1024 * 1024;
+        String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        boolean isFileExtensionValid = allowedExtensions.contains(fileExtension);
+        boolean isFileSizeValid = fileSize <= maxSizeInBytes;
+        if (isFileExtensionValid == false || isFileSizeValid == false) {
+            throw new Exception("Invalid image");
+        }
+    }
+
+    public void validateOperation(String operation) throws IllegalArgumentException {
+        List<String> allowedOperations = Arrays.asList("otworzenie nowego konta bankowego", "wyrobienie nowej karty",
+                "otworzenie nowej lokaty", "wysłanie nowego przelewu", "zmianę statusu karty", "edycję danych karty",
+                "edycję danych osobistych");
+        if (!allowedOperations.contains(operation)) {
+            throw new IllegalArgumentException("Invalid operation");
+        }
+    }
+
+    public boolean validateEmail(String email) {
+        String EMAIL_PATTERN = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        if (email == null) {
+            return false;
+        }
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public boolean validateTransferTitle(String title) {
+        return title.length() >= 10 && title.length() <= 50;
+    }
+
+    public boolean validateTransferAmount(Float transferAmount, Account senderAccount) {
+        return transferAmount >= 1.0f && transferAmount <= senderAccount.getBalance();
+    }
+
+    public boolean validatePassword(String password) {
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[\\/\\+\\-_;,.!@#$%^&*()]).{12,32}$";
+        return password != null && password.length() >= 12 && password.length() <= 32
+                && Pattern.matches(passwordPattern, password);
+    }
+
     private boolean validateCardType(String type) {
         List<String> validTypes = Arrays.asList("PODRÓŻNIK", "STUDENT", "BIZNES", "STANDARD");
         return validTypes.contains(type);
@@ -140,15 +196,15 @@ public class ValidationService {
         decryptedCardFees = decryptedCardFees.replace("\\", "\"");
         Fees cardFees = this.objectMapper.readValue(decryptedCardFees, Fees.class);
         float cardReleaseFee = cardFees.getRelease();
+        float cardMonthlyFee = cardFees.getMonthly();
         float validRecalculatedReleaseFee = this.getRecalculatedReleaseFee(card,
                 validCardFees, "PLN");
-        float cardMonthlyFee = cardFees.getMonthly();
         float validRecalculatedMonthlyFee = this.getRecalculatedMonthlyFee(card,
                 validCardFees, "PLN");
-        boolean isReleaseFeeValid = areFloatsEqual(validRecalculatedReleaseFee, cardReleaseFee, 
-                10.0f);
-        boolean isMontlyFeeValid = areFloatsEqual(validRecalculatedMonthlyFee, cardMonthlyFee, 
-                validRecalculatedMonthlyFee * 0.35f);
+        boolean isReleaseFeeValid = areFloatsEqual(validRecalculatedReleaseFee, cardReleaseFee,
+                0.01f);
+        boolean isMontlyFeeValid = areFloatsEqual(validRecalculatedMonthlyFee, cardMonthlyFee,
+                0.01f);
         return isReleaseFeeValid && isMontlyFeeValid;
     }
 
@@ -261,44 +317,6 @@ public class ValidationService {
         return status.equals("suspended") || status.equals("unsuspended");
     }
 
-    public void validateImage(String fileName, long fileSize) throws Exception {
-        List<String> allowedExtensions = Arrays.asList("webp", "ico", "png", "jpg", "jpeg");
-        long maxSizeInBytes = 2 * 1024 * 1024;
-        String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-        boolean isFileExtensionValid = allowedExtensions.contains(fileExtension);
-        boolean isFileSizeValid = fileSize <= maxSizeInBytes;
-        if (isFileExtensionValid == false || isFileSizeValid == false) {
-            throw new Exception("Invalid image");
-        }
-    }
-
-    public void validateOperation(String operation) throws IllegalArgumentException {
-        List<String> allowedOperations = Arrays.asList("otworzenie nowego konta bankowego", "wyrobienie nowej karty",
-                "otworzenie nowej lokaty", "wysłanie nowego przelewu", "zmianę statusu karty", "edycję danych karty",
-                "edycję danych osobistych");
-        if (!allowedOperations.contains(operation)) {
-            throw new IllegalArgumentException("Invalid operation");
-        }
-    }
-
-    public boolean validateEmail(String email) {
-        String EMAIL_PATTERN = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        if (email == null) {
-            return false;
-        }
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
-    public boolean validateTransferTitle(String title) {
-        return title.length() >= 10 && title.length() <= 50;
-    }
-
-    public boolean validateTransferAmount(Float transferAmount, Account senderAccount) {
-        return transferAmount >= 1.0f && transferAmount <= senderAccount.getBalance();
-    }
-
     private boolean validateDepositBalance(Deposit deposit) {
         Float minimumBalance = this.transactionService.getRecalculatedAmount("PLN", deposit.getCurrency(), 100);
         Float maximumBalance = this.transactionService.getRecalculatedAmount("PLN", deposit.getCurrency(), 10000);
@@ -373,12 +391,6 @@ public class ValidationService {
     private boolean validateAddress(String address) {
         String addressPattern = "^[A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+(?: [A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+)* \\d+(?:\\/\\d+)?(?:, [A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]+)+$";
         return address != null && Pattern.matches(addressPattern, address);
-    }
-
-    private boolean validatePassword(String password) {
-        String passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[\\/\\+\\-_;,.!@#$%^&*()]).{12,32}$";
-        return password != null && password.length() >= 12 && password.length() <= 32
-                && Pattern.matches(passwordPattern, password);
     }
 
     private boolean validateAccountType(String accountType) {
