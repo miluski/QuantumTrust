@@ -25,10 +25,12 @@ public class MediaService {
     @Value("${media.dir}")
     private String baseDir;
 
+    private final CryptoService cryptoService;
     private final ValidationService validationService;
 
     @Autowired
-    public MediaService(ValidationService validationService) {
+    public MediaService(CryptoService cryptoService, ValidationService validationService) {
+        this.cryptoService = cryptoService;
         this.validationService = validationService;
     }
 
@@ -62,7 +64,9 @@ public class MediaService {
             fos.close();
             Resource mediaResource = this.getMedia(filePath);
             this.validationService.validateImage(mediaResource.getFilename(), mediaResource.contentLength());
-            user.setAvatarPath(filePath.replace("/media/", ""));
+            filePath = filePath.replace("/media/", "");
+            filePath = this.cryptoService.encryptData(filePath);
+            user.setAvatarPath(filePath);
         } catch (Exception e) {
             File file = new File(filePath);
             if (file.exists()) {

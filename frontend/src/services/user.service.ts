@@ -29,7 +29,7 @@ export class UserService {
   private openingDeposit!: string;
   private openingBankAccount!: string;
   private creatingCardObject!: string;
-  private registeringUserAccount!: string;
+  private registeringUserAccount!: UserAccount;
   private editingUserAccount!: UserAccount;
   private currentUserAccount!: BehaviorSubject<UserAccount>;
   private userCardsSubject: BehaviorSubject<Card[]>;
@@ -102,22 +102,25 @@ export class UserService {
   }
 
   public setRegisteringUserAccount(registeringUserAccount: UserAccount): void {
-    registeringUserAccount.address = this.cryptoService.encryptData(
-      registeringUserAccount.address
-    );
-    registeringUserAccount.documentSerie = this.cryptoService.encryptData(
-      registeringUserAccount.documentSerie
-    );
-    registeringUserAccount.documentType = this.cryptoService.encryptData(
-      registeringUserAccount.documentType
-    );
-    registeringUserAccount.repeatedPassword = '';
-    registeringUserAccount.password = this.cryptoService.encryptData(
-      registeringUserAccount.password
-    );
-    this.registeringUserAccount = this.cryptoService.encryptData(
-      JSON.stringify(registeringUserAccount)
-    );
+    this.registeringUserAccount = {
+      ...registeringUserAccount,
+      address: this.cryptoService.encryptData(registeringUserAccount.address),
+      documentSerie: this.cryptoService.encryptData(
+        registeringUserAccount.documentSerie
+      ),
+      documentType: this.cryptoService.encryptData(
+        registeringUserAccount.documentType
+      ),
+      repeatedPassword: '',
+      password: this.cryptoService.encryptData(registeringUserAccount.password),
+      firstName: this.cryptoService.encryptData(
+        registeringUserAccount.firstName
+      ),
+      lastName: this.cryptoService.encryptData(registeringUserAccount.lastName),
+      emailAddress: this.cryptoService.encryptData(
+        registeringUserAccount.emailAddress
+      ),
+    };
   }
 
   public setEditingUserAccount(editingUserAccount: UserAccount): void {
@@ -296,11 +299,19 @@ export class UserService {
   }
 
   private async register(): Promise<boolean> {
+    const registeringUser: string = this.cryptoService.encryptData(
+      JSON.stringify({
+        ...this.registeringUserAccount,
+        phoneNumber: this.cryptoService.encryptData(
+          this.registeringUserAccount.phoneNumber
+        ),
+      })
+    );
     const request: Observable<HttpResponse<Object>> = this.httpClient.post(
       `${environment.apiUrl}/auth/register`,
       {
         encryptedAccountDto: this.openingBankAccount,
-        encryptedUserDto: this.registeringUserAccount,
+        encryptedUserDto: registeringUser,
       },
       {
         observe: 'response',
@@ -478,7 +489,21 @@ export class UserService {
   private async editAccountSettings(): Promise<boolean> {
     const editingObject: Object = {
       ...this.editingUserAccount,
-      avatarPath: this.editingUserAccount.avatarUrl,
+      avatarPath: this.cryptoService.encryptData(
+        this.editingUserAccount.avatarUrl as string
+      ),
+      emailAddress: this.cryptoService.encryptData(
+        this.editingUserAccount.emailAddress
+      ),
+      phoneNumber: this.cryptoService.encryptData(
+        this.editingUserAccount.phoneNumber
+      ),
+      firstName: this.cryptoService.encryptData(
+        this.editingUserAccount.firstName
+      ),
+      lastName: this.cryptoService.encryptData(
+        this.editingUserAccount.lastName
+      ),
       avatarUrl: null,
     };
     const encryptedEditingUserObject: string = this.cryptoService.encryptData(
@@ -569,7 +594,21 @@ export class UserService {
         this.currentUserAccount.next({
           ...(retrievedUserAccount as unknown as UserAccount),
           address: this.cryptoService.decryptData(retrievedUserAccount.address),
-          avatarUrl: retrievedUserAccount.avatarPath,
+          avatarUrl: this.cryptoService.decryptData(
+            retrievedUserAccount.avatarPath
+          ),
+          emailAddress: this.cryptoService.decryptData(
+            retrievedUserAccount.emailAddress
+          ),
+          firstName: this.cryptoService.decryptData(
+            retrievedUserAccount.firstName
+          ),
+          lastName: this.cryptoService.decryptData(
+            retrievedUserAccount.lastName
+          ),
+          phoneNumber: this.cryptoService.decryptData(
+            retrievedUserAccount.phoneNumber
+          ) as unknown as number,
         });
       },
       error: (error: HttpErrorResponse) => {
