@@ -28,6 +28,35 @@ import com.quantum.trust.backend.services.UserAuthService;
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * @class SecurityConfig
+ * @description Configuration class for setting up security configurations.
+ *
+ * @constructor
+ *              Initializes the SecurityConfig with the specified services.
+ * @param {TokenService}       tokenService - The service for handling tokens.
+ * @param {CookieService}      cookieService - The service for handling cookies.
+ * @param {UserAuthService}    userAuthService - The service for user
+ *                             authentication.
+ * @param {TokenBucketService} tokenBucketService - The service for rate
+ *                             limiting.
+ *
+ * @method authenticationManager - Configures the authentication manager.
+ * @returns {AuthenticationManager} - The configured authentication manager.
+ *
+ * @method passwordEncoder - Configures the password encoder.
+ * @returns {PasswordEncoder} - The configured password encoder.
+ *
+ * @method securityFilterChain - Configures the security filter chain.
+ * @param {HttpSecurity} httpSecurity - The HttpSecurity object to configure.
+ * @returns {SecurityFilterChain} - The configured security filter chain.
+ *
+ * @method getCorsConfigurationSource - Configures the CORS settings.
+ * @returns {CorsConfigurationSource} - The configured CORS settings.
+ *
+ * @method getJwtRequestFilter - Configures the JWT request filter.
+ * @returns {Filter} - The configured JWT request filter.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -72,7 +101,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/email").permitAll()
                         .requestMatchers("/api/auth/refresh-token").permitAll()
                         .requestMatchers("/api/media/public/**").permitAll()
-                        .requestMatchers("/api/auth/test/tokens").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(this.getJwtRequestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((customizer) -> customizer.authenticationEntryPoint(
@@ -83,7 +111,7 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
 
-    private CorsConfigurationSource getCorsConfigurationSource() {
+    CorsConfigurationSource getCorsConfigurationSource() {
         return new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(
@@ -100,7 +128,7 @@ public class SecurityConfig {
         };
     }
 
-    private Filter getJwtRequestFilter() {
+    Filter getJwtRequestFilter() {
         return new JwtRequestFilter(tokenService, cookieService, userAuthService, tokenBucketService);
     }
 }

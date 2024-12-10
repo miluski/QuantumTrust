@@ -9,6 +9,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.quantum.trust.backend.services.MediaService;
 
+/**
+ * @controller FileDownloadController
+ * @description Controller class for handling file download operations.
+ *
+ * @class FileDownloadController
+ *
+ * @constructor
+ *              Initializes the FileDownloadController with the specified
+ *              MediaService.
+ *
+ * @method downloadFile - Downloads a file.
+ * @param {String} filename - The name of the file to download.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the file or an
+ *          error status.
+ */
 @RestController
 @RequestMapping("/api/media")
 public class FileDownloadController {

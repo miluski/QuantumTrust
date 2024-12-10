@@ -14,6 +14,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @entity Transaction
+ * @description Entity class representing a transaction.
+ *
+ * @class Transaction
+ *
+ * @field {Long} id - The unique identifier of the transaction.
+ * @field {String} date - The date of the transaction.
+ * @field {String} hour - The hour of the transaction.
+ * @field {String} title - The title of the transaction.
+ * @field {Account} account - The account associated with the transaction.
+ * @field {Card} card - The card associated with the transaction.
+ * @field {String} type - The type of the transaction.
+ * @field {Float} amount - The amount of the transaction.
+ * @field {String} currency - The currency of the transaction.
+ * @field {Float} accountAmountAfter - The account balance after the
+ *        transaction.
+ * @field {String} category - The category of the transaction.
+ * @field {String} accountCurrency - The currency of the account.
+ * @field {String} status - The status of the transaction.
+ */
 @Getter
 @Setter
 @Builder

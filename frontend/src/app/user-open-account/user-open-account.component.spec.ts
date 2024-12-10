@@ -5,6 +5,8 @@ import { Account } from '../../types/account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 import { UserOpenAccountComponent } from './user-open-account.component';
 import { UserOpenAccountModule } from './user-open-account.module';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('UserOpenAccountComponent', () => {
   let component: UserOpenAccountComponent;
@@ -29,6 +31,8 @@ describe('UserOpenAccountComponent', () => {
           useValue: appInformationStatesService,
         },
         { provide: VerificationService, useValue: verificationService },
+        provideHttpClient(),
+        provideHttpClientTesting()
       ],
     }).compileComponents();
 

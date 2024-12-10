@@ -22,6 +22,42 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * @component JwtRequestFilter
+ * @description Filter class for validating JWT tokens in HTTP requests.
+ *
+ * @class JwtRequestFilter
+ *
+ * @constructor
+ *              Initializes the JwtRequestFilter with the specified services.
+ * @param {TokenService}       tokenService - The service for handling tokens.
+ * @param {CookieService}      cookieService - The service for handling cookies.
+ * @param {UserAuthService}    userAuthService - The service for handling user
+ *                             authentication.
+ * @param {TokenBucketService} tokenBucketService - The service for handling
+ *                             token bucket operations.
+ *
+ * @method doFilterInternal - Filters incoming HTTP requests to validate JWT
+ *         tokens.
+ * @param {HttpServletRequest}  request - The HTTP servlet request.
+ * @param {HttpServletResponse} response - The HTTP servlet response.
+ * @param {FilterChain}         filterChain - The filter chain.
+ * @throws {ServletException} - If an error occurs during filtering.
+ * @throws {IOException}      - If an I/O error occurs during filtering.
+ *
+ * @method setCredentials - Sets the credentials from the request.
+ * @param {HttpServletRequest} request - The HTTP servlet request.
+ *
+ * @method getAuthHeader - Retrieves the authorization header from the request.
+ * @param {HttpServletRequest} request - The HTTP servlet request.
+ * @returns {String} - The authorization header.
+ *
+ * @method setToken - Sets the token from the authorization header.
+ *
+ * @method setIdentificator - Sets the identificator from the token.
+ *
+ * @method setAuthentication - Sets the authentication in the security context.
+ */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final TokenService tokenService;

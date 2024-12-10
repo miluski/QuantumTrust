@@ -15,6 +15,37 @@ import com.resend.Resend;
 import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.CreateEmailOptions;
 
+/**
+ * @service EmailService
+ * @description Service class for sending emails.
+ *
+ * @class EmailService
+ *
+ * @constructor
+ * @param {CryptoService} cryptoService - Service for handling encryption.
+ *
+ * @method sendVerificationCode - Sends a verification code to the user's email.
+ * @param {String} userEmail - The user's email address.
+ * @param {String} verificationCode - The verification code to be sent.
+ * @param {String} operation - The operation for which the verification code is
+ *                 sent.
+ * @throws {ResendException} - If an error occurs while sending the email.
+ *
+ * @method sendIdentificator - Sends an identificator to the user's email.
+ * @param {User} user - The user to whom the identificator is sent.
+ * @throws {Exception} - If an error occurs while sending the email.
+ *
+ * @method getHtmlTemplate - Retrieves the HTML template for the specified
+ *         template type.
+ * @param {String} templateType - The type of the template to retrieve.
+ * @returns {String} - The HTML template as a string.
+ *
+ * @method sendEmail - Sends an email with the specified parameters.
+ * @param {String} userEmail - The user's email address.
+ * @param {String} subject - The subject of the email.
+ * @param {String} htmlTemplate - The HTML template of the email.
+ * @throws {ResendException} - If an error occurs while sending the email.
+ */
 @Service
 public class EmailService {
     @Value("${resend.api.key}")

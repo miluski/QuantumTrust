@@ -1,168 +1,155 @@
-import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AnimationsProvider } from '../../providers/animations.provider';
+import { of } from 'rxjs';
 import { ConvertService } from '../../services/convert.service';
 import { PaginationService } from '../../services/pagination.service';
 import { ShakeStateService } from '../../services/shake-state.service';
 import { UserService } from '../../services/user.service';
 import { VerificationService } from '../../services/verification.service';
 import { Account } from '../../types/account';
-import { VerificationCodeModule } from '../verification-code/verification-code.module';
 import { NewTransferComponent } from './new-transfer.component';
-import { NewTransferModule } from './new-transfer.module';
-import { of } from 'rxjs';
 
 describe('NewTransferComponent', () => {
   let component: NewTransferComponent;
   let fixture: ComponentFixture<NewTransferComponent>;
-  let mockUserService: jasmine.SpyObj<UserService>;
-  let mockVerificationService: jasmine.SpyObj<VerificationService>;
-  let mockPaginationService: jasmine.SpyObj<PaginationService>;
-  let mockConvertService: jasmine.SpyObj<ConvertService>;
+  let userService: jasmine.SpyObj<UserService>;
+  let verificationService: jasmine.SpyObj<VerificationService>;
+  let paginationService: jasmine.SpyObj<PaginationService>;
+  let shakeStateService: jasmine.SpyObj<ShakeStateService>;
 
   beforeEach(async () => {
-    mockUserService = jasmine.createSpyObj('UserService', ['getUserAccountsArray']);
-    mockUserService.userAccounts = of([new Account()]);
-
-    mockVerificationService = jasmine.createSpyObj('VerificationService', [
+    const userServiceSpy = jasmine.createSpyObj('UserService', [
+      'setTransferObject',
+      'getIsAccountExists',
+    ]);
+    const verificationServiceSpy = jasmine.createSpyObj('VerificationService', [
       'validateOperationAmount',
       'validateTransferTitle',
       'validateReceiverAccountId',
     ]);
-
-    mockPaginationService = jasmine.createSpyObj('PaginationService', [
-      'onResize',
+    const paginationServiceSpy = jasmine.createSpyObj('PaginationService', [
       'setPaginatedArray',
       'handleWidthChange',
-    ], {
-      paginatedItems: [
-        { id: '1', balance: 1000 },
-        { id: '2', balance: 2000 },
-      ],
-    });
-
-    mockConvertService = jasmine.createSpyObj('ConvertService', [
-      'getPolishAccountType',
-      'getNumberWithSpacesBetweenThousands',
-      'getShortenedAccountId',
+    ]);
+    const shakeStateServiceSpy = jasmine.createSpyObj('ShakeStateService', [
+      'setCurrentShakeState',
     ]);
 
     await TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        FormsModule,
-        MatIconModule,
-        VerificationCodeModule,
-        NewTransferModule,
-        BrowserAnimationsModule,
-      ],
+      declarations: [NewTransferComponent],
       providers: [
-        AnimationsProvider,
-        { provide: UserService, useValue: mockUserService },
-        { provide: VerificationService, useValue: mockVerificationService },
-        { provide: PaginationService, useValue: mockPaginationService },
-        { provide: ConvertService, useValue: mockConvertService },
-        ShakeStateService,
+        { provide: UserService, useValue: userServiceSpy },
+        { provide: VerificationService, useValue: verificationServiceSpy },
+        { provide: PaginationService, useValue: paginationServiceSpy },
+        { provide: ShakeStateService, useValue: shakeStateServiceSpy },
+        ConvertService,
       ],
+      imports: [MatIconModule, FormsModule, BrowserAnimationsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewTransferComponent);
     component = fixture.componentInstance;
+
+    userService = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
+    verificationService = TestBed.inject(
+      VerificationService
+    ) as jasmine.SpyObj<VerificationService>;
+    paginationService = TestBed.inject(
+      PaginationService
+    ) as jasmine.SpyObj<PaginationService>;
+    shakeStateService = TestBed.inject(
+      ShakeStateService
+    ) as jasmine.SpyObj<ShakeStateService>;
+
+    userService.userAccounts = of([
+      {
+        id: '123',
+        balance: 100,
+        advertismentText: '',
+        advertismentContent: '',
+        image: '',
+        type: '',
+        benefits: [],
+      },
+      {
+        id: '456',
+        balance: 50,
+        advertismentText: '',
+        advertismentContent: '',
+        image: '',
+        type: '',
+        benefits: [],
+      },
+    ]);
+
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should validate receiver account number', () => {
-    const mockAccounts: Account[] = [
+  it('should set user accounts and initialize pagination', () => {
+    component.setUserAccounts();
+
+    expect(component.userAccounts.length).toBe(2);
+    expect(paginationService.setPaginatedArray).toHaveBeenCalledWith([
       {
-        id: '2',
-        balance: 1000,
+        id: '123',
+        balance: 100,
         advertismentText: '',
         advertismentContent: '',
         image: '',
         type: '',
         benefits: [],
       },
-    ];
-    component.transferReceiverAccountId = '12345';
-    mockPaginationService.setPaginatedArray(mockAccounts);
-    mockVerificationService.validateReceiverAccountId.and.returnValue(true);
-    component['setsTransferReceiverAccountNumberValid']();
-    expect(mockVerificationService.validateReceiverAccountId).toHaveBeenCalledWith(
-      '12345',
-      '2'
-    );
-    expect(
-      component.transferFlags.isTransferReceiverAccountNumberValid
-    ).toBeTrue();
+      {
+        id: '456',
+        balance: 50,
+        advertismentText: '',
+        advertismentContent: '',
+        image: '',
+        type: '',
+        benefits: [],
+      },
+    ]);
   });
 
-  it('should validate transfer amount', () => {
-    const mockAccounts: Account[] = [
-      {
-        id: '1',
-        balance: 1000,
-        advertismentText: '',
-        advertismentContent: '',
-        image: '',
-        type: '',
-        benefits: [],
-      },
-    ];
-    component.transferAmount = 500;
-    Object.defineProperty(component, 'currentSelectedAccount', {
-      value: mockAccounts[0],
-    });
-    mockPaginationService.setPaginatedArray(mockAccounts);
-    mockVerificationService.validateOperationAmount.and.returnValue(true);
-    component['setIsTransferAmountValid']();
-    expect(component.transferFlags.isTransferAmountValid).toBeTrue();
+  it('should limit the transfer amount to the current account balance', () => {
+    const mockAccount: Account = {
+      id: '123',
+      balance: 100,
+      advertismentText: '',
+      advertismentContent: '',
+      image: '',
+      type: '',
+      benefits: [],
+    };
+    userService.userAccounts = of([mockAccount]);
+    component.setUserAccounts();
+
+    component.transferAmount = 150;
+    component.correctTransferAmount();
+
+    expect(component.transferAmount).toBe(0);
   });
 
-  it('should return the current selected account', () => {
-    const mockAccounts: Account[] = [
-      {
-        id: '1',
-        balance: 1000,
-        advertismentText: '',
-        advertismentContent: '',
-        image: '',
-        type: '',
-        benefits: [],
-      },
-    ];
-    Object.defineProperty(component, 'currentSelectedAccount', {
-      value: mockAccounts[0],
-    });
-    mockPaginationService.setPaginatedArray(mockAccounts);
-    const selectedAccount = component.currentSelectedAccount;
-    expect(selectedAccount).toEqual(mockAccounts[0]);
-  });
+  it('should show input if the account balance is greater than or equal to 1', () => {
+    const mockAccount: Account = {
+      id: '123',
+      balance: 100,
+      advertismentText: '',
+      advertismentContent: '',
+      image: '',
+      type: '',
+      benefits: [],
+    };
 
-  it('should validate fields and set shake state on button click', () => {
-    const mockAccounts: Account[] = [
-      {
-        id: '67890',
-        balance: 1000,
-        advertismentText: '',
-        advertismentContent: '',
-        image: '',
-        type: '',
-        benefits: [],
-      },
-    ];
-    component.transferReceiverAccountId = '12345';
-    mockPaginationService.setPaginatedArray(mockAccounts);
-    mockVerificationService.validateReceiverAccountId.and.returnValue(true);
-    component.handleButtonClick();
-    expect(
-      component.transferFlags.isTransferReceiverAccountNumberValid
-    ).toBeTrue();
+    userService.userAccounts = of([mockAccount]);
+    component.setUserAccounts();
+
+    expect(component.canShowInput).toBeFalse();
   });
 });

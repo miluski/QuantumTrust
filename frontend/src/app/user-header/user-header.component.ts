@@ -5,6 +5,39 @@ import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 
+/**
+ * @component UserHeaderComponent
+ * @description This component is responsible for displaying the user header, including the avatar, tab name, and menu visibility.
+ *
+ * @selector app-user-header
+ * @templateUrl ./user-header.component.html
+ *
+ * @class UserHeaderComponent
+ * @implements OnInit
+ *
+ * @property {string} currentAvatarUrl - The URL of the user's current avatar.
+ * @property {string} tabName - The name of the current tab.
+ * @property {string} currentRoute - The current route URL.
+ * @property {boolean} isMenuVisible - Flag indicating if the menu is visible.
+ *
+ * @constructor
+ * @param {Router} router - The router service for navigation.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {ChangeDetectorRef} cdr - Service to detect changes in the component.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {AvatarService} avatarService - Service to manage user avatar.
+ *
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentTabName and actualUserAccount observables.
+ * @method ngAfterViewInit - Lifecycle hook that is called after the view has been initialized. Detects changes in the component.
+ * @method changeTabName - Changes the tab name and logs out the user if the tab name is 'Konta'.
+ * @param {string} tabName - The new tab name to be set.
+ * @method toggleDrawer - Toggles the drawer visibility.
+ * @method toggleMenuVisible - Toggles the menu visibility.
+ * @method userFullName - Gets the full name of the user.
+ * @returns {string} - Returns the full name of the user.
+ * @method avatarUrl - Gets the URL of the user's avatar.
+ * @returns {string} - Returns the URL of the user's avatar.
+ */
 @Component({
   selector: 'app-user-header',
   templateUrl: './user-header.component.html',

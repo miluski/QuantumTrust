@@ -17,6 +17,71 @@ import com.quantum.trust.backend.services.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * @controller UserController
+ * @description Controller class for managing user-related operations.
+ *
+ * @class UserController
+ *
+ * @constructor
+ *              Initializes the UserController with the specified UserService,
+ *              AccountService, and TransactionService.
+ *
+ * @method findUserWithId - Finds a user by their ID.
+ * @param {String} id - The ID of the user to find.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating whether the user
+ *          exists.
+ *
+ * @method findUserWithEmail - Finds a user by their email address.
+ * @param {String} email - The email address of the user to find.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating whether the user
+ *          exists.
+ *
+ * @method getUserAccountObject - Retrieves the user's account object.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP request containing
+ *                             user information.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the user's account
+ *          object or an error status.
+ *
+ * @method getAllUserAccounts - Retrieves all accounts for a user.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP request containing
+ *                             user information.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the user's
+ *          accounts or an error status.
+ *
+ * @method getAllUserTransactions - Retrieves all transactions for a user.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP request containing
+ *                             user information.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the user's
+ *          transactions or an error status.
+ *
+ * @method getIsAccountExists - Checks if an account exists.
+ * @param {String} accountNumber - The account number to check.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating whether the
+ *          account exists.
+ *
+ * @method openNewAccount - Opens a new account.
+ * @param {String}             encryptedAccountDto - The encrypted account data
+ *                             transfer object.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP request containing
+ *                             user information.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating the result of the
+ *          operation.
+ *
+ * @method sendNewTransfer - Sends a new transfer.
+ * @param {String} encryptedTransferDto - The encrypted transfer data transfer
+ *                 object.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating the result of the
+ *          operation.
+ *
+ * @method editUser - Edits a user's account.
+ * @param {String}             encryptedUserObject - The encrypted user object
+ *                             containing the updated user information.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP request containing
+ *                             user information.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating the result of the
+ *          operation.
+ */
 @RestController
 @RequestMapping("/api/user")
 public class UserController {

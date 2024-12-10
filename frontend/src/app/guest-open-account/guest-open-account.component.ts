@@ -8,6 +8,36 @@ import { Account } from '../../types/account';
 import { UserAccount } from '../../types/user-account';
 import { UserAccountFlags } from '../../types/user-account-flags';
 
+/**
+ * @component GuestOpenAccountComponent
+ * @description This component is responsible for handling the process of opening a new account for a guest user.
+ *
+ * @selector app-guest-open-account
+ * @templateUrl ./guest-open-account.component.html
+ * @animations [AnimationsProvider.animations]
+ *
+ * @class GuestOpenAccountComponent
+ *
+ * @property {Account} account - The account object containing account details.
+ * @property {UserAccount} userAccount - The user account object containing user details.
+ * @property {UserAccountFlags} userAccountFlags - Flags indicating the validation status of user account fields.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
+ *
+ * @constructor
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {AlertService} alertService - Service to handle alerts.
+ *
+ * @method verifyData - Verifies the user data by validating contact, account, full name, identity, and password data.
+ * @method setIsContactDataValid - Validates the contact data (email and phone number).
+ * @method setIsFullNameValid - Validates the full name (first name and last name).
+ * @method setIsIdentityDataValid - Validates the identity data (PESEL, document type, document series, and address).
+ * @method setIsPasswordValid - Validates the password and repeated password.
+ * @method setIsAccountDataValid - Validates the account data (currency and type).
+ * @method setCanShake - Determines if the component should shake based on the validation results and user existence.
+ * @method validationFlags - Gets the validation flags for the user account fields.
+ * @returns {boolean[]} - Returns an array of validation flags.
+ */
 @Component({
   selector: 'app-guest-open-account',
   templateUrl: './guest-open-account.component.html',

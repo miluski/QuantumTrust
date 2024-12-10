@@ -7,6 +7,24 @@ import com.quantum.trust.backend.model.dto.UserDto;
 import com.quantum.trust.backend.model.entities.User;
 import com.quantum.trust.backend.services.CryptoService;
 
+/**
+ * @component UserMapper
+ * @description Mapper class for converting between User entities and User DTOs.
+ *
+ * @class UserMapper
+ *
+ * @constructor
+ *              Initializes the UserMapper with the specified CryptoService.
+ *
+ * @method convertToUserDto - Converts a User entity to a UserDto.
+ * @param {User} user - The User entity to convert.
+ * @returns {UserDto} - The converted UserDto.
+ *
+ * @method convertToUser - Converts a UserDto to a User entity.
+ * @param {UserDto} userDto - The UserDto to convert.
+ * @returns {User} - The converted User entity.
+ * @throws {Exception} - If an error occurs during the conversion.
+ */
 @Component
 public class UserMapper {
     private final CryptoService cryptoService;

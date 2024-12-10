@@ -8,6 +8,20 @@ import org.springframework.stereotype.Component;
 import com.quantum.trust.backend.model.dto.CardDto;
 import com.quantum.trust.backend.model.entities.Card;
 
+/**
+ * @component CardMapper
+ * @description Mapper class for converting between Card entities and Card DTOs.
+ *
+ * @class CardMapper
+ *
+ * @method convertToCardDto - Converts a Card entity to a CardDto.
+ * @param {Card} card - The Card entity to convert.
+ * @returns {CardDto} - The converted CardDto.
+ *
+ * @method convertToCard - Converts a CardDto to a Card entity.
+ * @param {CardDto} cardDto - The CardDto to convert.
+ * @returns {Card} - The converted Card entity.
+ */
 @Component
 public class CardMapper {
     public CardDto convertToCardDto(Card card) {

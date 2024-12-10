@@ -6,6 +6,35 @@ import { AvatarService } from '../../services/avatar.service';
 import { UserService } from '../../services/user.service';
 import { UserAccount } from '../../types/user-account';
 
+/**
+ * @component UserMobileHeaderComponent
+ * @description This component is responsible for displaying the user header on mobile devices, including the avatar, tab name, and drawer visibility.
+ *
+ * @selector app-user-mobile-header
+ * @templateUrl ./user-mobile-header.component.html
+ *
+ * @class UserMobileHeaderComponent
+ *
+ * @property {string} currentAvatarUrl - The URL of the user's current avatar.
+ * @property {string} tabName - The name of the current tab.
+ * @property {string} currentRoute - The current route URL.
+ *
+ * @constructor
+ * @param {Router} router - The router service for navigation.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {AvatarService} avatarService - Service to manage user avatar.
+ *
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentTabName and actualUserAccount observables.
+ * @method ngAfterViewInit - Lifecycle hook that is called after the view has been initialized. Changes the drawer in the app information states service.
+ * @method changeTabName - Changes the tab name and logs out the user if the tab name is 'Konta'.
+ * @param {string} tabName - The new tab name to be set.
+ * @method toggleDrawer - Toggles the drawer visibility.
+ * @method userFullName - Gets the full name of the user.
+ * @returns {string} - Returns the full name of the user.
+ * @method avatarUrl - Gets the URL of the user's avatar.
+ * @returns {string} - Returns the URL of the user's avatar.
+ */
 @Component({
   selector: 'app-user-mobile-header',
   templateUrl: './user-mobile-header.component.html',

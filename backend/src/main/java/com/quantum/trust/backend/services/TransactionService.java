@@ -29,6 +29,71 @@ import com.quantum.trust.backend.repositories.TransactionRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
+/**
+ * @service TransactionService
+ * @description Service class for handling transactions, including saving,
+ *              retrieving, and recalculating amounts.
+ *
+ * @class TransactionService
+ *
+ * @constructor
+ *              Initializes the TransactionService with the specified services
+ *              and repositories.
+ *
+ * @method checkTransactionStatuses - Scheduled method to check and update
+ *         transaction statuses.
+ *
+ * @method getAllUserTransactions - Retrieves all transactions for a user.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP request containing
+ *                             user information.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the user's
+ *          transactions or an error status.
+ *
+ * @method saveNewTransaction - Saves a new transaction.
+ * @param {TransactionDto} transactionDto - The transaction data transfer
+ *                         object.
+ * @returns {boolean} - True if the transaction was saved successfully, false
+ *          otherwise.
+ *
+ * @method getTransactionDto - Converts transaction credentials to a
+ *         TransactionDto.
+ * @param {Account}                account - The account associated with the
+ *                                 transaction.
+ * @param {TransactionCredentials} transactionCredentials - The transaction
+ *                                 credentials.
+ * @returns {TransactionDto} - The transaction data transfer object.
+ *
+ * @method getRecalculatedAmount - Recalculates the amount based on currency
+ *         exchange rates.
+ * @param {String} fromCurrency - The original currency.
+ * @param {String} toCurrency - The target currency.
+ * @param {float}  amount - The amount to be recalculated.
+ * @returns {float} - The recalculated amount.
+ *
+ * @method getTransactionsListResponse - Retrieves a list of transactions for
+ *         the specified accounts and cards.
+ * @param {List<Account>} accountList - The list of accounts.
+ * @param {List<Card>}    cardList - The list of cards.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the transactions
+ *          or an error status.
+ *
+ *          * @method getAllAccountTransactions - Retrieves all transactions for
+ *          the specified accounts.
+ * @param {List<Account>} accountList - The list of accounts.
+ * @returns {List<Transaction>} - The list of transactions.
+ *
+ * @method getAllCardTransactions - Retrieves all transactions for the specified
+ *         cards.
+ * @param {List<Card>} cardList - The list of cards.
+ * @returns {List<Transaction>} - The list of transactions.
+ *
+ * @method deleteTransaction - Deletes the saved transaction.
+ *
+ * @method getExchangeRate - Retrieves the exchange rate for the specified
+ *         currency.
+ * @param {String} currency - The currency code.
+ * @returns {float} - The exchange rate.
+ */
 @Service
 @EnableScheduling
 public class TransactionService {

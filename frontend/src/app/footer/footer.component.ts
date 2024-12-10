@@ -94,6 +94,7 @@ export class FooterComponent {
     this.userService.logout();
     this.appInformationStatesService.changeTabName(tabName);
   }
+  
   get canBeSticky(): boolean {
     return (
       this.currentTransactionsArrayLength > 20 &&

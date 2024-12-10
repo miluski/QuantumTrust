@@ -14,6 +14,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @entity User
+ * @description Entity class representing a user.
+ *
+ * @class User
+ *
+ * @field {Long} id - The unique identifier of the user.
+ * @field {String} emailAddress - The email address of the user.
+ * @field {String} phoneNumber - The phone number of the user.
+ * @field {String} firstName - The first name of the user.
+ * @field {String} lastName - The last name of the user.
+ * @field {String} peselNumber - The PESEL number of the user.
+ * @field {String} documentType - The type of the user's document.
+ * @field {String} documentSerie - The series of the user's document.
+ * @field {String} address - The address of the user.
+ * @field {String} password - The password of the user.
+ * @field {String} avatarPath - The avatar path of the user.
+ */
 @Getter
 @Setter
 @Builder
