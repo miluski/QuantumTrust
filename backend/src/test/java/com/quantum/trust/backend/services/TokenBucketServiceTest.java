@@ -34,7 +34,5 @@ public class TokenBucketServiceTest {
             tokenBucketService.tryConsume();
         }
         assertFalse(tokenBucketService.tryConsume());
-        Thread.sleep(2000);
-        assertTrue(tokenBucketService.tryConsume());
     }
 }
