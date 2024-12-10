@@ -176,7 +176,7 @@ describe('ConvertService', () => {
 
   it('should calculate amount based on currency conversion', () => {
     spyOn(service, 'getConversionRate').and.returnValue(4);
-    expect(service.getCalculatedAmount('USD', 100)).toBe(400);
+    expect(service.getCalculatedAmount('PLN', 'USD', 100)).toBe(400);
   });
 
   it('should return conversion rate between two currencies', () => {
@@ -265,7 +265,7 @@ describe('ConvertService', () => {
       assignedAccountNumber: '',
       site: ''
     };
-    expect(service.getTransactionsLimit(cardSettings)).toBeDefined();
+    expect(service.getTransactionsLimit(cardSettings, 'PLN')).toBeDefined();
   });
 
   it('should return current transaction limit for card settings', () => {

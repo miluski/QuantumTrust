@@ -29,6 +29,192 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * @service UserService
+ * @description Service class for managing user-related operations.
+ *
+ * @class UserService
+ *
+ * @constructor
+ *              Initializes the UserService with the specified services and
+ *              repositories.
+ * @param {UserMapper}            userMapper - The mapper for converting user
+ *                                entities to DTOs.
+ * @param {AccountMapper}         accountMapper - The mapper for converting
+ *                                account entities to DTOs.
+ * @param {TokenService}          tokenService - The service for handling
+ *                                tokens.
+ * @param {CookieService}         cookieService - The service for handling
+ *                                cookies.
+ * @param {CryptoService}         cryptoService - The service for handling
+ *                                encryption and decryption.
+ * @param {EmailService}          emailService - The service for sending emails.
+ * @param {MediaService}          mediaService - The service for handling media
+ *                                files.
+ * @param {ValidationService}     validationService - The service for validating
+ *                                entities.
+ * @param {TransactionService}    transactionService - The service for handling
+ *                                transactions.
+ * @param {ObjectMapper}          objectMapper - The object mapper for JSON
+ *                                processing.
+ * @param {UserRepository}        userRepository - The repository for accessing
+ *                                user data.
+ * @param {AccountRepository}     accountRepository - The repository for
+ *                                accessing account data.
+ * @param {AuthenticationManager} authenticationManager - The manager for
+ *                                handling authentication.
+ *
+ * @method registerNewAccount - Registers a new user account and bank account.
+ * @param {String} encryptedUserDto - The encrypted user DTO.
+ * @param {String} encryptedAccountDto - The encrypted account DTO.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method createUserAccount - Creates a new user account.
+ * @param {String} encryptedUserDto - The encrypted user DTO.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method saveNewBankAccount - Saves a new bank account.
+ * @param {String} encryptedAccountDto - The encrypted account DTO.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method saveNewBankAccount - Saves a new bank account for a logged-in user.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @param {String}             encryptedAccountDto - The encrypted account DTO.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method getUserAccountObject - Retrieves the user account object.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @returns {ResponseEntity<?>} - The response entity with the user account
+ *          object.
+ *
+ * @method login - Logs in a user.
+ * @param {String}              encryptedUserDto - The encrypted user DTO.
+ * @param {HttpServletResponse} httpServletResponse - The HTTP servlet response.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method removeTokens - Removes the tokens from the response.
+ * @param {HttpServletRequest}  httpServletRequest - The HTTP servlet request.
+ * @param {HttpServletResponse} httpServletResponse - The HTTP servlet response.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method isEmailExists - Checks if an email exists.
+ * @param {String} encryptedEmail - The encrypted email.
+ * @returns {boolean} - True if the email exists, false otherwise.
+ *
+ * @method isIdentifierExists - Checks if an identifier exists.
+ * @param {String} encryptedId - The encrypted identifier.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method refreshToken - Refreshes the tokens.
+ * @param {HttpServletRequest}  httpServletRequest - The HTTP servlet request.
+ * @param {HttpServletResponse} httpServletResponse - The HTTP servlet response.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method getIsAccountExists - Checks if an account exists.
+ * @param {String} encryptedAccountNumber - The encrypted account number.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method sendNewTransfer - Sends a new transfer.
+ * @param {String} encryptedTransferDto - The encrypted transfer DTO.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method editUserAccount - Edits a user account.
+ * @param {String}             encryptedUserObject - The encrypted user object.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ * 
+ * @method setEditedUserCredentials - Sets the edited user credentials.
+ * @param {User}    user - The user entity.
+ * @param {UserDto} userDto - The user DTO.
+ *
+ * @method setNewUserPassword - Sets the new user password.
+ * @param {User}    user - The user entity.
+ * @param {UserDto} userDto - The user DTO.
+ * @throws {Exception} - If the password is invalid.
+ *
+ * @method setNewUserAvatar - Sets the new user avatar.
+ * @param {User}    user - The user entity.
+ * @param {UserDto} userDto - The user DTO.
+ * @throws {Exception} - If the avatar path is invalid.
+ *
+ * @method getUserAccountObject - Retrieves the user account object.
+ * @param {String} accountNumber - The account number.
+ * @returns {Account} - The account entity.
+ * @throws {Exception} - If the account does not exist.
+ *
+ * @method validateTransferCredentials - Validates the transfer credentials.
+ * @param {String}  transferTitle - The transfer title.
+ * @param {Float}   transferAmount - The transfer amount.
+ * @param {Account} senderAccount - The sender's account.
+ * @throws {Exception} - If the transfer credentials are invalid.
+ *
+ * @method updateSenderAccountBalance - Updates the sender's account balance.
+ * @param {Account} account - The account entity.
+ * @param {String}  transferTitle - The transfer title.
+ * @param {Float}   transferAmount - The transfer amount.
+ * @throws {Exception} - If the update fails.
+ *
+ * @method updateReceiverAccountBalance - Updates the receiver's account
+ *         balance.
+ * @param {Account} receiverAccount - The receiver's account.
+ * @param {Account} senderAccount - The sender's account.
+ * @param {String}  transferTitle - The transfer title.
+ * @param {Float}   transferAmount - The transfer amount.
+ * @throws {Exception} - If the update fails.
+ * 
+ * @method saveTransaction - Saves a transaction.
+ * @param {Account} account - The account entity.
+ * @param {String}  transactionType - The transaction type.
+ * @param {String}  transactionTitle - The transaction title.
+ * @param {Float}   transactionAmount - The transaction amount.
+ * @throws {Exception} - If the transaction save fails.
+ *
+ * @method getUserAccountObject - Retrieves the user account object.
+ * @param {String}  encryptedAccountDto - The encrypted account DTO.
+ * @param {boolean} isForLoggedUser - Flag indicating if the account is for a
+ *                  logged-in user.
+ * @returns {Account} - The account entity.
+ * @throws {Exception} - If the account retrieval fails.
+ *
+ * @method getUserDto - Retrieves the user DTO.
+ * @param {String} encryptedUserDto - The encrypted user DTO.
+ * @returns {UserDto} - The user DTO.
+ *
+ * @method getUserFromToken - Retrieves the user from the token.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @returns {User} - The user entity.
+ * @throws {Exception} - If the user retrieval fails.
+ *
+ * @method newTokensPair - Generates a new pair of tokens.
+ * @param {String}              refreshToken - The refresh token.
+ * @param {HttpServletResponse} httpServletResponse - The HTTP servlet response.
+ * @returns {ResponseEntity<?>} - The response entity with the status of the
+ *          operation.
+ *
+ * @method getIsIdentifierFromTokenExists - Checks if the identifier from the
+ *         token exists.
+ * @param {String} identificatorFromToken - The identifier from the token.
+ * @returns {boolean} - True if the identifier exists, false otherwise.
+ *
+ * @method addTokensToResponse - Adds tokens to the response.
+ * @param {HttpServletResponse} httpServletResponse - The HTTP servlet response.
+ * @param {String}              userId - The user ID.
+ *
+ * @method deleteUserAccount - Deletes the user account.
+ *
+ * @method deleteUserBankAccount - Deletes the user bank account.
+ */
 @Service
 public class UserService {
     private User savedUserAccount;

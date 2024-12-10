@@ -26,6 +26,52 @@ import com.quantum.trust.backend.repositories.DepositRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
+/**
+ * @service DepositService
+ * @description Service class for managing deposits.
+ *
+ * @class DepositService
+ *
+ * @constructor
+ * @param {AccountService}     accountService - Service for managing accounts.
+ * @param {CryptoService}      cryptoService - Service for handling encryption.
+ * @param {ValidationService}  validationService - Service for validating
+ *                             entities.
+ * @param {DepositMapper}      depositMapper - Mapper for converting deposit
+ *                             entities to DTOs.
+ * @param {ObjectMapper}       objectMapper - Mapper for converting JSON to
+ *                             objects.
+ * @param {TransactionService} transactionService - Service for managing
+ *                             transactions.
+ * @param {DepositRepository}  depositRepository - Repository for accessing
+ *                             deposit data.
+ * @param {AccountRepository}  accountRepository - Repository for accessing
+ *                             account data.
+ *
+ * @method checkDeposits - Scheduled method to check and close expired deposits.
+ * @method saveNewDeposit - Saves a new deposit.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @param {String}             encryptedDepositDto - The encrypted deposit DTO.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating the result of the
+ *          operation.
+ * @method getAllUserDeposits - Retrieves all deposits associated with the user
+ *         ID extracted from the request.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the encrypted list
+ *          of deposits or an error status.
+ * @method closeDeposit - Closes a deposit.
+ * @param {Deposit} deposit - The deposit to be closed.
+ * @throws {Exception} - If an error occurs while closing the deposit.
+ * @method calculateInterest - Calculates the interest for a deposit.
+ * @param {Deposit} deposit - The deposit for which to calculate interest.
+ * @returns {float} - The calculated interest.
+ * @method assignAccountToDeposit - Assigns an account to a deposit.
+ * @param {Deposit}    deposit - The deposit to which the account will be
+ *                     assigned.
+ * @param {DepositDto} depositDto - The deposit DTO containing account
+ *                     information.
+ * @throws {Exception} - If the account is not found.
+ */
 @Service
 @EnableScheduling
 public class DepositService {
@@ -98,7 +144,7 @@ public class DepositService {
         }
     }
 
-    private void closeDeposit(Deposit deposit) throws Exception {
+    void closeDeposit(Deposit deposit) throws Exception {
         Account account = deposit.getAccount();
         Float interest = this.calculateInterest(deposit);
         Float finalDepositBalance = interest + deposit.getBalance();
@@ -108,7 +154,7 @@ public class DepositService {
         depositRepository.delete(deposit);
     }
 
-    private float calculateInterest(Deposit deposit) {
+    float calculateInterest(Deposit deposit) {
         float initialCapital = deposit.getBalance();
         float percent = deposit.getPercent();
         int monthsCount = deposit.getDuration();
@@ -149,7 +195,7 @@ public class DepositService {
         return deposit;
     }
 
-    private void assignAccountToDeposit(Deposit deposit, DepositDto depositDto) throws Exception {
+    void assignAccountToDeposit(Deposit deposit, DepositDto depositDto) throws Exception {
         Optional<Account> account = this.accountRepository.findById(depositDto.getAssignedAccountNumber());
         if (account.isEmpty()) {
             throw new Exception("Account not founded");

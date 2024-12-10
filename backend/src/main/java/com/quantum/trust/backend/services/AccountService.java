@@ -19,6 +19,34 @@ import com.quantum.trust.backend.repositories.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * @service AccountService
+ * @description Service class for managing accounts.
+ *
+ * @class AccountService
+ *
+ * @constructor
+ * @param {TokenService}      tokenService - Service for handling tokens.
+ * @param {CookieService}     cookieService - Service for handling cookies.
+ * @param {CryptoService}     cryptoService - Service for handling encryption.
+ * @param {AccountMapper}     accountMapper - Mapper for converting account
+ *                            entities to DTOs.
+ * @param {UserRepository}    userRepository - Repository for accessing user
+ *                            data.
+ * @param {AccountRepository} accountRepository - Repository for accessing
+ *                            account data.
+ *
+ * @method getAllAccountsFromUserId - Retrieves all accounts associated with the
+ *         user ID extracted from the request.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the encrypted list
+ *          of accounts or an error status.
+ *
+ * @method retrieveAccountsFromUserId - Retrieves the list of accounts
+ *         associated with the user ID extracted from the request.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @returns {List<Account>} - A list of accounts associated with the user ID.
+ */
 @Service
 public class AccountService {
     private final TokenService tokenService;

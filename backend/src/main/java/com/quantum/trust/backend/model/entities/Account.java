@@ -15,6 +15,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @entity Account
+ * @description Entity class representing an account.
+ *
+ * @class Account
+ *
+ * @field {String} id - The unique identifier of the account.
+ * @field {String} image - The image associated with the account.
+ * @field {String} type - The type of the account.
+ * @field {Float} balance - The balance of the account.
+ * @field {String} currency - The currency of the account.
+ * @field {User} user - The user associated with the account.
+ */
 @Getter
 @Setter
 @Builder

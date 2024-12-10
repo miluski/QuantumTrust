@@ -31,6 +31,58 @@ import com.quantum.trust.backend.repositories.CardRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
+/**
+ * @service CardService
+ * @description Service class for managing cards.
+ *
+ * @class CardService
+ *
+ * @constructor
+ * @param {AccountService}     accountService - Service for managing accounts.
+ * @param {CryptoService}      cryptoService - Service for handling encryption.
+ * @param {ValidationService}  validationService - Service for validating
+ *                             entities.
+ * @param {TransactionService} transactionService - Service for managing
+ *                             transactions.
+ * @param {CardMapper}         cardMapper - Mapper for converting card entities
+ *                             to DTOs.
+ * @param {ObjectMapper}       objectMapper - Mapper for converting JSON to
+ *                             objects.
+ * @param {CardRepository}     cardRepository - Repository for accessing card
+ *                             data.
+ * @param {AccountRepository}  accountRepository - Repository for accessing
+ *                             account data.
+ *
+ * @method checkCardsFees - Scheduled method to check and charge monthly fees
+ *         for cards.
+ * @method checkIsCardValid - Scheduled method to check and delete expired
+ *         cards.
+ * @method getResponeWithAllUserCards - Retrieves all cards associated with the
+ *         user ID extracted from the request.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the encrypted list
+ *          of cards or an error status.
+ * @method orderNewCard - Orders a new card.
+ * @param {String} encryptedCardDto - The encrypted card DTO.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating the result of the
+ *          operation.
+ * @method getAllUserCards - Retrieves all cards associated with the user ID
+ *         extracted from the request.
+ * @param {HttpServletRequest} httpServletRequest - The HTTP servlet request.
+ * @returns {List<Card>} - A list of cards associated with the user ID.
+ * @method suspendCard - Suspends a card.
+ * @param {String} encryptedCardId - The encrypted card ID.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating the result of the
+ *          operation.
+ * @method unsuspendCard - Unsuspends a card.
+ * @param {String} encryptedCardId - The encrypted card ID.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating the result of the
+ *          operation.
+ * @method editCard - Edits a card.
+ * @param {String} encryptedCardObject - The encrypted card object.
+ * @returns {ResponseEntity<?>} - A ResponseEntity indicating the result of the
+ *          operation.
+ */
 @Service
 @EnableScheduling
 public class CardService {

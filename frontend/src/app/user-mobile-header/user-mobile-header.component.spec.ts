@@ -22,7 +22,11 @@ describe('UserMobileHeaderComponent', () => {
     observeBreakpoints: jasmine.createSpy('observeBreakpoints'),
     changeDrawer: jasmine.createSpy('changeDrawer'),
   };
-  let mockUserService = {};
+  let mockUserService = {
+    actualUserAccount: of({ avatarUrl: 'http://example.com/avatar.png' }),
+    userAccount: { firstName: 'John', lastName: 'Doe' },
+    logout: jasmine.createSpy('logout'),
+  };
   let mockAvatarService = {
     avatarError: false,
     getInitials: jasmine.createSpy('getInitials'),
@@ -85,7 +89,7 @@ describe('UserMobileHeaderComponent', () => {
 
   it('should return avatar URL from userService', () => {
     const avatarSrc = component.avatarUrl;
-    expect(avatarSrc).toBe('');
+    expect(avatarSrc).toBe('http://example.com/avatar.png');
   });
 
   it('should only call changeTabName when tabName is not "Konta"', () => {

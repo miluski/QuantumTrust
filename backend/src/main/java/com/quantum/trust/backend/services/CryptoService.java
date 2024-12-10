@@ -13,10 +13,33 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * @service CryptoService
+ * @description Service class for handling encryption and decryption.
+ *
+ * @class CryptoService
+ *
+ * @constructor
+ * @param {PasswordEncoder} passwordEncoder - Encoder for hashing passwords.
+ *
+ * @method encryptData - Encrypts the given data using AES encryption.
+ * @param {Object} data - The data to be encrypted.
+ * @returns {String} - The encrypted data as a Base64 encoded string.
+ *
+ * @method decryptData - Decrypts the given encrypted data using AES decryption.
+ * @param {String} encryptedData - The encrypted data as a Base64 encoded
+ *                 string.
+ * @returns {String} - The decrypted data as a string.
+ *
+ * @method getEncryptedPassword - Encrypts the given password using the password
+ *         encoder.
+ * @param {String} password - The password to be encrypted.
+ * @returns {String} - The encrypted password.
+ */
 @Service
 public class CryptoService {
     @Value("${encrypt.key}")
-    private String encryptKey;
+    String encryptKey;
 
     private final PasswordEncoder passwordEncoder;
 

@@ -1,8 +1,7 @@
 import {
-  ChangeDetectorRef,
   Component,
   HostListener,
-  OnInit,
+  OnInit
 } from '@angular/core';
 import { AnimationsProvider } from '../../providers/animations.provider';
 import { ConvertService } from '../../services/convert.service';
@@ -57,8 +56,7 @@ import { TransferFlags } from '../../types/transfer-flags';
   animations: [AnimationsProvider.animations],
 })
 export class NewTransferComponent implements OnInit {
-  private userAccounts!: Account[];
-
+  public userAccounts!: Account[];
   public transferTitle!: string;
   public transferAmount: number;
   public transferFlags: TransferFlags;
@@ -152,13 +150,7 @@ export class NewTransferComponent implements OnInit {
       : new Account();
   }
 
-  public get canShowInput(): boolean {
-    const currentSelectedAccountBalance: number =
-      this.currentSelectedAccount?.balance ?? 0;
-    return currentSelectedAccountBalance >= 1;
-  }
-
-  private setIsTransferAmountValid(): void {
+  public setIsTransferAmountValid(): void {
     this.transferFlags.isTransferAmountValid =
       this.verificationService.validateOperationAmount(
         this.transferAmount,
@@ -166,12 +158,18 @@ export class NewTransferComponent implements OnInit {
       );
   }
 
-  private setIsTransferTitleValid(): void {
+  public setIsTransferTitleValid(): void {
     this.transferFlags.isTransferTitleValid =
       this.verificationService.validateTransferTitle(this.transferTitle);
   }
 
-  private async setsTransferReceiverAccountNumberValid(): Promise<void> {
+  public get canShowInput(): boolean {
+    const currentSelectedAccountBalance: number =
+      this.currentSelectedAccount?.balance ?? 0;
+    return currentSelectedAccountBalance >= 1;
+  }
+
+  public async setsTransferReceiverAccountNumberValid(): Promise<void> {
     const getIsAccountExists: boolean =
       await this.userService.getIsAccountExists(this.transferReceiverAccountId);
     const receiverAccountId: string =
