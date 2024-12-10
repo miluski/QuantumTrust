@@ -20,10 +20,52 @@ import org.springframework.stereotype.Service;
 
 import com.quantum.trust.backend.model.entities.User;
 
+/**
+ * @service MediaService
+ * @description Service class for handling media-related operations such as
+ *              saving and retrieving images.
+ *
+ * @class MediaService
+ *
+ * @constructor
+ * @param {CryptoService}     cryptoService - Service for handling encryption.
+ * @param {ValidationService} validationService - Service for validating images.
+ *
+ * @method getResponseEntity - Retrieves a media resource and returns it as a
+ *         ResponseEntity.
+ * @param {String} mediaPath - The path to the media resource.
+ * @returns {ResponseEntity<?>} - A ResponseEntity containing the media resource
+ *          or an error status.
+ *
+ * @method saveImage - Saves an image for the specified user.
+ * @param {User}   user - The user for whom the image is being saved.
+ * @param {String} avatarPath - The base64-encoded image data.
+ * @throws {Exception} - If an error occurs while saving the image.
+ *
+ * @method getMedia - Retrieves a media resource from the specified path.
+ * @param {String} mediaPath - The path to the media resource.
+ * @returns {Resource} - The media resource.
+ * @throws {Exception} - If an error occurs while retrieving the media resource.
+ *
+ * @method setHeaders - Sets the HTTP headers for the specified media resource.
+ * @param {String}      mediaPath - The path to the media resource.
+ * @param {Resource}    mediaResource - The media resource.
+ * @param {HttpHeaders} headers - The HTTP headers to set.
+ * @throws {IOException} - If an error occurs while setting the headers.
+ *
+ * @method getContentType - Determines the content type for the specified media
+ *         path.
+ * @param {String} mediaPath - The path to the media resource.
+ * @returns {String} - The content type.
+ *
+ * @method getRandomAvatarName - Generates a random avatar name based on the
+ *         specified image data.
+ * @param {String} image - The base64-encoded image data.
+ * @returns {String} - The generated avatar name.
+ */
 @Service
 public class MediaService {
-    @Value("${media.dir}")
-    private String baseDir;
+    @Value("${media.dir}") String baseDir;
 
     private final CryptoService cryptoService;
     private final ValidationService validationService;
@@ -76,7 +118,7 @@ public class MediaService {
         }
     }
 
-    private Resource getMedia(String mediaPath) throws Exception {
+    Resource getMedia(String mediaPath) throws Exception {
         try {
             Path filePath = Paths.get(baseDir).resolve(mediaPath).normalize();
             Resource resource = new UrlResource(filePath.toUri());
@@ -86,7 +128,7 @@ public class MediaService {
         }
     }
 
-    private void setHeaders(String mediaPath, Resource mediaResource, HttpHeaders headers) throws IOException {
+    void setHeaders(String mediaPath, Resource mediaResource, HttpHeaders headers) throws IOException {
         String contentType = this.getContentType(mediaPath);
         long contentLength = mediaResource.contentLength();
         headers.add(HttpHeaders.CONTENT_TYPE, contentType);
@@ -94,7 +136,7 @@ public class MediaService {
         headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(contentLength));
     }
 
-    private String getContentType(String mediaPath) {
+    String getContentType(String mediaPath) {
         String contentType = "application/octet-stream";
         if (mediaPath.endsWith(".webp")) {
             contentType = "image/webp";
@@ -104,7 +146,7 @@ public class MediaService {
         return contentType;
     }
 
-    private String getRandomAvatarName(String image) {
+    String getRandomAvatarName(String image) {
         String extension = "";
         if (image.startsWith("data:image/png")) {
             extension = ".png";

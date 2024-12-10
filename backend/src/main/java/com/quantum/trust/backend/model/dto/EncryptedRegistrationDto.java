@@ -8,6 +8,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @dto EncryptedRegistrationDto
+ * @description Data Transfer Object for encrypted registration data.
+ *
+ * @class EncryptedRegistrationDto
+ *
+ * @field {String} encryptedAccountDto - The encrypted account data.
+ * @field {String} encryptedUserDto - The encrypted user data.
+ */
 @Getter
 @Setter
 @ToString

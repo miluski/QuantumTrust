@@ -9,6 +9,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @dto DepositDto
+ * @description Data Transfer Object for Deposit entities.
+ *
+ * @class DepositDto
+ *
+ * @field {String} id - The unique identifier of the deposit.
+ * @field {String} type - The type of the deposit.
+ * @field {Float} percent - The interest rate of the deposit.
+ * @field {Float} balance - The balance of the deposit.
+ * @field {String} currency - The currency of the deposit.
+ * @field {String} endDate - The end date of the deposit.
+ * @field {String} assignedAccountNumber - The account number assigned to the
+ *        deposit.
+ * @field {Integer} duration - The duration of the deposit in months.
+ */
 @Getter
 @Setter
 @Builder

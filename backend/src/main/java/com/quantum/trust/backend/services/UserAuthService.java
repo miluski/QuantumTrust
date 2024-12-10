@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import com.quantum.trust.backend.model.entities.User;
 import com.quantum.trust.backend.repositories.UserRepository;
 
+/**
+ * Service class for user authentication.
+ * Implements the UserDetailsService interface to provide user details for authentication.
+ */
 @Service
 public class UserAuthService implements UserDetailsService {
     private final UserRepository userRepository;

@@ -6,6 +6,23 @@ import java.util.Random;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
+/**
+ * @class PolishAccountNumberGenerator
+ * @description Utility class for generating random Polish bank account numbers.
+ *
+ * @implements IdentifierGenerator
+ *
+ * @method generate - Generates a random Polish bank account number.
+ * @param {SharedSessionContractImplementor} session - The Hibernate session.
+ * @param {Object}                           object - The entity for which the
+ *                                           ID is being generated.
+ * @returns {Serializable} - The generated Polish bank account number.
+ *
+ * @method generateRandomDigits - Generates a string of random digits of the
+ *         specified length.
+ * @param {int} length - The length of the string of random digits to generate.
+ * @returns {String} - The generated string of random digits.
+ */
 public class PolishAccountNumberGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) {

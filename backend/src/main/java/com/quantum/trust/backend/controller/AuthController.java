@@ -1,5 +1,7 @@
 package com.quantum.trust.backend.controller;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,29 @@ import com.quantum.trust.backend.services.VerificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * AuthController handles authentication-related operations such as login, registration,
+ * token refresh, and email verification for login, registration, and operations.
+ * 
+ * Endpoints:
+ * 
+ * - GET /api/auth/check: Checks if a token is present and valid.
+ * - POST /api/auth/login/verification/send-email: Sends a login verification email.
+ * - POST /api/auth/register/verification/send-email: Sends a registration verification email.
+ * - POST /api/auth/operation/verification/send-email: Sends an operation verification email.
+ * - POST /api/auth/login: Logs in a user.
+ * - POST /api/auth/register: Registers a new user account.
+ * - POST /api/auth/refresh-token: Refreshes the access token.
+ * - POST /api/auth/logout: Logs out the user and removes tokens.
+ * 
+ * Dependencies:
+ * 
+ * - UserService: Handles user-related operations.
+ * - VerificationService: Handles verification-related operations.
+ * 
+ * @param verificationService the service for handling verification operations
+ * @param userService the service for handling user operations
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -30,7 +55,7 @@ public class AuthController {
 
     @GetMapping("/check")
     public ResponseEntity<?> isTokenPresentAndValid() {
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(new HashMap<>());
     }
 
     @PostMapping("/login/verification/send-email")

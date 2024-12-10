@@ -15,6 +15,86 @@ import { CardFlags } from '../../types/card-flags';
 import { CardSettings } from '../../types/card-settings';
 import { Transaction } from '../../types/transaction';
 
+/**
+ * @component CardSettingsComponent
+ * @description This component is responsible for managing card settings, including limits, PIN code, and assigned account.
+ *
+ * @selector app-card-settings
+ * @templateUrl ./card-settings.component.html
+ * @animations [AnimationsProvider.animations]
+ *
+ * @class CardSettingsComponent
+ * @implements OnInit
+ *
+ * @property {Card} card - The card object containing card details.
+ * @property {number} newPinCode - The new PIN code for the card.
+ * @property {Card} originalCard - The original card object for comparison.
+ * @property {CardFlags} cardFlags - Flags indicating the validation status of card fields.
+ * @property {Account[]} userAccounts - An array of user accounts.
+ * @property {CardSettings} cardSettings - The card settings object containing limits and assigned account.
+ * @property {Account} currentSelectedAccount - The currently selected account.
+ * @property {string} currentSelectedAccountId - The ID of the currently selected account.
+ * @property {Transaction[]} accountTransactions - An array of transactions for the selected account.
+ * @property {Transaction[][]} dailyTransactions - A 2D array of daily transactions.
+ * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
+ *
+ * @constructor
+ * @param {AlertService} alertService - Service to handle alerts.
+ * @param {ItemSelectionService} itemSelectionService - Service to manage item selection.
+ * @param {AppInformationStatesService} appInformationStatesService - Service to manage application state information.
+ * @param {VerificationService} verificationService - Service to handle verification of user data.
+ * @param {UserService} userService - Service to manage user data.
+ * @param {FiltersService} filtersService - Service to manage filters.
+ * @param {ConvertService} convertService - Service to handle data conversion.
+ *
+ * @method ngOnInit - Lifecycle hook that initializes the component. Resets selected filters and initializes card transactions.
+ * @method initializeCardTransactions - Initializes card transactions and sets user accounts and account transactions.
+ * @method setUserAccounts - Sets the user accounts and the currently selected account.
+ * @method setAccountTransactions - Sets the account transactions and groups them by date.
+ * @method setCurrentSelectedAccount - Sets the currently selected account and validates the account number.
+ * @method getIsInputValueValid - Checks if the input value is valid.
+ * @param {NgModel} input - The input model to be validated.
+ * @param {'cash' | 'internet' | 'pinCode'} type - The type of input to be validated.
+ * @returns {boolean} - Returns true if the input value is valid, otherwise false.
+ * @method getCardSettingsObject - Gets the card settings object with the specified limit type and transaction type.
+ * @param {'min' | 'max'} limitType - The limit type, either 'min' or 'max'.
+ * @param {'internet' | 'cash'} transactionType - The transaction type, either 'internet' or 'cash'.
+ * @returns {CardSettings} - Returns the card settings object.
+ * @method handleSaveButtonClick - Handles the save button click event and updates the card settings.
+ * @method isSomeCardDataChanged - Checks if some card data has changed.
+ * @returns {boolean} - Returns true if some card data has changed, otherwise false.
+ * @method isAccountIdChanged - Checks if the account ID has changed.
+ * @returns {boolean} - Returns true if the account ID has changed, otherwise false.
+ * @method isCashTransactionsLimitChanged - Checks if the cash transactions limit has changed.
+ * @returns {boolean} - Returns true if the cash transactions limit has changed, otherwise false.
+ * @method isInternetTransactionsLimitChanged - Checks if the internet transactions limit has changed.
+ * @returns {boolean} - Returns true if the internet transactions limit has changed, otherwise false.
+ * @method setTransactions - Sets the transactions and groups them by date.
+ * @method getFoundedAccount - Gets the account with the specified ID.
+ * @param {string | undefined} accountId - The ID of the account to be found.
+ * @returns {Account} - Returns the found account.
+ * @method setCorrectInputFlag - Sets the correct input flag based on the input type and validity.
+ * @param {'cash' | 'internet' | 'pinCode'} type - The type of input.
+ * @param {boolean} isValid - The validity of the input.
+ * @method trackByUserId - Tracks the user account by ID.
+ * @param {number} _ - The index of the user account.
+ * @param {Account} userAccount - The user account to be tracked.
+ * @returns {string} - Returns the ID of the user account.
+ * @method currentInternetTransactionsLimit - Gets the current internet transactions limit.
+ * @returns {number} - Returns the current internet transactions limit.
+ * @method currentCashTransactionsLimit - Gets the current cash transactions limit.
+ * @returns {number} - Returns the current cash transactions limit.
+ * @method changeCardStatus - Changes the status of the card.
+ * @method currentCurrency - Gets the current currency of the selected account.
+ * @returns {string} - Returns the current currency.
+ * @method isSaveError - Checks if there is a save error.
+ * @returns {boolean} - Returns true if there is a save error, otherwise false.
+ * @method showAlert - Shows an alert with an error message.
+ * @method setCardAndCurrency - Sets the card and currency in the card settings.
+ * @param {CardSettings} cardSettings - The card settings object.
+ * @method cardFlagsArray - Gets the array of card flags.
+ * @returns {boolean[]} - Returns an array of card flags.
+ */
 @Component({
   selector: 'app-card-settings',
   templateUrl: './card-settings.component.html',

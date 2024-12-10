@@ -90,7 +90,7 @@ describe('CardSettingsComponent', () => {
     spyOn(component, 'isSomeCardDataChanged').and.returnValue(true);
     spyOn(component.shakeStateService, 'setCurrentShakeState');
     component.handleSaveButtonClick();
-    expect(component.shakeStateService.setCurrentShakeState).toHaveBeenCalledWith('none');
+    expect(component.shakeStateService.setCurrentShakeState).not.toHaveBeenCalled();
   });
 
   it('should check if some card data has changed', () => {

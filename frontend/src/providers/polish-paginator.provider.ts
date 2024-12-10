@@ -4,9 +4,7 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 /**
  * @fileoverview Provides a custom paginator implementation for Angular Material
  *               with Polish translations for pagination labels.
- */
-
-/**
+ * 
  * @classdesc PolishPaginatorProvider extends MatPaginatorIntl to provide
  *            Polish translations for pagination labels used in Angular Material.
  *

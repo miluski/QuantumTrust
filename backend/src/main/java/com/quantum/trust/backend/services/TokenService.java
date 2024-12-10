@@ -16,6 +16,59 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+/**
+ * @service TokenService
+ * 
+ * @description Service class for handling JWT token generation and validation.
+ *
+ * @class TokenService
+ *
+ * @constructor
+ *              Initializes the TokenService with the specified JWT secret and
+ *              expiration times.
+ *
+ * @method validateToken - Validates a JWT token.
+ * @param {String} token - The JWT token to validate.
+ * @param {String} identificator - The identificator to validate against.
+ * @returns {Boolean} - True if the token is valid, false otherwise.
+ *
+ * @method generateToken - Generates a JWT token.
+ * @param {String} identificator - The identificator to include in the token.
+ * @param {String} tokenType - The type of the token (e.g., "access" or
+ *                 "refresh").
+ * @returns {String} - The generated JWT token.
+ *
+ * @method getIdentificatorFromToken - Retrieves the identificator from a JWT
+ *         token.
+ * @param {String} token - The JWT token.
+ * @returns {String} - The identificator extracted from the token.
+ *
+ * @method getExpirationFromToken - Retrieves the expiration date from a JWT
+ *         token.
+ * @param {String} token - The JWT token.
+ * @returns {Date} - The expiration date extracted from the token.
+ *
+ * @method getClaim - Retrieves a specific claim from a JWT token.
+ * @param {String}          token - The JWT token.
+ * @param {Function<Claims, T>} claimsResolver - A function to extract the claim
+ *                          from the token.
+ * @returns {T} - The extracted claim.
+ *
+ * @method getAllClaimsFromToken - Retrieves all claims from a JWT token.
+ * @param {String} token - The JWT token.
+ * @returns {Claims} - The claims extracted from the token.
+ *
+ * @method getRefreshTokenExpirationDate - Retrieves the expiration date for a
+ *         refresh token.
+ * @returns {Date} - The expiration date for a refresh token.
+ *
+ * @method getTokenExpirationDate - Retrieves the expiration date for an access
+ *         token.
+ * @returns {Date} - The expiration date for an access token.
+ *
+ * @method getKey - Retrieves the signing key for JWT tokens.
+ * @returns {Key} - The signing key.
+ */
 @Service
 public class TokenService {
     @Value("${jwt.secret}")

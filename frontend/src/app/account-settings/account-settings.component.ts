@@ -19,10 +19,10 @@ import { UserAccountFlags } from '../../types/user-account-flags';
  * @class AccountSettingsComponent
  * @implements OnInit
  *
- * @property {string} avatarUrl - The URL of the user's avatar.
  * @property {string} avatarError - Error message related to avatar upload.
- * @property {string} actualPassword - The current password of the user.
+ * @property {string} newPassword - The new password of the user.
  * @property {UserAccount} userObject - The user account object containing user details.
+ * @property {string} currentAvatarUrl - The URL of the user's current avatar.
  * @property {boolean} isNotDataChanged - Flag indicating if the data has not been changed.
  * @property {UserAccountFlags} userAccountFlags - Flags indicating the validation status of user account fields.
  * @property {ShakeStateService} shakeStateService - Service to manage the shake state of the component.
@@ -32,7 +32,7 @@ import { UserAccountFlags } from '../../types/user-account-flags';
  * @param {UserService} userService - Service to manage user data.
  * @param {AvatarService} avatarService - Service to manage user avatar.
  *
- * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the currentTemporaryAvatarUrl observable.
+ * @method ngOnInit - Lifecycle hook that initializes the component. Subscribes to the actualUserAccount and currentTemporaryAvatarUrl observables.
  * @method onFileSelected - Handles the file selection event for avatar upload.
  * @param {Event} event - The file selection event.
  * @method handleSaveButtonClick - Handles the save button click event.
@@ -41,8 +41,8 @@ import { UserAccountFlags } from '../../types/user-account-flags';
  * @method validateEmail - Validates the user's email address.
  * @method validatePhoneNumber - Validates the user's phone number.
  * @method validateAddress - Validates the user's address.
- * @method validatePassword - Validates the user's current password.
  * @method validateNewPassword - Validates the user's new password.
+ * @method validateRepeatedPassword - Validates the user's repeated password.
  * @method changeAvatarUrl - Changes the user's avatar URL.
  * @param {Blob} avatar - The new avatar file.
  * @method isSomeDataNotEqualWithOriginal - Checks if some data is not equal to the original data.
@@ -52,6 +52,8 @@ import { UserAccountFlags } from '../../types/user-account-flags';
  * @method isAvatarValid - Checks if the avatar is valid.
  * @param {Blob} avatar - The avatar file to be checked.
  * @returns {boolean} - Returns true if the avatar is valid, otherwise false.
+ * @method avatarUrl - Gets the URL of the user's avatar.
+ * @returns {string} - Returns the URL of the user's avatar.
  */
 @Component({
   selector: 'app-account-settings',
@@ -62,7 +64,7 @@ export class AccountSettingsComponent implements OnInit {
   public avatarError: string;
   public newPassword: string;
   public userObject: UserAccount;
-  private currentAvatarUrl: string;
+  public currentAvatarUrl: string;
   public isNotDataChanged!: boolean;
   public userAccountFlags: UserAccountFlags;
   public shakeStateService: ShakeStateService;
@@ -230,7 +232,6 @@ export class AccountSettingsComponent implements OnInit {
       `${environment.apiUrl}/media/public/`,
       ''
     );
-    console.log(checkingAvatarUrl)
     const isCurrentAvatarUrlValid: boolean =
       checkingAvatarUrl !== '' &&
       checkingAvatarUrl !== null &&
