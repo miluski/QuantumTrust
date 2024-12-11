@@ -120,7 +120,8 @@ public class SecurityConfig {
                 corsConfiguration.setAllowCredentials(true);
                 corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
                 corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
-                corsConfiguration.setAllowedOrigins(Arrays.asList("https://192.168.0.14:4200"));
+                corsConfiguration
+                        .setAllowedOrigins(Arrays.asList("https://quantum-trust.cc", "https://www.quantum-trust.cc"));
                 corsConfiguration.addExposedHeader("Set-Cookie");
                 corsConfiguration.setMaxAge(5L);
                 return corsConfiguration;

@@ -296,9 +296,10 @@
         </button>
       </div>
       } @for(card of cardPaginationService.paginatedItems; track card.id) {
-      <div class="flex flex-col relative mb-5 z-30">
+      <div class="flex flex-col relative mb-5 z-30"
+        [ngClass]="{'pl-20': card.site === 'back'}">
         <div
-          class="flex flex-col relative cursor-pointer z-30 w-full h-full max-sm:w-[85%] max-sm:self-center"
+          class="flex flex-col relative cursor-pointer z-30 w-full h-full max-sm:w-[95%]"
           [@rotateCard]="card.showingCardSite"
           (click)="
             card.showingCardSite =
@@ -306,8 +307,7 @@
           "
         >
           <app-image
-            class="max-sm:h-44 w-80 h-48 my-10 z-10"
-            ownClass="object-cover shadow-gray-400 shadow-sm rounded-2xl pointer-events-none w-full h-full"
+            ownClass="object-cover shadow-gray-400 shadow-sm rounded-2xl pointer-events-none w-full h-full max-sm:h-44 max-sm:!w-[265px] w-80 h-48 max-w-80 max-h-48 my-10 z-10"
             [ngClass]="{ 'opacity-50': card.status === 'suspended' }"
             [src]="
               card.showingCardSite === 'front' ? card.image : card.backImage
@@ -333,7 +333,7 @@
             </p>
           </div>
           <p
-            class="font-courier text-xl text-silver text-shadow absolute z-20"
+            class="font-courier text-xl text-silver text-shadow absolute z-20 max-sm:text-lg"
             [ngClass]="{
               'sm:pb-2 bottom-20 left-7 sm:left-10': card.publisher === 'Visa',
               'bottom-16 pb-2 left-3': card.publisher === 'Mastercard'
@@ -365,7 +365,7 @@
           <p
             class="absolute font-roboto font-normal text-xs text-black top-24 z-30 counter-rotate"
             [ngClass]="{
-              'pt-2 max-sm:!left-[105px] max-sm:pt-1 left-[125px]':
+              'pt-2 max-sm:!left-[100px] max-sm:pt-1 left-[125px]':
                 card.publisher === 'Visa',
               'pt-3.5 max-sm:!left-24 max-sm:pt-2.5 left-28 pr-2 max-sm:pr-1':
                 card.publisher === 'Mastercard'
@@ -378,7 +378,7 @@
             class="absolute top-14 fa-solid fa-gear text-brown hover:text-light-brown text-2xl cursor-pointer z-30"
             [ngClass]="{
               'left-2': card.showingCardSite === 'back',
-              'right-2': card.showingCardSite === 'front'
+              'sm:right-2 max-sm:right-0 max-sm:ml-5': card.showingCardSite === 'front'
             }"
             (click)="setSelectedCard(card); changeTabName('CardSettings')"
             matTooltip="Zmień ustawienia karty."

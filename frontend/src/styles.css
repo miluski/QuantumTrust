@@ -55,7 +55,7 @@
   block-size: 100%;
   opacity: 0.2;
   z-index: 10;
-  background-image: url("https://192.168.0.14:8443/api/media/public/open-account-background.webp");
+  background-image: url("https://quantum-trust.cc/api/media/public/open-account-background.webp");
   background-repeat: no-repeat;
   background-position: 50% 0;
   background-size: cover;
@@ -78,7 +78,7 @@
   block-size: 100%;
   opacity: 0.2;
   z-index: 10;
-  background-image: url("https://192.168.0.14:8443/api/media/public/login-background.webp");
+  background-image: url("https://quantum-trust.cc/api/media/public/login-background.webp");
   background-repeat: no-repeat;
   background-position: 50% 0;
   background-size: cover;
