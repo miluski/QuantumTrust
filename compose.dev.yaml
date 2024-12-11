@@ -14,7 +14,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8443:8443"
+      - "9443:9443"
     volumes:
       - /Users/maksymiliansowula/Documents/Studia/Inzynierka/QuantumTrust/media:/media
       - /Users/maksymiliansowula/Documents/Studia/Inzynierka/QuantumTrust/certs:/certs
