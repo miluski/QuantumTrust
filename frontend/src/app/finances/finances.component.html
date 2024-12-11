@@ -307,7 +307,7 @@
           "
         >
           <app-image
-            ownClass="object-cover shadow-gray-400 shadow-sm rounded-2xl pointer-events-none w-full h-full max-sm:h-44 max-sm:!w-[265px] w-80 h-48 my-10 z-10"
+            ownClass="object-cover shadow-gray-400 shadow-sm rounded-2xl pointer-events-none w-full h-full max-sm:h-44 max-sm:!w-[265px] w-80 h-48 max-w-80 max-h-48 my-10 z-10"
             [ngClass]="{ 'opacity-50': card.status === 'suspended' }"
             [src]="
               card.showingCardSite === 'front' ? card.image : card.backImage
